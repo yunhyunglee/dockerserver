@@ -5,8 +5,6 @@ import { MainHeader } from './components/frame/Header';
 import { Home } from './components/frame/Home';
 import { Footer } from './components/frame/Footer';
 
-
-
 function App() {
 
     const [menubar, setMenubar] = useState(false);
