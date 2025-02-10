@@ -1,30 +1,29 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
 
-.loginPage {
+.joinPage {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100%; /* 화면 전체 높이 */
+  min-height: 100vh;
   width: 100%;
   background: linear-gradient(135deg, #000000, #1a1a1a);
   font-family: 'Montserrat', sans-serif;
 }
 
 .container {
-  background: rgba(255, 255, 255, 0.15); /* 투명도를 더 높여 유리 효과 강화 */
+  background: rgba(255, 255, 255, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 15px;
   padding: 50px;
-  width: 350px;
+  width: 1000px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(20px); /* 더 강한 글라스 효과 */
+  backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   text-align: center;
   color: #fff;
   animation: fadeIn 0.6s ease-in-out;
 }
 
-/* 로그인창 모션 */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -36,7 +35,7 @@
   }
 }
 
-.container h1 {
+.container h2 {
   font-size: 28px;
   font-weight: 700;
   margin-bottom: 25px;
@@ -57,8 +56,9 @@
   margin-bottom: 5px;
 }
 
-.formGroup input {
-  width: 90%;
+.formGroup input,
+.formGroup select {
+  width: 80%;
   padding: 12px 15px;
   border: none;
   border-radius: 5px;
@@ -69,19 +69,17 @@
   transition: all 0.3s ease-in-out;
 }
 
-/* 입력창 포커스 시 효과 */
-.formGroup input:focus {
+.formGroup input:focus,
+.formGroup select:focus {
   background: rgba(255, 255, 255, 0.3);
   box-shadow: 0 0 10px rgba(255, 64, 129, 0.5);
 }
 
-/* 입력창 placeholder 색상 */
 .formGroup input::placeholder {
   color: #bbb;
   font-style: italic;
 }
 
-/* 로그인 버튼 */
 .button {
   width: 100%;
   padding: 14px;
@@ -96,30 +94,34 @@
   box-shadow: 0 4px 10px rgba(255, 64, 129, 0.5);
 }
 
-/* 버튼 hover 효과 */
 .button:hover {
   background: linear-gradient(90deg, #ff79a9, #ff4081);
   transform: scale(1.05);
   box-shadow: 0 6px 20px rgba(255, 64, 129, 0.8);
 }
 
-/* 버튼 클릭 효과 */
 .button:active {
   transform: scale(0.98);
 }
 
-/* 비밀번호 찾기 링크 */
-.forgotPassword {
-  display: block;
-  margin-top: 15px;
-  font-size: 14px;
-  color: #ddd;
-  text-decoration: none;
-  transition: color 0.3s ease-in-out;
+.buttonGroup {
+  display: flex;
+  gap: 10px;
 }
 
-/* 비밀번호 찾기 hover */
-.forgotPassword:hover {
-  text-decoration: underline;
-  color: #ff4081;
+.formLeft {
+  display: flex;
+  flex-direction: column;
+  width: 48%;
+}
+
+.formRight {
+  display: flex;
+  flex-direction: column;
+  width: 48%;
+}
+
+.formContainer {
+  display: flex;
+  justify-content: space-between;
 }
