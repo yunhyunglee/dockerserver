@@ -36,12 +36,13 @@ public class Member {
     private String addressDetail;
     @Column(name ="address_extra" )
     private String addressExtra;
-    @Column(name ="zip_num" )
-    private int zipNum;
+    @Column(name ="zip_code" )
+    private String zipCode;
     private String image;
     @CreationTimestamp
     @Column( columnDefinition="DATETIME default now()" )
     private Timestamp indate;
+    private String provider;
 
     @ElementCollection(fetch = FetchType.LAZY)
     @Builder.Default
