@@ -12,9 +12,8 @@
 }
 
 .sidebar {
-    position: absolute;
-    top: 0;
-    left: 0;
+    position: fixed;
+
     width: 170px;
     
     padding: 2vh; /* 화면 크기에 따라 적응 */
