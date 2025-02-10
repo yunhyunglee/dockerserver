@@ -21,10 +21,12 @@ public class Music {
     private String title;
     private String artist;
     private String image;
-    private int playcount;
+    @Column(name = "play_count")
+    private int playCount;
     private String genre;
-    private String write;
-    private boolean title_music;
+    private String lyrics;
+    @Column(name = "title_music")
+    private boolean titleMusic;
 
 
 }
