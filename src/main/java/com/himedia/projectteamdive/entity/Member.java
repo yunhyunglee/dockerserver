@@ -31,14 +31,15 @@ public class Member {
     private String email;
     private String gender;
     private Timestamp birth;
+    @Column(name ="zip_num" )
+    private int zipNum;
     private String address;
     @Column(name ="address_detail" )
     private String addressDetail;
     @Column(name ="address_extra" )
     private String addressExtra;
-    @Column(name ="zip_num" )
-    private int zipNum;
     private String image;
+    private String provider;
     @CreationTimestamp
     @Column( columnDefinition="DATETIME default now()" )
     private Timestamp indate;
