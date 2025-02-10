@@ -1,0 +1,33 @@
+.header {
+    height: 80px;
+    border: 1px solid black;
+    align-items: center;
+    display: flex;
+    position: sticky;
+    top: 0;
+    background-color: black;
+    z-index: 1000;
+}
+
+.menu {
+    margin-left: 27px;
+    padding: 12px 15px;
+    border: none;
+    border-radius: 5px;
+    background: #ff4081;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+
+}
+
+.menu:hover {
+    background: #e73370;
+  }
+
+.mainLogo {
+    margin-left: 27px;
+
+}
