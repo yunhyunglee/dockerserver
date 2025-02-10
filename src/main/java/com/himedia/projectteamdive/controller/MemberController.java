@@ -2,6 +2,7 @@ package com.himedia.projectteamdive.controller;
 
 import com.himedia.projectteamdive.entity.Member;
 import com.himedia.projectteamdive.service.MemberService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,15 +21,23 @@ public class MemberController {
         return "<h1>Welcome to MusicStreaming World</h1>";
     }
 
-    @PostMapping("/login")
-    public HashMap<String, Object> login( @RequestParam String memberId ){
+    @PostMapping("/loginLocal")
+    public HashMap<String, Object> loginLocal(
+            @RequestParam("memberId") String memberId,
+            @RequestParam("password") String password,
+            HttpSession session){
         HashMap<String, Object> result = new HashMap<>();
-        Member member = ms.getLoginUser(memberId);
-        if(member != null){
-            result.put("msg", "yes");
+        Member member = ms.getMember(memberId);
+        if(member == null){
+            result.put("msg", "아이디가 없습니다.");
+        }else if(!member.getPassword().equals(password)){
+            result.put("msg", "비밀번호가 맞지 않습니다.");
         }else{
-            result.put("msg", "no");
+            result.put("msg", "yes");
+            session.setAttribute("loginUser", member.getMemberId());
+            result.put("loginUser", member);
         }
+        System.out.println(result);
         return result;
     }
 

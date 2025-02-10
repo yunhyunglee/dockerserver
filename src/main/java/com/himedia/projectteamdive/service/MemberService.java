@@ -13,8 +13,10 @@ public class MemberService {
     @Autowired
     MemberRepository mr;
 
-    public Member getLoginUser(String memberId) {
 
-        return mr.findBymemberId(memberId);
+    public Member getMember(String memberId) {
+
+        return mr.findByMemberId(memberId);
+
     }
 }
