@@ -44,7 +44,7 @@ const LoginPage =() => {
     }
 
     function handleKakaoLogin() {
-        alert('카톡카톡');       
+        alert('카톡카톡');
       }
 
     return (

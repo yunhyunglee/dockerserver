@@ -2,7 +2,7 @@ import { useState } from "react";
 import joinStyles from '../../css/joinForm.module.css';
 import { useNavigate } from "react-router-dom";
 
-const SignUpStep1 = ({ setStep }) => {
+const SignUpStep1 = ({setStep}) => {
     const navigate = useNavigate();
 
     // 필수 입력 상태들
