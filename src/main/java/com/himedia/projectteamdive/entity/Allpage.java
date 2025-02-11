@@ -29,5 +29,5 @@ public class Allpage {
 
     @ElementCollection(fetch = FetchType.LAZY)
     @Builder.Default
-    private List<RoleName> pagetype = new ArrayList<RoleName>();
+    private List<Pagetype> pagetype = new ArrayList<Pagetype>();
 }
