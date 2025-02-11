@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -32,7 +33,7 @@ public class Member {
     private String gender;
     private Timestamp birth;
     @Column(name ="zip_num" )
-    private int zipNum;
+    private Integer zipNum ;
     private String address;
     @Column(name ="address_detail" )
     private String addressDetail;

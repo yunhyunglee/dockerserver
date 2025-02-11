@@ -13,7 +13,7 @@ public class MemberDto extends User {
     public MemberDto(String username, String password,
                      String name, String nickname, String phone,
                      String email, String gender, Timestamp birth,
-                     int zipNum, String address, String addressDetail, String addressExtra,
+                     Integer zipNum, String address, String addressDetail, String addressExtra,
                      String image, String provider, List<String>memberRoleList) {
         super(username, password, memberRoleList.stream().map(str->new SimpleGrantedAuthority("ROLE_"+str)).collect(Collectors.toList()));
         this.memberId=username;
@@ -41,7 +41,7 @@ public class MemberDto extends User {
     private String email;
     private String gender;
     private Timestamp birth;
-    private int zipNum;
+    private Integer zipNum;
     private String address;
     private String addressDetail;
     private String addressExtra;

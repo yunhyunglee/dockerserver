@@ -1,8 +1,10 @@
 package com.himedia.projectteamdive.security.filter;
 
+import com.google.gson.Gson;
 import com.himedia.projectteamdive.dto.MemberDto;
 import com.himedia.projectteamdive.entity.Member;
 import com.himedia.projectteamdive.entity.RoleName;
+import com.himedia.projectteamdive.security.util.CustomJWTException;
 import com.himedia.projectteamdive.security.util.JWTUtil;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -14,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
@@ -49,11 +52,16 @@ public class JWTCheckFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             filterChain.doFilter(request, response);
 
-        }catch (Exception e){
-
+        }catch (Exception | CustomJWTException e){
+            System.out.println("JWT Check Error..............");
+            System.out.println(e.getMessage());
+            Gson gson = new Gson();
+            String msg = gson.toJson(Map.of("error", "ERROR_ACCESS_TOKEN"));
+            response.setContentType("application/json");
+            PrintWriter printWriter = response.getWriter();
+            printWriter.println(msg);
+            printWriter.close();
         }
-
-
 
 
     }
@@ -65,6 +73,7 @@ public class JWTCheckFilter extends OncePerRequestFilter {
         if(request.getMethod().equals("OPTIONS")){
             return true;
         }
+
         if(path.startsWith("/member/login")){
             return true;
         }
