@@ -13,12 +13,14 @@ const LoginPage =() => {
     const cookies = new Cookies();
     const dispatch = useDispatch();
 
-    function loginLocal(){
+    async function loginLocal(){
+        console.log(1)
         if(!memberId){return alert('아이디를 입력하세요');};
         if(!password){return alert('비밀번호를 입력하세요');};
         
-        axios.post('/api/member/loginLocal', null, {params:{memberId, password}})
-        .then((result)=>{
+        const result = await axios.post('/api/member/loginLocal', null, {params:{memberId, password}})
+        try{
+            console.log(2)
             console.log(result.data.msg)
             if(result.data.msg === 'yes'){
                 alert('로그인이 되었습니다.')
@@ -29,10 +31,10 @@ const LoginPage =() => {
                 alert('아이디와 비밀번호가 일치하지 않습니다.');
                 setMemberId('');
             }
-        })
-        .catch((err)=>{
-            console.error(err);
-        })
+        }catch(err){
+            console.log(err);
+        }
+       
     }
 
 
