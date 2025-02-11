@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -19,7 +22,6 @@ public class Music {
     @Column(name = "music_id")
     private int musicId;
     private String title;
-    private String artist;
     private String image;
     @Column(name = "play_count")
     private int playCount;
@@ -27,6 +29,19 @@ public class Music {
     private String lyrics;
     @Column(name = "title_music")
     private boolean titleMusic;
+
+    @ManyToOne
+    @JoinColumn(name = "album_id")
+    Album album;
+    @ManyToOne
+    @JoinColumn(name = "artist_id")
+    Artist artist;
+
+    @ManyToMany(mappedBy = "musicList")
+    List<PlayList>playlists=new ArrayList<>();
+
+
+
 
 
 }

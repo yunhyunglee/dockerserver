@@ -50,4 +50,6 @@ public class Member {
     @Builder.Default
     private List<RoleName> memberRoleList = new ArrayList<RoleName>();
 
+    @OneToMany(mappedBy = "member",cascade = CascadeType.ALL, orphanRemoval = true)
+    List<PlayList> playLists=new ArrayList<>();
 }
