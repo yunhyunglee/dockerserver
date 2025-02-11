@@ -47,7 +47,7 @@ public class MusicController {
         return map;
     }
     @PostMapping("/insertPlayListMusic")
-    public HashMap<String, Object> insertPlayListMusic(@RequestParam("musics") List<Music> musics,@RequestParam("playList")PlayList playList) {
+    public HashMap<String, Object> insertPlayListMusic(@RequestParam("musics") List<Music> musics,@RequestParam("playList")Playlist playList) {
         HashMap<String, Object> map = new HashMap<>();
         ms.insertPlayListMusic(musics,playList);
         map.put("msg","yes");
