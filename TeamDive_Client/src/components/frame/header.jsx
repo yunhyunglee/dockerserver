@@ -7,7 +7,7 @@ function MainHeader({toggleMenu}){
     return(
         <div className={styles.header}>
             <button className={styles.menu} onClick={toggleMenu}>메뉴버튼</button>
-            <Link to='/' className={styles.mainLogo}><img src="/image/image.png"></img></Link>
+            <Link to='/' ><img src="/image/image.png" className={styles.mainLogo}></img></Link>
         </div>
     )
 }
