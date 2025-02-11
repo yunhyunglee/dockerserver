@@ -70,7 +70,9 @@ public class JWTCheckFilter extends OncePerRequestFilter {
         if(request.getMethod().equals("OPTIONS")){
             return true;
         }
-
+        if(path.startsWith("/")){
+            return true;
+        }
         if(path.startsWith("/member/login")){
             return true;
         }
