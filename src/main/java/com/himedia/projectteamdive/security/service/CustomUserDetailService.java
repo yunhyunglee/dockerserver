@@ -32,8 +32,9 @@ public class CustomUserDetailService  implements UserDetailsService {
                 member.getName(),
                 member.getNickname(),
                 member.getPhone(),
-                member.getEmail(),member.getGender(),member.getBirth(),member.getZipCode(),member.getAddress(),
-                member.getAddressDetail(),member.getAddressExtra(),member.getImage(),member.getProvider(),
+                member.getEmail(),
+                member.getGender(),member.getBirth(),member.getZipCode(),member.getAddress(),
+                member.getAddressDetail(),member.getAddressExtra(),member.getImage(),member.getProvider(),member.getMemberKey(),
                 member.getMemberRoleList().stream().map(roleName -> roleName.name()).collect(Collectors.toList())
         );
 

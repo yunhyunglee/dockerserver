@@ -15,7 +15,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @DynamicInsert
 @DynamicUpdate
-public class Membership_User {
+public class Membership_user {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "membership_user_id")
@@ -31,10 +31,6 @@ public class Membership_User {
 
     @Column(name = "download_count")
     private int downloadCount;
-//    @Column(name = "listen_count")
-//    private int listenCount;
     private Timestamp startDate;
     private Timestamp endDate;
-
-
 }

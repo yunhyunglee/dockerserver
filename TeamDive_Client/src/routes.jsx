@@ -11,7 +11,7 @@ function AppRoutes() {
             <Route path="/" element={<MainPage />} />
             <Route path="/today" element={<h4>오늘의 인기차트 페이지임</h4>} />
             <Route path="/playList" element={<h4>플리페이지임</h4>} />
-            <Route path="/membership" element={<Membership/>} />
+            <Route path="/membership/:category" element={<Membership/>} />
             <Route path="/menu2" element={<h4>메뉴2 페이지임</h4>} />
             <Route path="/menu3" element={<h4>메뉴3 페이지임</h4>} />
             <Route path="/login" element={<LoginPage />} />

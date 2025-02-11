@@ -41,8 +41,9 @@ public class JWTCheckFilter extends OncePerRequestFilter {
             Integer zipCode= (Integer) claims.get("zipCode");
             String image= (String) claims.get("image");
             String provider= (String) claims.get("provider");
+            String memberKey= (String) claims.get("memberKey");
             List<String>memberRoleList= (List<String>) claims.get("memberRoleList");
-            MemberDto memberDto=new MemberDto(memberId,password,name,nickname,phone,email,gender,birth,zipCode,address,addressDetail,addressExtra,image,provider,memberRoleList);
+            MemberDto memberDto=new MemberDto(memberId,password,name,nickname,phone,email,gender,birth,zipCode,address,addressDetail,addressExtra,image,provider,memberKey,memberRoleList);
 
 
             UsernamePasswordAuthenticationToken authenticationToken= new UsernamePasswordAuthenticationToken(memberDto,password,memberDto.getAuthorities());
@@ -70,13 +71,17 @@ public class JWTCheckFilter extends OncePerRequestFilter {
         if(request.getMethod().equals("OPTIONS")){
             return true;
         }
-
-        if(path.startsWith("/")) {
+        if(path.startsWith("/")){
             return true;
         }
         if(path.startsWith("/member/login")){
             return true;
         }
+
+        if(path.startsWith("/membership/getMembership")){
+            return true;
+        }
+
         return false;
     }
 

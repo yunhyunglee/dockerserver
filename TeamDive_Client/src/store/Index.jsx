@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit'
-import userSlice from './userSlice'
+import UserSlice from './userSlice'
 
 export default configureStore(
     {
-        reducer: { user:userSlice, }, 
+        reducer: { user:UserSlice, }, 
         middleware:(getDefaultMiddleware)=>getDefaultMiddleware({serializableCheck:false,})
     }
 )
