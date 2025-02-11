@@ -10,7 +10,7 @@ export default defineConfig({
         target: 'http://localhost:8070', // API 서버 주소
         changeOrigin: true,
         secure: false,
-        //rewrite: (path) => path.replace(/^\/api/, ''),
+        rewrite: (path) => path.replace(/^\/api/, ''),
       }
     }
   },
