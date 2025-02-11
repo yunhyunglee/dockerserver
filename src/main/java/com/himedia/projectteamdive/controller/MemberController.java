@@ -1,12 +1,15 @@
 package com.himedia.projectteamdive.controller;
 
 import com.himedia.projectteamdive.entity.Member;
+import com.himedia.projectteamdive.security.util.CustomJWTException;
+import com.himedia.projectteamdive.security.util.JWTUtil;
 import com.himedia.projectteamdive.service.MemberService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/member")
@@ -30,9 +33,9 @@ public class MemberController {
         Member member = ms.getMember(memberId);
         System.out.println(1);
         if(member == null){
-            result.put("msg", "아이디가 없습니다.");
+            result.put("msg", "no");
         }else if(!member.getPassword().equals(password)){
-            result.put("msg", "비밀번호가 맞지 않습니다.");
+            result.put("msg", "no");
         }else{
             System.out.println(2);
             result.put("msg", "yes");

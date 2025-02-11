@@ -12,8 +12,8 @@ const beforeReq= async (config)=>{
     // 파라미터로  refreshToken 이 전송됩니다
     const result = await axios.get(`/api/member/refresh`, Header );
     // 검증마치고 돌아온 두개토큰을 현재유저의 사용자정보에 추가하고
-    user.accessToken = res.data.accessToken
-    user.refreshToken = res.data.refreshToken
+    user.accessToken = result.data.accessToken;
+    user.refreshToken = result.data.refreshToken;
     // 이를 다시 쿠키에 저장
     cookies.set( 'user', JSON.stringify(user) );
     // accessToken만 따로 다시 헤더에 조립시켜 config 를 완성하고
