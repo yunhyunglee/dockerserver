@@ -38,7 +38,7 @@ public class Music {
     Artist artist;
 
     @ManyToMany(mappedBy = "musicList")
-    List<PlayList>playlists=new ArrayList<>();
+    List<Playlist>playlists=new ArrayList<>();
 
 
 

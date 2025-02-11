@@ -52,16 +52,16 @@ public class MusicService {
     MemberRepository memr;
     public void insertPlayList(String username) {
         Member member = memr.findByMemberId(username);
-        PlayList playList= pr.save(new PlayList());
+        Playlist playList= pr.save(new Playlist());
         playList.setMember(member);
         Allpage allpage=new Allpage();
-        allpage.setEntityId(playList.getPlayListId());
+        allpage.setEntityId(playList.getPlaylistId());
         allpage.setPagetype(Arrays.asList(Pagetype.PLAYLIST));
         allr.save(allpage);
     }
 
     @Transactional
-    public void insertPlayListMusic(List<Music> musics, PlayList playList) {
+    public void insertPlayListMusic(List<Music> musics, Playlist playList) {
         for (Music music : musics) {
             playList.addMusic(music);
         }
