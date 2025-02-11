@@ -5,6 +5,10 @@ import { Membership } from "./components/membership/Membership";
 import MainPage from "./components/frame/mainpage/MainPage";
 import MusicDetail from "./components/music/MusicDetail";
 
+import { PaymentsCheckout } from "./components/payments/PaymentsCheckout";
+import { PaymentsSuccess } from "./components/payments/PaymentsSuccess";
+import { PaymentsFail } from "./components/payments/PaymentsFail";
+
 function AppRoutes() {
     return (
         <Routes>
@@ -18,8 +22,13 @@ function AppRoutes() {
             <Route path="/sign-up" element={<JoinForm />} />
 
 
-            
+
             <Route path="/music/:musicId" element={<MusicDetail />} />
+
+            {/* 토스 페이먼트 api */}
+            <Route path="/payments" element={<PaymentsCheckout />} />
+            <Route path="/payments/success" element={<PaymentsSuccess />} />
+            <Route path="/payments/fail" element={<PaymentsFail />} />
         </Routes>
     );
 }
