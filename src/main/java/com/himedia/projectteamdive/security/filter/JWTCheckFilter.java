@@ -2,11 +2,8 @@ package com.himedia.projectteamdive.security.filter;
 
 import com.google.gson.Gson;
 import com.himedia.projectteamdive.dto.MemberDto;
-import com.himedia.projectteamdive.entity.Member;
-import com.himedia.projectteamdive.entity.RoleName;
 import com.himedia.projectteamdive.security.util.CustomJWTException;
 import com.himedia.projectteamdive.security.util.JWTUtil;
-import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,11 +38,11 @@ public class JWTCheckFilter extends OncePerRequestFilter {
             String address= (String) claims.get("address");
             String addressDetail= (String) claims.get("addressDetail");
             String addressExtra= (String) claims.get("addressExtra");
-            int zipNum= (int) claims.get("zipNum");
+            Integer zipCode= (Integer) claims.get("zipCode");
             String image= (String) claims.get("image");
             String provider= (String) claims.get("provider");
             List<String>memberRoleList= (List<String>) claims.get("memberRoleList");
-            MemberDto memberDto=new MemberDto(memberId,password,name,nickname,phone,email,gender,birth,zipNum,address,addressDetail,addressExtra,image,provider,memberRoleList);
+            MemberDto memberDto=new MemberDto(memberId,password,name,nickname,phone,email,gender,birth,zipCode,address,addressDetail,addressExtra,image,provider,memberRoleList);
 
 
             UsernamePasswordAuthenticationToken authenticationToken= new UsernamePasswordAuthenticationToken(memberDto,password,memberDto.getAuthorities());

@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -32,15 +31,13 @@ public class Member {
     private String email;
     private String gender;
     private Timestamp birth;
-    @Column(name ="zip_num" )
-    private Integer zipNum ;
+    @Column(name ="zip_code" )
+    private Integer zipCode ;
     private String address;
     @Column(name ="address_detail" )
     private String addressDetail;
     @Column(name ="address_extra" )
     private String addressExtra;
-    @Column(name ="zip_code" )
-    private String zipCode;
     private String image;
     @CreationTimestamp
     @Column( columnDefinition="DATETIME default now()" )

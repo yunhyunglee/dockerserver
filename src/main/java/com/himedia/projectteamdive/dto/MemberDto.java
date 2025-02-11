@@ -1,19 +1,20 @@
 package com.himedia.projectteamdive.dto;
 
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 import java.sql.Timestamp;
-import java.util.*;
-import java.util.stream.Collector;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MemberDto extends User {
     public MemberDto(String username, String password,
                      String name, String nickname, String phone,
                      String email, String gender, Timestamp birth,
-                     Integer zipNum, String address, String addressDetail, String addressExtra,
+                     Integer zipCode, String address, String addressDetail, String addressExtra,
                      String image, String provider, List<String>memberRoleList) {
         super(username, password, memberRoleList.stream().map(str->new SimpleGrantedAuthority("ROLE_"+str)).collect(Collectors.toList()));
         this.memberId=username;
@@ -24,7 +25,7 @@ public class MemberDto extends User {
         this.email=email;
         this.gender=gender;
         this.birth=birth;
-        this.zipNum=zipNum;
+        this.zipCode=zipCode;
         this.address=address;
         this.addressDetail=addressDetail;
         this.addressExtra=addressExtra;
@@ -41,7 +42,7 @@ public class MemberDto extends User {
     private String email;
     private String gender;
     private Timestamp birth;
-    private Integer zipNum;
+    private Integer zipCode;
     private String address;
     private String addressDetail;
     private String addressExtra;
@@ -59,7 +60,7 @@ public class MemberDto extends User {
         dataMap.put("email", email);
         dataMap.put("gender", gender);
         dataMap.put("birth", birth);
-        dataMap.put("zipNum", zipNum);
+        dataMap.put("zipCode", zipCode);
         dataMap.put("address", address);
         dataMap.put("addressDetail", addressDetail);
         dataMap.put("addressExtra", addressExtra);
