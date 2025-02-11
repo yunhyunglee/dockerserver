@@ -2,7 +2,6 @@ import { createSlice } from '@reduxjs/toolkit'
 import {Cookies} from 'react-cookie'
 const cookies = new Cookies()
 
-
 const initialState={
     
     memberId:'',
@@ -20,6 +19,7 @@ const initialState={
     image:'',
     indate:'',
     provider:'',
+    memberKey:'',
     rolename:[],
     accessToken:'',
     refreshToken:'',
@@ -43,6 +43,7 @@ const getLoginUser=()=>{
         memberInfo.image = decodeURIComponent(memberInfo.image);
         memberInfo.indate = decodeURIComponent(memberInfo.indate);
         memberInfo.provider = decodeURIComponent(memberInfo.provider);
+        memberInfo.memberKey = decodeURIComponent(memberInfo.memberKey);
         memberInfo.rolename = decodeURIComponent(memberInfo.rolename);
         memberInfo.accessToken = decodeURIComponent(memberInfo.accessToken);
         memberInfo.refreshToken = decodeURIComponent(memberInfo.refreshToken);
@@ -71,6 +72,7 @@ export const UserSlice = createSlice(
                 state.image = action.payload.image;
                 state.indate = action.payload.indate;
                 state.provider = action.payload.provider;
+                state.memberKey = action.payload.memberKey;
                 state.rolename = action.payload.rolename;
                 state.accessToken = action.payload.accessToken;
                 state.refreshToken = action.payload.refreshToken;
@@ -91,6 +93,7 @@ export const UserSlice = createSlice(
                 state.image = '';
                 state.indate = '';
                 state.provider = '';
+                state.memberKey = '';
                 state.rolename = '';
                 state.accessToken = '';
                 state.refreshToken = '';
