@@ -42,6 +42,11 @@ const LoginPage =() => {
        
     }
 
+    function handleKakaoLogin() {
+        alert('카톡카톡');
+        
+      }
+
 
     
 
@@ -63,6 +68,12 @@ const LoginPage =() => {
                         }} placeholder="비밀 번호를 입력하세요" />
                     </div>
                     <button type="button" className={loginStyles.button} onClick={()=>{loginLocal();}}>Login</button>
+                    <div className={loginStyles.kakaoLoginContainer}>
+                        <button type="button" className={loginStyles.kakaoButton} onClick={handleKakaoLogin}>
+                        <img src="/image/kakao_lion.png" alt="Kakao Logo"  className={loginStyles.kakaoLogo} />
+                        <span>카카오로 로그인하기</span>
+                        </button>
+                    </div>
                 </form>
                 <a href="#" className={loginStyles.forgotPassword}>비밀번호를 잊으셨나요?</a>
             </div>
