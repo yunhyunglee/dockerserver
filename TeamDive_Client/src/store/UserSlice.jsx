@@ -2,16 +2,15 @@ import { createSlice } from '@reduxjs/toolkit'
 import {Cookies} from 'react-cookie'
 const cookies = new Cookies()
 
-
 const initialState={
     
-    member_id:'',
+    memberId:'',
     password:'',
     name:'',
     nickname:'',
     phone:'',
     email:'',
-    zip_code:'',
+    zipCode:'',
     address:'',
     address_detail:'',
     address_extra:'',
@@ -20,6 +19,7 @@ const initialState={
     image:'',
     indate:'',
     provider:'',
+    memberKey:'',
     rolename:[],
     accessToken:'',
     refreshToken:'',
@@ -27,14 +27,14 @@ const initialState={
 
 const getLoginUser=()=>{
     const memberInfo = cookies.get('user');
-    if(memberInfo && memberInfo.member_id){
-        memberInfo.member_id = decodeURIComponent(memberInfo.member_id);
-        memberInfo.passowrd  = decodeURIComponent(memberInfo.password);
+    if(memberInfo && memberInfo.memberId){
+        memberInfo.memberId = decodeURIComponent(memberInfo.memberId);
+        memberInfo.password  = decodeURIComponent(memberInfo.password);
         memberInfo.name = decodeURIComponent(memberInfo.name);
         memberInfo.nickname = decodeURIComponent(memberInfo.nickname);
         memberInfo.phone = decodeURIComponent(memberInfo.phone);
         memberInfo.email = decodeURIComponent(memberInfo.email);
-        memberInfo.zip_code = decodeURIComponent(memberInfo.zip_code);
+        memberInfo.zipCode = decodeURIComponent(memberInfo.zipCode);
         memberInfo.address = decodeURIComponent(memberInfo.address);
         memberInfo.address_detail  = decodeURIComponent(memberInfo.address_detail);
         memberInfo.address_extra = decodeURIComponent(memberInfo.address_extra);
@@ -43,6 +43,7 @@ const getLoginUser=()=>{
         memberInfo.image = decodeURIComponent(memberInfo.image);
         memberInfo.indate = decodeURIComponent(memberInfo.indate);
         memberInfo.provider = decodeURIComponent(memberInfo.provider);
+        memberInfo.memberKey = decodeURIComponent(memberInfo.memberKey);
         memberInfo.rolename = decodeURIComponent(memberInfo.rolename);
         memberInfo.accessToken = decodeURIComponent(memberInfo.accessToken);
         memberInfo.refreshToken = decodeURIComponent(memberInfo.refreshToken);
@@ -50,19 +51,19 @@ const getLoginUser=()=>{
     return memberInfo;
 }
 
-export const userSlice = createSlice(
+export const UserSlice = createSlice(
     {
         name:'user',
         initialState : getLoginUser() || initialState,
         reducers:{
             loginAction :(state, action)=>{
-                state.member_id = action.payload.member_id;
+                state.memberId = action.payload.memberId;
                 state.password = action.payload.password;
                 state.name = action.payload.name;
                 state.nickname = action.payload.nickname;
                 state.phone = action.payload.phone;
                 state.email = action.payload.email;
-                state.zip_code = action.payload.zip_code;
+                state.zipCode = action.payload.zipCode;
                 state.address = action.payload.address;
                 state.address_detail = action.payload.address_detail;
                 state.address_extra = action.payload.address_extra;
@@ -71,18 +72,19 @@ export const userSlice = createSlice(
                 state.image = action.payload.image;
                 state.indate = action.payload.indate;
                 state.provider = action.payload.provider;
+                state.memberKey = action.payload.memberKey;
                 state.rolename = action.payload.rolename;
                 state.accessToken = action.payload.accessToken;
                 state.refreshToken = action.payload.refreshToken;
             },
             logoutAction :(state)=>{
-                state.member_id = '';
+                state.memberId = '';
                 state.password = '';
                 state.name = '';
                 state.nickname = '';
                 state.phone = '';
                 state.email = '';
-                state.zip_code = '';
+                state.zipCode = '';
                 state.address = '';
                 state.address_detail = '';
                 state.address_extra = '';
@@ -91,6 +93,7 @@ export const userSlice = createSlice(
                 state.image = '';
                 state.indate = '';
                 state.provider = '';
+                state.memberKey = '';
                 state.rolename = '';
                 state.accessToken = '';
                 state.refreshToken = '';
@@ -99,7 +102,7 @@ export const userSlice = createSlice(
     }
 )
 
-export const { loginAction, logoutAction} = userSlice.actions
-export default userSlice.reducer
+export const { loginAction, logoutAction} = UserSlice.actions
+export default UserSlice.reducer
 
 

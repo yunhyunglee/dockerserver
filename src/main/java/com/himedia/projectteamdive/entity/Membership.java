@@ -18,8 +18,12 @@ public class Membership {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "membership_id")
     private int membershipId;
-    @Column(name = "membership_name")
-    private String membershipName;
-    private int membershipPrice;
+    private String name;
+    private String content;
+    private int price;
+    private int discount;
+    private int period;
+    private String category;
+    @Column(name = "download_count")
     private int downloadCount;
 }

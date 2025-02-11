@@ -1,22 +1,51 @@
 import React, { useState } from 'react';
 import loginStyles from '../../css/login.module.css';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { Cookies } from 'react-cookie';
+import { useSelector,useDispatch } from 'react-redux';
+import { loginAction } from '../../store/userSlice';
+
 
 const LoginPage =() => {
 
     const [memberId, setMemberId] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();
+    const cookies = new Cookies();
+    const dispatch = useDispatch();
+    const loginUser = useSelector(state=>state.user)
 
-
-    const writeId = (e) => {
-        setMemberId(e.target.value)
+    async function loginLocal(){
+        console.log(1)
+        if(!memberId){return alert('아이디를 입력하세요');};
+        if(!password){return alert('비밀번호를 입력하세요');};
+        
+        try{
+            const result = await axios.post('/api/member/login', null, {params:{username: memberId, password: password}});
+            console.log(result.data.msg);
+            console.log(2)
+           
+            if(result.data.err === 'ERROR_LOGIN'){
+                alert('아이디와 비밀번호가 일치하지 않습니다.');
+                setMemberId('');
+                setPassword('');
+            }else{
+                alert('로그인이 되었습니다.')
+                cookies.set('user', JSON.stringify(result.data), {path:'/'});
+                dispatch( loginAction(result.data));
+                console.log(result.data);
+                navigate('/');
+            }
+        }catch(err){
+            console.log(err);
+        }
+       
     }
 
-    const writePassword = (e) => {
-        setPassword(e.target.value)
-    }
-
-
-    
+    function handleKakaoLogin() {
+        alert('카톡카톡');
+      }
 
     return (
         <div className={loginStyles.loginPage}>
@@ -25,13 +54,23 @@ const LoginPage =() => {
                 <form>
                     <div className={loginStyles.formGroup}>
                         <label htmlFor="memberId">ID</label>
-                        <input type="text" id="memberId" value={memberId} onChange={writeId} placeholder="아이디를 입력하세요" />
+                        <input type="text" id="memberId" value={memberId} onChange={(e)=>{
+                            setMemberId(e.currentTarget.value);
+                        }} placeholder="아이디를 입력하세요" />
                     </div>
                     <div className={loginStyles.formGroup}>
                         <label htmlFor="password">Password</label>
-                        <input type="password" id="password" value={password} onChange={writePassword} placeholder="비밓번호를 입력하세요" />
+                        <input type="password" id="password" value={password} onChange={(e)=>{
+                            setPassword(e.currentTarget.value);
+                        }} placeholder="비밀 번호를 입력하세요" />
                     </div>
-                    <button type="submit" className={loginStyles.button}>Login</button>
+                    <button type="button" className={loginStyles.button} onClick={()=>{loginLocal();}}>Login</button>
+                    <div className={loginStyles.kakaoLoginContainer}>
+                        <button type="button" className={loginStyles.kakaoButton} onClick={handleKakaoLogin}>
+                        <img src="/image/kakao_lion.png" alt="Kakao Logo"  className={loginStyles.kakaoLogo} />
+                        <span>카카오로 로그인하기</span>
+                        </button>
+                    </div>
                 </form>
                 <a href="#" className={loginStyles.forgotPassword}>비밀번호를 잊으셨나요?</a>
             </div>
