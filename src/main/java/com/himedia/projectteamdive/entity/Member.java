@@ -40,9 +40,11 @@ public class Member {
     private String addressExtra;
     private String image;
     @CreationTimestamp
-    @Column( columnDefinition="DATETIME default now()" )
+    @Column(columnDefinition="DATETIME default now()")
     private Timestamp indate;
     private String provider;
+    @Column(name = "member_key")
+    private String memberKey;
 
     @ElementCollection(fetch = FetchType.LAZY)
     @Builder.Default
