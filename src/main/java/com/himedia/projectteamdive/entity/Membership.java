@@ -20,6 +20,8 @@ public class Membership {
     private int membershipId;
     @Column(name = "membership_name")
     private String membershipName;
+    @Column(name = "membership_price")
     private int membershipPrice;
+    @Column(name = "download_count")
     private int downloadCount;
 }
