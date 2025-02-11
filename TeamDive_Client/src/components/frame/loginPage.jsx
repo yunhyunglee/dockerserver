@@ -3,7 +3,9 @@ import loginStyles from '../../css/login.module.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Cookies } from 'react-cookie';
-import { useDispatch } from 'react-redux';
+import { useSelector,useDispatch } from 'react-redux';
+import { loginAction } from '../../store/userSlice';
+
 
 const LoginPage =() => {
 
@@ -12,20 +14,23 @@ const LoginPage =() => {
     const navigate = useNavigate();
     const cookies = new Cookies();
     const dispatch = useDispatch();
+    const loginUser = useSelector(state=>state.user)
 
     async function loginLocal(){
         console.log(1)
         if(!memberId){return alert('아이디를 입력하세요');};
         if(!password){return alert('비밀번호를 입력하세요');};
         
-        const result = await axios.post('/api/member/loginLocal', null, {params:{memberId, password}})
         try{
+            const result = await axios.post('/api/member/loginLocal', null, {params:{memberId, password}});
+            console.log(result.data.msg);
             console.log(2)
-            console.log(result.data.msg)
+           
             if(result.data.msg === 'yes'){
                 alert('로그인이 되었습니다.')
-                cookies.set('user', JSON.stringify(result.data.loginuser), {path:'/'});
-                dispatch(loginAction(result.data.loginUser));
+                cookies.set('user', JSON.stringify(result.data.loginUser), {path:'/'});
+                console.log('cookies',cookies)
+                dispatch( loginAction(result.data.loginUser));
                 navigate('/');
             }else{
                 alert('아이디와 비밀번호가 일치하지 않습니다.');
@@ -57,7 +62,7 @@ const LoginPage =() => {
                             setPassword(e.currentTarget.value);
                         }} placeholder="비밀 번호를 입력하세요" />
                     </div>
-                    <button type="submit" className={loginStyles.button} onClick={()=>{loginLocal();}}>Login</button>
+                    <button type="button" className={loginStyles.button} onClick={()=>{loginLocal();}}>Login</button>
                 </form>
                 <a href="#" className={loginStyles.forgotPassword}>비밀번호를 잊으셨나요?</a>
             </div>
