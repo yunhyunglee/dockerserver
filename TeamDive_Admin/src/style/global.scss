@@ -1,0 +1,46 @@
+// src/styles/global.scss
+
+// 🎨 색상 변수 설정
+$light-blue: #64b5f6;   // 옅은 하늘색
+$medium-blue: #1976d2;  // 중간 블루
+$deep-blue: #0a192f;    // 깊은 바다색
+$neon-green: #64ffda;   // 네온 포인트 색상
+
+// 🌊 Dive 컨셉의 배경 스타일
+body {
+    background: linear-gradient(180deg, $light-blue, $medium-blue, $deep-blue);
+    color: white;
+    font-family: "Arial", sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+// ✨ 네온 효과를 위한 텍스트 스타일
+.neonText {
+    color: $neon-green;
+    text-shadow: 0 0 10px $neon-green, 0 0 20px $neon-green;
+}
+
+// 🌟 공통 버튼 스타일 (네온 효과 추가)
+.button {
+    background-color: $neon-green;
+    color: black;
+    padding: 12px 24px;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 0 10px $neon-green;
+    transition: all 0.3s ease-in-out;
+
+    &:hover {
+        background-color: lighten($neon-green, 10%);
+        box-shadow: 0 0 15px lighten($neon-green, 10%);
+    }
+}
