@@ -5,7 +5,7 @@
     justify-content: center;
     height: 300px;
     width: 500px;
-    background-color: #0a192f;
+    
     border-radius: 100px;
     color: white;
   
@@ -38,6 +38,11 @@
             background-color: #52e0c5;
             box-shadow: 0 0 15px #52e0c5;
         }
+    }
+    .errorMessage {
+        color: rgb(255, 8, 0);
+        font-size: 14px;
+        background-size:0ic;
     }
 }
   

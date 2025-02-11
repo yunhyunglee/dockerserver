@@ -1,0 +1,51 @@
+.sidebar {
+    width: 140px;
+    height: 1000px;
+    background: #0a192f;  
+    color: white;
+    padding: 20px;
+    position: fixed;
+    left: 0;
+    top: 0;
+
+    &.closed {
+        width: 60px; 
+    }
+
+    .logo {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+
+        li {
+            margin: 20px 0;
+
+            a {
+                color: white;
+                text-decoration: none;
+                font-size: 18px;
+
+                &:hover {
+                    color: #64ffda;
+                }
+            }
+        }
+    }
+    .toggleSidebarBtn {
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+        margin-right: 10px;
+
+        &:hover {
+            color: #64ffda;
+        }
+    }
+}

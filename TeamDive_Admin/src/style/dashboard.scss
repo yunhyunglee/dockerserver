@@ -1,22 +1,27 @@
 .dashBoard {
-    text-align: center;
-    padding: 20px;
-  
-    .dashBoardCards {
-        display: flex;
-        gap: 20px;
-        justify-content: center;
-        margin-top: 20px;
-    }
-  
-    .card {
-        background: rgba(255, 255, 255, 0.1);
+    min-width: 80vh;
+    
+    display: flex;
+    height: 800px;
+    margin-top: 100px;
+    margin-left: 150px;
+    
+
+    .chartContainer {
+        
+        margin-top: 40px;
+        color: #ffffff;
         padding: 20px;
         border-radius: 10px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-        backdrop-filter: blur(10px);
-        width: 200px;
-        text-align: center;
+        width: 100%; // ✅ 차트 너비를 90%로 확장
+        max-width: 800px; // ✅ 최대 너비 제한 (너무 커지지 않도록)
+        margin-left: auto;
+        margin-right: auto;
     }
+
+    h2 {
+        font-size: 20px;
+        margin-bottom: 10px;
+        }
+        
 }
-  
