@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import { LoginPage } from "./components/frame/LoginPage";
+import { LoginPage } from "./components/frame/loginPage";
 import { JoinForm } from "./components/frame/JoinForm";
 import { Membership } from "./components/membership/Membership";
 
