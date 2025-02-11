@@ -31,13 +31,13 @@ public class Member {
     private String email;
     private String gender;
     private Timestamp birth;
+    @Column(name ="zip_code" )
+    private Integer zipCode ;
     private String address;
     @Column(name ="address_detail" )
     private String addressDetail;
     @Column(name ="address_extra" )
     private String addressExtra;
-    @Column(name ="zip_code" )
-    private String zipCode;
     private String image;
     @CreationTimestamp
     @Column( columnDefinition="DATETIME default now()" )

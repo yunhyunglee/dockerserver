@@ -2,11 +2,16 @@ package com.himedia.projectteamdive.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.util.ArrayList;
+import java.util.List;
+
+@Builder
 @Entity
 @Data
 @AllArgsConstructor
@@ -22,6 +27,7 @@ public class Allpage {
     @Column(name = "entity_id")
     private int entityId;
 
-    @Enumerated(EnumType.STRING)
-    Pagetype pagetype;
+    @ElementCollection(fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<RoleName> pagetype = new ArrayList<RoleName>();
 }
