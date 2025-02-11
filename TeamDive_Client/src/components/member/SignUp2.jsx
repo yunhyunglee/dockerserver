@@ -11,7 +11,9 @@ const SignUpStep2 = ({ setStep }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // 여기에 제출 로직을 추가합니다.
+        // ==============1단계
+        axios.post('/api/member/join', )
+        
     };
 
   return (

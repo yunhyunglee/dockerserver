@@ -5,9 +5,40 @@ import { SignUpStep1 } from '../member/SignUp1';
 import { SignUpStep2 } from '../member/SignUp2';
 
 const JoinForm = () => {
-  
+
+    
     const [step, setStep] = useState(1);
     const navigate = useNavigate();
+
+    //=====1단계========================================
+    const [memberId, setMemberId] = useState('');
+    const [password, setPassword] = useState('');
+    const [passwordCheck, setPasswordCheck] = useState('');
+    //==============email===============================
+    const [Email, setEmail] = useState('');
+    const [emailId, setEmailId] = useState('');
+    const [emailDomain, setEmailDomain] = useState('');
+    //==============email===============================
+    
+    const [name, setName] = useState('');
+    const [nickName, setNickName] = useState('');
+    const [birth, setBirth] = useState('');
+    const [gender, setGender] = useState('');
+    //=====1단계========================================
+
+
+
+
+    //=====2단계========================================
+    const [image, setImage] = useState(); // 이미지 없는 사진 경로 넣어야함
+    const [zipCode, setZipCode] = useState('');
+    const [address, setAddress] = useState('');
+    const [addressDetail, setAddressDetail] = uesState('');
+    const [addressExtra, setAddressExtra] = useSate('');
+    //=====2단계========================================
+
+    
+
 
     return (
       <div className={joinStyles.joinPage}>
