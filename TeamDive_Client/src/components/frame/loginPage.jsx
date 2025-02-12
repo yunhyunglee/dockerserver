@@ -3,7 +3,7 @@ import loginStyles from '../../css/login.module.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Cookies } from 'react-cookie';
-import { useSelector,useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { loginAction } from '../../store/userSlice';
 
 
@@ -24,13 +24,20 @@ const LoginPage =() => {
         try{
             const result = await axios.post('/api/member/login', null, {params:{username: memberId, password: password}});
             console.log(result.data.msg);
-            console.log(2)
+            console.log(2);
            
             if(result.data.error === 'ERROR_LOGIN'){
                 alert('아이디와 비밀번호가 일치하지 않습니다.');
                 setMemberId('');
                 setPassword('');
-            }else{
+                navigate('/login');
+            }else if(result.data.msg === 'no'){
+                alert('아이디와 비밀번호가 일치하지 않습니다.');
+                setMemberId('');
+                setPassword('');
+                navigate('/login');
+            }
+            else{
                 alert('로그인이 되었습니다.')
                 cookies.set('user', JSON.stringify(result.data), {path:'/'});
                 dispatch( loginAction(result.data));

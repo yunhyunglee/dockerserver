@@ -33,8 +33,8 @@ const JoinForm = () => {
     const [image, setImage] = useState(); // 이미지 없는 사진 경로 넣어야함
     const [zipCode, setZipCode] = useState('');
     const [address, setAddress] = useState('');
-    const [addressDetail, setAddressDetail] = uesState('');
-    const [addressExtra, setAddressExtra] = useSate('');
+    const [addressDetail, setAddressDetail] = useState('');
+    const [addressExtra, setAddressExtra] = useState('');
     //=====2단계========================================
 
     

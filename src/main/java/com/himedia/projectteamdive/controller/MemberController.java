@@ -4,6 +4,7 @@ import com.himedia.projectteamdive.entity.Member;
 import com.himedia.projectteamdive.security.util.CustomJWTException;
 import com.himedia.projectteamdive.security.util.JWTUtil;
 import com.himedia.projectteamdive.service.MemberService;
+import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,8 @@ public class MemberController {
         return "<h1>Welcome to MusicStreaming World</h1>";
     }
 
-//    @PostMapping("/loginLocal")
+
+//    @PostMapping("/login")
 //    public HashMap<String, Object> loginLocal(
 //            @RequestParam("memberId") String memberId,
 //            @RequestParam("password") String password,
@@ -83,12 +85,12 @@ public class MemberController {
         return result;
     }
 
-    private boolean checkTime(Integer exp) {
-        java.util.Date expDate = new java.util.Date((long)exp*(1000));
-        long timeGap = expDate.getTime() - System.currentTimeMillis();
-        long remainTime = timeGap/(1000*60);
-        return remainTime < 60;
-    }
+        private boolean checkTime(Integer exp) {
+            java.util.Date expDate = new java.util.Date((long)exp*(1000));
+            long timeGap = expDate.getTime() - System.currentTimeMillis();
+            long remainTime = timeGap/(1000*60);
+            return remainTime < 60;
+        }
 
     private boolean checkExpiredToken(String accessToken) {
         try {
