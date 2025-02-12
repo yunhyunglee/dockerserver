@@ -3,7 +3,6 @@ package com.himedia.projectteamdive.service;
 import com.himedia.projectteamdive.entity.*;
 import com.himedia.projectteamdive.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +19,7 @@ public class MusicService {
     @Autowired
     ArtistRepository arr;
     @Autowired
-    PlayListRepository pr;
+    PlaylistRepository pr;
     @Autowired
     AllpageRepository allr;
 
