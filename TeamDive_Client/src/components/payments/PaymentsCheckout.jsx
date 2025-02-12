@@ -6,6 +6,7 @@ import jaxios from '../../util/JwtUtil';
 import paymentsStyle from '../../css/membership/payments.module.css';
 
 const clientKey = "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
+const customerKey = "6RR66cpTdKFLq-5AplwvV";
 
 const PaymentsCheckout = ({ membership, loginUser }) => {
     const navigate = useNavigate();
@@ -26,7 +27,7 @@ const PaymentsCheckout = ({ membership, loginUser }) => {
         }
     }, [membership, loginUser, navigate]);
 
-    
+
     /* 결제위젯 초기화 */
     useEffect(
         () => {
@@ -39,6 +40,7 @@ const PaymentsCheckout = ({ membership, loginUser }) => {
                 console.log('customerKey', customerKey);
                 // 비회원 결제
                 // const widgets = tossPayments.widgets({ customerKey: ANONYMOUS });
+
             setWidgets(widgets); // 결제위젯 객체 생성
         }
 
@@ -53,18 +55,22 @@ const PaymentsCheckout = ({ membership, loginUser }) => {
             await widgets.setAmount(amount); // 주문 금액 설정
 
             await Promise.all([
+                // ------  결제 UI 렌더링 ------
                 widgets.renderPaymentMethods({
                     selector: "#payment-method",
                     variantKey: "DEFAULT",
                 }), // 결제 UI 렌더링
 
+                // ------  이용약관 UI 렌더링 ------
                 widgets.renderAgreement({
                     selector: "#agreement",
                     variantKey: "AGREEMENT",
                 }), // 이용 약관 UI 렌더링
             ]);
+            
             setReady(true);
         }
+
         renderPaymentWidgets();
     }, [widgets]);
 
@@ -72,7 +78,7 @@ const PaymentsCheckout = ({ membership, loginUser }) => {
     const handlePaymentRequest = async () => {
         try {
             console.log('결제데이터전달', loginUser);
-            
+
             // 결제 정보를 백엔드에 저장
             const response = await jaxios.post("/api/payments/orderRequest", {
                 orderId: `${Date.now()}`, // 임의의 주문 ID

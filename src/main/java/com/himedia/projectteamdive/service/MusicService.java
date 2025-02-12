@@ -3,10 +3,14 @@ package com.himedia.projectteamdive.service;
 import com.himedia.projectteamdive.entity.*;
 import com.himedia.projectteamdive.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -22,6 +26,8 @@ public class MusicService {
     PlaylistRepository pr;
     @Autowired
     AllpageRepository allr;
+    @Autowired
+    PlaycountlistRepository pcr;
 
     public void insertMusic(Music music) {
         Music m=mr.save(music);
@@ -66,4 +72,47 @@ public class MusicService {
         }
         pr.save(playList);
     }
+
+    public void addPlayCount(HashMap<Integer,Integer> playCount) {
+        playCount.forEach((k,v)->{
+            Music music= mr.findByMusicId(k);
+            if(music!=null) {
+                music.setPlayCount(music.getPlayCount()+ v);
+                long currentTimeMillis = System.currentTimeMillis();
+                Timestamp indate = new Timestamp(currentTimeMillis);
+                Playcountlist playcountlist= pcr.findByMusic_MusicIdAndIndate(k,indate);
+                if(playcountlist==null){
+                    Playcountlist playcountlist2=new Playcountlist(music,indate,1);
+                    pcr.save(playcountlist2);
+                }else{
+                    playcountlist.setPlayCount(playcountlist.getPlayCount()+v);
+                }
+            }
+
+        });
+    }
+    // 자정에 playCountDay를 초기화
+    @Scheduled(cron = "0 0 0 * * *") // 매일 자정
+    public void resetPlayCountDay() {
+        mr.resetPlayCountDay();
+    }
+
+    public HashMap<String, Object> getMusicChart() {
+        HashMap<String, Object> chart=new HashMap<>();
+        long currentTimeMillis = System.currentTimeMillis();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(currentTimeMillis);
+        calendar.add(Calendar.DAY_OF_MONTH, -30);  // 30일 전으로 설정
+        Timestamp thirtyDaysAgo = new Timestamp(calendar.getTimeInMillis());
+        chart.put("Top100",pcr.findTop100ByMusicChart(thirtyDaysAgo));
+//        chart.put("Top100Day",pcr.find)
+
+        return chart;
+    }
+
+    public List<Album> getAlbumChart() {
+        return ar.findTop10ByMusicPlayCount();
+    }
+
+
 }
