@@ -19,11 +19,11 @@ import java.util.List;
 @NoArgsConstructor
 @DynamicInsert
 @DynamicUpdate
-public class PlayList {
+public class Playlist {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "playList_id")
-    private int playListId;
+    @Column(name = "playlist_id")
+    private int playlistId;
     private String title;
 
     @ManyToOne
@@ -31,8 +31,8 @@ public class PlayList {
     Member member;
 
     @ManyToMany
-    @JoinTable(name = "PlayList_music",
-            joinColumns = @JoinColumn(name = "playList_id"),
+    @JoinTable(name = "Playlist_music",
+            joinColumns = @JoinColumn(name = "playlist_id"),
             inverseJoinColumns = @JoinColumn(name = "music_id"))
     private List<Music> musicList = new ArrayList<>();
 
