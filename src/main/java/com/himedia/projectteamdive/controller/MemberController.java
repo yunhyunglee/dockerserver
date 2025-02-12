@@ -25,6 +25,7 @@ public class MemberController {
         return "<h1>Welcome to MusicStreaming World</h1>";
     }
 
+
 //    @PostMapping("/login")
 //    public HashMap<String, Object> loginLocal(
 //            @RequestParam("memberId") String memberId,
