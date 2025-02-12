@@ -65,8 +65,8 @@ public class MusicController {
     }
 
     //음악 재생수 증가메서드
-    @PostMapping("/playCount")
-    public HashMap<String, Object> playCount(@RequestParam("playCounts")HashMap<Integer,Integer> playCount) {
+    @PostMapping("/addplayCount")
+    public HashMap<String, Object> addplayCount(@RequestParam("playCounts")HashMap<Integer,Integer> playCount) {
         System.out.println(playCount);
         HashMap<String, Object> map = new HashMap<>();
         ms.addPlayCount(playCount);
@@ -76,9 +76,9 @@ public class MusicController {
 
     @GetMapping("/getMusicChart")
     public HashMap<String, Object> getMusicChart() {
-        HashMap<String, Object> map = new HashMap<>();
-        List<Music> musicList= ms.getMusicChart();
-        map.put("musicList",musicList);
+        HashMap<String, Object> map = ms.getMusicChart();
+
+
         return map;
     }
 

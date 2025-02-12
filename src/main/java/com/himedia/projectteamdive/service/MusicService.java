@@ -7,7 +7,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -24,6 +26,8 @@ public class MusicService {
     PlaylistRepository pr;
     @Autowired
     AllpageRepository allr;
+    @Autowired
+    PlaycountlistRepository pcr;
 
     public void insertMusic(Music music) {
         Music m=mr.save(music);
@@ -71,11 +75,20 @@ public class MusicService {
 
     public void addPlayCount(HashMap<Integer,Integer> playCount) {
         playCount.forEach((k,v)->{
-            Music music= mr.findByMusicId((Integer) k);
-            music.setPlayCount(music.getPlayCount()+ v);
-            music.setPlayCountDay(music.getPlayCountDay()+ v);
-            music.setPlayCountWeek(music.getPlayCountWeek()+ v);
-            music.setPlayCountMonth(music.getPlayCountMonth()+ v);
+            Music music= mr.findByMusicId(k);
+            if(music!=null) {
+                music.setPlayCount(music.getPlayCount()+ v);
+                long currentTimeMillis = System.currentTimeMillis();
+                Timestamp indate = new Timestamp(currentTimeMillis);
+                Playcountlist playcountlist= pcr.findByMusic_MusicIdAndIndate(k,indate);
+                if(playcountlist==null){
+                    Playcountlist playcountlist2=new Playcountlist(music,indate,1);
+                    pcr.save(playcountlist2);
+                }else{
+                    playcountlist.setPlayCount(playcountlist.getPlayCount()+v);
+                }
+            }
+
         });
     }
     // 자정에 playCountDay를 초기화
@@ -84,8 +97,17 @@ public class MusicService {
         mr.resetPlayCountDay();
     }
 
-    public List<Music> getMusicChart() {
-        return mr.findTop100ByOrderByPlayCountDesc();
+    public HashMap<String, Object> getMusicChart() {
+        HashMap<String, Object> chart=new HashMap<>();
+        long currentTimeMillis = System.currentTimeMillis();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(currentTimeMillis);
+        calendar.add(Calendar.DAY_OF_MONTH, -30);  // 30일 전으로 설정
+        Timestamp thirtyDaysAgo = new Timestamp(calendar.getTimeInMillis());
+        chart.put("Top100",pcr.findTop100ByMusicChart(thirtyDaysAgo));
+//        chart.put("Top100Day",pcr.find)
+
+        return chart;
     }
 
     public List<Album> getAlbumChart() {
@@ -93,15 +115,4 @@ public class MusicService {
     }
 
 
-//    // 매주 일요일 자정에 playCountWeek 초기화
-//    @Scheduled(cron = "0 0 0 * * SUN") // 매주 일요일 자정
-//    public void resetPlayCountWeek() {
-//        mr.resetPlayCountWeek();
-//    }
-//
-//    // 매월 1일 자정에 playCountMonth 초기화
-//    @Scheduled(cron = "0 0 0 1 * *") // 매월 1일 자정
-//    public void resetPlayCountMonth() {
-//        mr.resetPlayCountMonth();
-//    }
 }

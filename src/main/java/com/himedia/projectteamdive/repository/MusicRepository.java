@@ -23,5 +23,4 @@ public interface MusicRepository extends JpaRepository<Music, Integer> {
     @Query("update Music m set m.playCountMonth=0")
     void resetPlayCountMonth();
 
-    List<Music> findTop100ByOrderByPlayCountDesc();
 }
