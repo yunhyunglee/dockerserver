@@ -4,13 +4,17 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 
 import MembershipMenu from './MembershipMenu';
+import Modal from './Modal'; // 모달 컴포넌트 임포트
+import { PaymentsCheckout } from '../payments/PaymentsCheckout'; // 결제 컴포넌트 임포트
 
-import membershipStyle from '../../css/membership.module.css';
+import membershipStyle from '../../css/membership/membership.module.css';
 
 const Membership = () => {
     const loginUser = useSelector(state => state.user);
     const [membershipList, setMembershipList] = useState([]);
     const { category } = useParams(); // 표시할 membership 의 category
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedMembership, setSelectedMembership] = useState(null); // 선택된 멤버십 정보
     const navigate = useNavigate();
 
     /* 멤버십 정보 불러오기 */
@@ -19,10 +23,25 @@ const Membership = () => {
             axios.get('/api/membership/getMembership', {params: {category}})
             .then((result) => {
                 setMembershipList([...result.data.membershipList]);
-                console.log("멤버십 데이터:", result.data.membershipList);
             }).catch((err) => { console.error('멤버십 불러오기 실패', err); })
         }, [category]
     )
+
+    /* 모달 열기 */
+    const openModal = (membership) => {
+        if(!loginUser || loginUser.memberKey === ''){
+            alert('로그인이 필요한 서비스입니다');
+            navigate('/login');
+        }else {
+            setSelectedMembership(membership); // 클릭한 멤버십 정보를 설정
+            setIsModalOpen(true); // 모달 열기
+        }     
+    };
+
+    /* 모달 닫기 */
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
 
     return (
         <div className={membershipStyle.membershipPage}>
@@ -52,12 +71,7 @@ const Membership = () => {
                                                 (membership.category === 'gift') ? (
                                                     <button onClick={() => navigate('/gift')}>선물하기</button>
                                                 ) : (
-                                                    <button
-                                                        onClick={
-                                                            () => navigate('/payments', { state: { price: membership.price, customerKey: 12345 } })
-                                                        }>
-                                                        구독하기
-                                                    </button>
+                                                    <button onClick={() => openModal(membership)}>구독하기</button>
                                                 )
                                             }
                                         </div>
@@ -72,6 +86,14 @@ const Membership = () => {
                     )
                 }
             </div>
+
+            {/* 모달 */}
+            <Modal isOpen={isModalOpen} closeModal={closeModal}>
+                {selectedMembership && (
+                    <PaymentsCheckout membership={selectedMembership} loginUser={loginUser} />
+                )}
+            </Modal>
+        
         </div>
     )
 }

@@ -1,0 +1,28 @@
+.container {
+    width: 100%;
+    max-width: 540px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: white;
+}
+
+.method, .agreement {
+    margin-bottom: 20px;
+}
+
+.button {
+    width: 100%;
+    padding: 15px;
+    background-color: #0078e7;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.button:disabled {
+    background-color: #d3d3d3;
+    cursor: not-allowed;
+}
