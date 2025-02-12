@@ -64,9 +64,29 @@ public class MusicController {
         return map;
     }
 
+    //음악 재생수 증가메서드
     @PostMapping("/playCount")
-    public HashMap<String, Object> playCount(@RequestParam("playCount")HashMap playCount) {
+    public HashMap<String, Object> playCount(@RequestParam("playCounts")HashMap<Integer,Integer> playCount) {
+        System.out.println(playCount);
         HashMap<String, Object> map = new HashMap<>();
+        ms.addPlayCount(playCount);
+        map.put("msg","yes");
+        return map;
+    }
+
+    @GetMapping("/getMusicChart")
+    public HashMap<String, Object> getMusicChart() {
+        HashMap<String, Object> map = new HashMap<>();
+        List<Music> musicList= ms.getMusicChart();
+        map.put("musicList",musicList);
+        return map;
+    }
+
+    @GetMapping("/getAlbumChart")
+    public HashMap<String, Object> getAlbumChart() {
+        HashMap<String, Object> map = new HashMap<>();
+        List<Album>albumList= ms.getAlbumChart();
+        map.put("albumList",albumList);
         return map;
     }
 

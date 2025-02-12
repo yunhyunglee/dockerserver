@@ -3,10 +3,12 @@ package com.himedia.projectteamdive.service;
 import com.himedia.projectteamdive.entity.*;
 import com.himedia.projectteamdive.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -66,4 +68,40 @@ public class MusicService {
         }
         pr.save(playList);
     }
+
+    public void addPlayCount(HashMap<Integer,Integer> playCount) {
+        playCount.forEach((k,v)->{
+            Music music= mr.findByMusicId((Integer) k);
+            music.setPlayCount(music.getPlayCount()+ v);
+            music.setPlayCountDay(music.getPlayCountDay()+ v);
+            music.setPlayCountWeek(music.getPlayCountWeek()+ v);
+            music.setPlayCountMonth(music.getPlayCountMonth()+ v);
+        });
+    }
+    // 자정에 playCountDay를 초기화
+    @Scheduled(cron = "0 0 0 * * *") // 매일 자정
+    public void resetPlayCountDay() {
+        mr.resetPlayCountDay();
+    }
+
+    public List<Music> getMusicChart() {
+        return mr.findTop100ByOrderByPlayCountDesc();
+    }
+
+    public List<Album> getAlbumChart() {
+        return ar.findTop10ByMusicPlayCount();
+    }
+
+
+//    // 매주 일요일 자정에 playCountWeek 초기화
+//    @Scheduled(cron = "0 0 0 * * SUN") // 매주 일요일 자정
+//    public void resetPlayCountWeek() {
+//        mr.resetPlayCountWeek();
+//    }
+//
+//    // 매월 1일 자정에 playCountMonth 초기화
+//    @Scheduled(cron = "0 0 0 1 * *") // 매월 1일 자정
+//    public void resetPlayCountMonth() {
+//        mr.resetPlayCountMonth();
+//    }
 }
