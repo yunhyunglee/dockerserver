@@ -1,0 +1,128 @@
+@use "sass:color";
+
+// 색상 변수 설정
+$light-blue: #64b5f6;   // 옅은 하늘색
+$medium-blue: #1976d2;  // 중간 블루
+$deep-blue: #0a192f;    // 깊은 바다색
+$neon-green: #64ffda;   // 네온 포인트 색상
+
+
+.musicPage {
+ 
+    display: flex;
+    height: 800px;
+    margin-left: 120px;
+
+ 
+
+    .musicContent {
+       
+        flex-grow: 1;
+        padding-top: 0;
+        padding-left: 20px;
+        padding-right: 20px;
+        text-align: center;
+    }
+    
+
+    h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .top2{
+    display: flex;    
+
+    }
+
+    .addMusicButton {
+    margin-left: 420px;
+    background-color: $neon-green;
+    scale: 65%;
+    color: black;
+    padding: 12px 24px;
+    border: none;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 0 10px $neon-green;
+    transition: all 0.3s ease-in-out;
+
+    &:hover {
+        background-color: color.scale($neon-green, $lightness: 10%);
+        box-shadow: 0 0 15px color.scale($neon-green, $lightness: 10%);
+    }
+
+    }
+
+    .searchInput {
+        background-color: #eeeeeed2;;
+        margin-top: 30px;
+        width: 50%;
+        height: 80%;
+        padding: 8px;
+        border: 1px solid #68b4f1;
+        border-radius: 5px;
+        font-size: 16px;
+        outline: none;
+        transition: all 0.3s ease-in-out;
+    }
+
+
+    .searchInput:focus {
+        border-color: #007bff;
+        box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
+        background-color: color.scale(white, $lightness: 100%);
+    }
+
+
+    
+
+        
+
+
+    .loading {
+        font-size: 18px;
+        font-weight: bold;
+        color: #007bff;
+        margin-top: 20px;
+    }
+
+    table {
+        width: 100%;
+        max-width: 900px;
+        margin: auto;
+        border-collapse: collapse;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #007bff;
+            color: white;
+        }
+
+        td {
+            text-align: center;
+        }
+
+        img {
+            border-radius: 5px;
+        }
+
+        audio {
+            width: 120px;
+        }
+    }
+    .noData {
+        padding: 20px;
+        
+        font-size: 16px;
+        text-align: center;
+        font-weight: bold;
+    }
+}
