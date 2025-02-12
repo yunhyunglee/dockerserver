@@ -16,7 +16,7 @@ function Home({ menubar }) {
     useEffect(
         () => {
             console.log('loginUser', loginUser)
-            console.log(document.cookie);
+            //console.log(document.cookie);
 
         }
     )

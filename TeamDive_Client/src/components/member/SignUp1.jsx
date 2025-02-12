@@ -7,11 +7,11 @@ const SignUpStep1 = ({setStep}) => {
     const navigate = useNavigate();
     
     const [messageId, setMessageId] = useState('');
+    const [messageEmail, setMessageEmail] = useState('');
 
     // 필수 입력 상태들
     const [memberId, setMemberId] = useState('');
-    const [checkId, setCheckId] = useState('');
-
+  
     const [password, setPassword] = useState('');
     const [passwordCheck, setPasswordCheck] = useState('');
 
@@ -19,6 +19,8 @@ const SignUpStep1 = ({setStep}) => {
     const [emailId, setEmailId] = useState('');  
     const [emailDomain, setEmailDomain] = useState(''); 
     const [customDomain, setCustomDomain] = useState(''); 
+
+    const [emailCheckCode, setEmailCheckCode] = useState('');
 
     const [name, setName] = useState('');
     const [nickName, setNickName] = useState('');
@@ -75,6 +77,7 @@ const SignUpStep1 = ({setStep}) => {
             return alert('이메일 도메인을 직접 입력해주세요.');
         }
         const emailFull = getFullEmail();
+        
         const emailRegex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
 
         if (!emailRegex.test(emailFull)){
@@ -103,9 +106,14 @@ const SignUpStep1 = ({setStep}) => {
     };
 
     async function checkid(){
+        if(memberId === ""){
+          setMessageId("사용할 아이디를 입력해주세요");
+          return;
+        }
         try{
             const result = await axios.post('/api/member/checkId', null, {params:{memberId}})
             console.log(result);
+            
             if(result.data.msg === 'no'){
                 setMessageId('중복된 아이디입니다.');
                 setMemberId('')
@@ -116,11 +124,14 @@ const SignUpStep1 = ({setStep}) => {
             console.error(err);
         }    
     }
-
+    const emailFull =getFullEmail();
     function sendMail(){
-        if(!emailFull){
-            return alert('이메일을 입력하세요');
-        }
+        // console.log(emailId,"@",emailDomain);
+        // console.log(emailId,"@",customDomain);
+
+      
+        console.log(emailFull);
+
         axios.post('/api/member/sendMail', null, {params:{email:emailFull}})
         .then((result)=>{
             if(result.data.msg === 'yes'){
@@ -132,6 +143,22 @@ const SignUpStep1 = ({setStep}) => {
         })
     };
 
+    function emailCodeCheck(){
+        axios.post('/api/member/emailCheck', null, {params:{emailCheckCode}})
+        .then((result)=>{
+            if(result.data.msg === 'yes'){
+                setMessageEmail('인증 되었습니다.');
+            }else{
+                setMessageEmail('인증 실패하였습니다. 다시 시도해주세요.');
+            }
+        })
+        .catch((err)=>{
+            console.error(err);
+        })
+    }
+
+    // 달력 선택에서 오늘 이후의 미래는 선택이 안되게=====
+    const today = new Date();
 
     return (
         <div className={joinStyles.stepOne}>
@@ -145,12 +172,6 @@ const SignUpStep1 = ({setStep}) => {
               > 
                 (4~20자의 영문, 숫자)
               </span>
-              <span
-                className={joinStyles.inputCondition}
-                style={{ color: isMemberIdValid === null ? '#ccc' : isMemberIdValid ? 'green' : 'red' }}
-              > 
-                <>{messageId}</>
-              </span>
             </label>
             <input
               type="text"
@@ -162,9 +183,12 @@ const SignUpStep1 = ({setStep}) => {
               required
               style={{ borderColor: isMemberIdValid === null ? '#ccc' : isMemberIdValid ? 'green' : 'red' }}
             />
+            {/* =========================================================== */}
             <button type='button' onClick={()=>{
               checkid();
             }}>IDCHECK</button>
+             <>{messageId}</>
+            {/* =========================================================== */}
           </div>
           {/* 비밀번호 */}
           <div className={joinStyles.formGroup}>
@@ -253,12 +277,23 @@ const SignUpStep1 = ({setStep}) => {
               >
                 (영문, 숫자, . _ + - 가능)
               </span>
-              
+              {/* =========================================================== */}
               <div>
                 <button onClick={()=>{
                     sendMail();
                 }}>인증코드 발송</button>
+                <div>
+                  <>{messageEmail}</>{/*여기가 이메일 체크 메세지나오는곳 */}
+                  <input type='text' value={emailCheckCode} onChange={(e)=>{
+                    setEmailCheckCode(e.currentTarget.value)
+                  }}/>
+                  <button onClick={()=>{
+                    emailCodeCheck();
+                  }}></button>
+                </div>
               </div>
+              {/* =========================================================== */}
+              
               
           </div>
           {/* 이름 */}
@@ -308,8 +343,9 @@ const SignUpStep1 = ({setStep}) => {
               type="date"
               id="birth"
               value={birth}
-              onChange={(e) => setBirth(e.currentTarget.value)}
+              onChange={(e) => setBirth(e.target.value)}
               required
+              max={today.toISOString().split("T")[0]}
               style={{ borderColor: '#ccc' }}
             />
           </div>

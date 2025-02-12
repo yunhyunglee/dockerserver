@@ -82,6 +82,10 @@ public class JWTCheckFilter extends OncePerRequestFilter {
             return true;
         }
 
+        if(path.startsWith("/member/checkId")){
+            return true;
+        }
+
         return false;
     }
 
