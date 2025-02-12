@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import membershipStyle from '../../css/membership.module.css';
+
+import membershipStyle from '../../css/membership/membership.module.css';
 
 const MembershipMenu = () => {
     return (

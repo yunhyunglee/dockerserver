@@ -101,11 +101,6 @@
     width: 100%;
 }
 
-.price-box {
-    display: flex;
-    flex-direction: column;
-}
-
 .discount {
     font-size: 1.5rem;
     font-weight: 700;

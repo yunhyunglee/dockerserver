@@ -27,8 +27,8 @@ function AppRoutes() {
 
             {/* 토스 페이먼트 api */}
             <Route path="/payments" element={<PaymentsCheckout />} />
-            <Route path="/payments/success" element={<PaymentsSuccess />} />
-            <Route path="/payments/fail" element={<PaymentsFail />} />
+            <Route path="/success" element={<PaymentsSuccess />} />
+            <Route path="/fail" element={<PaymentsFail />} />
         </Routes>
     );
 }
