@@ -17,7 +17,7 @@ import "../style/login.scss";
             const userData = {
                 member_id: userid,
                 email: `${userid}@example.com`,
-                name: "관리자"
+                name: "1번 운영자"
             };
 
             dispatch(loginAction(userData));

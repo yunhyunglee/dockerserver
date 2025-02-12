@@ -40,8 +40,8 @@ const DashBoard = () => {
                         <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                             <defs>
                                 <linearGradient id="barGlow" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="100%" stopColor="#64ffda" stopOpacity={1} /> {/* 위쪽 밝음 */}
-                                    <stop offset="0%" stopColor="#64ffda" stopOpacity={0.8} /> {/* 아래쪽 진함 */}
+                                    <stop offset="100%" stopColor="#64ffda" stopOpacity={1} /> 
+                                    <stop offset="0%" stopColor="#64ffda" stopOpacity={0.8} /> 
                                 </linearGradient>
                             </defs>
                             <CartesianGrid strokeDasharray="3 3" stroke="#fff" />

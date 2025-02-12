@@ -8,9 +8,9 @@ const SideBar = () => {
 
     return (
         <div className={`sidebar ${SidebarOpen ? "open" : "closed"}`}>
-            <button className="toggleSidebarBtn" onClick={() => setSidebarOpen(!SidebarOpen)}>
+            {/* <button className="toggleSidebarBtn" onClick={() => setSidebarOpen(!SidebarOpen)}>
                 {SidebarOpen ? "◀" : "▶"} 
-            </button>
+            </button> */}
             <h2 className="logo">Dive Admin</h2>
             <ul>
                 <li><Link to="/dashBoard">대시보드</Link></li>
