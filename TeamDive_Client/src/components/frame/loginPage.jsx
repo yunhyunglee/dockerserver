@@ -26,7 +26,7 @@ const LoginPage =() => {
             console.log(result.data.msg);
             console.log(2)
            
-            if(result.data.err === 'ERROR_LOGIN'){
+            if(result.data.error === 'ERROR_LOGIN'){
                 alert('아이디와 비밀번호가 일치하지 않습니다.');
                 setMemberId('');
                 setPassword('');

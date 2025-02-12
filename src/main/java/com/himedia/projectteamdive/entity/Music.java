@@ -25,6 +25,12 @@ public class Music {
     private String image;
     @Column(name = "play_count")
     private int playCount;
+    @Column(name = "play_count_day")
+    private int playCountDay;
+    @Column(name = "play_count_week")
+    private int playCountWeek;
+    @Column(name = "play_count_month")
+    private int playCountMonth;
     private String genre;
     private String lyrics;
     @Column(name = "title_music")

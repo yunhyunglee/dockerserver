@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
 public class MusicController {
     @Autowired
     MusicService ms;
-
+//=============================================admin 옮길예정
     @PostMapping("/insertMusic")
     public HashMap<String, Object> insertMusic(@RequestBody Music music) {
         HashMap<String, Object> map = new HashMap<>();
@@ -23,6 +24,7 @@ public class MusicController {
         map.put("msg","yes");
         return map;
     }
+
 
     @PostMapping("/insertAlbum")
     public HashMap<String, Object> insertAlbum(@RequestBody Album album) {
@@ -39,6 +41,14 @@ public class MusicController {
         return map;
     }
 
+    @PostMapping("/musicUpload")
+    public HashMap<String, Object> musicUpload(@RequestParam("file") MultipartFile file) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("msg","yes");
+        return map;
+    }
+    //=====================================================
+
     @PostMapping("/insertPlayList")
     public HashMap<String, Object> insertPlayList(@AuthenticationPrincipal User user) {
         HashMap<String, Object> map = new HashMap<>();
@@ -53,5 +63,15 @@ public class MusicController {
         map.put("msg","yes");
         return map;
     }
+
+    @PostMapping("/playCount")
+    public HashMap<String, Object> playCount(@RequestParam("playCount")HashMap playCount) {
+        HashMap<String, Object> map = new HashMap<>();
+        return map;
+    }
+
+
+
+
 
 }

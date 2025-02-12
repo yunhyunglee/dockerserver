@@ -24,27 +24,27 @@ public class MemberController {
         return "<h1>Welcome to MusicStreaming World</h1>";
     }
 
-    @PostMapping("/loginLocal")
-    public HashMap<String, Object> loginLocal(
-            @RequestParam("memberId") String memberId,
-            @RequestParam("password") String password,
-            HttpSession session){
-        HashMap<String, Object> result = new HashMap<>();
-        Member member = ms.getMember(memberId);
-        System.out.println(1);
-        if(member == null){
-            result.put("msg", "no");
-        }else if(!member.getPassword().equals(password)){
-            result.put("msg", "no");
-        }else{
-            System.out.println(2);
-            result.put("msg", "yes");
-            session.setAttribute("loginUser", member.getMemberId());
-            result.put("loginUser", member);
-        }
-        System.out.println(result);
-        return result;
-    }
+//    @PostMapping("/loginLocal")
+//    public HashMap<String, Object> loginLocal(
+//            @RequestParam("memberId") String memberId,
+//            @RequestParam("password") String password,
+//            HttpSession session){
+//        HashMap<String, Object> result = new HashMap<>();
+//        Member member = ms.getMember(memberId);
+//        System.out.println(1);
+//        if(member == null){
+//            result.put("msg", "no");
+//        }else if(!member.getPassword().equals(password)){
+//            result.put("msg", "no");
+//        }else{
+//            System.out.println(2);
+//            result.put("msg", "yes");
+//            session.setAttribute("loginUser", member.getMemberId());
+//            result.put("loginUser", member);
+//        }
+//        System.out.println(result);
+//        return result;
+//    }
 
     @GetMapping("/refresh")
     public HashMap<String, Object> refresh(
