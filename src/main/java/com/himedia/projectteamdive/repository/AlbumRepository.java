@@ -10,4 +10,8 @@ public interface AlbumRepository extends JpaRepository<Album, Integer> {
 
     @Query("select a from Album a join a.musicList m group by a.albumId order by sum(m.playCount) desc ")
     List<Album> findTop10ByMusicPlayCount();
+
+    Album findByAlbumId(int albumId);
+
+    List<Album> findByTitleContainingIgnoreCase(String s);
 }

@@ -132,4 +132,64 @@ public class MusicService {
     }
 
 
+    public Artist getArtist(int artistId) {
+        return arr.findByArtistId(artistId);
+    }
+
+    public Album getAlbum(int albumId) {
+        return  ar.findByAlbumId(albumId);
+    }
+
+    public Music getMusic(int musicId) {
+        return  mr.findByMusicId(musicId);
+    }
+
+    public HashMap<String, Object> search(String key) {
+        HashMap<String, Object> result=new HashMap<>();
+        result.put("artist",arr.findByArtistNameContainingIgnoreCase("%"+key+"%"));
+        result.put("album",ar.findByTitleContainingIgnoreCase("%"+key+"%"));
+        result.put("music",mr.findByTitleContainingIgnoreCase("%"+key+"%"));
+        result.put("musiclyrics",mr.findByLyricsContainingIgnoreCase("%"+key+"%"));
+        result.put("playlist",pr.findByTitleContainingIgnoreCase("%"+key+"%"));
+        return result;
+    }
+
+    public void updateArtist(Artist artist) {
+        Artist a=arr.findByArtistId(artist.getArtistId());
+        a.setArtistName(artist.getArtistName());
+        a.setDebut(artist.getDebut());
+        a.setCountry(artist.getCountry());
+
+    }
+
+    public void updateAlbum(Album album) {
+        Album a=ar.findByAlbumId(album.getAlbumId());
+        a.setArtist(album.getArtist());
+        a.setImage(album.getImage());
+        a.setTitle(album.getTitle());
+        a.setIndate(album.getIndate());
+    }
+
+
+    public void updateMusic(Music music) {
+        Music m=mr.findByMusicId(music.getMusicId());
+        m.setAlbum(music.getAlbum());
+        m.setTitle(music.getTitle());
+        m.setImage( music.getImage());
+        m.setGenre(music.getGenre());
+        m.setLyrics(music.getLyrics());
+        m.setTitleMusic(music.isTitleMusic());
+    }
+
+    public void deleteArtist(Artist artist) {
+        arr.delete(artist);
+    }
+
+    public void deleteAlbum(Album album) {
+        ar.delete(album);
+    }
+
+    public void deleteMusic(Music music) {
+        mr.delete(music);
+    }
 }
