@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/music")
@@ -66,7 +67,7 @@ public class MusicController {
 
     //음악 재생수 증가메서드
     @PostMapping("/addplayCount")
-    public HashMap<String, Object> addplayCount(@RequestParam("playCounts")HashMap<Integer,Integer> playCount) {
+    public HashMap<String, Object> addplayCount(@RequestBody HashMap<Integer,Integer> playCount) {
         System.out.println(playCount);
         HashMap<String, Object> map = new HashMap<>();
         ms.addPlayCount(playCount);

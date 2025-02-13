@@ -3,11 +3,14 @@ package com.himedia.projectteamdive.service;
 import com.himedia.projectteamdive.entity.*;
 import com.himedia.projectteamdive.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -74,38 +77,52 @@ public class MusicService {
     }
 
     public void addPlayCount(HashMap<Integer,Integer> playCount) {
-        playCount.forEach((k,v)->{
-            Music music= mr.findByMusicId(k);
+        playCount.forEach((musicId,playcountToday)->{
+            Music music= mr.findByMusicId(musicId);
             if(music!=null) {
-                music.setPlayCount(music.getPlayCount()+ v);
+                music.setPlayCount(music.getPlayCount()+ playcountToday);
                 long currentTimeMillis = System.currentTimeMillis();
                 Timestamp indate = new Timestamp(currentTimeMillis);
-                Playcountlist playcountlist= pcr.findByMusic_MusicIdAndIndate(k,indate);
+
+                LocalDateTime midnightLocalDateTime = indate.toLocalDateTime().toLocalDate().atStartOfDay();
+                indate= Timestamp.valueOf(midnightLocalDateTime);
+
+                Playcountlist playcountlist= pcr.findByMusic_MusicIdAndIndate(musicId,indate);
                 if(playcountlist==null){
                     Playcountlist playcountlist2=new Playcountlist(music,indate,1);
                     pcr.save(playcountlist2);
                 }else{
-                    playcountlist.setPlayCount(playcountlist.getPlayCount()+v);
+                    playcountlist.setPlayCount(playcountlist.getPlayCount()+playcountToday);
                 }
             }
 
         });
     }
-    // 자정에 playCountDay를 초기화
-    @Scheduled(cron = "0 0 0 * * *") // 매일 자정
-    public void resetPlayCountDay() {
-        mr.resetPlayCountDay();
-    }
+//    // 자정에 playCountDay를 초기화
+//    @Scheduled(cron = "0 0 0 * * *") // 매일 자정
+//    public void resetPlayCountDay() {
+//        mr.resetPlayCountDay();
+//    }
 
     public HashMap<String, Object> getMusicChart() {
         HashMap<String, Object> chart=new HashMap<>();
-        long currentTimeMillis = System.currentTimeMillis();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(currentTimeMillis);
-        calendar.add(Calendar.DAY_OF_MONTH, -30);  // 30일 전으로 설정
-        Timestamp thirtyDaysAgo = new Timestamp(calendar.getTimeInMillis());
-        chart.put("Top100",pcr.findTop100ByMusicChart(thirtyDaysAgo));
-//        chart.put("Top100Day",pcr.find)
+        Pageable pageable = PageRequest.of(0, 100); // 100개 제한
+
+        Timestamp chartDays = new Timestamp(System.currentTimeMillis() - (30L * 24 * 60 * 60 * 1000)); // 30일 전
+        //월간차트
+        chart.put("Top100Month",pcr.findTop100ByMusicChart(chartDays, pageable));
+        //국내월간차트
+        chart.put("Top100MonthKor",pcr.findTop100ByMusicChartKor(chartDays, pageable));
+        //해외월간차트
+        chart.put("Top100MonthnoKor",pcr.findTop100ByMusicChartnoKor(chartDays, pageable));
+
+        chartDays = new Timestamp(System.currentTimeMillis() - (7L * 24 * 60 * 60 * 1000)); // 7일 전
+        //주간차트
+        chart.put("Top100Week",pcr.findTop100ByMusicWeekCart(chartDays, pageable));
+
+        chartDays = new Timestamp(System.currentTimeMillis() - (24L * 60 * 60 * 1000)); // 1일 전
+        //일간차트
+        chart.put("Top100toDay",pcr.findTop100ByMusicWeekCart(chartDays, pageable));
 
         return chart;
     }
