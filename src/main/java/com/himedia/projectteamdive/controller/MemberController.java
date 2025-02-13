@@ -97,15 +97,15 @@ public class MemberController {
     }
 
 
-//    @PostMapping("/join")
-//    public HashMap<String, Object> join(@RequestBody Member member){
-//        HashMap<String, Object> result = new HashMap<>();
-//        System.out.println(member);
-//        ms.insertMember(member);
-//        result.put("msg", "yes");
-//
-//        return result;
-//    }
+    @PostMapping("/join")
+    public HashMap<String, Object> join(@RequestBody Member member){
+        HashMap<String, Object> result = new HashMap<>();
+        System.out.println(member);
+        ms.insertMember(member);
+        result.put("msg", "yes");
+
+        return result;
+    }
 
 
 

@@ -23,7 +23,8 @@ function Home({ menubar }) {
 
     function onLogout(){
         cookies.remove('user');
-        dispatch( logoutAction() )
+        dispatch( logoutAction() );
+        alert('로그아웃 되었습니다.');
         navigate('/')
     }
 
@@ -37,6 +38,9 @@ function Home({ menubar }) {
                 <Link to='/playList' className={styles.link}>플레이리스트 모음</Link><br />
                 <Link to='/storage' className={styles.link}>보관함</Link><br />
                 <Link to='/membership/all' className={styles.link}>멤버십</Link><br />
+                
+                <Link to='/mypage' className={styles.link}>마에페이지</Link><br />
+
                 <Link to='/menu3' className={styles.link}>메뉴3</Link><br />
 
                 <div className={styles.sidebarEnd}>

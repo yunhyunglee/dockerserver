@@ -24,17 +24,17 @@ public class Music {
     private String title;
     private String image;
     @Column(name = "play_count")
-    private int playCount;
-    @Column(name = "play_count_day")
-    private int playCountDay;
-    @Column(name = "play_count_week")
-    private int playCountWeek;
-    @Column(name = "play_count_month")
-    private int playCountMonth;
+    private int playCount=0;
+//    @Column(name = "play_count_day")
+//    private int playCountDay=0;
+//    @Column(name = "play_count_week")
+//    private int playCountWeek=0;
+//    @Column(name = "play_count_month")
+//    private int playCountMonth=0;
     private String genre;
     private String lyrics;
     @Column(name = "title_music")
-    private boolean titleMusic;
+    private boolean titleMusic =false;
 
     @ManyToOne
     @JoinColumn(name = "album_id")
@@ -46,7 +46,13 @@ public class Music {
     @ManyToMany(mappedBy = "musicList")
     List<Playlist>playlists=new ArrayList<>();
 
-
+    @PrePersist
+    @PreUpdate
+    public void syncArtistWithAlbum() {
+        if (album != null) {
+            this.artist = album.getArtist();  // 앨범의 아티스트를 자동으로 설정
+        }
+    }
 
 
 
