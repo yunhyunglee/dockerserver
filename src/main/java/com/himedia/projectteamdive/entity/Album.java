@@ -28,8 +28,6 @@ public class Album {
     private int albumId;
     private String title;
     private String image;
-    @CreationTimestamp
-    @Column( columnDefinition="DATETIME default now()" )
     private Timestamp indate;
 
     @ManyToOne

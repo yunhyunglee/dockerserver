@@ -46,7 +46,13 @@ public class Music {
     @ManyToMany(mappedBy = "musicList")
     List<Playlist>playlists=new ArrayList<>();
 
-
+    @PrePersist
+    @PreUpdate
+    public void syncArtistWithAlbum() {
+        if (album != null) {
+            this.artist = album.getArtist();  // 앨범의 아티스트를 자동으로 설정
+        }
+    }
 
 
 

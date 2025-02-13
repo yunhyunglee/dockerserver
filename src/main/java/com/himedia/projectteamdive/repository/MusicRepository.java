@@ -11,6 +11,10 @@ public interface MusicRepository extends JpaRepository<Music, Integer> {
 
     Music findByMusicId(int musicId);
 
+    List<Music> findByTitleContainingIgnoreCase(String title);
+
+    Object findByLyricsContainingIgnoreCase(String lyrics);
+
 //    @Modifying
 //    @Query("update Music m set m.playCountDay=0")
 //    void resetPlayCountDay();
