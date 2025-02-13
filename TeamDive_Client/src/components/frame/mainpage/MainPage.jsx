@@ -8,6 +8,7 @@ import RecommendedPlaylists from './RecommendedPlaylists';
 import styles from '../../../css/mainPage/mainPage.module.css';
 import lion from '../../../../public/image/kakao_lion.png';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 const MainPage = () => {
   
@@ -16,6 +17,15 @@ const MainPage = () => {
     const [latestMusic, setLatestMusic] = useState([]);
     const [album, setAlbum] = useState([]);
     const [playList, setPlayList] = useState([]);
+
+    const loginUser = useSelector( state => state.user );
+
+    // if (!loginUser.memberId) {
+    // console.log('없음')
+    // } else {
+    //     console.log("있음")
+    // }
+
 
     // useEffect(()=>{
     //     axios.get(`api/notice/ `)
@@ -128,9 +138,12 @@ const MainPage = () => {
         ]);
     }, []);
 
+
+
     return (
+
         <div className={styles.mainPageContainer}>
-            <div className={styles.topSection}>
+            {/* <div className={styles.topSection}>
                 <section className={styles.noticeSection}>
                     <h2>공지사항</h2>
                     <NoticeBoard notice={notice} />
@@ -140,7 +153,7 @@ const MainPage = () => {
                     <h2>오늘 뭐듣지?</h2>
                     <TodayWhatToListen music={randomMusic} />
                 </section>
-            </div>
+            </div> */}
 
           
               <section className={styles.section}>
