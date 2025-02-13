@@ -8,35 +8,19 @@ const JoinForm = () => {
 
     
     const [step, setStep] = useState(1);
-    const navigate = useNavigate();
 
-    //=====1단계========================================
-    const [memberId, setMemberId] = useState('');
-    const [password, setPassword] = useState('');
-    const [passwordCheck, setPasswordCheck] = useState('');
-    //==============email===============================
-    const [Email, setEmail] = useState('');
-    const [emailId, setEmailId] = useState('');
-    const [emailDomain, setEmailDomain] = useState('');
-    //==============email===============================
-    
-    const [name, setName] = useState('');
-    const [nickName, setNickName] = useState('');
-    const [birth, setBirth] = useState('');
-    const [gender, setGender] = useState('');
-    //=====1단계========================================
-
-
-
-
-    //=====2단계========================================
-    const [image, setImage] = useState(); // 이미지 없는 사진 경로 넣어야함
-    const [zipCode, setZipCode] = useState('');
-    const [address, setAddress] = useState('');
-    const [addressDetail, setAddressDetail] = useState('');
-    const [addressExtra, setAddressExtra] = useState('');
-    //=====2단계========================================
-
+    const [step1Data, setStep1Data] = useState({
+      memberId: '',
+      password: '',
+      passwordCheck: '',
+      emailId: '',
+      emailDomain: '',
+      customDomain: '',
+      name: '',
+      nickName: '',
+      birth: '',
+      gender: '',
+    });
     
 
 
@@ -59,8 +43,19 @@ const JoinForm = () => {
             </div>
           </div>
           <form>         
-            {step === 1 && <SignUpStep1 setStep={setStep} />}
-            {step === 2 && <SignUpStep2 setStep={setStep} />}
+              <div style={{ display: step === 1 ? 'block' : 'none' }}>
+                  <SignUpStep1 
+                    setStep={setStep} 
+                    step1Data={step1Data} 
+                    setStep1Data={setStep1Data} 
+                  />
+                </div>
+                <div style={{ display: step === 2 ? 'block' : 'none' }}>
+                  <SignUpStep2 
+                    setStep={setStep} 
+                    step1Data={step1Data} // Step1 데이터 전달
+                  />
+              </div>
           </form>
         </div>
       </div>

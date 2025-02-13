@@ -2,6 +2,8 @@
 import { useEffect, useRef, useState } from 'react';
 import styles from '../../css/footer.module.css';
 import jaxios from '../../util/JWTUtil';
+import Player from '../Player';
+
 const playList=[];
 
 function Footer() {
@@ -36,9 +38,7 @@ function Footer() {
 
     return (
         <div className={styles.footer}>
-            <audio ref={audioRef} onPlay={()=>{musicPlay(1)}}  className={styles['audio-player']} controls>
-                <source src='public/audio/We Got This - Nathan Moore.mp3'/>
-            </audio>
+            <Player />
         </div>
     );
 }
