@@ -17,15 +17,13 @@ const LoginPage =() => {
     const loginUser = useSelector(state=>state.user)
 
     async function loginLocal(){
-        console.log(1)
+       
         if(!memberId){return alert('아이디를 입력하세요');};
         if(!password){return alert('비밀번호를 입력하세요');};
         
         try{
             const result = await axios.post('/api/member/login', null, {params:{username: memberId, password: password}});
-            console.log(result.data.msg);
-            console.log(2);
-           
+                   
             if(result.data.error === 'ERROR_LOGIN'){
                 alert('아이디와 비밀번호가 일치하지 않습니다.');
                 setMemberId('');
@@ -41,7 +39,7 @@ const LoginPage =() => {
                 alert('로그인이 되었습니다.')
                 cookies.set('user', JSON.stringify(result.data), {path:'/'});
                 dispatch( loginAction(result.data));
-                console.log(result.data);
+                //console.log(result.data);
                 navigate('/');
             }
         }catch(err){

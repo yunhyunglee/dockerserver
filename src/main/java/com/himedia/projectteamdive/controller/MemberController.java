@@ -26,28 +26,6 @@ public class MemberController {
     }
 
 
-//    @PostMapping("/login")
-//    public HashMap<String, Object> loginLocal(
-//            @RequestParam("memberId") String memberId,
-//            @RequestParam("password") String password,
-//            HttpSession session){
-//        HashMap<String, Object> result = new HashMap<>();
-//        Member member = ms.getMember(memberId);
-//        System.out.println(1);
-//        if(member == null){
-//            result.put("msg", "no");
-//        }else if(!member.getPassword().equals(password)){
-//            result.put("msg", "no");
-//        }else{
-//            System.out.println(2);
-//            result.put("msg", "yes");
-//            session.setAttribute("loginUser", member.getMemberId());
-//            result.put("loginUser", member);
-//        }
-//        System.out.println(result);
-//        return result;
-//    }
-
     @GetMapping("/refresh")
     public HashMap<String, Object> refresh(
             @RequestHeader("Authorization") String authHeader,
@@ -92,16 +70,44 @@ public class MemberController {
             return remainTime < 60;
         }
 
-    private boolean checkExpiredToken(String accessToken) {
-        try {
-            JWTUtil.validateToken(accessToken);
-        } catch (CustomJWTException e) {
-            if(e.getMessage().equals("Expired")){
-                return false;
+        private boolean checkExpiredToken(String accessToken) {
+            try {
+                JWTUtil.validateToken(accessToken);
+            } catch (CustomJWTException e) {
+                if(e.getMessage().equals("Expired")){
+                    return false;
+                }
             }
+            return true;
         }
-        return true;
+
+    @PostMapping("/checkId")
+    public HashMap<String, Object> checkId(@RequestParam("memberId")String memberId){
+        HashMap<String, Object> result = new HashMap<>();
+        Member member = ms.getMember(memberId);
+        if (member == null) {
+            result.put("msg", "yes");
+        }else{
+            result.put("msg", "no");
+        }
+        System.out.println(member);
+        System.out.println(result);
+
+        return result;
     }
+
+
+    @PostMapping("/join")
+    public HashMap<String, Object> join(@RequestBody Member member){
+        HashMap<String, Object> result = new HashMap<>();
+        System.out.println(member);
+        ms.insertMember(member);
+        result.put("msg", "yes");
+
+        return result;
+    }
+
+
 
 
 }
