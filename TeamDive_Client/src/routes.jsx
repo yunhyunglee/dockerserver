@@ -10,6 +10,8 @@ import { PaymentsCheckout } from "./components/payments/PaymentsCheckout";
 import { PaymentsSuccess } from "./components/payments/PaymentsSuccess";
 import { PaymentsFail } from "./components/payments/PaymentsFail";
 
+import Mypage from "./components/mypage/Mypage";
+
 function AppRoutes() {
     return (
         <Routes>
@@ -30,6 +32,11 @@ function AppRoutes() {
             <Route path="/payments" element={<PaymentsCheckout />} />
             <Route path="/success" element={<PaymentsSuccess />} />
             <Route path="/fail" element={<PaymentsFail />} />
+
+
+            {/* 마이페이지 */}
+            <Route path="/mypage" element={<Mypage />} />
+
         </Routes>
     );
 }
