@@ -21,7 +21,6 @@ public class MembershipController {
     @GetMapping("/getMembership")
     public HashMap<String, Object> getMembership(@RequestParam("category") String category) {
         HashMap<String, Object> result = new HashMap<>();
-        System.out.println("전달된 membership category : " + category);
         result.put("membershipList", mss.getMembership(category));
         return result;
     }
