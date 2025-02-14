@@ -21,11 +21,7 @@ public class Payment {
     private String orderName;
     @Column(nullable = false)
     private Integer amount;
-    @Column(nullable = false, name = "customer_email")
-    private String customerEmail;
-    @Column(nullable = false, name = "customer_name")
-    private String customerName;
-    private String paymentType; // 결제 수단
+
     @Column(columnDefinition="DATETIME default now()", name = "created_at")
     private Timestamp createdAt; // 생성 시간
     @PrePersist
@@ -34,6 +30,11 @@ public class Payment {
             this.createdAt = new Timestamp(System.currentTimeMillis()); // 현재 시간 설정
         }
     }
+
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    Member member;
+
     @Column(nullable = false, name = "is_paid")
     private boolean isPaid = false; // 결제 여부 확인 필드
     @Column(name = "payment_key")

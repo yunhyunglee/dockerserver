@@ -2,12 +2,14 @@ package com.himedia.projectteamdive.controller;
 
 import com.himedia.projectteamdive.entity.*;
 import com.himedia.projectteamdive.service.MusicService;
+import com.himedia.projectteamdive.service.S3Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,9 +17,10 @@ import java.util.Map;
 @RestController
 @RequestMapping("/music")
 public class MusicController {
+
     @Autowired
     MusicService ms;
-//=============================================admin 옮길예정
+//=============================================admin 사용기능
     @PostMapping("/insertMusic")
     public HashMap<String, Object> insertMusic(@RequestBody Music music) {
         HashMap<String, Object> map = new HashMap<>();
@@ -25,7 +28,6 @@ public class MusicController {
         map.put("msg","yes");
         return map;
     }
-
 
     @PostMapping("/insertAlbum")
     public HashMap<String, Object> insertAlbum(@RequestBody Album album) {
@@ -42,12 +44,7 @@ public class MusicController {
         return map;
     }
 
-    @PostMapping("/musicUpload")
-    public HashMap<String, Object> musicUpload(@RequestParam("file") MultipartFile file) {
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("msg","yes");
-        return map;
-    }
+
     @PostMapping("/updateArtist")
     public HashMap<String, Object> updateArtist(@RequestBody Artist artist) {
         HashMap<String, Object> map = new HashMap<>();
@@ -62,6 +59,14 @@ public class MusicController {
         map.put("msg","yes");
         return map;
     }
+    @PostMapping("/updateAlbumReorder")
+    public HashMap<String, Object> updateAlbumReorder(@RequestBody List<Integer> musicIds, @RequestParam("albumId")int albumId) {
+        HashMap<String, Object> map = new HashMap<>();
+        ms.updateAlbumReorder(musicIds,albumId);
+        map.put("msg","yes");
+        return map;
+    }
+
 
     @PostMapping("/updateMusic")
     public HashMap<String, Object> updateMusic(@RequestBody Music music) {
@@ -92,22 +97,78 @@ public class MusicController {
         map.put("msg","yes");
         return map;
     }
+
+    @PostMapping("/musicUpload")
+    public HashMap<String, Object> musicUpload(@RequestParam("file") MultipartFile file) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("msg","yes");
+        return map;
+    }
+    @Autowired
+    S3Service ss;
+    @PostMapping("/imageUpload")
+    public HashMap<String, Object> imageUpload(@RequestParam("image") MultipartFile file) {
+        HashMap<String, Object> map = new HashMap<>();
+        try {
+            String uploadFilePath=ss.saveFile(file);
+            map.put("image",uploadFilePath);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return map;
+    }
+
+
     //=====================================================
 
-    @PostMapping("/insertPlayList")
+    @PostMapping("/insertPlaylist")
     public HashMap<String, Object> insertPlayList(@AuthenticationPrincipal User user) {
         HashMap<String, Object> map = new HashMap<>();
         ms.insertPlayList(user.getUsername());
         map.put("msg","yes");
         return map;
     }
-    @PostMapping("/insertPlayListMusic")
-    public HashMap<String, Object> insertPlayListMusic(@RequestParam("musics") List<Music> musics,@RequestParam("playList")Playlist playList) {
+    //음악을 제외한 다른내용들 수정
+    @PostMapping("/updatePlaylist")
+    public HashMap<String, Object> updatePlayList(@RequestBody Playlist playlist) {
         HashMap<String, Object> map = new HashMap<>();
-        ms.insertPlayListMusic(musics,playList);
+        ms.updatePlaylist(playlist);
         map.put("msg","yes");
         return map;
     }
+
+    @PostMapping("/updatePlaylistAddMusic")
+    public HashMap<String, Object> updatePlaylistAddMusic(@RequestParam("playlistId")int playlistId, @RequestBody List<Integer> musicId) {
+        HashMap<String, Object> map = new HashMap<>();
+        ms.updatePlaylistAddMusic(playlistId,musicId);
+        map.put("msg","yes");
+        return map;
+    }
+
+    @PostMapping("/updatePlaylistReorder")
+    public HashMap<String,Object> updatePlaylistReorder(@RequestParam("playlistId")int playlistId, @RequestBody List<Integer> musicIds) {
+        HashMap<String, Object> map = new HashMap<>();
+        ms.updatePlaylistReorder(playlistId,musicIds);
+        map.put("msg","yes");
+        return map;
+    }
+
+    @PostMapping("/updatePlaylistDeleteMusic")
+    public HashMap<String,Object> updatePlaylistDeleteMusic(@RequestParam("playlistId")int playlistId, @RequestParam("musicId")int musicId) {
+        HashMap<String, Object> map = new HashMap<>();
+        ms.updatePlaylistDeleteMusic(playlistId,musicId);
+        map.put("msg","yes");
+        return map;
+    }
+
+    @DeleteMapping("deletePlaylist")
+    public HashMap<String, Object> deletePlaylist(@RequestParam("PlaylistId")int playlistId) {
+        HashMap<String, Object> map = new HashMap<>();
+        ms.deletePlaylist(playlistId);
+        map.put("msg","yes");
+        return map;
+    }
+
 
     //음악 재생수 증가메서드
     @PostMapping("/addplayCount")
@@ -122,8 +183,6 @@ public class MusicController {
     @GetMapping("/getMusicChart")
     public HashMap<String, Object> getMusicChart() {
         HashMap<String, Object> map = ms.getMusicChart();
-
-
         return map;
     }
 

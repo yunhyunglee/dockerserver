@@ -34,6 +34,7 @@ public class Playlist {
     @JoinTable(name = "Playlist_music",
             joinColumns = @JoinColumn(name = "playlist_id"),
             inverseJoinColumns = @JoinColumn(name = "music_id"))
+    @OrderColumn(name = "order_index")  // 추가: 순서 컬럼 지정
     private List<Music> musicList = new ArrayList<>();
 
     @ColumnDefault("false")
@@ -44,6 +45,13 @@ public class Playlist {
             this.musicList.add(music);
             music.getPlaylists().add(this);  // Music 엔티티에도 반대로 추가
         }
+    }
+    public void removeMusic(Music music) {
+        if (this.musicList.contains(music)) {
+            this.musicList.remove(music);
+            music.getPlaylists().remove(this);
+        }
+
     }
 
 }

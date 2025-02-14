@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -34,6 +35,9 @@ public class MusicService {
 
     public void insertMusic(Music music) {
         Music m=mr.save(music);
+        Album album= m.getAlbum();
+        album.addAlbum(music);
+
         Allpage allpage=new Allpage();
         allpage.setEntityId(m.getMusicId());
         allpage.setPagetype(Arrays.asList(Pagetype.MUSIC));
@@ -68,13 +72,7 @@ public class MusicService {
         allr.save(allpage);
     }
 
-    @Transactional
-    public void insertPlayListMusic(List<Music> musics, Playlist playList) {
-        for (Music music : musics) {
-            playList.addMusic(music);
-        }
-        pr.save(playList);
-    }
+
 
     public void addPlayCount(HashMap<Integer,Integer> playCount) {
         playCount.forEach((musicId,playcountToday)->{
@@ -191,5 +189,45 @@ public class MusicService {
 
     public void deleteMusic(Music music) {
         mr.delete(music);
+    }
+
+    public void deletePlaylist(int playlistId) {
+        Playlist playlist=pr.findByPlaylistId(playlistId);
+        pr.delete(playlist);
+    }
+
+    public void updatePlaylist(Playlist playlist) {
+        Playlist p=pr.findByPlaylistId(playlist.getPlaylistId());
+        p.setTitle(playlist.getTitle());
+        p.setShayringyn(playlist.isShayringyn());
+    }
+
+    @Transactional
+    public void updatePlaylistAddMusic(int playlistId, List<Integer> musics) {
+        Playlist playlist=pr.findByPlaylistId(playlistId);
+        for (int musicId : musics) {
+            Music music=mr.findByMusicId(musicId);
+            playlist.addMusic(music);
+        }
+
+    }
+
+    public void updatePlaylistDeleteMusic(int playlistId, int musicId) {
+        Playlist playlist=pr.findByPlaylistId(playlistId);
+        Music music=mr.findByMusicId(musicId);
+        playlist.removeMusic(music);
+    }
+
+    public void updateAlbumReorder(List<Integer> musicIds, int albumId) {
+        Album album=ar.findByAlbumId(albumId);
+        List<Music> updatedMusicList =musicIds.stream().map(musicid -> mr.findByMusicId(musicid)).collect(Collectors.toList());
+        album.setMusicList(updatedMusicList);
+        album.reorderMusicList();
+    }
+
+    public void updatePlaylistReorder(int playlistId, List<Integer> musicIds) {
+        Playlist playlist=pr.findByPlaylistId(playlistId);
+        List<Music> updatedMusicList = musicIds.stream().map(musicid -> mr.findByMusicId(musicid)).collect(Collectors.toList());
+        playlist.setMusicList(updatedMusicList);
     }
 }
