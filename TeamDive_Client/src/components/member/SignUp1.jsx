@@ -1,12 +1,16 @@
-import React from "react";
+import React, {useState} from "react";
 import joinStyles from '../../css/joinForm.module.css';
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const SignUpStep1 = ({ setStep, step1Data, setStep1Data }) => {
     const navigate = useNavigate();
+    const [messageId, setMessageId] = useState('');
+    const [messageEmail, setMessageEmail] = useState('');
+    const [emailCheckCode, setEmailCheckCode] = useState('');
 
     
-    const { memberId, password, passwordCheck, emailId, emailDomain, customDomain, name, nickName, birth, gender } = step1Data;
+    const { memberId, password, passwordCheck, emailId, emailDomain, customDomain, name, nickname, birth, gender, phone } = step1Data;
 
     // 정규식 정의
     const idRegex = /^[a-zA-Z0-9]{4,20}$/;
@@ -22,14 +26,16 @@ const SignUpStep1 = ({ setStep, step1Data, setStep1Data }) => {
     const isEmailIdValid = emailId ? emailIdRegex.test(emailId) : null;
     const isCustomDomainValid = emailDomain === '직접입력' && customDomain ? domainRegex.test(customDomain) : null;
     const isNameValid = name ? nameRegex.test(name) : null;
-    const isNickNameValid = nickName ? (nickName.length >= 2 && nickName.length <= 10) : null;
+    const isNickNameValid = nickname ? (nickname.length >= 2 && nickname.length <= 10) : null;
 
+    
     const getFullEmail = () => {
         if (emailDomain === '직접입력') {
             return `${emailId}@${customDomain}`;
         }
         return `${emailId}@${emailDomain}`;
     };
+    const emailFull = getFullEmail();
 
     const nextStep = (e) => {
         e.preventDefault();
@@ -70,15 +76,75 @@ const SignUpStep1 = ({ setStep, step1Data, setStep1Data }) => {
         if (!nameRegex.test(name)){
             return alert('이름은 최소 2자 이상의 한글 또는 영문이어야 합니다.');
         }
-        if (!nickName) return alert('닉네임을 설정해주세요');
-        if (nickName.length < 2 || nickName.length > 10)
+        if (!nickname) return alert('닉네임을 설정해주세요');
+        if (nickname.length < 2 || nickname.length > 10)
             return alert('닉네임은 2자 이상 10자 이하로 입력해주세요.');
         if (!birth) return alert('생년월일을 선택해주세요');
         if (!gender) return alert('성별을 선택해주세요');
         // 모든 조건 만족 시 부모의 setStep를 통해 다음 단계로 전환
         setStep(2);
-        
     };
+
+    async function checkid(){
+      if(memberId === ""){
+        setMessageId("사용할 아이디를 입력해주세요");
+        return;
+      }
+      try{
+          const result = await axios.post('/api/member/checkId', null, {params:{memberId}})
+          console.log(result);
+          
+          if(result.data.msg === 'no'){
+              setMessageId('중복된 아이디입니다.');
+              setStep1Data(prevState => ({ ...prevState, memberId: '' }));
+          }else{
+              setMessageId('회원가입이 가능한 아이디입니다.');
+          }
+      }catch(err){
+          console.error(err);
+      }    
+  }
+  
+
+
+  function sendMail(){
+      // console.log(emailId,"@",emailDomain);
+      // console.log(emailId,"@",customDomain);
+
+      console.log("Generated Email:", emailFull);
+
+      axios.post('/api/member/sendMail', null, {params:{email:emailFull}})
+      .then((result)=>{
+          if(result.data.msg === 'yes'){
+              alert('인증코드가 발송되었습니다. 이메일을 확인하세요');
+          }
+      })
+      .catch((err)=>{
+          console.error(err);
+      })
+  };
+
+  function emailCodeCheck() {
+    if (!emailCheckCode) {
+        setMessageEmail("인증 코드를 입력해주세요.");
+        return;
+    }
+
+    axios.post('/api/member/emailCheck', null, { params: { emailCheckCode } })
+    .then((result) => {
+        if (result.data.msg === 'yes') {
+            setMessageEmail('인증 되었습니다.');
+        } else {
+            setMessageEmail('인증 실패하였습니다. 다시 시도해주세요.');
+        }
+    })
+    .catch((err) => {
+        console.error(err);
+    });
+}
+
+
+    const today = new Date();
 
     return (
         <div className={joinStyles.stepOne}>
@@ -205,9 +271,12 @@ const SignUpStep1 = ({ setStep, step1Data, setStep1Data }) => {
                   <input type='text' value={emailCheckCode} onChange={(e)=>{
                     setEmailCheckCode(e.currentTarget.value)
                   }}/>
-                  <button onClick={()=>{
-                    emailCodeCheck();
-                  }}>인증확인</button>
+                  <button 
+                    onClick={emailCodeCheck} 
+                    disabled={!emailCheckCode}
+                  >
+                    인증확인
+                  </button>
                 </div>
               </div>
               {/* =========================================================== */}
@@ -234,6 +303,19 @@ const SignUpStep1 = ({ setStep, step1Data, setStep1Data }) => {
                 style={{ borderColor: isNameValid === null ? '#ccc' : isNameValid ? 'green' : 'red' }}
             />
           </div>
+          {/* 전화번호 */}
+          <div className={joinStyles.formGroup}>
+              <label htmlFor="phone">
+                  전화번호
+              </label>
+              <input
+                  type="text"
+                  id="phone"
+                  value={phone}
+                  onChange={(e) => setStep1Data({ ...step1Data, phone: e.target.value })}
+                  required
+              />
+          </div>
           {/* 닉네임 */}
           <div className={joinStyles.formGroup}>
               <label htmlFor="nickName">
@@ -248,10 +330,11 @@ const SignUpStep1 = ({ setStep, step1Data, setStep1Data }) => {
             <input
                 type="text"
                 id="nickName"
-                value={nickName}
-                onChange={(e) => setStep1Data({ ...step1Data, nickName: e.target.value })}
+                value={nickname}
+                onChange={(e) => setStep1Data({ ...step1Data, nickname: e.target.value })}
                 required
                 style={{ borderColor: isNickNameValid === null ? '#ccc' : isNickNameValid ? 'green' : 'red' }}
+                
             />
           </div>
           {/* 생년월일 */}
@@ -260,6 +343,7 @@ const SignUpStep1 = ({ setStep, step1Data, setStep1Data }) => {
             <input
               type="date"
               id="birth"
+              name="birth"
               value={birth}
               onChange={(e) => setStep1Data({ ...step1Data, birth: e.target.value })}
               required
