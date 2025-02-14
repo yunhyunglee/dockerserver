@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public class MemberDto extends User {
     public MemberDto(String username, String password,
                      String name, String nickname, String phone,
-                     String email, String gender, Timestamp birth,
+                     String email, String gender, String birth,
                      Integer zipCode, String address, String addressDetail, String addressExtra,
                      String image, String provider, String memberKey, List<String>memberRoleList) {
         super(username, password, memberRoleList.stream().map(str->new SimpleGrantedAuthority("ROLE_"+str)).collect(Collectors.toList()));
@@ -42,7 +42,7 @@ public class MemberDto extends User {
     private String phone;
     private String email;
     private String gender;
-    private Timestamp birth;
+    private String birth;
     private Integer zipCode;
     private String address;
     private String addressDetail;
