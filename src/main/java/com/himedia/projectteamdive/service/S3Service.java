@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
 
 @Service
 public class S3Service {
@@ -40,16 +41,20 @@ public class S3Service {
                 .build();
     }
 
-    public String saveFile(MultipartFile multipartFile) throws IOException {
+    public String saveFile(MultipartFile multipartFile,String s) throws IOException {
         String originalFilename = multipartFile.getOriginalFilename();
+        String filePath= s+"/"+ UUID.randomUUID()+ originalFilename;
 
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(multipartFile.getSize());
         metadata.setContentType(multipartFile.getContentType());
 
-        s3Client.putObject(bucket, originalFilename, multipartFile.getInputStream(), metadata);
+        s3Client.putObject(bucket, filePath, multipartFile.getInputStream(), metadata);
         // 업로드된 파일의 경로와 이름 리턴
-        return s3Client.getUrl(bucket, originalFilename).toString();
+        return "https://d9k8tjx0yo0q5.cloudfront.net/"+filePath;
+    }
+    public void deleteFile(String filePath) {
+        s3Client.deleteObject(bucket, filePath);
     }
 }
 

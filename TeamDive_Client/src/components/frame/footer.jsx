@@ -25,7 +25,7 @@ function Footer() {
         const interval = setInterval(() => {
             // alert('인터벌 작동중')
             if (Object.keys(playCounts).length > 0) {
-                jaxios.post("/api/music/playCount",null,{ playCounts }) // 서버에 전송
+                jaxios.post("/api/music/addplayCount",null,{ playCounts }) // 서버에 전송
                     .then(() => setPlayCounts({})) // 성공하면 초기화
                     .catch(err => console.error("Error sending play counts:", err));
             }
