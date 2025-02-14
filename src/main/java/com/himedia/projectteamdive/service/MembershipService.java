@@ -13,14 +13,14 @@ import java.util.List;
 public class MembershipService {
 
     @Autowired
-    MembershipRepository mmr;
+    MembershipRepository msr;
 
     /* 카테고리에 해당하는 멤버십 정보 가져오기 */
     public List<Membership> getMembership(String category) {
         if(category.equals("all"))
-            return mmr.findByCategoryNot("gift");
+            return msr.findByCategoryNot("gift");
         else
-            return mmr.findByCategory(category);
+            return msr.findByCategory(category);
     }
 
 }
