@@ -16,10 +16,10 @@ const PaymentsSuccess = () => {
     useEffect(() => {
         const confirmPayment = async () => {
             try {
-                const response = await jaxios.post("/api/payments/paymentSuccess", null, {
+                const response = await jaxios.post('/api/payments/paymentSuccess', null, {
                     params: { paymentKey, orderId, amount },
                 });
-                console.log("결제 승인 성공:", response.data);
+                console.log("결제 승인 성공", response.data);
                 setIsConfirmed(true);
 
                 // 1초마다 카운트다운 감소
@@ -41,7 +41,7 @@ const PaymentsSuccess = () => {
     }, [navigate, paymentKey, orderId, amount]);
 
     return (
-        <div className={paymentsStyle.successContainer}>
+        <div className={paymentsStyle.paymentContainer}>
             {isConfirmed ? (
                 <div>
                     <img
@@ -51,10 +51,8 @@ const PaymentsSuccess = () => {
                     />
                     <h2 className={paymentsStyle.title}>결제를 완료했어요</h2>
                     <div className={paymentsStyle.section}>
-                        <span className={paymentsStyle.label}>결제 금액&nbsp;</span>
-                        <span id="amount" className={paymentsStyle.amount}>
-                            {amount}
-                        </span>
+                        <span className={paymentsStyle.label}>주문번호&nbsp;{paymentKey}</span>
+                        <span className={paymentsStyle.label}>결제 금액&nbsp;{amount}</span>
                     </div>
                     <p className={paymentsStyle.redirectMessage}>{countdown}초 뒤에 홈으로  이동합니다...</p>
                 </div>
