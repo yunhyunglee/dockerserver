@@ -4,11 +4,16 @@ import com.himedia.projectteamdive.entity.Member;
 import com.himedia.projectteamdive.security.util.CustomJWTException;
 import com.himedia.projectteamdive.security.util.JWTUtil;
 import com.himedia.projectteamdive.service.MemberService;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -96,16 +101,53 @@ public class MemberController {
         return result;
     }
 
+    @Autowired
+    ServletContext context;
 
-//    @PostMapping("/join")
-//    public HashMap<String, Object> join(@RequestBody Member member){
-//        HashMap<String, Object> result = new HashMap<>();
-//        System.out.println(member);
-//        ms.insertMember(member);
-//        result.put("msg", "yes");
-//
-//        return result;
-//    }
+    @PostMapping("/fileUp")
+    public HashMap<String, Object> fileUp(@RequestParam("image")MultipartFile file){
+        HashMap<String, Object> result = new HashMap<>();
+
+        String uploadDir = System.getProperty("user.dir") + "/src/main/resources/static/profileImage/";
+        System.out.println(uploadDir);
+        File directory = new File(uploadDir);
+        if(!directory.exists()) {
+            boolean createDir = directory.mkdir();
+            if (createDir) {
+                System.out.println("폴더 경로 생성 성공");
+            } else {
+                System.out.println("폴더 경로 생성 실패");
+            }
+        }else{
+            System.out.println("폴더 경로가 이미 존재");
+        }
+
+        String path = context.getRealPath("/profileImages");
+        Calendar today = Calendar.getInstance();
+        long dt = today.getTimeInMillis();
+        String filename = file.getOriginalFilename();
+        String f1 = filename.substring(0, filename.indexOf("."));
+        String f2 = filename.substring( filename.lastIndexOf(".") );
+        String uploadPath = path + "/" + f1 + dt + f2;
+        try {
+            file.transferTo(new File(uploadPath));
+            result.put("image", filename );
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return result;
+    }
+
+
+    @PostMapping("/join")
+    public HashMap<String, Object> join(@RequestBody Member member){
+        HashMap<String, Object> result = new HashMap<>();
+        System.out.println(member);
+        ms.insertMember(member);
+        result.put("msg", "yes");
+
+        return result;
+    }
 
 
 

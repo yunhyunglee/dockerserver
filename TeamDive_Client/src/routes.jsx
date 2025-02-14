@@ -4,16 +4,19 @@ import { JoinForm } from "./components/frame/JoinForm";
 import { Membership } from "./components/membership/Membership";
 import MainPage from "./components/frame/mainpage/MainPage";
 import MusicDetail from "./components/music/MusicDetail";
+import PopularChart from "./components/PopularChart";
 
 import { PaymentsCheckout } from "./components/payments/PaymentsCheckout";
 import { PaymentsSuccess } from "./components/payments/PaymentsSuccess";
 import { PaymentsFail } from "./components/payments/PaymentsFail";
 
+//import Mypage from "./components/mypage/Mypage";
+
 function AppRoutes() {
     return (
         <Routes>
             <Route path="/" element={<MainPage />} />
-            <Route path="/today" element={<h4>오늘의 인기차트 페이지임</h4>} />
+            <Route path="/today" element={<PopularChart />} />
             <Route path="/playList" element={<h4>플리페이지임</h4>} />
             <Route path="/membership/:category" element={<Membership/>} />
             <Route path="/menu2" element={<h4>메뉴2 페이지임</h4>} />
@@ -29,6 +32,11 @@ function AppRoutes() {
             <Route path="/payments" element={<PaymentsCheckout />} />
             <Route path="/success" element={<PaymentsSuccess />} />
             <Route path="/fail" element={<PaymentsFail />} />
+
+
+            {/* 마이페이지 */}
+            {/* <Route path="/mypage" element={<Mypage />} /> */}
+
         </Routes>
     );
 }
