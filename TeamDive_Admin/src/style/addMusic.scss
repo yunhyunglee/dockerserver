@@ -1,0 +1,149 @@
+@use "sass:color";
+
+$light-blue: #64b5f6;   
+$medium-blue: #1976d2;  
+$deep-blue: #0a192f;    
+$neon-green: #64ffda;   
+$button-back: #eeebeb;  
+$font-color: #4e5968;
+
+
+
+
+.addMusicPage {
+    width: 750px;
+    height: 90vh;
+    border: 1px solid red;
+    color: black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+
+    .contentContainer {
+        width: 750px;
+        border: 1px solid red;
+        display: flex;
+        flex-direction: row;
+        gap: 40px;
+        width: 80%;
+        max-width: 1200px;
+    }
+
+    .imageUploadContainer {
+        width: 180px;
+        height: 180px;
+        border: 1px solid red;
+        position: relative;
+        cursor: pointer;
+
+        .albumCover {
+            width: 180px;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
+            transition: opacity 0.3s;
+
+            &:hover {
+                opacity: 0.7;
+            }
+        }
+
+        .uploadText {
+            color: white;
+            text-align: center;
+            width: 80%;
+            height: 80%;
+            border: 1px solid red;
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
+            font-size: 14px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 5px;
+            border-radius: 5px;
+        }
+    }
+
+    .musicInfo {
+        border: 1px solid red;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        h1 {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .editableField {
+            border: 1px solid red;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+         
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+
+            &:hover {
+                background: #222;
+            }
+
+            label {
+                border: 1px solid red;
+                width: 100px;
+                font-size: 14px;
+                font-weight: bold;
+                color: #bbb;
+            }
+
+            span, input {
+                flex: 1;
+                font-size: 16px;
+                color: #fff;
+                background: none;
+                // border: none;
+                border: 1px solid red;
+                outline: none;
+                padding: 5px;
+            }
+
+            input {
+                border-bottom: 1px solid #fff;
+            }
+        }
+
+        .buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+
+            .btn {
+                background: #e50914;
+                color: #fff;
+                padding: 10px 20px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background 0.3s;
+
+                &:hover {
+                    background: #b20710;
+                }
+
+                &.cancel {
+                    background: #333;
+
+                    &:hover {
+                        background: #444;
+                    }
+                }
+            }
+        }
+    }
+}

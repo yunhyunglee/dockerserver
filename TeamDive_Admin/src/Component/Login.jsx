@@ -16,7 +16,6 @@ import "../style/login.scss";
         if (userid === "1234" && password === "1234") {
             const userData = {
                 member_id: userid,
-                email: `${userid}@example.com`,
                 name: "1번 운영자"
             };
 
@@ -29,6 +28,7 @@ import "../style/login.scss";
     };
 
     return (
+        <div className="loginBack">
         <motion.div className="loginContainer" initial={{ opacity: 0, y: -200 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }}>
             <h2>Admin Login</h2>
             <input type="text" placeholder="아이디 입력" value={userid} onChange={(e) => {
@@ -38,6 +38,7 @@ import "../style/login.scss";
                 {error && <p className="errorMessage">{error}</p>}
             <motion.button onClick={onLogin} >로그인</motion.button>
         </motion.div>
+        </div>
     );
 }
 

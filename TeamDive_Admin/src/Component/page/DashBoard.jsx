@@ -40,16 +40,16 @@ const DashBoard = () => {
                         <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                             <defs>
                                 <linearGradient id="barGlow" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="100%" stopColor="#64ffda" stopOpacity={1} /> 
-                                    <stop offset="0%" stopColor="#64ffda" stopOpacity={0.8} /> 
+                                    <stop offset="100%" stopColor="#1976d2" stopOpacity={1} /> 
+                                    <stop offset="0%" stopColor="#1976d2" stopOpacity={0.8} /> 
                                 </linearGradient>
                             </defs>
-                            <CartesianGrid strokeDasharray="3 3" stroke="#fff" />
-                            <XAxis dataKey="name" tick={{fill: "#ffffff" }} stroke="#ffffff"  /> 
-                            <YAxis tick={{ fill: "#ffffff", fontSize: 16 }} stroke="#ffffff" domain={[0, 15000]} /> 
+                            <CartesianGrid strokeDasharray="3 3" stroke="#0a192f" />
+                            <XAxis dataKey="name" tick={{fill: "#0a192f", fontSize: 16 }} stroke="#0a192f"  /> 
+                            <YAxis tick={{ fill: "#0a192f", fontSize: 16 }} stroke="#0a192f" domain={[0, 15000]} /> 
                             {/* <Tooltip /> */}
-                            <Bar dataKey="value" fill="url(#barGlow)" barSize={50} style={{ filter: "drop-shadow(0px 0px 15px #64ffda)" }} > 
-                            <LabelList dataKey="value" position="top" fill="#fff" fontSize={14} fontWeight="bold" />
+                            <Bar dataKey="value" fill="url(#barGlow)" barSize={50} style={{ filter: "drop-shadow(0px 0px 5px #1976d2)" }} > 
+                            <LabelList dataKey="value" position="top" fill="#0a192f" fontSize={20} fontWeight="bold" />
                             </Bar>
                         </BarChart>
                     </ResponsiveContainer>
