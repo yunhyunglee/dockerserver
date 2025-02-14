@@ -81,12 +81,10 @@ const PaymentsCheckout = ({ membership, loginUser }) => {
 
             // 결제 정보를 백엔드에 저장
             const response = await jaxios.post("/api/payments/orderRequest", {
-                orderId: `${membership.id}-${Date.now()}`,
+                orderId: `${membership.membershipId}-${Date.now()}`,
                 amount: amount.value,
                 orderName: membership.name,
-                customerEmail: loginUser.email,
-                customerName: loginUser.name,
-            });
+            }, {params: {memberId: loginUser.memberId}});
 
             if (response.status === 200) {
                 const { orderId } = response.data; // 백엔드에서 반환된 orderId
