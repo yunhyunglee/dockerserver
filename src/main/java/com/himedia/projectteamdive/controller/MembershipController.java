@@ -1,5 +1,6 @@
 package com.himedia.projectteamdive.controller;
 
+import com.himedia.projectteamdive.entity.Membership_user;
 import com.himedia.projectteamdive.service.MembershipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,5 +26,20 @@ public class MembershipController {
         return result;
     }
 
+    /* 활성화된 멤버십이 있는지 확인 */
+    @GetMapping("/checkActiveMembership")
+    public HashMap<String, Object> checkActiveMembership(
+            @RequestParam("memberId") String memberId,
+            @RequestParam("category") String membershipCategory) {
+        HashMap<String, Object> result = new HashMap<>();
+        Membership_user activeMembership = mss.checkActiveMembership(memberId, membershipCategory);
+        if(activeMembership != null) {
+            result.put("message", "yes");
+            result.put("activeMembership", activeMembership);
+        }else{
+            result.put("message", "no");
+        }
+        return result;
+    }
 
 }

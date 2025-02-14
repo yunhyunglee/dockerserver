@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
+import jaxios from '../../util/JwtUtil';
 
 import MembershipMenu from './MembershipMenu';
 import Modal from './Modal'; // 모달 컴포넌트 임포트
@@ -27,15 +28,38 @@ const Membership = () => {
         }, [category]
     )
 
-    /* 모달 열기 */
-    const openModal = (membership) => {
+    /* 멤버십 구매 여부 확인 */
+    async function checkActiveMembership(memberId, membership){
         if(!loginUser || loginUser.memberKey === ''){
             alert('로그인이 필요한 서비스입니다');
             navigate('/login');
-        }else {
-            setSelectedMembership(membership); // 클릭한 멤버십 정보를 설정
-            setIsModalOpen(true); // 모달 열기
-        }     
+        }else{
+            try{
+                const result = await jaxios.get('/api/membership/checkActiveMembership', {params: {memberId, category: membership.category}})
+                if(result.data.message === 'no'){ // 구독한 멤버십이 없다면
+                    openModal(membership);
+                }else{
+                    if(membership.category === 'download'){
+                        alert(`기존 멤버십 소멸까지 ${result.data.activeMembership.downloadCount} 곡 남았습니다.`);
+                    }else{
+                        // 날짜를 포맷팅하여 출력
+                        const endDate = new Date(result.data.activeMembership.endDate);
+                        const formattedEndDate = endDate.toLocaleDateString(); // 날짜 포맷 : 2025-02-28
+
+                        alert(`${formattedEndDate}까지 활성화된 멤버십이 있습니다`);
+                    }
+                }
+            }catch(err){
+                alert('멤버십 조회가 불가능합니다. 관리자에게 문의하세요');
+                console.error('멤버십 조회가 불가능', err);
+            }
+        }   
+    }
+
+    /* 모달 열기 */
+    const openModal = (membership) => {
+        setSelectedMembership(membership); // 클릭한 멤버십 정보를 설정
+        setIsModalOpen(true); // 모달 열기  
     };
 
     /* 모달 닫기 */
@@ -71,7 +95,7 @@ const Membership = () => {
                                                 (membership.category === 'gift') ? (
                                                     <button onClick={() => navigate('/gift')}>선물하기</button>
                                                 ) : (
-                                                    <button onClick={() => openModal(membership)}>구독하기</button>
+                                                    <button onClick={() => { checkActiveMembership(loginUser.memberId, membership) }}>구독하기</button>
                                                 )
                                             }
                                         </div>
