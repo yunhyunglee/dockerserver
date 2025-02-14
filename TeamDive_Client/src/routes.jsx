@@ -10,7 +10,7 @@ import { PaymentsCheckout } from "./components/payments/PaymentsCheckout";
 import { PaymentsSuccess } from "./components/payments/PaymentsSuccess";
 import { PaymentsFail } from "./components/payments/PaymentsFail";
 
-import Mypage from "./components/mypage/Mypage";
+//import Mypage from "./components/mypage/Mypage";
 
 function AppRoutes() {
     return (
@@ -35,7 +35,7 @@ function AppRoutes() {
 
 
             {/* 마이페이지 */}
-            <Route path="/mypage" element={<Mypage />} />
+            {/* <Route path="/mypage" element={<Mypage />} /> */}
 
         </Routes>
     );

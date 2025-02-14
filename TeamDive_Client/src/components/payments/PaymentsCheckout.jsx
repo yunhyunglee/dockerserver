@@ -14,7 +14,7 @@ const PaymentsCheckout = ({ membership, loginUser }) => {
     const customerKey = loginUser.memberKey;
     const [amount, setAmount] = useState({
         currency: "KRW",
-        value: membership?.price || 0,
+        value: (membership?.price * (1 - (membership?.discount / 100))) || 0,
     });
     const [ready, setReady] = useState(false);
     const [widgets, setWidgets] = useState(null);
@@ -81,7 +81,7 @@ const PaymentsCheckout = ({ membership, loginUser }) => {
 
             // 결제 정보를 백엔드에 저장
             const response = await jaxios.post("/api/payments/orderRequest", {
-                orderId: `${Date.now()}`, // 임의의 주문 ID
+                orderId: `${membership.id}-${Date.now()}`,
                 amount: amount.value,
                 orderName: membership.name,
                 customerEmail: loginUser.email,

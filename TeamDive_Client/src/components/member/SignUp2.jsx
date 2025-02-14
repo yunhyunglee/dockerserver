@@ -4,43 +4,51 @@ import axios from "axios";
 
 const SignUpStep2 = ({ setStep, step1Data }) => {
     // 선택 입력 상태들
+    
     const [image, setImage] = useState(null);
+    const [profileImage, setProfileImage] = useState();
+
     const [address, setAddress] = useState('');
     const [addressDetail, setAddressDetail] = useState('');
     const [addressExtra, setAddressExtra] = useState('');
     const [zipCode, setZipCode] = useState('');
     const [loading, setLoading] = useState(false);
 
-    
     const handleSubmit = async (e) => {
         e.preventDefault();
-      
-      
-      const formData = new FormData();
-      
+            
       // for in 반복문써서 step1꺼 데이터 하나하나 꺼내서 formData에 넣는 코드라서  formData에 추가하는거라고 생각하심 됩니다.
       for (const key in step1Data) {
           formData.append(key, step1Data[key]);
       }
       
       // Step2 데이터 추가
+      const formData = new FormData();
+      formData.append("username", step1Data.memberId);
+      formData.append("password", step1Data.password);
+      formData.append("name", step1Data.name);
+      formData.append("nickName", step1Data.nickName);
+      formData.append("phone", step1Data.phone || ""); // 빈 값 처리
+      formData.append("email", `${step1Data.emailId}@${step1Data.emailDomain}`);
+      formData.append("birth", step1Data.birth);
+      formData.append("gender", step1Data.gender);
+      if (image) formData.append("image", image);
+      formData.append("zipCode", zipCode);
       formData.append("address", address);
       formData.append("addressDetail", addressDetail);
       formData.append("addressExtra", addressExtra);
-      formData.append("zipCode", zipCode);
-      
-      // 이미지가 있다면 FormData에 추가 / 이미지는 없는데 보내면 백엔드에서 오류날 수 도 있어서서
+
+      // 이미지가 있다면 FormData에 추가 / 이미지는 없는데 보내면 백엔드에서 오류날 수 도 있어서
       if (image) {
           formData.append("image", image);
       }
       
       try {
           setLoading(true);
-        
-          const response = await axios.post('/api/member/join', formData, {
-              headers: { 'Content-Type': 'multipart/form-data' },
+          console.log(step1Data);
+          const result = await axios.post("/api/member/join", formData, {
+            headers: { "Content-Type": "multipart/form-data" },
           });
-          console.log("회원가입 성공:", response.data);
         
       } catch (error) {
             console.error("회원가입 실패:", error);
@@ -49,6 +57,19 @@ const SignUpStep2 = ({ setStep, step1Data }) => {
             setLoading(false);
       }
     };
+
+    function fileUp(e){
+        const formData = new FormData();
+        formData.append('image', e.target.files[0])
+        axios.post('/api/member/fileUp', formData)
+        .then((result)=>{
+            setImage(result.data.image);
+            setProfileImage(`http://localhost:8070/profileImage/${result.data.image}`);
+        })
+        .catch((err)=>{
+            console.error(err);
+        })
+    }
 
     return (
         <div className={joinStyles.stepTwo}>
@@ -61,11 +82,16 @@ const SignUpStep2 = ({ setStep, step1Data }) => {
                   type="file" 
                   id="image" 
                   onChange={(e) => {
-                      if (e.target.files && e.target.files[0]) {
-                        setImage(e.target.files[0]);
-                      }
+                      fileUp(e);
                   }} 
                 />
+                {
+                    (profileImage)?(
+                            <div>
+                                <img src={profileImage} />
+                            </div>
+                    ):(<>프로필 이미지 없음</>)
+                }
             </div>
             <div className={joinStyles.formGroup}>
                 <label htmlFor="address">주소 (선택)</label>

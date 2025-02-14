@@ -4,10 +4,10 @@ import com.himedia.projectteamdive.entity.Payment;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/* 클라이언트 -> 서버로 결제 정보를 보낼 때 사용 */
 @Getter
 @NoArgsConstructor
 public class PaymentRequestDto {
-    /* 클라이언트 -> 서버로 결제 정보를 보낼 때 사용 */
     private String orderId;
     private int amount;
     private String orderName;

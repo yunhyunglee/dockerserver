@@ -22,7 +22,7 @@ const SignUpStep1 = ({ setStep, step1Data, setStep1Data }) => {
     const isEmailIdValid = emailId ? emailIdRegex.test(emailId) : null;
     const isCustomDomainValid = emailDomain === '직접입력' && customDomain ? domainRegex.test(customDomain) : null;
     const isNameValid = name ? nameRegex.test(name) : null;
-    const isNickNameValid = nickName ? (nickName.length >= 2 && nickName.length <= 15) : null;
+    const isNickNameValid = nickName ? (nickName.length >= 2 && nickName.length <= 10) : null;
 
     const getFullEmail = () => {
         if (emailDomain === '직접입력') {
@@ -33,32 +33,51 @@ const SignUpStep1 = ({ setStep, step1Data, setStep1Data }) => {
 
     const nextStep = (e) => {
         e.preventDefault();
-        if (!memberId) return alert('아이디를 입력해주세요');
-        if (!idRegex.test(memberId))
+        if (!memberId){
+            return alert('아이디를 입력해주세요');
+        }
+        if (!idRegex.test(memberId)){
             return alert('아이디는 4~20자의 영문 대소문자와 숫자로만 이루어져야 합니다.');
-        if (!password) return alert('비밀번호를 입력해주세요');
-        if (!passwordRegex.test(password))
+        }
+        if (!password){
+            return alert('비밀번호를 입력해주세요');
+        }
+        if (!passwordRegex.test(password)){
             return alert('비밀번호는 최소 8자 이상이며, 영문과 숫자를 포함해야 합니다.');
-        if (password !== passwordCheck)
+        }
+        if (password !== passwordCheck){
             return alert('비밀번호와 비밀번호 확인이 일치하지 않습니다.');
-        if (!emailId) return alert('이메일 아이디를 입력해주세요.');
-        if (!emailDomain) return alert('이메일 도메인을 선택해주세요.');
-        if (emailDomain === '직접입력' && !customDomain)
+        }
+        if (!emailId){
+            return alert('이메일 아이디를 입력해주세요.');
+        }
+        if (!emailDomain){
+            return alert('이메일 도메인을 선택해주세요.');
+        }
+        if (emailDomain === '직접입력' && !customDomain){
             return alert('이메일 도메인을 직접 입력해주세요.');
+        }
         const emailFull = getFullEmail();
+
         const emailRegex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
-        if (!emailRegex.test(emailFull))
+
+        if (!emailRegex.test(emailFull)){
             return alert('유효한 이메일 주소를 입력해주세요.');
-        if (!name) return alert('이름을 입력해주세요');
-        if (!nameRegex.test(name))
+        }
+        if (!name){
+            return alert('이름을 입력해주세요');
+        }
+        if (!nameRegex.test(name)){
             return alert('이름은 최소 2자 이상의 한글 또는 영문이어야 합니다.');
+        }
         if (!nickName) return alert('닉네임을 설정해주세요');
-        if (nickName.length < 2 || nickName.length > 15)
-            return alert('닉네임은 2자 이상 15자 이하로 입력해주세요.');
+        if (nickName.length < 2 || nickName.length > 10)
+            return alert('닉네임은 2자 이상 10자 이하로 입력해주세요.');
         if (!birth) return alert('생년월일을 선택해주세요');
         if (!gender) return alert('성별을 선택해주세요');
-        
+        // 모든 조건 만족 시 부모의 setStep를 통해 다음 단계로 전환
         setStep(2);
+        
     };
 
     return (
@@ -71,17 +90,23 @@ const SignUpStep1 = ({ setStep, step1Data, setStep1Data }) => {
                 className={joinStyles.inputCondition}
                 style={{ color: isMemberIdValid === null ? '#ccc' : isMemberIdValid ? 'green' : 'red' }}
               >
-                (4~20자의 영문, 숫자)
+                {isMemberIdValid === false ? '최소 4자이상 또는 20자 이하로 입력해주세요' : '(4~20자의 영문,숫자)'}
               </span>
             </label>
             <input
               type="text"
               id="memberId"
               value={memberId}
-              onChange={(e) => setStep1Data({ ...step1Data, memberId: e.target.value })}
+              onChange={(e) => setStep1Data({ ...step1Data, memberId: e.currentTarget.value })}
               required
               style={{ borderColor: isMemberIdValid === null ? '#ccc' : isMemberIdValid ? 'green' : 'red' }}
             />
+            {/* =========================================================== */}
+            <button type='button' onClick={()=>{
+              checkid();
+            }}>IDCHECK</button>
+             <>{messageId}</>
+            {/* =========================================================== */}
           </div>
           {/* 비밀번호 */}
           <div className={joinStyles.formGroup}>
@@ -111,7 +136,7 @@ const SignUpStep1 = ({ setStep, step1Data, setStep1Data }) => {
                   className={joinStyles.inputCondition}
                   style={{ color: isPasswordCheckValid === null ? '#ccc' : isPasswordCheckValid ? 'green' : 'red' }}
               >
-                  (비밀번호와 동일하게 작성)
+                  {isPasswordCheckValid === false ? '작성한 비밀번호와 일치하지 않습니다.' : '(비밀번호와 동일하게 작성)'}
               </span>
             </label>
             <input
@@ -170,6 +195,24 @@ const SignUpStep1 = ({ setStep, step1Data, setStep1Data }) => {
               >
                 (영문, 숫자, . _ + - 가능)
               </span>
+              {/* =========================================================== */}
+              <div>
+                <button onClick={()=>{
+                    sendMail();
+                }}>인증코드 발송</button>
+                <div>
+                  <>{messageEmail}</>{/*여기가 이메일 체크 메세지나오는곳 */}
+                  <input type='text' value={emailCheckCode} onChange={(e)=>{
+                    setEmailCheckCode(e.currentTarget.value)
+                  }}/>
+                  <button onClick={()=>{
+                    emailCodeCheck();
+                  }}>인증확인</button>
+                </div>
+              </div>
+              {/* =========================================================== */}
+
+
           </div>
           {/* 이름 */}
           <div className={joinStyles.formGroup}>
@@ -179,7 +222,7 @@ const SignUpStep1 = ({ setStep, step1Data, setStep1Data }) => {
                     className={joinStyles.inputCondition}
                     style={{ color: isNameValid === null ? '#ccc' : isNameValid ? 'green' : 'red' }}
                 >
-                (최소 2자 이상)
+                {isNameValid === false ? '이름은 최소 2자 이상으로 입력해야 합니다.' : '(최소 2자 이상)'}
                 </span>
             </label>
             <input
@@ -199,7 +242,7 @@ const SignUpStep1 = ({ setStep, step1Data, setStep1Data }) => {
                   className={joinStyles.inputCondition}
                   style={{ color: isNickNameValid === null ? '#ccc' : isNickNameValid ? 'green' : 'red' }}
               >
-                  (2~15자)
+                  {isNickNameValid === false ? '닉네임은 2~10자여야 합니다' : '(2~10자)'}
               </span>
             </label>
             <input
@@ -220,6 +263,7 @@ const SignUpStep1 = ({ setStep, step1Data, setStep1Data }) => {
               value={birth}
               onChange={(e) => setStep1Data({ ...step1Data, birth: e.target.value })}
               required
+              max={today.toISOString().split("T")[0]}
               style={{ borderColor: '#ccc' }}
             />
           </div>
