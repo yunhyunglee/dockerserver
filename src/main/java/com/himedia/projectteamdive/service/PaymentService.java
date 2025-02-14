@@ -127,4 +127,8 @@ public class PaymentService {
         msur.save(membershipUser); // 멤버십 정보 저장
     }
 
+    /* 결제 요청 실패 이유 저장 */
+//    public ResponseEntity<String> paymentFail(String failReason) {
+//
+//    }
 }

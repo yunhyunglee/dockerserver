@@ -39,15 +39,11 @@ const Membership = () => {
                 if(result.data.message === 'no'){ // 구독한 멤버십이 없다면
                     openModal(membership);
                 }else{
-                    if(membership.category === 'download'){
-                        alert(`기존 멤버십 소멸까지 ${result.data.activeMembership.downloadCount} 곡 남았습니다.`);
-                    }else{
-                        // 날짜를 포맷팅하여 출력
-                        const endDate = new Date(result.data.activeMembership.endDate);
-                        const formattedEndDate = endDate.toLocaleDateString(); // 날짜 포맷 : 2025-02-28
+                    // 날짜를 포맷팅하여 출력
+                    const startDate = new Date(result.data.activeMembership.startDate);
+                    const formattedStartDate = startDate.toLocaleDateString(); // 날짜 포맷 : 2025-02-28
 
-                        alert(`${formattedEndDate}까지 활성화된 멤버십이 있습니다`);
-                    }
+                    alert(`${formattedStartDate} 부터 활성화된 멤버십이 있습니다`);
                 }
             }catch(err){
                 alert('멤버십 조회가 불가능합니다. 관리자에게 문의하세요');
