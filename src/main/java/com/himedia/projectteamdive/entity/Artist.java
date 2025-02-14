@@ -27,6 +27,7 @@ public class Artist {
     private String artistName;
     private Timestamp debut;
     private String country;
+    private String image;
 
     @OneToMany(mappedBy = "artist",  cascade = CascadeType.ALL, orphanRemoval = true)
     List<Album> albums=new ArrayList<>();
