@@ -30,7 +30,7 @@ public class Member {
     private String phone;
     private String email;
     private String gender;
-    private Timestamp birth;
+    private String birth;
     @Column(name ="zip_code" )
     private Integer zipCode ;
     private String address;

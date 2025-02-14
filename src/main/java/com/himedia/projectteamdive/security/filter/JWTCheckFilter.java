@@ -34,7 +34,7 @@ public class JWTCheckFilter extends OncePerRequestFilter {
             String phone= (String) claims.get("phone");
             String email= (String) claims.get("email");
             String gender= (String) claims.get("gender");
-            Timestamp birth= (Timestamp) claims.get("birth");
+            String birth= (String) claims.get("birth");
             String address= (String) claims.get("address");
             String addressDetail= (String) claims.get("addressDetail");
             String addressExtra= (String) claims.get("addressExtra");

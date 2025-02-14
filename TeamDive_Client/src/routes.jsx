@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import { LoginPage } from "./components/frame/loginPage";
+import KakaoLogin from "./components/frame/KakaoLogin";
 import { JoinForm } from "./components/frame/JoinForm";
 import { Membership } from "./components/membership/Membership";
 import MainPage from "./components/frame/mainpage/MainPage";
@@ -10,7 +11,8 @@ import { PaymentsCheckout } from "./components/payments/PaymentsCheckout";
 import { PaymentsSuccess } from "./components/payments/PaymentsSuccess";
 import { PaymentsFail } from "./components/payments/PaymentsFail";
 
-//import Mypage from "./components/mypage/Mypage";
+import Mypage from "./components/member/mypage/Mypage";
+import UpdateMemberForm from "./components/member/mypage/UpdateMemberForm"
 
 function AppRoutes() {
     return (
@@ -22,6 +24,7 @@ function AppRoutes() {
             <Route path="/menu2" element={<h4>메뉴2 페이지임</h4>} />
             <Route path="/menu3" element={<h4>메뉴3 페이지임</h4>} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/kakaoLogin/:memberId" element={<KakaoLogin />} />
             <Route path="/sign-up" element={<JoinForm />} />
 
 
@@ -33,9 +36,12 @@ function AppRoutes() {
             <Route path="/success" element={<PaymentsSuccess />} />
             <Route path="/fail" element={<PaymentsFail />} />
 
-
             {/* 마이페이지 */}
-            {/* <Route path="/mypage" element={<Mypage />} /> */}
+            <Route path="/mypage" element={<Mypage />} />
+            <Route path="/updateMemberForm" element={<UpdateMemberForm />} />
+            
+
+
 
         </Routes>
     );

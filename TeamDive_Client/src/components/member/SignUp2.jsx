@@ -1,134 +1,195 @@
 import React, { useState } from "react";
-import joinStyles from '../../css/joinForm.module.css';
+import joinStyles from "../../css/joinForm.module.css";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import Modal from "react-modal";
+import DaumPostcode from "react-daum-postcode";
 
 const SignUpStep2 = ({ setStep, step1Data }) => {
-    // 선택 입력 상태들
-    
-    const [image, setImage] = useState(null);
-    const [profileImage, setProfileImage] = useState();
-
-    const [address, setAddress] = useState('');
-    const [addressDetail, setAddressDetail] = useState('');
-    const [addressExtra, setAddressExtra] = useState('');
-    const [zipCode, setZipCode] = useState('');
+    const [image, setImage] = useState(null); // 업로드할 파일 저장
+    const [profileImage, setProfileImage] = useState(""); // 서버에서 반환된 이미지 URL 저장
+    const [address, setAddress] = useState("");
+    const [addressDetail, setAddressDetail] = useState("");
+    const [addressExtra, setAddressExtra] = useState("");
+    const [zipCode, setZipCode] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-            
-      // for in 반복문써서 step1꺼 데이터 하나하나 꺼내서 formData에 넣는 코드라서  formData에 추가하는거라고 생각하심 됩니다.
-      for (const key in step1Data) {
-          formData.append(key, step1Data[key]);
-      }
-      
-      // Step2 데이터 추가
-      const formData = new FormData();
-      formData.append("username", step1Data.memberId);
-      formData.append("password", step1Data.password);
-      formData.append("name", step1Data.name);
-      formData.append("nickName", step1Data.nickName);
-      formData.append("phone", step1Data.phone || ""); // 빈 값 처리
-      formData.append("email", `${step1Data.emailId}@${step1Data.emailDomain}`);
-      formData.append("birth", step1Data.birth);
-      formData.append("gender", step1Data.gender);
-      if (image) formData.append("image", image);
-      formData.append("zipCode", zipCode);
-      formData.append("address", address);
-      formData.append("addressDetail", addressDetail);
-      formData.append("addressExtra", addressExtra);
+    const navigate = useNavigate();
+    const [isOpen, setIsOpen]=useState(false);
 
-      // 이미지가 있다면 FormData에 추가 / 이미지는 없는데 보내면 백엔드에서 오류날 수 도 있어서
-      if (image) {
-          formData.append("image", image);
-      }
-      
-      try {
-          setLoading(true);
-          console.log(step1Data);
-          const result = await axios.post("/api/member/join", formData, {
-            headers: { "Content-Type": "multipart/form-data" },
-          });
-        
-      } catch (error) {
-            console.error("회원가입 실패:", error);
-            alert("회원가입 중 오류가 발생했습니다. 다시 시도해주세요.");
-      } finally {
-            setLoading(false);
-      }
+    console.log("step1Data:", step1Data);
+
+    function toggle(){
+        setIsOpen( !isOpen )
+    }
+
+    const customStyles = {
+        overlay: { backgroundColor: "rgba( 0 , 0 , 0 , 0.5)", },
+        content: {
+            left: "0",
+            margin: "auto",
+            width: "500px",
+            height: "600px",
+            padding: "0",
+            overflow: "hidden",
+        },
     };
 
-    function fileUp(e){
-        const formData = new FormData();
-        formData.append('image', e.target.files[0])
-        axios.post('/api/member/fileUp', formData)
-        .then((result)=>{
-            setImage(result.data.image);
-            setProfileImage(`http://localhost:8070/profileImage/${result.data.image}`);
-        })
-        .catch((err)=>{
-            console.error(err);
-        })
+    const completeHandler=(data)=>{
+        console.log(data)
+        setZipCode(data.zonecode)
+        setAddress(data.address)
+        if( data.buildingName !== ''){
+            setAddressExtra('(' + data.buildingName + ')')
+        }else if( data.bname !== ''){
+            setAddressExtra('(' + data.bname + ')')
+        }
+        setIsOpen(false);
     }
+
+    // 📌 파일 업로드 핸들러 수정
+    const fileUp = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        setImage(file); // 파일 객체 저장
+        const formData = new FormData();
+        formData.append("image", file);
+
+        try {
+            const result = await axios.post("/api/member/fileUp", formData);
+            setProfileImage(`http://localhost:8070/profileImage/${result.data.image}`);
+        } catch (error) {
+            console.error("파일 업로드 실패:", error);
+            alert("파일 업로드에 실패했습니다.");
+        }
+    };
+
+    const getFullEmail = (step1Data) => {
+        if (!step1Data) return ""; // step1Data가 없으면 빈 문자열 반환
+    
+        const { emailId, emailDomain, customDomain } = step1Data;
+        if (!emailId || !emailDomain) return ""; // 값이 없을 경우 빈 문자열 반환
+    
+        return emailDomain === "직접입력" ? `${emailId}@${customDomain}` : `${emailId}@${emailDomain}`;
+    };
+    
+    const emailFull = getFullEmail();
+    
+
+    // 📌 최종 회원가입 처리
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        
+        const formData = new FormData();
+        // Step1 데이터 추가
+        for (const key in step1Data) {
+            formData.append(key, step1Data[key]);
+        }
+        
+        const emailFull = getFullEmail(step1Data);
+        console.log("Full Email:", emailFull);
+        
+        console.log("step1Data in SignUpStep1:", step1Data);
+        
+        formData.set('email', emailFull);
+        formData.append("image", image);
+        formData.append("zipCode", zipCode);
+        formData.append("address", address);
+        formData.append("addressDetail", addressDetail);
+        formData.append("addressExtra", addressExtra);
+
+        // 이미지가 있을 경우 추가
+        if (image) {
+            formData.append("image", image);
+        }
+
+        try {
+            setLoading(true);
+            await axios.post("/api/member/join", formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+            });
+            alert("회원가입이 완료되었습니다!");
+            navigate('/login');
+        } catch (error) {
+            console.error("회원가입 실패:", error);
+            alert("회원가입 중 오류가 발생했습니다. 다시 시도해주세요.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <div className={joinStyles.stepTwo}>
             <div className={joinStyles.formGroup}>
                 <span>선택사항</span>
             </div>
-            <div className={joinStyles.formGroup}>
+
+            {/* 프로필 이미지 업로드 */}
+            {/* <div className={joinStyles.formGroup}>
                 <label htmlFor="image">프로필 이미지 (선택)</label>
-                <input 
-                  type="file" 
-                  id="image" 
-                  onChange={(e) => {
-                      fileUp(e);
-                  }} 
+                <input type="file" id="image" onChange={fileUp} />
+                {profileImage ? (
+                    <div>
+                        <img src={profileImage} alt="Profile Preview" />
+                    </div>
+                ) : (
+                    <>프로필 이미지 없음</>
+                )}
+            </div> */}
+
+            {/* 주소 입력 */}
+            <div className={joinStyles.formGroup}>
+                <label htmlFor="zipCode">우편번호 (선택)</label>
+                <input
+                    type="text"
+                    id="zipCode"
+                    value={zipCode}
+                    onChange={(e) => setZipCode(e.target.value)}
                 />
-                {
-                    (profileImage)?(
-                            <div>
-                                <img src={profileImage} />
-                            </div>
-                    ):(<>프로필 이미지 없음</>)
-                }
+                <button type='button' onClick={()=>{
+                    toggle();
+                }}>주소 검색</button>
             </div>
+            {/* 주소 검색을 위한 모달창 */}
+            <div>   
+                <Modal isOpen={isOpen}  ariaHideApp={false}  style={customStyles} >
+                    <DaumPostcode onComplete={completeHandler} /><br />
+                    <button onClick={()=>{ setIsOpen(false) }}>CLOSE</button>
+                </Modal>
+            </div>
+            {/* ======================= */}
             <div className={joinStyles.formGroup}>
                 <label htmlFor="address">주소 (선택)</label>
-                <input 
-                    type="text" 
-                    id="address" 
-                    value={address} 
-                    onChange={(e) => setAddress(e.target.value)} 
+                <input
+                    type="text"
+                    id="address"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
                 />
             </div>
+            
             <div className={joinStyles.formGroup}>
-              <label htmlFor="addressDetail">상세주소 (선택)</label>
-                <input 
-                    type="text" 
-                    id="addressDetail" 
-                    value={addressDetail} 
-                    onChange={(e) => setAddressDetail(e.target.value)} 
+                <label htmlFor="addressDetail">상세주소 (선택)</label>
+                <input
+                    type="text"
+                    id="addressDetail"
+                    value={addressDetail}
+                    onChange={(e) => setAddressDetail(e.target.value)}
                 />
             </div>
+            
             <div className={joinStyles.formGroup}>
                 <label htmlFor="addressExtra">추가주소 (선택)</label>
-                <input 
-                    type="text" 
-                    id="addressExtra" 
-                    value={addressExtra} 
-                    onChange={(e) => setAddressExtra(e.target.value)} 
+                <input
+                    type="text"
+                    id="addressExtra"
+                    value={addressExtra}
+                    onChange={(e) => setAddressExtra(e.target.value)}
                 />
             </div>
-            <div className={joinStyles.formGroup}>
-              <label htmlFor="zipCode">우편번호 (선택)</label>
-                <input 
-                    type="text" 
-                    id="zipCode" 
-                    value={zipCode} 
-                    onChange={(e) => setZipCode(e.target.value)} 
-                />
-            </div>
+
+            {/* 버튼 그룹 */}
             <div className={joinStyles.buttonGroup}>
                 <button onClick={handleSubmit} className={joinStyles.button} disabled={loading}>
                     {loading ? "가입 중..." : "가입하기"}
@@ -137,7 +198,7 @@ const SignUpStep2 = ({ setStep, step1Data }) => {
                     이전
                 </button>
             </div>
-      </div>
+        </div>
     );
 };
 

@@ -8,6 +8,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +33,18 @@ public class MemberService {
         roles.add(RoleName.USER);
         member.setMemberRoleList(roles);
         member.setPassword(pe.encode(member.getPassword()));
+        //member.setBirth(convertStringToTimestamp(member.getBirth()));;
         mr.save(member);
 
+    }
+
+    private Timestamp convertStringToTimestamp(Timestamp dateString) {
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            return new Timestamp(dateFormat.parse(String.valueOf(dateString)).getTime());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
