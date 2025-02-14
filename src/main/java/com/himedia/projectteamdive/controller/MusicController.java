@@ -79,6 +79,14 @@ public class MusicController {
     @DeleteMapping("/deleteArtist")
     public HashMap<String, Object> deleteArtist(@RequestBody Artist artist) {
         HashMap<String, Object> map = new HashMap<>();
+        List<Album>albumList=artist.getAlbums();
+        for(Album album:albumList){
+            List<Music>musicList=album.getMusicList();
+            for(Music music:musicList){
+                String s = music.getBucketpath().replace("https://d9k8tjx0yo0q5.cloudfront.net/","https://divestreaming.s3.ap-northeast-2.amazonaws.com/");
+                ss.deleteFile(s);
+            }
+        }
         ms.deleteArtist(artist);
         map.put("msg","yes");
         return map;
@@ -86,6 +94,11 @@ public class MusicController {
     @DeleteMapping("/deleteAlbum")
     public HashMap<String, Object> deleteAlbum(@RequestBody Album album) {
         HashMap<String, Object> map = new HashMap<>();
+        List<Music> musicList=album.getMusicList();
+        for (Music music : musicList) {
+            String s = music.getBucketpath().replace("https://d9k8tjx0yo0q5.cloudfront.net/","https://divestreaming.s3.ap-northeast-2.amazonaws.com/");
+            ss.deleteFile(s);
+        }
         ms.deleteAlbum(album);
         map.put("msg","yes");
         return map;
@@ -93,24 +106,30 @@ public class MusicController {
     @DeleteMapping("/deleteMusic")
     public HashMap<String, Object> deleteMusic(@RequestBody Music music) {
         HashMap<String, Object> map = new HashMap<>();
+        String s = music.getBucketpath().replace("https://d9k8tjx0yo0q5.cloudfront.net/","https://divestreaming.s3.ap-northeast-2.amazonaws.com/");
+        ss.deleteFile(s);
         ms.deleteMusic(music);
-        map.put("msg","yes");
-        return map;
-    }
-
-    @PostMapping("/musicUpload")
-    public HashMap<String, Object> musicUpload(@RequestParam("file") MultipartFile file) {
-        HashMap<String, Object> map = new HashMap<>();
         map.put("msg","yes");
         return map;
     }
     @Autowired
     S3Service ss;
+    @PostMapping("/musicUpload")
+    public HashMap<String, Object> musicUpload(@RequestParam("music") MultipartFile file) {
+        HashMap<String, Object> map = new HashMap<>();
+        try {
+            String uploadFilePath=ss.saveFile(file,"music");
+            map.put("music",uploadFilePath);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return map;
+    }
     @PostMapping("/imageUpload")
     public HashMap<String, Object> imageUpload(@RequestParam("image") MultipartFile file) {
         HashMap<String, Object> map = new HashMap<>();
         try {
-            String uploadFilePath=ss.saveFile(file);
+            String uploadFilePath=ss.saveFile(file,"image");
             map.put("image",uploadFilePath);
         } catch (IOException e) {
             throw new RuntimeException(e);
