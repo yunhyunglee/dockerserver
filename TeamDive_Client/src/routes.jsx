@@ -12,7 +12,6 @@ import { PaymentsSuccess } from "./components/payments/PaymentsSuccess";
 import { PaymentsFail } from "./components/payments/PaymentsFail";
 
 import Mypage from "./components/member/mypage/Mypage";
-import UpdateMemberForm from "./components/member/mypage/UpdateMemberForm"
 
 function AppRoutes() {
     return (
@@ -37,8 +36,9 @@ function AppRoutes() {
             <Route path="/fail" element={<PaymentsFail />} />
 
             {/* 마이페이지 */}
-            <Route path="/mypage" element={<Mypage />} />
-            <Route path="/updateMemberForm" element={<UpdateMemberForm />} />
+            <Route path="/mypage/:mypageCategory" element={<Mypage />} />
+            
+            
             
 
 
