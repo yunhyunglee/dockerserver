@@ -35,13 +35,13 @@ public class Album {
     Artist artist;
 
     @OneToMany(mappedBy = "album",cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderBy("tracknumber ASC")
+    @OrderBy("trackNumber ASC")
     List<Music> musicList =new ArrayList<>();
 
     // 음악 추가 메서드
     public void addAlbum(Music music) {
         musicList.add(music);
-        music.setTracknumber(musicList.size());
+        music.setTrackNumber(musicList.size());
         music.setAlbum(this);
     }
 
@@ -56,7 +56,7 @@ public class Album {
     //  orderIndex 재정렬 메서드
     public void reorderMusicList() {
         for (int i = 0; i < musicList.size(); i++) {
-            musicList.get(i).setTracknumber(i);  //  0부터 차례로 재정렬
+            musicList.get(i).setTrackNumber(i);  //  0부터 차례로 재정렬
         }
     }
 }
