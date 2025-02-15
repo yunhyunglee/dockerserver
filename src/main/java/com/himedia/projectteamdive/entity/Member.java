@@ -45,6 +45,7 @@ public class Member {
     private String provider;
     @Column(name = "member_key")
     private String memberKey;
+    private String introduction;
 
     @ElementCollection(fetch = FetchType.LAZY)
     @Builder.Default
