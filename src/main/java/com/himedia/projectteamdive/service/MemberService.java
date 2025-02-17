@@ -12,6 +12,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -26,16 +27,15 @@ public class MemberService {
         return mr.findByMemberId(memberId);
     }
 
-
     public void insertMember(Member member) {
-
         List<RoleName> roles =  new ArrayList<RoleName>();
         roles.add(RoleName.USER);
         member.setMemberRoleList(roles);
         member.setPassword(pe.encode(member.getPassword()));
+        member.setMemberKey(UUID.randomUUID().toString());
+        System.out.println("uuid 생성" + member.getMemberKey());
         //member.setBirth(convertStringToTimestamp(member.getBirth()));;
         mr.save(member);
-
     }
 
     private Timestamp convertStringToTimestamp(Timestamp dateString) {
