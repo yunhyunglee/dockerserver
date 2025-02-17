@@ -106,9 +106,7 @@ const PaymentsCheckout = ({ membership, loginUser }) => {
 
     return (
         <div className={paymentsStyle.container}>
-            <div id="payment-method" className={paymentsStyle.method}>
-                <p>결제금액</p>
-            </div>
+            <div id="payment-method" className={paymentsStyle.method}/>
             <div id="agreement" className={paymentsStyle.agreement}></div>
             {/* 결제하기 버튼 */}
             <button className={paymentsStyle.button} disabled={!ready} onClick={handlePaymentRequest}>
