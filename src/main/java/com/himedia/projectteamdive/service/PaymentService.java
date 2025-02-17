@@ -64,7 +64,7 @@ public class PaymentService {
         if(membership.getCategory().equals("gift")){
 
         }else{
-            activeMembership(membership, payment); // 멤버십 활성화
+            activeMembership(membership, payment.getMember()); // 멤버십 활성화
         }
         return response;
     }
