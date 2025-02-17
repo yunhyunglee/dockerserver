@@ -20,10 +20,8 @@ import org.springframework.web.client.RestTemplate;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -64,7 +62,11 @@ public class PaymentService {
         payment.setPaymentKey(paymentKey); // 결제 검증 키 저장
         payment.setPaid(true); // 결제 완료 처리
 
-        activeMembership(membership, payment); // 멤버십 활성화
+        if(membership.getCategory().equals("gift")){
+
+        }else{
+            activeMembership(membership, payment); // 멤버십 활성화
+        }
         return response;
     }
 
@@ -114,21 +116,26 @@ public class PaymentService {
 
     /* 멤버십 등록 */
     private void activeMembership(Membership membership, Payment payment) {
-        Membership_user membershipUser = new Membership_user();
-        membershipUser.setMember(payment.getMember());
-        membershipUser.setMembership(membership);
-        LocalDateTime now = LocalDateTime.now(); // 현재 시간
-        membershipUser.setStartDate(Timestamp.valueOf(now));
-        if(membership.getDownloadCount() == 0){
-            membershipUser.setEndDate(Timestamp.valueOf(now.plusMonths(membership.getPeriod())));
-        }else{
-            System.out.println("어허 아직이라네");
-        }
+        Membership_user membershipUser = new Membership_user(payment.getMember(), membership);
         msur.save(membershipUser); // 멤버십 정보 저장
     }
 
     /* 결제 요청 실패 이유 저장 */
-//    public ResponseEntity<String> paymentFail(String failReason) {
-//
-//    }
+    public void paymentFail(String failReason, String orderId) {
+        Optional<Payment> payment = pr.findByOrderId(orderId);
+        if(payment.isPresent()) {
+            payment.get().setPaid(false);
+            payment.get().setFailReason(failReason);
+        }
+    }
+
+    /* 결제 내역 조회 */
+    public List<PaymentResponseDto> getPaymentList(String memberId) {
+        Member member = mr.findByMemberId(memberId);
+        List<Payment> list = pr.findByMember(member);
+
+        return list.stream()
+                .map(PaymentResponseDto::new) // Payment -> PaymentResponseDto 변환
+                .collect(Collectors.toList());
+    }
 }

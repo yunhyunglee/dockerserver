@@ -83,7 +83,7 @@ public class MusicController {
         for(Album album:albumList){
             List<Music>musicList=album.getMusicList();
             for(Music music:musicList){
-                String s = music.getBucketpath().replace("https://d9k8tjx0yo0q5.cloudfront.net/","https://divestreaming.s3.ap-northeast-2.amazonaws.com/");
+                String s = music.getBucketPath().replace("https://d9k8tjx0yo0q5.cloudfront.net/","https://divestreaming.s3.ap-northeast-2.amazonaws.com/");
                 ss.deleteFile(s);
             }
         }
@@ -96,7 +96,7 @@ public class MusicController {
         HashMap<String, Object> map = new HashMap<>();
         List<Music> musicList=album.getMusicList();
         for (Music music : musicList) {
-            String s = music.getBucketpath().replace("https://d9k8tjx0yo0q5.cloudfront.net/","https://divestreaming.s3.ap-northeast-2.amazonaws.com/");
+            String s = music.getBucketPath().replace("https://d9k8tjx0yo0q5.cloudfront.net/","https://divestreaming.s3.ap-northeast-2.amazonaws.com/");
             ss.deleteFile(s);
         }
         ms.deleteAlbum(album);
@@ -106,7 +106,7 @@ public class MusicController {
     @DeleteMapping("/deleteMusic")
     public HashMap<String, Object> deleteMusic(@RequestBody Music music) {
         HashMap<String, Object> map = new HashMap<>();
-        String s = music.getBucketpath().replace("https://d9k8tjx0yo0q5.cloudfront.net/","https://divestreaming.s3.ap-northeast-2.amazonaws.com/");
+        String s = music.getBucketPath().replace("https://d9k8tjx0yo0q5.cloudfront.net/","https://divestreaming.s3.ap-northeast-2.amazonaws.com/");
         ss.deleteFile(s);
         ms.deleteMusic(music);
         map.put("msg","yes");
@@ -190,11 +190,12 @@ public class MusicController {
 
 
     //음악 재생수 증가메서드
-    @PostMapping("/addplayCount")
-    public HashMap<String, Object> addplayCount(@RequestBody HashMap<Integer,Integer> playCount) {
+    @PostMapping("/addPlayCount")
+    public HashMap<String, Object> addPlayCount(@RequestBody HashMap<Integer,Integer> playCount,@RequestParam(value = "memberId",required = false)String memberId) {
         System.out.println(playCount);
+        if(memberId==null) {memberId="";}
         HashMap<String, Object> map = new HashMap<>();
-        ms.addPlayCount(playCount);
+        ms.addPlayCount(playCount,memberId);
         map.put("msg","yes");
         return map;
     }
@@ -231,13 +232,27 @@ public class MusicController {
         map.put("music",ms.getMusic(musicId));
         return map;
     }
+    @GetMapping("/getAllMusic")
+    public HashMap<String, Object> getAllMusic() {
+        HashMap<String, Object> map = ms.getAllMusic();
+        return map;
+    }
 
     @GetMapping("/getSearch")
     public HashMap<String, Object> getSearch(@RequestParam("key")String key) {
         HashMap<String, Object> map = ms.search(key);
         return map;
     }
-
+    @GetMapping("/getAllArtist")
+    public HashMap<String, Object> getAllArtist() {
+        HashMap<String,Object> map= ms.getAllArtist();
+        return map;
+    }
+    @GetMapping("/getAllAlbum")
+    public HashMap<String, Object> getAllAlbum() {
+        HashMap<String,Object> map= ms.getAllAlbum();
+        return map;
+    }
 
 
 

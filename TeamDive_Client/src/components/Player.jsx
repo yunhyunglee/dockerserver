@@ -27,14 +27,16 @@ import music2 from '../sampleMusic/music2.mp3';
 import music3 from '../sampleMusic/music3.mp3'; 
 import music4 from '../sampleMusic/music4.mp3'; 
 import music5 from '../sampleMusic/music5.mp3';
+import { useSelector } from 'react-redux';
+import axios from 'axios';
 
 // 플레이리스트: 각 노래에 src, 제목, 가수 정보를 담은 객체 배열
 const playlist = [
-    { src: music1, title: '별별별', artist: '엔믹스' },
-    { src: music2, title: 'Dash', artist: '엔믹스' },
-    { src: music3, title: '럽미랔뎃', artist: '엔믹스' },
-    { src: music4, title: '고민중독', artist: 'QWER' },
-    { src: music5, title: '디스코드', artist: 'QWER' },
+    { src: music1, title: '별별별', artist: '엔믹스' ,musicId:1},
+    { src: music2, title: 'Dash', artist: '엔믹스' ,musicId:2},
+    { src: music3, title: '럽미랔뎃', artist: '엔믹스' ,musicId:3},
+    { src: music4, title: '고민중독', artist: 'QWER' ,musicId:4},
+    { src: music5, title: '디스코드', artist: 'QWER' ,musicId:5},
 ];
 
 const CustomPaper = styled(Paper)(({ theme }) => ({
@@ -71,6 +73,34 @@ export default function Player() {
 
   // 현재 재생 중인 노래 정보
     const currentSong = playlist[index];
+    const loginUser=useSelector(state=>state.user);
+    const [playCounts,setPlayCounts]=useState({});
+    const musicPlay = (songId) => {
+        // alert('재생했다')
+        setPlayCounts(prev => ({
+            ...prev,
+            [songId]:(prev[songId] || 0) + 1
+        }));
+    };
+    useEffect(() => {
+      
+        const interval = setInterval(() => {
+            // alert('인터벌 작동중')
+            if (Object.keys(playCounts).length > 0) {
+                axios.post("/api/music/addPlayCount",playCounts,{params:{ memberId: loginUser.memberId }}) // 서버에 전송
+                    .then(() => setPlayCounts({})) // 성공하면 초기화
+                    .catch(err => console.error("Error sending play counts:", err));
+            }
+        }, 5000); // 60초마다 전송
+        return () => clearInterval(interval);
+    }, [playCounts]);
+
+    useEffect(()=>{
+      console.log(playCounts);
+      console.log(currentSong.musicId);
+    },[playCounts])
+    
+
 
     useEffect(() => {
         if (audioRef.current) {
@@ -187,7 +217,7 @@ export default function Player() {
   return (
    
       <footer className="footer">
-        <audio src={currentSong.src} ref={audioRef} muted={mute} />
+        <audio src={currentSong.src} ref={audioRef} muted={mute} onPlay={()=>musicPlay(currentSong.musicId)}/>
         <CustomPaper>
             <Box
                 sx={{

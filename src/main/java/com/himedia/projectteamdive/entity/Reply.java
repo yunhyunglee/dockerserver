@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -30,6 +31,7 @@ public class Reply {
     Allpage allpage;
 
     private String content;
+    @CreationTimestamp
     private Timestamp indate;
 
 

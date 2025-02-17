@@ -35,8 +35,10 @@ public class Music {
     private String lyrics;
     @Column(name = "title_music")
     private boolean titleMusic =false;
-    private int tracknumber=0;
-    private String bucketpath;
+    @Column(name ="track_number")
+    private int trackNumber=0;
+    @Column(name ="bucket_path")
+    private String bucketPath;
 
     @ManyToOne
     @JoinColumn(name = "album_id")

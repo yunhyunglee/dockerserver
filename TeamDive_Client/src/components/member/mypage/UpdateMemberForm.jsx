@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import jaxios from '../../../util/JwtUtil'
 import { useSelector, useDispatch } from 'react-redux'
+import mypageStyle from '../../../css/mypage/mypage.module.css'
 
 const UpdateMemberForm = () => {
 
@@ -13,7 +14,8 @@ const UpdateMemberForm = () => {
     };
 
     return (
-        <div>
+        <div className={mypageStyle.updateMemberForm}>
+            <>회원정보수정 FORM</>
             <div>
                 <img src={` `}/>
                 <input type='file' />

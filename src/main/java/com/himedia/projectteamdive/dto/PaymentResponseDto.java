@@ -9,9 +9,8 @@ public class PaymentResponseDto {
     private String orderId;
     private int amount;
     private String orderName;
-    private boolean isPaid; // 결제 완료 여부
     private String paymentKey;
-
+    private boolean isPaid; // 결제 완료 여부
     private String failReason; // 실패 이유
     private String cancelStatus; // 결제 취소 상태
     private String cancelReason; // 취소 이유
