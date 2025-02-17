@@ -15,7 +15,7 @@ public class MemberDto extends User {
                      String name, String nickname, String phone,
                      String email, String gender, String birth,
                      Integer zipCode, String address, String addressDetail, String addressExtra,
-                     String image, String provider, String memberKey, List<String>memberRoleList) {
+                     String image, String provider, String memberKey, String introduction,List<String>memberRoleList) {
         super(username, password, memberRoleList.stream().map(str->new SimpleGrantedAuthority("ROLE_"+str)).collect(Collectors.toList()));
         this.memberId=username;
         this.password=password;
@@ -32,6 +32,7 @@ public class MemberDto extends User {
         this.image=image;
         this.provider=provider;
         this.memberKey=memberKey;
+        this.introduction=introduction;
         this.memberRoleList=memberRoleList;
 
     }
@@ -50,6 +51,7 @@ public class MemberDto extends User {
     private String image;
     private String provider;
     private String memberKey;
+    private String introduction;
     private List<String> memberRoleList=new ArrayList<String>();
 
     public Map<String, Object> getClaims() {
@@ -69,6 +71,7 @@ public class MemberDto extends User {
         dataMap.put("image", image);
         dataMap.put("provider", provider);
         dataMap.put("memberKey", memberKey);
+        dataMap.put("introduction", introduction);
         dataMap.put("memberRoleList", memberRoleList);
         return dataMap;
     }

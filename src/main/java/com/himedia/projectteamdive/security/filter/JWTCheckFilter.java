@@ -42,8 +42,9 @@ public class JWTCheckFilter extends OncePerRequestFilter {
             String image= (String) claims.get("image");
             String provider= (String) claims.get("provider");
             String memberKey= (String) claims.get("memberKey");
+            String introduction= (String) claims.get("introduction");
             List<String>memberRoleList= (List<String>) claims.get("memberRoleList");
-            MemberDto memberDto=new MemberDto(memberId,password,name,nickname,phone,email,gender,birth,zipCode,address,addressDetail,addressExtra,image,provider,memberKey,memberRoleList);
+            MemberDto memberDto=new MemberDto(memberId,password,name,nickname,phone,email,gender,birth,zipCode,address,addressDetail,addressExtra,image,provider,memberKey,introduction,memberRoleList);
 
 
             UsernamePasswordAuthenticationToken authenticationToken= new UsernamePasswordAuthenticationToken(memberDto,password,memberDto.getAuthorities());
