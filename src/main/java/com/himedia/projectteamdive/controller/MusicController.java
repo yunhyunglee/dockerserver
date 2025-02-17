@@ -190,11 +190,12 @@ public class MusicController {
 
 
     //음악 재생수 증가메서드
-    @PostMapping("/addplayCount")
-    public HashMap<String, Object> addplayCount(@RequestBody HashMap<Integer,Integer> playCount) {
+    @PostMapping("/addPlayCount")
+    public HashMap<String, Object> addPlayCount(@RequestBody HashMap<Integer,Integer> playCount,@RequestParam(value = "memberId",required = false)String memberId) {
         System.out.println(playCount);
+        if(memberId==null) {memberId="";}
         HashMap<String, Object> map = new HashMap<>();
-        ms.addPlayCount(playCount);
+        ms.addPlayCount(playCount,memberId);
         map.put("msg","yes");
         return map;
     }
@@ -242,7 +243,16 @@ public class MusicController {
         HashMap<String, Object> map = ms.search(key);
         return map;
     }
-
+    @GetMapping("/getAllArtist")
+    public HashMap<String, Object> getAllArtist() {
+        HashMap<String,Object> map= ms.getAllArtist();
+        return map;
+    }
+    @GetMapping("/getAllAlbum")
+    public HashMap<String, Object> getAllAlbum() {
+        HashMap<String,Object> map= ms.getAllAlbum();
+        return map;
+    }
 
 
 
