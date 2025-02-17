@@ -20,6 +20,9 @@ public interface MusicRepository extends JpaRepository<Music, Integer> {
 //    List<Music> findAllByMusicId(@Param("ids") List<Integer> ids);
 
 
+    List<Music> findByMood(String mood);
+
+
 //    @Modifying
 //    @Query("update Music m set m.playCountDay=0")
 //    void resetPlayCountDay();

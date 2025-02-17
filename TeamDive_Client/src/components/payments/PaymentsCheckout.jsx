@@ -6,6 +6,7 @@ import jaxios from '../../util/JwtUtil';
 import paymentsStyle from '../../css/membership/payments.module.css';
 
 const clientKey = "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
+const customerKey = "6RR66cpTdKFLq-5AplwvV";
 
 const PaymentsCheckout = ({ membership, loginUser }) => {
     const navigate = useNavigate();
@@ -13,7 +14,7 @@ const PaymentsCheckout = ({ membership, loginUser }) => {
     const customerKey = loginUser.memberKey;
     const [amount, setAmount] = useState({
         currency: "KRW",
-        value: (membership?.price * (1 - (membership?.discount / 100))) || 0,
+        value: membership?.price || 0,
     });
     const [ready, setReady] = useState(false);
     const [widgets, setWidgets] = useState(null);
@@ -80,10 +81,12 @@ const PaymentsCheckout = ({ membership, loginUser }) => {
 
             // 결제 정보를 백엔드에 저장
             const response = await jaxios.post("/api/payments/orderRequest", {
-                orderId: `${membership.membershipId}-${Date.now()}`,
+                orderId: `${Date.now()}`, // 임의의 주문 ID
                 amount: amount.value,
                 orderName: membership.name,
-            }, {params: {memberId: loginUser.memberId}});
+                customerEmail: loginUser.email,
+                customerName: loginUser.name,
+            });
 
             if (response.status === 200) {
                 const { orderId } = response.data; // 백엔드에서 반환된 orderId
@@ -106,9 +109,7 @@ const PaymentsCheckout = ({ membership, loginUser }) => {
 
     return (
         <div className={paymentsStyle.container}>
-            <div id="payment-method" className={paymentsStyle.method}>
-                <p>결제금액</p>
-            </div>
+            <div id="payment-method" className={paymentsStyle.method}/>
             <div id="agreement" className={paymentsStyle.agreement}></div>
             {/* 결제하기 버튼 */}
             <button className={paymentsStyle.button} disabled={!ready} onClick={handlePaymentRequest}>
@@ -118,4 +119,4 @@ const PaymentsCheckout = ({ membership, loginUser }) => {
     );
 }
 
-export default PaymentsCheckout;
+export { PaymentsCheckout };

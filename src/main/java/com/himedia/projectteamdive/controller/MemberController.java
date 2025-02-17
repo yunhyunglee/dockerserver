@@ -151,7 +151,6 @@ public class MemberController {
                     .path("/profileImage/")
                     .path(newFilename)
                     .toUriString();
-
             result.put("image", newFilename);
             System.out.println(result);
             System.out.println("파일 저장 성공: " + uploadPath);
@@ -246,11 +245,18 @@ public class MemberController {
         response.sendRedirect("http://localhost:5173/KakaoLogin/"+member.getMemberId());
     }
 
-
-
-
-
-
+    @GetMapping("/getMember")
+    public HashMap<String, Object> getMember(@RequestParam("giftId") String memberId){
+        HashMap<String, Object> result = new HashMap<>();
+        Member member = ms.getMember(memberId);
+        if(member != null){
+            result.put("message", "yes");
+            System.out.println(member);
+        }else{
+            result.put("message", "no");
+        }
+        return result;
+    }
 }
 
 

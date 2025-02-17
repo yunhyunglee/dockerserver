@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import styles from '../css/popularChart.module.css';
 import axios from 'axios';
 
+
 const PopularChartsPage = () => {
   const navigate = useNavigate();
 

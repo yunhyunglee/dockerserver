@@ -1,72 +1,101 @@
-import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import jaxios from "../../util/JwtUtil";
-
-import paymentsStyle from '../../css/membership/payments.module.css';
+import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import axios from 'axios';
 
 const PaymentsSuccess = () => {
     const [isConfirmed, setIsConfirmed] = useState(false);
     const [searchParams] = useSearchParams();
-    const [countdown, setCountdown] = useState(3); // 3초 카운트다운 초기화
     const paymentKey = searchParams.get("paymentKey");
     const orderId = searchParams.get("orderId");
     const amount = searchParams.get("amount");
-    const navigate = useNavigate();
 
-    useEffect(() => {
-        const confirmPayment = async () => {
-            try {
-                const response = await jaxios.post('/api/payments/paymentSuccess', null, {
-                    params: { paymentKey, orderId, amount },
-                });
-                console.log("결제 승인 성공", response.data);
-                setIsConfirmed(true);
-
-                // 1초마다 카운트다운 감소
-                const countdownInterval = setInterval(() => {
-                    setCountdown((prev) => prev - 1);
-                }, 1000);
-
-                // 3초 후 홈으로 이동
-                setTimeout(() => {
-                    clearInterval(countdownInterval); // 인터벌 정리
-                    navigate("/");
-                }, 3000);
-            } catch (error) {
-                console.error("결제 승인 실패:", error.response?.data || error.message);
-            }
-        };
-        confirmPayment();
-    }, [navigate, paymentKey, orderId, amount]);
+    async function confirmPayment() {
+        // TODO: API를 호출해서 서버에게 paymentKey, orderId, amount를 넘겨주세요.
+        // 서버에선 해당 데이터를 가지고 승인 API를 호출하면 결제가 완료됩니다.
+        // https://docs.tosspayments.com/reference#%EA%B2%B0%EC%A0%9C-%EC%8A%B9%EC%9D%B8
+        // const response = await axios.post("/api/payment/confirm", {paymentKey, orderId, amount});
+        // if (response.msg === 'yes') {
+        //     setIsConfirmed(true);
+        // }
+    }
 
     return (
-        <div className={paymentsStyle.paymentContainer}>
+        <div className="wrapper w-100">
             {isConfirmed ? (
-                <div>
-                    <img
-                        src="https://static.toss.im/illusts/check-blue-spot-ending-frame.png"
-                        width="120"
-                        height="120"
-                    />
-                    <h2 className={paymentsStyle.title}>결제를 완료했어요</h2>
-                    <div className={paymentsStyle.section}>
-                        <span className={paymentsStyle.label}>주문번호&nbsp;{paymentKey}</span>
-                        <span className={paymentsStyle.label}>결제 금액&nbsp;{amount}</span>
+                <div
+                className="flex-column align-center confirm-success w-100 max-w-540"
+                style={{
+                    display: "flex"
+                }}
+                >
+                <img
+                    src="https://static.toss.im/illusts/check-blue-spot-ending-frame.png"
+                    width="120"
+                    height="120"
+                />
+                <h2 className="title">결제를 완료했어요</h2>
+                <div className="response-section w-100">
+                    <div className="flex justify-between">
+                        <span className="response-label">결제 금액</span>
+                        <span id="amount" className="response-text">
+                            {amount}
+                        </span>
                     </div>
-                    <p className={paymentsStyle.redirectMessage}>{countdown}초 뒤에 홈으로  이동합니다...</p>
+                    <div className="flex justify-between">
+                        <span className="response-label">주문번호</span>
+                        <span id="orderId" className="response-text">
+                            {orderId}
+                        </span>
+                    </div>
+                    <div className="flex justify-between">
+                        <span className="response-label">paymentKey</span>
+                        <span id="paymentKey" className="response-text">
+                            {paymentKey}
+                        </span>
+                    </div>
+                </div>
+
+                <div className="w-100 button-group">
+                    <div className="flex" style={{ gap: "16px" }}>
+                    <a
+                        className="btn w-100"
+                        href="https://developers.tosspayments.com/sandbox"
+                    >
+                        다시 테스트하기
+                    </a>
+                    <a
+                        className="btn w-100"
+                        href="https://docs.tosspayments.com/guides/v2/payment-widget/integration"
+                        target="_blank"
+                        rel="noopner noreferer"
+                    >
+                        결제 연동 문서가기
+                    </a>
+                    </div>
+                </div>
                 </div>
             ) : (
-                <div>
-                    <img
+                <div className="flex-column align-center confirm-loading w-100 max-w-540">
+                    <div className="flex-column align-center">
+                        <img
                         src="https://static.toss.im/lotties/loading-spot-apng.png"
                         width="120"
                         height="120"
-                    />
-                    <h2 className={paymentsStyle.title}>결제가 진행중입니다</h2>
+                        />
+                        <h2 className="title text-center">결제 요청까지 성공했어요.</h2>
+                        <h4 className="text-center description">결제 승인하고 완료해보세요.</h4>
+                    </div>
+                    <div className="w-100">
+                        <button
+                            className="btn primary w-100"
+                            onClick={confirmPayment}>
+                            결제 승인하기
+                        </button>
+                    </div>
                 </div>
             )}
         </div>
     );
 }
 
-export default PaymentsSuccess;
+export { PaymentsSuccess };
