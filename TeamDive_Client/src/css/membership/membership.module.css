@@ -11,7 +11,7 @@
     box-sizing: border-box;
 }
 
-/* 네비게이션 바 스타일 */
+/* 🔹 네비게이션 바 스타일 */
 .menu {
     display: flex;
     justify-content: center;
@@ -26,10 +26,9 @@
     -webkit-backdrop-filter: blur(15px);
     margin-bottom: 20px;
     box-sizing: border-box;
-    flex-wrap: wrap; /* 메뉴가 줄어들 때 항목들이 줄바꿈되도록 함 */
 }
 
-/* 네비게이션 링크 스타일 */
+/* 🔹 네비게이션 링크 스타일 */
 .link {
     text-decoration: none;
     color: rgba(255, 255, 255, 0.8);
@@ -39,9 +38,6 @@
     padding: 10px 15px;
     border-radius: 8px;
     transition: background-color 0.3s ease, color 0.3s ease;
-    white-space: nowrap; /* 텍스트 줄 바꿈 방지 */
-    display: inline-block; /* 요소가 부모 요소의 크기에 맞춰 조정되도록 설정 */
-    text-align: center; /* 텍스트를 가운데 정렬 */
 }
 
 .link:hover {

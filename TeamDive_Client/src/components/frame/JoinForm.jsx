@@ -3,14 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import joinStyles from '../../css/joinForm.module.css';
 import { SignUpStep1 } from '../member/SignUp1';
 import { SignUpStep2 } from '../member/SignUp2';
-import DaumPostcode from "react-daum-postcode";
 
 const JoinForm = () => {
 
     
     const [step, setStep] = useState(1);
-    
-
 
     const [step1Data, setStep1Data] = useState({
       memberId: '',
@@ -20,10 +17,9 @@ const JoinForm = () => {
       emailDomain: '',
       customDomain: '',
       name: '',
-      nickname: '',
+      nickName: '',
       birth: '',
       gender: '',
-      phone: '',
     });
     
 
