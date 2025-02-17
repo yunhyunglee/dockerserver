@@ -18,6 +18,7 @@ const GiftMembership = ({ membership, onProceedToPayment }) => {
             try{
                 const respone = await jaxios.get('/api/member/getMember', { params: {giftId} })
                 if(respone.data.message === 'yes'){
+                    setGiftToMember(giftId);
                     onProceedToPayment();
                 }else{
                     alert('받는 사람의 ID 가 존재하지 않습니다')
@@ -51,7 +52,8 @@ const GiftMembership = ({ membership, onProceedToPayment }) => {
                     rows="5"
                     placeholder='선물 메시지를 입력해주세요'
                     value={giftMessage}
-                    onChange={(e) => { setGiftMessage(e.target.value) }}/>
+                    onChange={(e) => { setGiftMessage(e.target.value) }}
+                />
             </div>
 
             <div className={giftStyle.productInfo}>

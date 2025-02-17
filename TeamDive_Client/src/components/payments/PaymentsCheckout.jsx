@@ -7,7 +7,8 @@ import paymentsStyle from '../../css/membership/payments.module.css';
 
 const clientKey = "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
 
-const PaymentsCheckout = ({ membership, loginUser }) => {
+const PaymentsCheckout = ({ membership, giftToId }) => {
+    const loginUser = useSelector(state => state.user);
     const navigate = useNavigate();
 
     const customerKey = loginUser.memberKey;
@@ -83,6 +84,7 @@ const PaymentsCheckout = ({ membership, loginUser }) => {
                 orderId: `${membership.membershipId}-${Date.now()}`,
                 amount: amount.value,
                 orderName: membership.name,
+                giftToId
             }, {params: {memberId: loginUser.memberId}});
 
             if (response.status === 200) {

@@ -49,7 +49,6 @@ public class PaymentService {
         }else {
             throw new IllegalArgumentException("memberId 에 해당하는 member 가 없습니다");
         }
-
         return new PaymentResponseDto(payment);
     }
 
@@ -115,8 +114,8 @@ public class PaymentService {
     }
 
     /* 멤버십 등록 */
-    private void activeMembership(Membership membership, Payment payment) {
-        Membership_user membershipUser = new Membership_user(payment.getMember(), membership);
+    private void activeMembership(Membership membership, Member member) {
+        Membership_user membershipUser = new Membership_user(member, membership);
         msur.save(membershipUser); // 멤버십 정보 저장
     }
 
