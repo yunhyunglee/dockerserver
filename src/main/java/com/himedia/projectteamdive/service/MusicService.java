@@ -13,7 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @EnableScheduling
@@ -188,6 +191,7 @@ public class MusicService {
         Music m=mr.findByMusicId(music.getMusicId());
         m.setAlbum(music.getAlbum());
         m.setTitle(music.getTitle());
+        m.setImage( music.getImage());
         m.setGenre(music.getGenre());
         m.setLyrics(music.getLyrics());
         m.setTitleMusic(music.isTitleMusic());
@@ -261,39 +265,5 @@ public class MusicService {
         HashMap<String, Object> result=new HashMap<>();
         result.put("album",arr.findAll());
         return result;
-    }
-
-
-
-
-
-
-    // AI 쪽임
-
-    // AI 응답을 기반으로 감정을 추출하는 메서드
-    public String extractMood(String aiResponse) {
-        String lowerResponse = aiResponse.toLowerCase();
-
-        if (lowerResponse.contains("슬픈") || lowerResponse.contains("우울") || lowerResponse.contains("기분 안 좋아")) {
-            return "sad";
-        } else if (lowerResponse.contains("기분 좋아") || lowerResponse.contains("행복") || lowerResponse.contains("신나는")) {
-            return "happy";
-        } else if (lowerResponse.contains("차분") || lowerResponse.contains("조용한") || lowerResponse.contains("편안한")) {
-            return "relaxed";
-        } else if (lowerResponse.contains("에너지 넘치는") || lowerResponse.contains("활기찬") || lowerResponse.contains("운동")) {
-            return "energetic";
-        } else {
-            return null; // 감정을 찾지 못한 경우
-        }
-    }
-
-    // 해당 감정에 맞는 랜덤 노래 추천
-    public Music getRandomRecommendation(String mood) {
-        List<Music> songs = mr.findByMood(mood);
-        if (songs.isEmpty()) {
-            return null;
-        }
-        Random random = new Random();
-        return songs.get(random.nextInt(songs.size()));
     }
 }

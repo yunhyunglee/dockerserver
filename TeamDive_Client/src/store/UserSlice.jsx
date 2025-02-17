@@ -20,6 +20,7 @@ const initialState={
     indate:'',
     provider:'',
     memberKey:'',
+    introduction:'',
     rolename:[],
     accessToken:'',
     refreshToken:'',
@@ -44,6 +45,7 @@ const getLoginUser=()=>{
         memberInfo.indate = decodeURIComponent(memberInfo.indate);
         memberInfo.provider = decodeURIComponent(memberInfo.provider);
         memberInfo.memberKey = decodeURIComponent(memberInfo.memberKey);
+        memberInfo.introduction = decodeURIComponent(memberInfo.introduction);
         memberInfo.rolename = decodeURIComponent(memberInfo.rolename);
         memberInfo.accessToken = decodeURIComponent(memberInfo.accessToken);
         memberInfo.refreshToken = decodeURIComponent(memberInfo.refreshToken);
@@ -73,6 +75,7 @@ export const UserSlice = createSlice(
                 state.indate = action.payload.indate;
                 state.provider = action.payload.provider;
                 state.memberKey = action.payload.memberKey;
+                state.introduction = action.payload.introduction;
                 state.rolename = action.payload.rolename;
                 state.accessToken = action.payload.accessToken;
                 state.refreshToken = action.payload.refreshToken;
@@ -94,6 +97,7 @@ export const UserSlice = createSlice(
                 state.indate = '';
                 state.provider = '';
                 state.memberKey = '';
+                state.introduction = '';
                 state.rolename = '';
                 state.accessToken = '';
                 state.refreshToken = '';

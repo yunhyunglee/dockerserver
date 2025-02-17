@@ -22,6 +22,7 @@ public class Music {
     @Column(name = "music_id")
     private int musicId;
     private String title;
+    private String image;
     @Column(name = "play_count")
     private int playCount=0;
 //    @Column(name = "play_count_day")
@@ -32,9 +33,6 @@ public class Music {
 //    private int playCountMonth=0;
     private String genre;
     private String lyrics;
-
-    private String mood;
-
     @Column(name = "title_music")
     private boolean titleMusic =false;
     @Column(name ="track_number")
