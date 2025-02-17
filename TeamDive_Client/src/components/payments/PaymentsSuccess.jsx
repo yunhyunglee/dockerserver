@@ -36,7 +36,6 @@ const PaymentsSuccess = () => {
                 console.error("결제 승인 실패:", error.response?.data || error.message);
             }
         };
-
         confirmPayment();
     }, [navigate, paymentKey, orderId, amount]);
 
@@ -67,6 +66,7 @@ const PaymentsSuccess = () => {
                 </div>
             )}
         </div>
+        
     );
 }
 
