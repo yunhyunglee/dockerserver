@@ -4,17 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "../../../style/music.scss";
 
 const Music = () => {
-    const [musicList, setMusicList] = useState([
-        { album_title: "Dive", title: "Dive In", genre: "Pop", image: "/images/dive.jpg", audio_url: "/music/dive.mp3" },
-        { album_title: "Deep", title: "Deep Blue", genre: "Electronic", image: "/images/deepblue.jpg", audio_url: "/music/deepblue.mp3" },
-        { album_title: "Ocean", title: "Ocean Sound", genre: "Chill", image: "/images/ocean.jpg", audio_url: "/music/ocean.mp3" },
-        { album_title: "Dive", title: "Dive In", genre: "Pop", image: "/images/dive.jpg", audio_url: "/music/dive.mp3" },
-        { album_title: "Deep", title: "Deep Blue", genre: "Electronic", image: "/images/deepblue.jpg", audio_url: "/music/deepblue.mp3" },
-        { album_title: "Ocean", title: "Ocean Sound", genre: "Chill", image: "/images/ocean.jpg", audio_url: "/music/ocean.mp3" },
-        { album_title: "Dive", title: "Dive In", genre: "Pop", image: "/images/dive.jpg", audio_url: "/music/dive.mp3" },
-        { album_title: "Deep", title: "Deep Blue", genre: "Electronic", image: "/images/deepblue.jpg", audio_url: "/music/deepblue.mp3" },
-        { album_title: "Ocean", title: "Ocean Sound", genre: "Chill", image: "/images/ocean.jpg", audio_url: "/music/ocean.mp3" },
-    ]);
+    const [musicList, setMusicList] = useState([]);
 
     const [search, setSearch] = useState("");
     const navigate = useNavigate();
@@ -68,7 +58,7 @@ const Music = () => {
             <h1>음원 관리</h1>
                 <div className='top2' >
                 <input type="text" className="searchInput" placeholder="음원 검색 (제목 또는 장르)" value={search} onChange={onSearch}/>
-                <button className="addMusicButton" onClick={() => navigate("/addMusic")}>음원 추가</button>   
+                <button className="addMusicButton" onClick={() => navigate("/AddMusic")}>음원 추가</button>   
                 </div>   
                     <table>
                         <thead>
