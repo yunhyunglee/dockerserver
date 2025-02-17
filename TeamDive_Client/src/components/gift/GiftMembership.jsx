@@ -2,32 +2,67 @@ import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import jaxios from '../../util/JwtUtil';
 
-import paymentStyle from '../../css/membership/payments.module.css';
+import giftStyle from '../../css/membership/gift.module.css';
 
-const GiftMembership = ({ membership, onProceedToPayment }) => {
+const GiftMembership = ({ membership, giftToId, setGiftToId, onProceedToPayment }) => {
     const loginUser = useSelector(state => state.user);
 
+    async function checkValid(){
+        if(!giftToId){
+            alert('받는 사람의 ID를 입력해주세요')
+        }else if(giftToId === loginUser.memberId){
+            alert('자기 자신에게 선물할 수 없습니다')
+        }else{
+            try{
+                let respone = await jaxios.get('/api/member/getMember', { params: {giftToId} })
+                if(respone.data.message === 'yes'){
+                    respone = await jaxios.get('/api/membership/checkActiveMembership',
+                        { params: {memberId: giftToId, category: membership.category} })
+                    if(respone.data.message === 'no' && !respone.data.activeMembership){
+                        setGiftToId(giftToId);
+                        onProceedToPayment();
+                    }else{
+                        alert('멤버십을 이용중인 사용자에게는 선물할 수 없습니다')
+                    }
+                }else{
+                    alert('받는 사람의 ID 가 존재하지 않습니다')
+                }
+            }catch(error){ console.error('선물하기 오류', error); }
+        }
+    }
+
     return (
-        <div className={paymentStyle.paymentContainer}>
-            <div className={paymentStyle.field}>
-                <label>받는 사람</label>
-                <input type='text' placeholder='받는 사람의 ID'/>
+        <div className={giftStyle.giftContainer}>
+            <h1>멤버십 선물하기</h1>
+            <h2>받는 사람</h2>
+            <div className={giftStyle.field}>
+                <input
+                    type='text'
+                    placeholder='받는 사람의 ID 를 입력해주세요'
+                    value={giftToId}
+                    onChange={(e) => { setGiftToId(e.target.value) }}
+                />
             </div>
-            <div className={paymentStyle.field}>
-                <label>보내는 사람</label>
-                <input type='text' value={login} readOnly/>
+
+            <h2>보내는 사람</h2>
+            <div className={giftStyle.field}>
+                <input type='text' value={loginUser.nickname} readOnly/>
             </div>
-            <div className={paymentStyle.field}>
-                <label>받는 사람</label>
-                <input type='text' placeholder='받는 사람의 ID'/>
+
+            <div className={giftStyle.productInfo}>
+                <img className={giftStyle.productImage} src="https://via.placeholder.com/48" alt="상품 이미지" />
+                <div className={giftStyle.productDetails}>
+                    <div className={giftStyle.productName}>{membership.name}</div>
+                    <div className={giftStyle.price}>{membership.price}원 (VAT 포함)</div>
+                    <div className={giftStyle.period}>이용기한 : {membership.period}개월</div>
+                </div>
             </div>
-            <div className={paymentStyle.field}>
-                <label>받는 사람</label>
-                <input type='text' placeholder='받는 사람의 ID'/>
-            </div>
-            <h2>{membership.name} (Gift)</h2>
-            <p>선물 멤버십입니다.</p>
-            <button onClick={onProceedToPayment}>결제하기</button>
+
+            <button
+                className={giftStyle.paymentButton}
+                onClick={() => { checkValid() }}>
+                {membership.price}원 결제하기
+            </button>
         </div>
     )
 }

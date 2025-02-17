@@ -1,16 +1,11 @@
 package com.himedia.projectteamdive.service;
 
 import com.himedia.projectteamdive.configuration.PaymentConfig;
+import com.himedia.projectteamdive.dto.GiftRequestDto;
 import com.himedia.projectteamdive.dto.PaymentRequestDto;
 import com.himedia.projectteamdive.dto.PaymentResponseDto;
-import com.himedia.projectteamdive.entity.Member;
-import com.himedia.projectteamdive.entity.Membership;
-import com.himedia.projectteamdive.entity.Membership_user;
-import com.himedia.projectteamdive.entity.Payment;
-import com.himedia.projectteamdive.repository.MemberRepository;
-import com.himedia.projectteamdive.repository.MembershipRepository;
-import com.himedia.projectteamdive.repository.MembershipUserRepository;
-import com.himedia.projectteamdive.repository.PaymentRepository;
+import com.himedia.projectteamdive.entity.*;
+import com.himedia.projectteamdive.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -37,6 +32,8 @@ public class PaymentService {
     MembershipUserRepository msur;
     @Autowired
     PaymentConfig pc;
+    @Autowired
+    GiftRepository gr;
 
     /* 결제 정보 저장 */
     public PaymentResponseDto savePaymentInfo(PaymentRequestDto requestDto, String memberId) {
@@ -49,7 +46,6 @@ public class PaymentService {
         }else {
             throw new IllegalArgumentException("memberId 에 해당하는 member 가 없습니다");
         }
-
         return new PaymentResponseDto(payment);
     }
 
@@ -63,9 +59,9 @@ public class PaymentService {
         payment.setPaid(true); // 결제 완료 처리
 
         if(membership.getCategory().equals("gift")){
-
+            giftMembership(membership, payment); // 멤버십 선물
         }else{
-            activeMembership(membership, payment); // 멤버십 활성화
+            activeMembership(membership, payment.getMember()); // 멤버십 활성화
         }
         return response;
     }
@@ -114,9 +110,19 @@ public class PaymentService {
         return response;
     }
 
+    /* 멤버십 선물 */
+    private void giftMembership(Membership membership, Payment payment) {
+        GiftRequestDto giftRequestDto = new GiftRequestDto();
+        giftRequestDto.setGiftName(membership.getName());
+        giftRequestDto.setGiftFrom(payment.getMember().getMemberId());
+        giftRequestDto.setGiftTo(payment.getGiftToId());
+        Gift gift = new Gift(giftRequestDto, membership);
+        gr.save(gift);
+    }
+
     /* 멤버십 등록 */
-    private void activeMembership(Membership membership, Payment payment) {
-        Membership_user membershipUser = new Membership_user(payment.getMember(), membership);
+    private void activeMembership(Membership membership, Member member) {
+        Membership_user membershipUser = new Membership_user(member, membership);
         msur.save(membershipUser); // 멤버십 정보 저장
     }
 

@@ -10,13 +10,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class GiftRequestDto {
     private String giftName;
-    private String giftMessage;
     private String giftTo;
     private String giftFrom;
 
-    public GiftRequestDto(String giftName, String giftMessage, String giftTo, String giftFrom) {
+    public GiftRequestDto(String giftName, String giftTo, String giftFrom) {
         this.giftName = giftName;
-        this.giftMessage = giftMessage;
         this.giftTo = giftTo;
         this.giftFrom = giftFrom;
     }
@@ -24,7 +22,6 @@ public class GiftRequestDto {
     public Gift toEntity(){
         return Gift.builder()
                 .giftName(giftName)
-                .giftMessage(giftMessage)
                 .giftTo(giftTo)
                 .giftFrom(giftFrom)
                 .build();

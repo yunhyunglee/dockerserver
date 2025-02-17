@@ -12,6 +12,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -33,6 +34,7 @@ public class MemberService {
         roles.add(RoleName.USER);
         member.setMemberRoleList(roles);
         member.setPassword(pe.encode(member.getPassword()));
+        member.setMemberKey(UUID.randomUUID().toString());
         //member.setBirth(convertStringToTimestamp(member.getBirth()));;
         mr.save(member);
 

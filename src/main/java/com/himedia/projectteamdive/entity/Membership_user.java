@@ -30,8 +30,8 @@ public class Membership_user {
 
     @Column(name = "membership_name")
     private String membershipName; // Membership 이름 저장
-    @Column(name = "membership_price")
-    private int membershipPrice;   // Membership 가격 저장
+    @Column(name = "membership_period")
+    private int membershipPeriod;   // Membership 기간 저장
     @Column(name = "membership_category")
     private String membershipCategory;   // Membership 카테고리 저장
 
@@ -44,7 +44,7 @@ public class Membership_user {
         this.member = member;
         this.membership = membership;
         this.membershipName = membership.getName();
-        this.membershipPrice = membership.getPrice();
+        this.membershipPeriod = membership.getPeriod();
         this.membershipCategory = membership.getCategory();
         this.downloadCount = membership.getDownloadCount();
         this.startDate = Timestamp.valueOf(LocalDateTime.now());

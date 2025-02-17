@@ -14,12 +14,14 @@ public class PaymentRequestDto {
     private String orderId;
     private int amount;
     private String orderName;
+    private String giftToId;
     private Member member;
 
-    public PaymentRequestDto(String orderId, int amount, String orderName, Member member) {
+    public PaymentRequestDto(String orderId, int amount, String orderName, String giftToId, Member member) {
         this.orderId = orderId;
         this.amount = amount;
         this.orderName = orderName;
+        this.giftToId = giftToId;
         this.member = member;
     }
 
@@ -29,6 +31,7 @@ public class PaymentRequestDto {
                 .orderId(orderId)
                 .amount(amount)
                 .orderName(orderName)
+                .giftToId(giftToId)
                 .member(member)
                 .isPaid(false) // 초기 상태는 결제 미완료
                 .build();

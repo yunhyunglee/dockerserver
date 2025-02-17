@@ -33,7 +33,7 @@
     color: #333;
 }
 
-.field input, .field textarea {
+.field input {
     width: 100%;
     padding: 12px;
     border: 1px solid #ccc;
