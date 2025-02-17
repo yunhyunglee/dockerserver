@@ -7,6 +7,7 @@ import User from "./component/page/User";
 import Music from "./component/page/music/Music";
 import AddMusic from "./component/page/music/addMusic";
 import Login from "./component/Login";
+import Artist from "./component/page/artist/artist";
 import "./style/global.scss";
 import { useSelector } from "react-redux";
 import { useState } from "react";
@@ -32,6 +33,7 @@ const App = () => {
                                 <Route path="/user" element={<User />} />
                                 <Route path="/music" element={<Music />} />
                                 <Route path="/addMusic" element={<AddMusic />} />
+                                <Route path="/artist" element={<Artist />} />
                             </>
                             ) : (
                                 <Route path="*" element={<Login />} />

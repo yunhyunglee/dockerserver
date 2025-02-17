@@ -10,10 +10,10 @@ const SideBar = () => {
 
 
     const menuItems = [
-        { path: "/dashboard", openText: "대시보드", closedText: "대시", icon: <FaTachometerAlt /> },
-        { path: "/user", openText: "사용자 관리", closedText: "사용자", icon: <FaUsers /> },
-        { path: "/music", openText: "음원 관리", closedText: "음원", icon: <FaMusic /> },
-        { path: "/settings", openText: "설정", closedText: "설정", icon: <FaCog /> },
+        { path: "/dashboard", openText: "대시보드",icon: <FaTachometerAlt /> },
+        { path: "/user", openText: "사용자 관리", icon: <FaUsers /> },
+        { path: "/music", openText: "음원 관리", icon: <FaMusic /> },
+        { path: "/artist", openText: "가수 관리", icon: <FaCog /> },
 
     ];
 

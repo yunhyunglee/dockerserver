@@ -39,8 +39,9 @@ public class MusicController {
     @PostMapping("/insertArtist")
     public HashMap<String, Object> insertArtist(@RequestBody Artist artist) {
         HashMap<String, Object> map = new HashMap<>();
-        ms.insertArtist(artist);
+        Artist savedArtist = ms.insertArtist(artist);
         map.put("msg","yes");
+        map.put("artist", savedArtist);
         return map;
     }
 
