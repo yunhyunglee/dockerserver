@@ -7,18 +7,20 @@ import { useEffect } from "react";
 const PaymentsFail = () => {
     const [searchParams] = useSearchParams();
     const failReason = searchParams.get("code");
+    const orderId = searchParams.get("orderId");
     const navigate = useNavigate();
 
-    // useEffect(() => {
-    //     const insertErrorCode = async () => {
-    //         try{
-    //             const response = await jaxios.post('/api/payments/paymentFail', null, {params: { failReason }});
-    //         }catch(error){
-    //             console.error('결제 실패 데이터 저장 불가', error.response?.data || error.message);
-    //         }
-    //     }
-    //     insertErrorCode();
-    // }, [failReason]);
+    useEffect(() => {
+        const insertErrorCode = async () => {
+            console.log('orderId', orderId);
+            try{
+                const response = await jaxios.post('/api/payments/paymentFail', null, {params: { failReason, orderId }});
+            }catch(error){
+                console.error('결제 실패 데이터 저장 불가', error.response?.data || error.message);
+            }
+        }
+        insertErrorCode();
+    }, [failReason]);
     
     return (
         <div className={paymentsStyle.paymentContainer}>
