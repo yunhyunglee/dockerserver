@@ -116,17 +116,7 @@ public class PaymentService {
 
     /* 멤버십 등록 */
     private void activeMembership(Membership membership, Payment payment) {
-        Membership_user membershipUser = new Membership_user();
-        membershipUser.setMember(payment.getMember());
-        membershipUser.setMembership(membership);
-        LocalDateTime now = LocalDateTime.now(); // 현재 시간
-        membershipUser.setStartDate(Timestamp.valueOf(now));
-        if(membership.getDownloadCount() == 0){ // 스트리밍 이용권
-            membershipUser.setEndDate(Timestamp.valueOf(now.plusMonths(membership.getPeriod())));
-        }else{ // 다운로드 이용권
-            membershipUser.setEndDate(Timestamp.valueOf(now.plusMonths(membership.getPeriod()))); // 12개월
-            membershipUser.setDownloadCount(membership.getDownloadCount());
-        }
+        Membership_user membershipUser = new Membership_user(payment.getMember(), membership);
         msur.save(membershipUser); // 멤버십 정보 저장
     }
 

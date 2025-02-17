@@ -6,7 +6,6 @@ import jaxios from '../../util/JwtUtil';
 import paymentsStyle from '../../css/membership/payments.module.css';
 
 const clientKey = "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
-const customerKey = "6RR66cpTdKFLq-5AplwvV";
 
 const PaymentsCheckout = ({ membership, loginUser }) => {
     const navigate = useNavigate();
@@ -119,4 +118,4 @@ const PaymentsCheckout = ({ membership, loginUser }) => {
     );
 }
 
-export { PaymentsCheckout };
+export default PaymentsCheckout;
