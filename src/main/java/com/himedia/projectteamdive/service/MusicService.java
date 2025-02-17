@@ -76,11 +76,23 @@ public class MusicService {
     }
 
 
-
+    @Autowired
+    MemberRecentMusicsRepository mrmr;
     public void addPlayCount(HashMap<Integer,Integer> playCount,String memberId) {
         playCount.forEach((musicId,playcountToday)->{
             Music music= mr.findByMusicId(musicId);
             if(music!=null) {
+
+                MemberRecentMusics recentMusic=MemberRecentMusics.builder()
+                        .member(memr.findByMemberId(memberId))
+                        .musicId(musicId).build();
+                mrmr.save(recentMusic);
+                List<MemberRecentMusics> recentMusics=mrmr.findByMember_MemberIdOrderByIdAsc(memberId);
+                if(recentMusics.size()>30){
+                    MemberRecentMusics recentMusic2=recentMusics.get(0);
+                    mrmr.delete(recentMusic2);
+                }
+
                 music.setPlayCount(music.getPlayCount()+ playcountToday);
                 long currentTimeMillis = System.currentTimeMillis();
                 Timestamp indate = new Timestamp(currentTimeMillis);
