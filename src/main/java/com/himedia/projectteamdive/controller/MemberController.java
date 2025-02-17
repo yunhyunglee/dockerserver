@@ -119,7 +119,7 @@ public class MemberController {
         HashMap<String, Object> result = new HashMap<>();
 
         // 프로젝트 디렉토리를 기준으로 profileImage 폴더 설정
-        String uploadDir = System.getProperty("user.dir") + "/src/main/resources/static/profileImage/";
+        String uploadDir = System.getProperty("user.dir") + "/src/main/webapp/profileImage/";
         File directory = new File(uploadDir);
 
         // 폴더가 존재하지 않으면 생성
@@ -152,8 +152,8 @@ public class MemberController {
                     .path(newFilename)
                     .toUriString();
 
-            result.put("image", image);
-            result.put("filename", newFilename);
+            result.put("image", newFilename);
+            System.out.println(result);
             System.out.println("파일 저장 성공: " + uploadPath);
         } catch (IOException e) {
             System.out.println("파일 저장 실패: " + e.getMessage());
@@ -163,10 +163,10 @@ public class MemberController {
         return result;
     }
 
+
     @PostMapping("/join")
     public HashMap<String, Object> join(@ModelAttribute Member member){
         HashMap<String, Object> result = new HashMap<>();
-        System.out.println("password=========="+member.getPassword());
         ms.insertMember(member);
         result.put("msg", "yes");
 
@@ -245,6 +245,7 @@ public class MemberController {
         }
         response.sendRedirect("http://localhost:5173/KakaoLogin/"+member.getMemberId());
     }
+
 
 
 

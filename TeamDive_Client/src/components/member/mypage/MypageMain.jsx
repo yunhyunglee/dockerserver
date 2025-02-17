@@ -4,14 +4,30 @@ import axios from 'axios';
 import jaxios from '../../../util/JwtUtil';
 import { useSelector } from 'react-redux';
 
+import { useParams } from 'react-router-dom';
+
 
 
 const MypageMain = () => {
 
+
     const [likeList, setLikeList] = useState();
     const [replyList, setReplyList] = useState();
-
+    const [member, setMember] = useState({});
+    const {memberId} = useParams();
+    
     const loginUser = useSelector(state=>state.user);
+
+    useEffect(()=>{
+        jaxios.get(`/api/memeber/getLoginUser`, {params:{memberId}})
+        .then((result)=>{
+            setMember(result.data.member);
+            console.log("loginUser", result.data.member);
+        })
+        .catch((err)=>{
+            console.error(err);
+        })
+    },[]);
 
     useEffect(()=>{
         jaxios.get('/api/like/likeList')
@@ -34,34 +50,51 @@ const MypageMain = () => {
     },[]);
 
     return (
-        <div className={mypageStyle.content}>
-            <h1>마이페이지</h1>
-
+        <div className={mypageStyle.main}>
             {/* 사용자 정보 */}
+            <h2>회원 정보</h2>
             <section className={mypageStyle.userInfo}>
-                <h2>회원 정보</h2>
-                <div className={mypageStyle.profile}>
-                    <img className={mypageStyle.profileImage} src=" " />
-                    <div className={mypageStyle.profileDetails}>
-                        <div>
-                            <label>아이디</label>&nbsp;&nbsp;&nbsp;
-                            {<>{loginUser.memberId}</>}
-                        </div>
-                        <div>
-                            <label>닉네임</label>&nbsp;&nbsp;&nbsp;
-                            {<>{loginUser.nickname}</>}
-                        </div>
-                        <div>
-                            <label>이메일</label>&nbsp;&nbsp;&nbsp;
-                            {<>{loginUser.email}</>}
-                        </div>
-                        <div>
-                            <label>소개</label>&nbsp;&nbsp;&nbsp;
-                            {<>{loginUser.intro}</>}
+                
+                <div className={mypageStyle.info}>
+                    <div className={mypageStyle.profile}>
+                        <img className={mypageStyle.profileImage} src={`http://localhost:8070/profileImage/${loginUser.image}`} />
+                        <div className={mypageStyle.profileDetails}>
+                            <div className={mypageStyle.field}>
+                                <label>아이디</label>&nbsp;&nbsp;&nbsp;
+                                {<>{loginUser.memberId}</>}
+                            </div>
+                            <div className={mypageStyle.field}>
+                                <label>닉네임</label>&nbsp;&nbsp;&nbsp;
+                                {<>{loginUser.nickname}</>}
+                            </div>
+                            <div className={mypageStyle.field}>
+                                <label>이메일</label>&nbsp;&nbsp;&nbsp;
+                                {<>{loginUser.email}</>}
+                            </div>
+                            <div className={mypageStyle.field}>
+                                <label>소개</label>&nbsp;&nbsp;&nbsp;
+                                {<>{loginUser.introduction}</>}
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                {/* 사용 중인 멤버십 */}
+                <div className={mypageStyle.membership}>
+                    <h2>사용 중인 멤버십</h2>
+                    <div>
+                        <div>
+                            <label>멤버십 이름</label>
+                            {
+                                
+                            }
+                        </div>
+                        <button>멤버십 해지</button>
+                    </div>
+                </div>
             </section>
+                
+            
 
             {/* 좋아요한 리스트 */}
             <section className={mypageStyle.likeList}>
@@ -87,20 +120,6 @@ const MypageMain = () => {
                         })
                     ):(<>Loading....</>)
                 }
-            </section>
-
-            {/* 사용 중인 멤버십 */}
-            <section className={mypageStyle.membership}>
-                <h2>사용 중인 멤버십</h2>
-                <div>
-                    <div>
-                        <label>멤버십 이름</label>
-                        {
-                            
-                        }
-                    </div>
-                    <button>멤버십 해지</button>
-                </div>
             </section>
         </div>
     )
