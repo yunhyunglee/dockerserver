@@ -151,7 +151,6 @@ public class MemberController {
                     .path("/profileImage/")
                     .path(newFilename)
                     .toUriString();
-
             result.put("image", newFilename);
             System.out.println(result);
             System.out.println("파일 저장 성공: " + uploadPath);
