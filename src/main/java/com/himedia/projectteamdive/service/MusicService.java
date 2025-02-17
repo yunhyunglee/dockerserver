@@ -230,4 +230,10 @@ public class MusicService {
         List<Music> updatedMusicList = musicIds.stream().map(musicid -> mr.findByMusicId(musicid)).collect(Collectors.toList());
         playlist.setMusicList(updatedMusicList);
     }
+
+    public HashMap<String, Object> getAllMusic() {
+        HashMap<String, Object> result=new HashMap<>();
+        result.put("music",mr.findAll());
+        return result;
+    }
 }

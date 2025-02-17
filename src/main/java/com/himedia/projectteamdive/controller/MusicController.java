@@ -83,7 +83,7 @@ public class MusicController {
         for(Album album:albumList){
             List<Music>musicList=album.getMusicList();
             for(Music music:musicList){
-                String s = music.getBucketpath().replace("https://d9k8tjx0yo0q5.cloudfront.net/","https://divestreaming.s3.ap-northeast-2.amazonaws.com/");
+                String s = music.getBucketPath().replace("https://d9k8tjx0yo0q5.cloudfront.net/","https://divestreaming.s3.ap-northeast-2.amazonaws.com/");
                 ss.deleteFile(s);
             }
         }
@@ -96,7 +96,7 @@ public class MusicController {
         HashMap<String, Object> map = new HashMap<>();
         List<Music> musicList=album.getMusicList();
         for (Music music : musicList) {
-            String s = music.getBucketpath().replace("https://d9k8tjx0yo0q5.cloudfront.net/","https://divestreaming.s3.ap-northeast-2.amazonaws.com/");
+            String s = music.getBucketPath().replace("https://d9k8tjx0yo0q5.cloudfront.net/","https://divestreaming.s3.ap-northeast-2.amazonaws.com/");
             ss.deleteFile(s);
         }
         ms.deleteAlbum(album);
@@ -106,7 +106,7 @@ public class MusicController {
     @DeleteMapping("/deleteMusic")
     public HashMap<String, Object> deleteMusic(@RequestBody Music music) {
         HashMap<String, Object> map = new HashMap<>();
-        String s = music.getBucketpath().replace("https://d9k8tjx0yo0q5.cloudfront.net/","https://divestreaming.s3.ap-northeast-2.amazonaws.com/");
+        String s = music.getBucketPath().replace("https://d9k8tjx0yo0q5.cloudfront.net/","https://divestreaming.s3.ap-northeast-2.amazonaws.com/");
         ss.deleteFile(s);
         ms.deleteMusic(music);
         map.put("msg","yes");
@@ -229,6 +229,11 @@ public class MusicController {
     public HashMap<String, Object> getMusic(@RequestParam("musicId")int musicId) {
         HashMap<String, Object> map = new HashMap<>();
         map.put("music",ms.getMusic(musicId));
+        return map;
+    }
+    @GetMapping("/getAllMusic")
+    public HashMap<String, Object> getAllMusic() {
+        HashMap<String, Object> map = ms.getAllMusic();
         return map;
     }
 
