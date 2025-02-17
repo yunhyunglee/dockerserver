@@ -14,6 +14,11 @@ import org.hibernate.annotations.DynamicUpdate;
 @DynamicInsert
 @DynamicUpdate
 public class Likes {
+    public Likes(Member member, Allpage allpage) {
+        this.member = member;
+        this.allpage = allpage;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "like_id")
