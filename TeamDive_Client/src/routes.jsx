@@ -6,6 +6,7 @@ import Membership from "./components/membership/Membership";
 import MainPage from "./components/frame/mainpage/MainPage";
 import MusicDetail from "./components/music/MusicDetail";
 import PopularChart from "./components/PopularChart";
+import { Storage } from "./components/storage/storage";
 
 import PaymentsCheckout from "./components/payments/PaymentsCheckout";
 import PaymentsSuccess from "./components/payments/PaymentsSuccess";
@@ -20,7 +21,7 @@ function AppRoutes() {
             <Route path="/today" element={<PopularChart />} />
             <Route path="/playList" element={<h4>플리페이지임</h4>} />
             <Route path="/membership/:category" element={<Membership/>} />
-            <Route path="/menu2" element={<h4>메뉴2 페이지임</h4>} />
+            <Route path="/storage" element={<Storage />} />
             <Route path="/menu3" element={<h4>메뉴3 페이지임</h4>} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/kakaoLogin/:memberId" element={<KakaoLogin />} />
