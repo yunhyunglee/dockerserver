@@ -9,9 +9,6 @@ import { loginAction } from '../../store/userSlice';
 
 const LoginPage =() => {
 
-    const [messageId, setMessageId] = useState('');
-    const [messageEmail, setMessageEmail] = useState('');
-
     const [memberId, setMemberId] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
@@ -28,13 +25,18 @@ const LoginPage =() => {
             const result = await axios.post('/api/member/login', null, {params:{username: memberId, password: password}});
                    
             if(result.data.error === 'ERROR_LOGIN'){
-                alert('아이디와 비밀번호를 확인하세요.');
+                alert('아이디와 비밀번호가 일치하지 않습니다.');
                 setMemberId('');
+                setPassword('');
+                navigate('/login');
+            }else if(result.data.msg === 'no'){
+                alert('아이디와 비밀번호가 일치하지 않습니다.');
+                setMemberId('');
+                setPassword('');
                 navigate('/login');
             }
             else{
                 alert('로그인이 되었습니다.')
-                console.log('result.data ',result.data)
                 cookies.set('user', JSON.stringify(result.data), {path:'/'});
                 dispatch( loginAction(result.data));
                 //console.log(result.data);
@@ -48,7 +50,6 @@ const LoginPage =() => {
 
     function handleKakaoLogin() {
         alert('카톡카톡');
-        window.location.href='http://localhost:8070/member/kakaoStart'
       }
 
     return (

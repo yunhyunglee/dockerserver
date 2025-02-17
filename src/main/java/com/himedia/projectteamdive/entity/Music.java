@@ -33,6 +33,9 @@ public class Music {
 //    private int playCountMonth=0;
     private String genre;
     private String lyrics;
+
+    private String mood;
+
     @Column(name = "title_music")
     private boolean titleMusic =false;
     @Column(name ="track_number")

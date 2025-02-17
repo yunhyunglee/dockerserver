@@ -39,10 +39,7 @@ function Home({ menubar }) {
                 <Link to='/storage' className={styles.link}>보관함</Link><br />
                 <Link to='/membership/all' className={styles.link}>멤버십</Link><br />
                 
-                <Link to='/mypage/myPageMain' className={styles.link}>마이페이지</Link><br />
-
-                <Link to='/menu3' className={styles.link}>메뉴3</Link><br />
-
+                <Link to='/mypage' className={styles.link}>마이페이지</Link><br />
                 <div className={styles.sidebarEnd}>
                     {
                         (loginUser.memberId)?(

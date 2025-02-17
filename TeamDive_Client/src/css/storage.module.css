@@ -1,0 +1,60 @@
+/* 전체 배경을 어둡게 */
+.storageContainer {
+    background-color: #000; /* 검정 배경 */
+    min-height: 100vh;      /* 화면 전체 높이 */
+    color: #fff;            /* 텍스트 색상은 흰색 */
+    padding: 2rem;
+  }
+  
+  /* 큰 제목(보관함) 스타일 */
+  .pageTitle {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  /* 탭 메뉴 컨테이너 */
+  .tabMenu {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  /* 탭 버튼 기본 스타일 */
+  .tabButton {
+    background: none;
+    border: none;
+    font-size: 1rem;
+    color: #ccc; /* 비활성 탭은 회색 */
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    transition: 0.2s;
+  }
+  
+  /* 호버 시 색상 */
+  .tabButton:hover {
+    color: #f0f0f0;
+  }
+  
+  /* 활성 탭 스타일 */
+  .active {
+    color: #fff;
+    border-bottom: 2px solid hotpink; /* 탭 아래에 포인트 */
+  }
+  
+  /* 콘텐츠 영역 */
+  .contentArea {
+    margin-top: 2rem;
+  }
+  
+  /* 좋아하는 노래 없을 때 메시지 */
+  .emptyMessage {
+    text-align: center;
+    margin-top: 5rem;
+  }
+  
+  .emptyMessage h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: hotpink;
+  }
+  
