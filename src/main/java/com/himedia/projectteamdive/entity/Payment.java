@@ -40,7 +40,7 @@ public class Payment {
     private String cancelStatus; // 결제 취소 여부
     @Column(name = "cancel_reason")
     private String cancelReason; // 취소 이유
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "member_id")
     Member member;
 }

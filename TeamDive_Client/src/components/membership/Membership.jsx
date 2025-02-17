@@ -5,8 +5,9 @@ import axios from 'axios';
 import jaxios from '../../util/JwtUtil';
 
 import MembershipMenu from './MembershipMenu';
-import Modal from './Modal'; // 모달 컴포넌트 임포트
-import { PaymentsCheckout } from '../payments/PaymentsCheckout'; // 결제 컴포넌트 임포트
+import Modal from '../frame/Modal'; // 모달 컴포넌트
+import GiftMembership from '../gift/GiftMembership'; // 결제 컴포넌트 임포트
+import PaymentsCheckout from '../payments/PaymentsCheckout'; // 결제 컴포넌트
 
 import membershipStyle from '../../css/membership/membership.module.css';
 
@@ -16,6 +17,7 @@ const Membership = () => {
     const { category } = useParams(); // 표시할 membership 의 category
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedMembership, setSelectedMembership] = useState(null); // 선택된 멤버십 정보
+    const [modalStep, setModalStep] = useState(""); // 모달의 현재 단계
     const navigate = useNavigate();
 
     /* 멤버십 정보 불러오기 */
@@ -52,10 +54,22 @@ const Membership = () => {
         }   
     }
 
+    /* 선물하기를 위한 로그인 여부 확인 */
+    function checkLogin(membership){
+        if(!loginUser || loginUser.memberKey === ''){
+            alert('로그인이 필요한 서비스입니다');
+            navigate('/login');
+        }else{
+            openModal(membership);
+        }
+    }
+
     /* 모달 열기 */
-    const openModal = (membership) => {
-        setSelectedMembership(membership); // 클릭한 멤버십 정보를 설정
-        setIsModalOpen(true); // 모달 열기  
+    const openModal = async (membership) => {
+        setSelectedMembership(membership); // 선택한 멤버십 정보 설정
+        await new Promise((resolve) => setTimeout(resolve, 0)); // 상태 업데이트 대기
+        setModalStep(membership.category === "gift" ? "gift" : "payment");
+        setIsModalOpen(true); // 모달 열기
     };
 
     /* 모달 닫기 */
@@ -89,7 +103,7 @@ const Membership = () => {
                                             </div>
                                             {
                                                 (membership.category === 'gift') ? (
-                                                    <button onClick={() => navigate('/gift')}>선물하기</button>
+                                                    <button onClick={() => { checkLogin(membership) }}>선물하기</button>
                                                 ) : (
                                                     <button onClick={() => { checkActiveMembership(loginUser.memberId, membership) }}>구독하기</button>
                                                 )
@@ -109,13 +123,23 @@ const Membership = () => {
 
             {/* 모달 */}
             <Modal isOpen={isModalOpen} closeModal={closeModal}>
-                {selectedMembership && (
-                    <PaymentsCheckout membership={selectedMembership} loginUser={loginUser} />
-                )}
-            </Modal>
+            {selectedMembership && (
+                modalStep === "gift" && selectedMembership.category === "gift" ? (
+                    <GiftMembership
+                        membership={selectedMembership}
+                        onProceedToPayment={() => setModalStep("payment")}
+                    />
+                ) : (
+                    <PaymentsCheckout
+                        membership={selectedMembership}
+                        loginUser={loginUser}
+                    />
+                )
+            )}
+        </Modal>
         
         </div>
     )
 }
 
-export { Membership };
+export default Membership;

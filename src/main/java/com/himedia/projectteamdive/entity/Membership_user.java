@@ -6,8 +6,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -20,17 +23,35 @@ public class Membership_user {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "membership_user_id")
     private int membershipUserId;
-
-    @ManyToOne
-    @JoinColumn(name = "member_id")
-    Member member;
-
-    @ManyToOne
-    @JoinColumn(name = "membership_id")
-    Membership membership;
-
     @Column(name = "download_count")
     private int downloadCount;
     private Timestamp startDate;
     private Timestamp endDate;
+
+    @Column(name = "membership_name")
+    private String membershipName; // Membership 이름 저장
+    @Column(name = "membership_price")
+    private int membershipPrice;   // Membership 가격 저장
+    @Column(name = "membership_category")
+    private String membershipCategory;   // Membership 카테고리 저장
+
+    @ManyToOne
+    @JoinColumn(name = "membership_id", nullable = true)
+    @OnDelete(action = OnDeleteAction.SET_NULL) // 부모 삭제 시 FK NULL 처리
+    private Membership membership;
+
+    public Membership_user(Member member, Membership membership) {
+        this.member = member;
+        this.membership = membership;
+        this.membershipName = membership.getName();
+        this.membershipPrice = membership.getPrice();
+        this.membershipCategory = membership.getCategory();
+        this.downloadCount = membership.getDownloadCount();
+        this.startDate = Timestamp.valueOf(LocalDateTime.now());
+        this.endDate = Timestamp.valueOf(LocalDateTime.now().plusMonths(membership.getPeriod()));
+    }
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "member_id")
+    Member member;
 }

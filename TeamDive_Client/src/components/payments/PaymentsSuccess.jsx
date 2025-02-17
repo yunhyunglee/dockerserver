@@ -66,8 +66,7 @@ const PaymentsSuccess = () => {
                 </div>
             )}
         </div>
-        
     );
 }
 
-export { PaymentsSuccess };
+export default PaymentsSuccess;

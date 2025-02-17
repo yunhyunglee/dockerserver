@@ -2,14 +2,14 @@ import { Routes, Route } from "react-router-dom";
 import { LoginPage } from "./components/frame/loginPage";
 import KakaoLogin from "./components/frame/KakaoLogin";
 import { JoinForm } from "./components/frame/JoinForm";
-import { Membership } from "./components/membership/Membership";
+import Membership from "./components/membership/Membership";
 import MainPage from "./components/frame/mainpage/MainPage";
 import MusicDetail from "./components/music/MusicDetail";
 import PopularChart from "./components/PopularChart";
 
-import { PaymentsCheckout } from "./components/payments/PaymentsCheckout";
-import { PaymentsSuccess } from "./components/payments/PaymentsSuccess";
-import { PaymentsFail } from "./components/payments/PaymentsFail";
+import PaymentsCheckout from "./components/payments/PaymentsCheckout";
+import PaymentsSuccess from "./components/payments/PaymentsSuccess";
+import PaymentsFail from "./components/payments/PaymentsFail";
 
 import Mypage from "./components/member/mypage/Mypage";
 
