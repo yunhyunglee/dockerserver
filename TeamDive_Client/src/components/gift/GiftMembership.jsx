@@ -4,22 +4,26 @@ import jaxios from '../../util/JwtUtil';
 
 import giftStyle from '../../css/membership/gift.module.css';
 
-const GiftMembership = ({ membership, onProceedToPayment }) => {
+const GiftMembership = ({ membership, giftToId, setGiftToId, onProceedToPayment }) => {
     const loginUser = useSelector(state => state.user);
-    const [giftId, setGiftId] = useState('');
-    const [giftMessage, setGiftMessage] = useState('');
 
     async function checkValid(){
-        if(!giftId){
+        if(!giftToId){
             alert('받는 사람의 ID를 입력해주세요')
-        }else if(giftId === loginUser.memberId){
+        }else if(giftToId === loginUser.memberId){
             alert('자기 자신에게 선물할 수 없습니다')
         }else{
             try{
-                const respone = await jaxios.get('/api/member/getMember', { params: {giftId} })
+                let respone = await jaxios.get('/api/member/getMember', { params: {giftToId} })
                 if(respone.data.message === 'yes'){
-                    setGiftToMember(giftId);
-                    onProceedToPayment();
+                    respone = await jaxios.get('/api/membership/checkActiveMembership',
+                        { params: {memberId: giftToId, category: membership.category} })
+                    if(respone.data.message === 'no' && !respone.data.activeMembership){
+                        setGiftToId(giftToId);
+                        onProceedToPayment();
+                    }else{
+                        alert('멤버십을 이용중인 사용자에게는 선물할 수 없습니다')
+                    }
                 }else{
                     alert('받는 사람의 ID 가 존재하지 않습니다')
                 }
@@ -35,25 +39,14 @@ const GiftMembership = ({ membership, onProceedToPayment }) => {
                 <input
                     type='text'
                     placeholder='받는 사람의 ID 를 입력해주세요'
-                    value={giftId}
-                    onChange={(e) => { setGiftId(e.target.value) }}
+                    value={giftToId}
+                    onChange={(e) => { setGiftToId(e.target.value) }}
                 />
             </div>
 
             <h2>보내는 사람</h2>
             <div className={giftStyle.field}>
                 <input type='text' value={loginUser.nickname} readOnly/>
-            </div>
-
-            <h2>선물 메시지</h2>
-            <div className={giftStyle.field}>
-                <textarea
-                    cols="30"
-                    rows="5"
-                    placeholder='선물 메시지를 입력해주세요'
-                    value={giftMessage}
-                    onChange={(e) => { setGiftMessage(e.target.value) }}
-                />
             </div>
 
             <div className={giftStyle.productInfo}>

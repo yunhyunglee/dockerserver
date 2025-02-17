@@ -17,8 +17,8 @@ const Membership = () => {
     const { category } = useParams(); // 표시할 membership 의 category
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedMembership, setSelectedMembership] = useState(null); // 선택된 멤버십 정보
-    const [modalStep, setModalStep] = useState(""); // 모달의 현재 단계
-    const [giftToId, setGiftToId] = useState(null);
+    const [modalStep, setModalStep] = useState(''); // 모달의 현재 단계
+    const [giftToId, setGiftToId] = useState('');
     const navigate = useNavigate();
 
     /* 멤버십 정보 불러오기 */
@@ -128,6 +128,7 @@ const Membership = () => {
                 modalStep === "gift" && selectedMembership.category === "gift" ? (
                     <GiftMembership
                         membership={selectedMembership}
+                        giftToId={giftToId}
                         setGiftToId={setGiftToId}
                         onProceedToPayment={() => setModalStep("payment")}
                     />

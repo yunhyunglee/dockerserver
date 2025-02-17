@@ -246,6 +246,17 @@ public class MemberController {
         response.sendRedirect("http://localhost:5173/KakaoLogin/"+member.getMemberId());
     }
 
+    @RequestMapping("/getMember")
+    public HashMap<String, Object> getMember(@RequestParam("giftToId") String memberId){
+        HashMap<String, Object> result = new HashMap<>();
+        Member member = ms.getMember(memberId);
+        if(member != null){
+            result.put("message", "yes");
+        }else{
+            result.put("message", "no");
+        }
+        return result;
+    }
 
 
 
