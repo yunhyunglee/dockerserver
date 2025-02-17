@@ -5,11 +5,13 @@ import com.himedia.projectteamdive.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -17,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@EnableScheduling
 @Service
 @Transactional
 public class MusicService {
@@ -74,7 +77,7 @@ public class MusicService {
 
 
 
-    public void addPlayCount(HashMap<Integer,Integer> playCount) {
+    public void addPlayCount(HashMap<Integer,Integer> playCount,String memberId) {
         playCount.forEach((musicId,playcountToday)->{
             Music music= mr.findByMusicId(musicId);
             if(music!=null) {
@@ -85,9 +88,9 @@ public class MusicService {
                 LocalDateTime midnightLocalDateTime = indate.toLocalDateTime().toLocalDate().atStartOfDay();
                 indate= Timestamp.valueOf(midnightLocalDateTime);
 
-                Playcountlist playcountlist= pcr.findByMusic_MusicIdAndIndate(musicId,indate);
+                Playcountlist playcountlist= pcr.findByMusicAndMemberIdAndIndate(music,memberId,indate);
                 if(playcountlist==null){
-                    Playcountlist playcountlist2=new Playcountlist(music,indate,1);
+                    Playcountlist playcountlist2=new Playcountlist(music,memberId,indate,1);
                     pcr.save(playcountlist2);
                 }else{
                     playcountlist.setPlayCount(playcountlist.getPlayCount()+playcountToday);
@@ -96,11 +99,14 @@ public class MusicService {
 
         });
     }
-//    // 자정에 playCountDay를 초기화
-//    @Scheduled(cron = "0 0 0 * * *") // 매일 자정
-//    public void resetPlayCountDay() {
-//        mr.resetPlayCountDay();
-//    }
+
+    @Scheduled(cron = "0 0 0 * * ?")  // 매일 자정에 실행
+    public void deleteOldPages() {
+        LocalDate thirtyDaysAgo = LocalDate.now().minusDays(30);
+        List<Playcountlist> oldPages = pcr.findAllByIndateBefore(thirtyDaysAgo);
+        pcr.deleteAll(oldPages);
+    }
+
 
     public HashMap<String, Object> getMusicChart() {
         HashMap<String, Object> chart=new HashMap<>();
@@ -234,6 +240,18 @@ public class MusicService {
     public HashMap<String, Object> getAllMusic() {
         HashMap<String, Object> result=new HashMap<>();
         result.put("music",mr.findAll());
+        return result;
+    }
+
+    public HashMap<String, Object> getAllArtist() {
+        HashMap<String, Object> result=new HashMap<>();
+        result.put("artist",arr.findAll());
+        return result;
+    }
+
+    public HashMap<String, Object> getAllAlbum() {
+        HashMap<String, Object> result=new HashMap<>();
+        result.put("album",arr.findAll());
         return result;
     }
 }

@@ -24,6 +24,7 @@ public class Artist {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "artist_id")
     private int artistId;
+    @Column(name = "artist_name")
     private String artistName;
     private Timestamp debut;
     private String country;
