@@ -1,22 +1,26 @@
 @use "sass:color";
 
-// 색상 변수 설정
-$light-blue: #64b5f6;   // 옅은 하늘색
-$medium-blue: #1976d2;  // 중간 블루
-$deep-blue: #0a192f;    // 깊은 바다색
-$neon-green: #64ffda;   // 네온 포인트 색상
+$light-blue: #64b5f6;   
+$medium-blue: #1976d2;  
+$deep-blue: #0a192f;    
+$neon-green: #64ffda;   
+$button-back: #eeebeb;  
+$font-color: #4e5968;
 
 
 .musicPage {
- 
+    width: 700px;
     display: flex;
     height: 800px;
-    margin-left: 120px;
+    margin-left: 100px;
+    overflow:auto;
+    scrollbar-width:none;
+  
 
- 
+
 
     .musicContent {
-       
+
         flex-grow: 1;
         padding-top: 0;
         padding-left: 20px;
@@ -26,40 +30,49 @@ $neon-green: #64ffda;   // 네온 포인트 색상
     
 
     h1 {
+        font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif ;
+        font-weight:400;
+        color: $font-color;
         font-size: 24px;
         margin-bottom: 20px;
     }
 
-    .top2{
-    display: flex;    
+    .top2{     
+    background-color: white;
+    position: sticky;
+    top: 0;
 
     }
 
     .addMusicButton {
-    margin-left: 420px;
-    background-color: $neon-green;
+    position: relative;
+    left: 130px;
+    background-color: white;
     scale: 65%;
-    color: black;
+    color: $font-color;
     padding: 12px 24px;
     border: none;
     font-size: 18px;
-    font-weight: bold;
+    font-weight:lighter;
     border-radius: 5px;
     cursor: pointer;
-    box-shadow: 0 0 10px $neon-green;
+    box-shadow: 0 0 5px $light-blue;
     transition: all 0.3s ease-in-out;
 
     &:hover {
-        background-color: color.scale($neon-green, $lightness: 10%);
-        box-shadow: 0 0 15px color.scale($neon-green, $lightness: 10%);
+       
+        background-color: $button-back;
+        box-shadow: 0 0 5px color.scale($button-back, $lightness: 10%);
+        
     }
 
     }
 
     .searchInput {
-        background-color: #eeeeeed2;;
-        margin-top: 30px;
-        width: 50%;
+        position: relative;
+        left: -130px;
+        background-color: #eeeeeed2;;    
+        width: 35%;
         height: 80%;
         padding: 8px;
         border: 1px solid #68b4f1;
@@ -73,7 +86,7 @@ $neon-green: #64ffda;   // 네온 포인트 색상
     .searchInput:focus {
         border-color: #007bff;
         box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
-        background-color: color.scale(white, $lightness: 100%);
+        background-color: color.scale(white, $lightness: 20%);
     }
 
 
