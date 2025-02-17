@@ -127,7 +127,7 @@ const Membership = () => {
                 modalStep === "gift" && selectedMembership.category === "gift" ? (
                     <GiftMembership
                         membership={selectedMembership}
-                        onProceedToPayment={() => setModalStep("payment")}
+                        onProceedToPayment={ () => setModalStep("payment") }
                     />
                 ) : (
                     <PaymentsCheckout
