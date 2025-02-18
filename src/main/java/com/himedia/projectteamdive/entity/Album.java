@@ -30,12 +30,12 @@ public class Album {
     private String image;
     private Timestamp indate;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "artist_id")
     Artist artist;
 
     @OneToMany(mappedBy = "album",cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderBy("tracknumber ASC")
+    @OrderBy("trackNumber ASC")
     List<Music> musicList =new ArrayList<>();
 
     // 음악 추가 메서드

@@ -27,15 +27,17 @@ import music2 from '../sampleMusic/music2.mp3';
 import music3 from '../sampleMusic/music3.mp3';
 import music4 from '../sampleMusic/music4.mp3';
 import music5 from '../sampleMusic/music5.mp3';
+import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 
-const originalPlaylist = [
-  { src: 'https://d9k8tjx0yo0q5.cloudfront.net/music/482b8d00-08e4-4391-a40c-535aaaebcfbdHopeful - Nat Keefe.mp3', title: '별별별', artist: '엔믹스' },
-  { src: music2, title: 'Dash', artist: '엔믹스' },
-  { src: music3, title: '럽미랔뎃', artist: '엔믹스' },
-  { src: music4, title: '고민중독', artist: 'QWER' },
-  { src: music5, title: '디스코드', artist: 'QWER' },
-];
+// const playlist = [
+//   { src: 'https://d9k8tjx0yo0q5.cloudfront.net/music/482b8d00-08e4-4391-a40c-535aaaebcfbdHopeful - Nat Keefe.mp3', title: '별별별', artist: '엔믹스' ,musicId:1},
+//   { src: music2, title: 'Dash', artist: '엔믹스' ,musicId:2},
+//   { src: music3, title: '럽미랔뎃', artist: '엔믹스' ,musicId:3},
+//   { src: music4, title: '고민중독', artist: 'QWER' ,musicId:4},
+//   { src: music5, title: '디스코드', artist: 'QWER' ,musicId:5},
+// ];
 
 const CustomPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: 'black',
@@ -89,8 +91,14 @@ export default function Player() {
   const [shufflePos, setShufflePos] = useState(0);
 
   
-  const playlist = originalPlaylist;
-
+  // const playlist = originalPlaylist;
+  const [playlist,setPlaylist]=useState([
+    { src: 'https://d9k8tjx0yo0q5.cloudfront.net/music/482b8d00-08e4-4391-a40c-535aaaebcfbdHopeful - Nat Keefe.mp3', title: '별별별', artist: '엔믹스' ,musicId:1},
+    { src: music2, title: 'Dash', artist: '엔믹스' ,musicId:2},
+    { src: music3, title: '럽미랔뎃', artist: '엔믹스' ,musicId:3},
+    { src: music4, title: '고민중독', artist: 'QWER' ,musicId:4},
+    { src: music5, title: '디스코드', artist: 'QWER' ,musicId:5},
+  ]);
   
   let currentSong;
   if (isShuffle && shuffleQueue.length > 0) {
@@ -99,7 +107,43 @@ export default function Player() {
     currentSong = playlist[index];
   }
 
- 
+  const loginUser=useSelector(state=>state.user);
+  const [playCounts,setPlayCounts]=useState({});
+  const musicPlay = (songId) => {
+      // alert('재생했다')
+      setPlayCounts(prev => ({
+          ...prev,
+          [songId]:(prev[songId] || 0) + 1
+      }));
+  };
+  useEffect(() => {
+    const interval = setInterval(() => {
+        // alert('인터벌 작동중')
+        if (Object.keys(playCounts).length > 0) {
+            axios.post("/api/music/addPlayCount",playCounts,{params:{ memberId: loginUser.memberId }}) // 서버에 전송
+                .then(() => setPlayCounts({})) // 성공하면 초기화
+                .catch(err => console.error("Error sending play counts:", err));
+        }
+    }, 5000); // 60초마다 전송
+    return () => clearInterval(interval);
+  }, [playCounts]);
+
+  const prevPlaylist=useRef([]);
+  useEffect(
+    ()=>{
+      if(playlist.length>prevPlaylist.length){
+        axios('/api/music/getCurrentPlaylist',{params:{playlist}})
+        .then((result)=>{
+          setPlaylist(result.data.playlist);
+        }).catch((err)=>{console.error(err);})
+      }
+      prevPlaylist.current=playlist;
+    },[playlist]
+  );
+
+
+
+
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = mute ? 0 : volume / 100;

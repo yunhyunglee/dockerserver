@@ -30,7 +30,7 @@ public class Artist {
     private String country;
     private String image;
 
-    @OneToMany(mappedBy = "artist",  cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "artist",  cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
     List<Album> albums=new ArrayList<>();
 
     // 앨범 추가 메서드
@@ -44,8 +44,16 @@ public class Artist {
         albums.remove(album); // 리스트에서 제거
     }
 
-    @OneToMany(mappedBy = "artist", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "artist", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
     List<Music> musicList=new ArrayList<>();
+
+    public void addMusic(Music music) {
+        musicList.add(music);
+        music.setArtist(this);
+    }
+    public void removeMusic(Music music) {
+        musicList.remove(music);
+    }
 
 
 

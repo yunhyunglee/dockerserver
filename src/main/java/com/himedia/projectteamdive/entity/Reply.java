@@ -22,11 +22,11 @@ public class Reply {
     @Column(name = "reply_id")
     private int replyId;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "member_id")
     Member member;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "allpage_id")
     Allpage allpage;
 

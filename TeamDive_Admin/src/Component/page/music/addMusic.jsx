@@ -14,13 +14,14 @@ const AddMusic = () => {
         image: "/images/default_image.jpg",
         albumId: "",
         musicList: [],
+        artistId: ""
     });
 
     useEffect(() => {
         const getArtistList = async () => {
             try {
-                const response = await axios.get("api/music/getArtistList");
-                setArtists(response.data.artists);
+                const response = await axios.get("/api/music/getAllArtist");
+                setArtists(response.data.artist);
             } catch (error) {
                 console.error("아티스트 목록 불러오기 실패", error);
             }

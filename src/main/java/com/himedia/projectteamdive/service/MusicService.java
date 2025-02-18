@@ -37,9 +37,12 @@ public class MusicService {
     PlaycountlistRepository pcr;
 
     public void insertMusic(Music music) {
+        Artist artist=arr.findByArtistId(music.getArtist().getArtistId());
+        Album album=ar.findByAlbumId(music.getAlbum().getAlbumId());
+        music.setArtist(artist);
+        music.setAlbum(album);
         Music m=mr.save(music);
-        Album album= m.getAlbum();
-        album.addAlbum(music);
+
 
         Allpage allpage=new Allpage();
         allpage.setEntityId(m.getMusicId());
@@ -47,20 +50,27 @@ public class MusicService {
         allr.save(allpage);
     }
 
-    public void insertAlbum(Album album) {
+
+    public Album insertAlbum(Album album) {
+        Artist artist=arr.findByArtistId(album.getArtist().getArtistId());
+        album.setArtist(artist);
         Album a=ar.save(album);
+
+
         Allpage allpage=new Allpage();
         allpage.setEntityId(a.getAlbumId());
         allpage.setPagetype(Arrays.asList(Pagetype.ALBUM));
         allr.save(allpage);
+        return a;
     }
 
-    public void insertArtist(Artist artist) {
+    public Artist insertArtist(Artist artist) {
         Artist a=arr.save(artist);
         Allpage allpage=new Allpage();
         allpage.setEntityId(a.getArtistId());
         allpage.setPagetype(Arrays.asList(Pagetype.ARTIST));
         allr.save(allpage);
+        return a;
     }
 
     @Autowired
@@ -198,19 +208,24 @@ public class MusicService {
     }
 
     public void deleteArtist(Artist artist) {
+        allr.deleteById(artist.getArtistId());
         arr.delete(artist);
+
     }
 
     public void deleteAlbum(Album album) {
+        allr.deleteById(album.getAlbumId());
         ar.delete(album);
     }
 
     public void deleteMusic(Music music) {
+        allr.deleteById(music.getMusicId());
         mr.delete(music);
     }
 
     public void deletePlaylist(int playlistId) {
         Playlist playlist=pr.findByPlaylistId(playlistId);
+        allr.deleteById(playlist.getPlaylistId());
         pr.delete(playlist);
     }
 
@@ -264,6 +279,18 @@ public class MusicService {
     public HashMap<String, Object> getAllAlbum() {
         HashMap<String, Object> result=new HashMap<>();
         result.put("album",arr.findAll());
+        return result;
+    }
+
+    public HashMap<String, Object> getCurrentPlaylist(List<HashMap<String, Object>> playlist) {
+        HashMap<String, Object> result=new HashMap<>();
+        for (HashMap<String, Object> playlistMap : playlist) {
+            Music music=mr.findByMusicId((int) playlistMap.get("musicId"));
+            playlistMap.put("src",music.getBucketPath());
+            playlistMap.put("title",music.getTitle());
+            playlistMap.put("artist",music.getArtist());
+        }
+        result.put("playlist",playlist);
         return result;
     }
 }
