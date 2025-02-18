@@ -2,6 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import styles from "../../css/storage.module.css";
+import { LikedMusic } from "./LikedMusic";
+import { LikedArtist } from "./LikedArtist";
+import {LikedAlbum} from "./LikedAlbum";
+import { MyMP3 } from "./MyMP3";
 
 const Storage = () => {
   const loginUser = useSelector((state) => state.user);
@@ -21,8 +25,8 @@ const Storage = () => {
 
   
   const likedMusic = [];
-  const likeArtist = [];
-  const likeAlbum = [];
+  const likedArtist = [];
+  const likedAlbum = [];
   const purchasedMp3 = []; // 구매 후 
   const pendingMp3 = [];   // 구매 전
 
@@ -51,54 +55,15 @@ const Storage = () => {
 
       <div className={styles.contentArea}>
         {activeTab === "노래" && (
-          <div>
-            {likedMusic.length === 0 ? (
-              <div className={styles.emptyMessage}>
-                <h2>좋아하는 노래</h2>
-                <p>내가 좋아하는 노래들을 모아서 감상해보세요</p>
-              </div>
-            ) : (
-              <ul>
-                {likedMusic.map((music, idx) => (
-                  <li key={idx}>{music}</li>
-                ))}
-              </ul>
-            )}
-          </div>
+          <LikedMusic likedMusic={likedMusic}/>
         )}
 
         {activeTab === "아티스트" && (
-          <div>
-            {likeArtist.length === 0 ? (
-              <div className={styles.emptyMessage}>
-                <h2>아티스트 보관함</h2>
-                <p>내가 좋아하는 아티스트들을 저장해보세요</p>
-              </div>
-            ) : (
-              <ul>
-                {likeArtist.map((artist, idx) => (
-                  <li key={idx}>{artist}</li>
-                ))}
-              </ul>
-            )}
-          </div>
+          <LikedArtist likedArtist={likedArtist}/>
         )}
 
         {activeTab === "앨범" && (
-          <div>
-            {likeAlbum.length === 0 ? (
-              <div className={styles.emptyMessage}>
-                <h2>앨범 보관함</h2>
-                <p>내가 좋아하는 앨범을 저장해보세요</p>
-              </div>
-            ) : (
-              <ul>
-                {likeAlbum.map((album, idx) => (
-                  <li key={idx}>{album}</li>
-                ))}
-              </ul>
-            )}
-          </div>
+          <LikedAlbum likedAlbum={likedAlbum}/>
         )}
 
         {activeTab === "플레이리스트" && (
@@ -110,51 +75,7 @@ const Storage = () => {
         )}
 
         {activeTab === "My MP3" && (
-          <div>
-           
-            <nav className={styles.subTabMenu}>
-              {["구매한 MP3", "구매할 MP3"].map((subTab) => (
-                <button
-                  key={subTab}
-                  className={`${styles.tabButton} ${activeMp3Tab === subTab ? styles.active : ""}`}
-                  onClick={() => setActiveMp3Tab(subTab)}
-                >
-                  {subTab}
-                </button>
-              ))}
-            </nav>
-
-            
-            <div className={styles.mp3ContentArea}>
-              {activeMp3Tab === "구매한 MP3" ? (
-                purchasedMp3.length === 0 ? (
-                  <div className={styles.emptyMessage}>
-                    <h2>구매한 MP3</h2>
-                    <p>구매한 MP3가 없습니다.</p>
-                  </div>
-                ) : (
-                  <ul>
-                    {purchasedMp3.map((mp3, idx) => (
-                      <li key={idx}>{mp3}</li>
-                    ))}
-                  </ul>
-                )
-              ) : (
-                pendingMp3.length === 0 ? (
-                  <div className={styles.emptyMessage}>
-                    <h2>구매할 MP3</h2>
-                    <p>구매하려고 담아둔 MP3가 없습니다.</p>
-                  </div>
-                ) : (
-                  <ul>
-                    {pendingMp3.map((mp3, idx) => (
-                      <li key={idx}>{mp3}</li>
-                    ))}
-                  </ul>
-                )
-              )}
-            </div>
-          </div>
+          <MyMP3 setActiveMp3Tab={setActiveMp3Tab} activeMp3Tab={activeMp3Tab} purchasedMp3={purchasedMp3} pendingMp3={pendingMp3}/>
         )}
       </div>
     </div>
