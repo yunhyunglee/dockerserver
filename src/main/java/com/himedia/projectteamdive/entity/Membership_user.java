@@ -51,7 +51,8 @@ public class Membership_user {
         this.endDate = Timestamp.valueOf(LocalDateTime.now().plusMonths(membership.getPeriod()));
     }
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "member_id")
-    Member member;
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Member member;
 }
