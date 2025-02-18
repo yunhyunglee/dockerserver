@@ -1,33 +1,36 @@
 package com.himedia.projectteamdive.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+@Builder
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 @DynamicInsert
 @DynamicUpdate
-@Builder
-public class Cart {
+@Table(name = "purchased_music")
+public class PurchasedMusic {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "cart_id")
-    private int cartId;
+    @Column(name = "purchased_music_id")
+    private String PurchasedMusicId;
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})
-    @JoinColumn(name = "member_userid")
+    @JoinColumn(name = "member_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
-    Member member;
+    private Member member;
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})
     @JoinColumn(name = "music_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Music music;
+
 }

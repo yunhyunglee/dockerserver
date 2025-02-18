@@ -35,7 +35,7 @@ public class Membership_user {
     @Column(name = "membership_category")
     private String membershipCategory;   // Membership 카테고리 저장
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "membership_id", nullable = true)
     @OnDelete(action = OnDeleteAction.SET_NULL) // 부모 삭제 시 FK NULL 처리
     private Membership membership;
@@ -51,7 +51,7 @@ public class Membership_user {
         this.endDate = Timestamp.valueOf(LocalDateTime.now().plusMonths(membership.getPeriod()));
     }
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})
     @JoinColumn(name = "member_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
