@@ -26,7 +26,7 @@ public class MembershipController {
         return result;
     }
 
-    /* 활성화된 멤버십이 있는지 확인 */
+    /* 카테고리 기준으로 활성화된 멤버십이 있는지 확인 */
     @GetMapping("/checkActiveMembership")
     public HashMap<String, Object> checkActiveMembership(
             @RequestParam("memberId") String memberId,
@@ -42,4 +42,12 @@ public class MembershipController {
         return result;
     }
 
+    /* 로그인 유저의 활성화 멤버십 확인 */
+    @GetMapping("/getActiveMembership")
+    public HashMap<String, Object> getActiveMembership(
+            @RequestParam("memberId") String memberId) {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("membership", mss.getActiveMembership(memberId));
+        return result;
+    }
 }
