@@ -52,6 +52,7 @@ public class MusicController {
         HashMap<String, Object> map = new HashMap<>();
         ms.updateArtist(artist);
         map.put("msg","yes");
+        map.put("artist", artist);
         return map;
     }
     @PostMapping("/updateAlbum")
@@ -248,6 +249,7 @@ public class MusicController {
     @GetMapping("/getAllArtist")
     public HashMap<String, Object> getAllArtist() {
         HashMap<String,Object> map= ms.getAllArtist();
+
         return map;
     }
     @GetMapping("/getAllAlbum")

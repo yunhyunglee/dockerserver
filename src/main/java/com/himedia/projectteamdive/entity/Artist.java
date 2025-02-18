@@ -1,5 +1,6 @@
 package com.himedia.projectteamdive.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,9 +27,12 @@ public class Artist {
     private int artistId;
     @Column(name = "artist_name")
     private String artistName;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private Timestamp debut;
     private String country;
     private String image;
+    @Column(length = 2000)
+    private String artistContent;
 
     @OneToMany(mappedBy = "artist",  cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
     List<Album> albums=new ArrayList<>();

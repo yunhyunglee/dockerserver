@@ -5,9 +5,9 @@ import SideBar from "./component/SideBar";
 import NavigationBar from "./component/NavigationBar";
 import User from "./component/page/User";
 import Music from "./component/page/music/Music";
-import AddMusic from "./component/page/music/addMusic";
+import AddAlbum from "./component/page/music/AddAlbum";
 import Login from "./component/Login";
-import Artist from "./component/page/artist/artist";
+import Artist from "./component/page/artist/Artist";
 import "./style/global.scss";
 import { useSelector } from "react-redux";
 import { useState } from "react";
@@ -32,7 +32,7 @@ const App = () => {
                                 <Route path="/dashboard" element={<Dashboard />} />
                                 <Route path="/user" element={<User />} />
                                 <Route path="/music" element={<Music />} />
-                                <Route path="/addMusic" element={<AddMusic />} />
+                                <Route path="/addAlbum" element={<AddAlbum />} />
                                 <Route path="/artist" element={<Artist />} />
                             </>
                             ) : (

@@ -138,4 +138,32 @@ $font-color: #4e5968;
         text-align: center;
         font-weight: bold;
     }
+
+
+
+    .clickable{
+        position: relative; // 부모 요소 기준
+        transition: 0.3s;
+    }
+
+    .clickable:hover{
+        cursor: pointer;
+        font-weight: bold;
+        color: #007bff;
+    }
+
+
+    .deleteBtn {
+        
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    
+    .deleteBtn:hover {
+        background: rgb(255, 0, 0);
+    }
+
 }

@@ -5,6 +5,7 @@ import com.himedia.projectteamdive.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -185,6 +186,8 @@ public class MusicService {
         a.setArtistName(artist.getArtistName());
         a.setDebut(artist.getDebut());
         a.setCountry(artist.getCountry());
+        a.setImage(artist.getImage());
+        a.setArtistContent(artist.getArtistContent());
 
     }
 
@@ -272,7 +275,8 @@ public class MusicService {
 
     public HashMap<String, Object> getAllArtist() {
         HashMap<String, Object> result=new HashMap<>();
-        result.put("artist",arr.findAll());
+        List<Artist> artistList = arr.findAll(Sort.by(Sort.Direction.ASC, "artistId"));
+        result.put("artist",artistList);
         return result;
     }
 

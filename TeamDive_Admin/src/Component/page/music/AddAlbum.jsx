@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import AddMusicModal from "./addMusicModal";
+import AddMusicModal from "./AddMusicModal";
 import axios from "axios";
-import "../../../style/addMusic.scss";
+import "../../../style/addAlbum.scss";
 
-const AddMusic = () => {
+const AddAlbum = () => {
     const navigate = useNavigate();
     const [showModal, setShowModal] = useState(false);
     const [artists, setArtists] = useState([]);
@@ -13,14 +13,16 @@ const AddMusic = () => {
         title: "",
         image: "/images/default_image.jpg",
         albumId: "",
+        artistId: null,
         musicList: [],
-        artistId: ""
+        indate:"",
+        trackNumber: 0,
     });
 
     useEffect(() => {
         const getArtistList = async () => {
             try {
-                const response = await axios.get("/api/music/getAllArtist");
+                const response = await axios.get("api/music/getAllArtist");
                 setArtists(response.data.artist);
             } catch (error) {
                 console.error("아티스트 목록 불러오기 실패", error);
@@ -72,21 +74,24 @@ const AddMusic = () => {
 
         try {
             let albumId = newAlbum.albumId;
-
             if (!albumId) {
                 const albumResponse = await axios.post("/api/music/insertAlbum", {
                     title: newAlbum.title,
-                    artist: { artistId: newAlbum.artistId },
+                    artist: { artistId: Number(newAlbum.artistId) }, // artistId 변환
                     image: newAlbum.image,
                 });
-                albumId = albumResponse.data.album.albumId;
+                if(albumResponse.data.album) {
+                    albumId = albumResponse.data.album.albumId;
+                } else{
+                    return alert("앨범 등록 실패");
+                }
             }
 
             for (const music of newAlbum.musicList) {
                 await axios.post("/api/music/insertMusic", {
                     ...music,
                     album: { albumId },
-                    artist: { artistId: newAlbum.artistId },
+                    artist: { artistId: parseInt(newAlbum.artistId, 10) }, // artistId 변환
                 });
             }
             alert("음원이 등록되었습니다!");
@@ -120,7 +125,7 @@ const AddMusic = () => {
                             placeholder="앨범 제목"
                         />
 
-                        <select value={newAlbum.artistId} onChange={(e) => setNewAlbum({ ...newAlbum, artistId: e.target.value })}>
+                        <select value={newAlbum.artistId || ""} onChange={(e) => setNewAlbum({ ...newAlbum, artistId: parseInt(e.target.value, 10) })}>
                             <option value="">가수 선택</option>
                             {artists.map((artist) => (
                                 <option key={artist.artistId} value={artist.artistId}>
@@ -133,7 +138,7 @@ const AddMusic = () => {
 
                 <div className="bottomBox">
                     <button className="addMusicBtn" onClick={() => setShowModal(true)}>+ 노래 추가</button>
-                    {showModal && <AddMusicModal onClose={() => setShowModal(false)} onAddMusic={addMusic} />}
+                    {showModal && <AddMusicModal onClose={() => setShowModal(false)} onAddMusic={addMusic} albumId={newAlbum.albumId} artistId={newAlbum.artistId} />}
                     <button type="submit" className="btn submitBtn" onClick={onSubmit}>등록</button>
                     <button type="button" className="btn cancelBtn" onClick={() => navigate("/music")}>취소</button>
                 </div>
@@ -145,7 +150,6 @@ const AddMusic = () => {
                             <th>제목</th>
                             <th>장르</th>
                             <th>파일</th>
-                            <th>가사</th>
                             <th>타이틀</th>
                         </tr>
                     </thead>
@@ -179,4 +183,4 @@ const AddMusic = () => {
     );
 };
 
-export default AddMusic;
+export default AddAlbum;

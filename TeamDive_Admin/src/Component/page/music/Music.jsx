@@ -58,7 +58,7 @@ const Music = () => {
             <h1>음원 관리</h1>
                 <div className='top2' >
                 <input type="text" className="searchInput" placeholder="음원 검색 (제목 또는 장르)" value={search} onChange={onSearch}/>
-                <button className="addMusicButton" onClick={() => navigate("/AddMusic")}>음원 추가</button>   
+                <button className="addMusicButton" onClick={() => navigate("/AddAlbum")}>음원 추가</button>   
                 </div>   
                     <table>
                         <thead>

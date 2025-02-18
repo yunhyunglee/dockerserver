@@ -3,7 +3,7 @@ import axios from "axios";
 import "../../../style/addMusicModal.scss";
 
 const AddMusicModal = ({ onClose, onAddMusic, albumId, artistId }) => {
-    const [bucketPath, setBucketPath] = useState(""); // ✅ S3 업로드 URL 저장
+    // const [uploadedBucketPath, setUploadedBucketPath] = useState(""); // ✅ S3 업로드 URL 저장
     const GENRES = ["록", "팝", "힙합&랩", "재즈", "클래식", "전자음악", "기타"];
 
 
@@ -11,7 +11,7 @@ const AddMusicModal = ({ onClose, onAddMusic, albumId, artistId }) => {
         title: "",
         genre: GENRES[0],
         lyrics: "",
-        bucketpath: "",
+        bucketPath: "",
     });
 
     const onChange = (e) => {
@@ -33,7 +33,7 @@ const AddMusicModal = ({ onClose, onAddMusic, albumId, artistId }) => {
             });
 
             if (response.data.music) {
-                setBucketPath(response.data.music); // ✅ S3에 저장된 URL 저장
+                setNewSong((prev) => ({ ...prev, bucketPath: response.data.music }));
             }
         } catch (error) {
             console.error("음원 파일 업로드 실패:", error);
@@ -44,15 +44,13 @@ const AddMusicModal = ({ onClose, onAddMusic, albumId, artistId }) => {
     const onSubmit = (e) => {
         e.preventDefault();
         if (!newSong.title.trim()) return alert("곡 제목을 입력해주세요.");
-        if (!newSong.genre) return alert("장르를 선택해주세요.");
-        if (!bucketPath) return alert("음원 파일을 업로드해주세요."); // ✅ 업로드된 S3 URL 확인
+        if (!newSong.bucketPath) return alert("음원 파일을 업로드해주세요.");
 
         const musicData = {
             ...newSong,
-            bucketPath, // ✅ S3 업로드된 파일 경로
             album: { albumId },
             artist: { artistId },
-            titleMusic: false, // 🔥 타이틀 곡 체크는 `AddMusic.jsx`에서 설정!
+            titleMusic: false,
         };
 
         onAddMusic(musicData);
@@ -72,7 +70,7 @@ const AddMusicModal = ({ onClose, onAddMusic, albumId, artistId }) => {
                         ))}
                     </select>
                     
-                    <textarea name="lyrics" placeholder="가사"></textarea>               
+                    <textarea name="lyrics" value={newSong.lyrics} onChange={onChange} placeholder="가사"></textarea>
 
                     <label>음원 파일 업로드</label>
                     <input type="file" accept="audio/*" onChange={onFileUpload} />
