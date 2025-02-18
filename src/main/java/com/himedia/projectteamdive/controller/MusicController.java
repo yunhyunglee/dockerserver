@@ -20,7 +20,7 @@ public class MusicController {
 
     @Autowired
     MusicService ms;
-//=============================================admin 사용기능
+    //=============================================admin 사용기능
     @PostMapping("/insertMusic")
     public HashMap<String, Object> insertMusic(@RequestBody Music music) {
         HashMap<String, Object> map = new HashMap<>();
@@ -39,9 +39,8 @@ public class MusicController {
     @PostMapping("/insertArtist")
     public HashMap<String, Object> insertArtist(@RequestBody Artist artist) {
         HashMap<String, Object> map = new HashMap<>();
-        Artist savedArtist = ms.insertArtist(artist);
+        ms.insertArtist(artist);
         map.put("msg","yes");
-        map.put("artist", savedArtist);
         return map;
     }
 
