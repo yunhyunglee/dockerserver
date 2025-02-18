@@ -6,7 +6,7 @@ import Membership from "./components/membership/Membership";
 import MainPage from "./components/frame/mainpage/MainPage";
 import MusicDetail from "./components/music/MusicDetail";
 import PopularChart from "./components/PopularChart";
-import { Storage } from "./components/storage/Storage";
+import Storage from "./components/storage/Storage";
 import { PlaylistPage } from "./components/playlist/PlaylistPage";
 
 import PaymentsCheckout from "./components/payments/PaymentsCheckout";
@@ -28,8 +28,6 @@ function AppRoutes() {
             <Route path="/kakaoLogin/:memberId" element={<KakaoLogin />} />
             <Route path="/sign-up" element={<JoinForm />} />
 
-
-
             <Route path="/music/:musicId" element={<MusicDetail />} />
 
             {/* 토스 페이먼트 api */}
@@ -39,12 +37,6 @@ function AppRoutes() {
 
             {/* 마이페이지 */}
             <Route path="/mypage/:mypageCategory" element={<Mypage />} />
-            
-            
-            
-
-
-
         </Routes>
     );
 }

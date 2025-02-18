@@ -38,11 +38,11 @@ public class Gift {
     @Column(name = "membership_name")
     private String membershipName; // Membership 이름 저장
     @Column(name = "membership_period")
-    private int membershipPeriod;   // Membership 기간 저장
+    private int membershipPeriod; // Membership 기간 저장
     @Column(name = "membership_category")
-    private String membershipCategory;   // Membership 카테고리 저장
+    private String membershipCategory; // Membership 카테고리 저장
     @Column(name = "membership_downloadCount")
-    private int membershipDownloadCount;   // Membership 다운로드 횟수 저장
+    private int membershipDownloadCount; // Membership 다운로드 횟수 저장
 
     @ManyToOne
     @JoinColumn(name = "membership_id", nullable = true)

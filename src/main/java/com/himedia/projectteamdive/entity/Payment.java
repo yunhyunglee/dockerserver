@@ -2,6 +2,8 @@ package com.himedia.projectteamdive.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.sql.Timestamp;
 
@@ -42,7 +44,8 @@ public class Payment {
     private String cancelReason; // 취소 이유
     @Column(name = "gift_to_id")
     private String giftToId; // 선물 받는 유저
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "member_id")
-    Member member; // 결제 유저 정보
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Member member; // 결제 유저 정보
 }

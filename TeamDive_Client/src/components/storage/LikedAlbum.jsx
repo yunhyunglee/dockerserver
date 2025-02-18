@@ -1,4 +1,4 @@
-import styles from "../../css/storage.module.css";
+import styles from "../../css/storage/storage.module.css";
 
 const LikedAlbum = ({likedAlbum}) => {
     return (
@@ -20,4 +20,4 @@ const LikedAlbum = ({likedAlbum}) => {
 }
 
 
-export {LikedAlbum}
+export default LikedAlbum;

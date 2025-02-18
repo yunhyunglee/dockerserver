@@ -50,4 +50,6 @@ public class PaymentController {
         return result;
     }
 
+    /* 결제 취소 */
+
 }
