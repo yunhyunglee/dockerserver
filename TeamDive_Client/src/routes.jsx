@@ -21,7 +21,7 @@ function AppRoutes() {
             <Route path="/" element={<MainPage />} />
             <Route path="/today" element={<PopularChart />} />
             <Route path="/playList" element={<PlaylistPage />} />
-            <Route path="/membership/:category" element={<Membership/>} />
+            <Route path="/membership/:category" element={<Membership />} />
             <Route path="/storage" element={<Storage />} />
             <Route path="/menu3" element={<h4>메뉴3 페이지임</h4>} />
             <Route path="/login" element={<LoginPage />} />

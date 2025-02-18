@@ -4,6 +4,9 @@ import { useSelector } from 'react-redux';
 import styles from '../../css/music/musicDetail.module.css';
 import lion from '../../../public/image/kakao_lion.png';
 
+import axios from 'axios';
+import jaxios from '../../util/JwtUtil';
+
 const MusicDetail = () => {
     const { musicId } = useParams();
     const [musicDetail, setMusicDetail] = useState(null);
@@ -78,6 +81,21 @@ const MusicDetail = () => {
         */
     }, [musicId]);
 
+    /* 개별곡 구매를 위한 장바구니 담기 */
+    async function insertCart(musicId){
+        if(!loginUser){
+            alert('로그인이 필요한 서비스입니다');
+            navigate('/login');
+        }else{
+            try{
+                //const response = await jaxios.post('/api/cart/insertCart', null, {params: {memberId: loginUser.memberId, musicId}});
+                
+            }catch(error){
+                console.error('장바구니 담기 실패', error)
+            }
+        }
+    }
+
     const toggleLyrics = () => {
         setExpandedLyrics((prev) => !prev);
     };
@@ -119,7 +137,8 @@ const MusicDetail = () => {
                     <p className={styles.playCount}>Plays: {musicDetail.playCount}</p>
                     <p className={styles.like}>Likes: {musicDetail.like}</p>
                     <p className={styles.releaseDate}>Release Date: {musicDetail.album.releaseDate}</p>
-                    <button onClick={ () => { navigate('/') } }>구매</button>
+                    {/* (css 조정 필요) 장바구니 버튼 */}
+                    <button onClick={ insertCart(musicId) }>구매</button>
                 </div>
             </div>
 
