@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
+import java.util.List;
 
 @RestController
 @RequestMapping("/membership")
@@ -47,7 +48,9 @@ public class MembershipController {
     public HashMap<String, Object> getActiveMembership(
             @RequestParam("memberId") String memberId) {
         HashMap<String, Object> result = new HashMap<>();
-        result.put("membership", mss.getActiveMembership(memberId));
+        List<Membership_user>list = mss.getActiveMembership(memberId);
+        result.put("memberShipUserList", list);
+        System.out.println(result);
         return result;
     }
 }
