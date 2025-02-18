@@ -8,7 +8,11 @@ import FloatingButton from './components/FloatingButton';
 import ChatModal from './components/ChatModal';
 import Footer from './components/frame/Footer';
 
+import { ThemeContext } from './context/ThemeContext';
+
 function App() {
+
+    const [isDark, setIsDark] = useState(true);
 
     const [menubar, setMenubar] = useState(false);
 
@@ -30,17 +34,19 @@ function App() {
 
 
         return (
-            <>
-                <MainHeader toggleMenu={toggleMenu}></MainHeader>
+            <ThemeContext.Provider value={{isDark, setIsDark}}>
+                <>
+                    <MainHeader toggleMenu={toggleMenu}></MainHeader>
 
-                <FloatingButton onClick={openChat} />
-    
-    {/* 채팅 모달 */}
-                {chatOpen && <ChatModal onClose={closeChat} />}
-                <Home menubar={menubar}></Home>
-                <Footer />
-                <FooterPlayer />
-            </>
+                    <FloatingButton onClick={openChat} />
+        
+                    {/* 채팅 모달 */}
+                    {chatOpen && <ChatModal onClose={closeChat} />}
+                    <Home menubar={menubar}></Home>
+                    <Footer />
+                    <FooterPlayer />
+                </>
+            </ThemeContext.Provider>
     )
 
 

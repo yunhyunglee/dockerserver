@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
 import styles from '../../css/header.module.css';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Notice from './mainpage/Notice';
+import { ThemeContext } from '../../context/ThemeContext';
 
 function MainHeader({ toggleMenu }) {
   // 검색어 상태
@@ -21,6 +22,9 @@ function MainHeader({ toggleMenu }) {
     setMenuOpen(!menuOpen);
     toggleMenu();           
   };
+
+
+
 
   return (
     <header className={styles.header}>
