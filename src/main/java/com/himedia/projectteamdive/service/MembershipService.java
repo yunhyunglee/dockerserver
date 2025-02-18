@@ -30,10 +30,13 @@ public class MembershipService {
             return msr.findByCategory(category);
     }
 
-    /* 활성화된 멤버십이 있는지 확인 */
+    /* 카테고리를 기준으로 활성화된 멤버십이 있는지 확인 */
     public Membership_user checkActiveMembership(String memberId, String membershipCategory) {
         return msru.getLatestActiveMembershipByCategory(memberId, membershipCategory);
     }
 
-
+    /* 현재 로그인 유저에게 활성화된 멤버십이 있는지 확인 */
+    public Object getActiveMembership(String memberId) {
+        return msru.getLatestActiveMembership(memberId);
+    }
 }
