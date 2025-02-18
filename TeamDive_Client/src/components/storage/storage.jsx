@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { ThemeContext } from "@emotion/react";
 
 import LikedMusic from "./LikedMusic";
 import LikedArtist from "./LikedArtist";
@@ -11,7 +10,8 @@ import MyMP3 from "./MyMP3";
 import styles from "../../css/storage/storage.module.css";
 
 const Storage = () => {
-    const zzz = useContext(ThemeContext);
+
+
 
     const loginUser = useSelector((state) => state.user);
     const navigate = useNavigate();
@@ -24,11 +24,11 @@ const Storage = () => {
 
     const [activeTab, setActiveTab] = useState("노래");
     const [activeMp3Tab, setActiveMp3Tab] = useState("구매한 MP3");
-    
+
     const likedMusic = [];
     const likedArtist = [];
     const likedAlbum = [];
-    const purchasedMp3 = []; // 구매 후 
+    const purchasedMp3 = []; // 구매 후
 
     // 상위메뉴
     const handleTabClick = (tabName) => {
