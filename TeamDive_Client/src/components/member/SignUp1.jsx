@@ -13,7 +13,7 @@ const SignUpStep1 = ({ setStep, step1Data, setStep1Data }) => {
     const { memberId, password, passwordCheck, emailId, emailDomain, customDomain, name, nickname, birth, gender, phone } = step1Data;
 
     // 정규식 정의
-    const idRegex = /^[a-zA-Z0-9]{4,20}$/;
+    const idRegex = /^(?=.*[a-zA-Z])[a-zA-Z0-9]{4,20}$/;
     const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
     const emailIdRegex = /^[a-zA-Z0-9_.+-]+$/;
     const nameRegex = /^[가-힣a-zA-Z\s]{2,}$/;

@@ -49,4 +49,20 @@ public class MemberService {
             return null;
         }
     }
+
+    public Member updateMember(Member member) {
+
+        Member updateMember = mr.findByMemberId(member.getMemberId());
+        updateMember.setPassword(pe.encode(member.getPassword()));
+        updateMember.setPhone(member.getPhone());
+        updateMember.setNickname(member.getNickname());
+        updateMember.setZipCode(member.getZipCode());
+        updateMember.setAddress(member.getAddress());
+        updateMember.setAddressDetail(member.getAddressDetail());
+        updateMember.setAddressExtra(member.getAddressExtra());
+        updateMember.setIntroduction(member.getIntroduction());
+        updateMember.setImage(member.getImage());
+        return updateMember;
+
+    }
 }
