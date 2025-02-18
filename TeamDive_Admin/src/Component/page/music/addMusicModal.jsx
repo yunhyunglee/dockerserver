@@ -3,7 +3,7 @@ import axios from "axios";
 import "../../../style/addMusicModal.scss";
 
 const AddMusicModal = ({ onClose, onAddMusic, albumId, artistId }) => {
-    const [bucketpath, setBucketpath] = useState(""); // ✅ S3 업로드 URL 저장
+    const [bucketPath, setBucketPath] = useState(""); // ✅ S3 업로드 URL 저장
     const GENRES = ["록", "팝", "힙합&랩", "재즈", "클래식", "전자음악", "기타"];
 
 
@@ -33,7 +33,7 @@ const AddMusicModal = ({ onClose, onAddMusic, albumId, artistId }) => {
             });
 
             if (response.data.music) {
-                setBucketpath(response.data.music); // ✅ S3에 저장된 URL 저장
+                setBucketPath(response.data.music); // ✅ S3에 저장된 URL 저장
             }
         } catch (error) {
             console.error("음원 파일 업로드 실패:", error);
@@ -45,11 +45,11 @@ const AddMusicModal = ({ onClose, onAddMusic, albumId, artistId }) => {
         e.preventDefault();
         if (!newSong.title.trim()) return alert("곡 제목을 입력해주세요.");
         if (!newSong.genre) return alert("장르를 선택해주세요.");
-        if (!bucketpath) return alert("음원 파일을 업로드해주세요."); // ✅ 업로드된 S3 URL 확인
+        if (!bucketPath) return alert("음원 파일을 업로드해주세요."); // ✅ 업로드된 S3 URL 확인
 
         const musicData = {
             ...newSong,
-            bucketpath, // ✅ S3 업로드된 파일 경로
+            bucketPath, // ✅ S3 업로드된 파일 경로
             album: { albumId },
             artist: { artistId },
             titleMusic: false, // 🔥 타이틀 곡 체크는 `AddMusic.jsx`에서 설정!

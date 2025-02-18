@@ -40,10 +40,10 @@ public class Music {
     @Column(name ="bucket_path")
     private String bucketPath;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "album_id")
     Album album;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "artist_id")
     Artist artist;
 

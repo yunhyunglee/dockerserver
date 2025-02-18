@@ -32,15 +32,17 @@ public class MusicController {
     @PostMapping("/insertAlbum")
     public HashMap<String, Object> insertAlbum(@RequestBody Album album) {
         HashMap<String, Object> map = new HashMap<>();
-        ms.insertAlbum(album);
+        Album savedAlbum=ms.insertAlbum(album);
+        map.put("album",savedAlbum);
         map.put("msg","yes");
         return map;
     }
     @PostMapping("/insertArtist")
     public HashMap<String, Object> insertArtist(@RequestBody Artist artist) {
         HashMap<String, Object> map = new HashMap<>();
-        ms.insertArtist(artist);
+        Artist savedArtist = ms.insertArtist(artist);
         map.put("msg","yes");
+        map.put("artist", savedArtist);
         return map;
     }
 
@@ -254,8 +256,11 @@ public class MusicController {
         return map;
     }
 
-
-
+    @PostMapping("/getCurrentPlaylist")
+    public HashMap<String, Object> getCurrentPlaylist(@RequestBody List<HashMap<String,Object>> playlist) {
+        HashMap<String, Object> map = ms.getCurrentPlaylist(playlist);
+        return map;
+    }
 
 
 
