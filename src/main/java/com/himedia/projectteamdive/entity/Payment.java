@@ -44,7 +44,7 @@ public class Payment {
     private String cancelReason; // 취소 이유
     @Column(name = "gift_to_id")
     private String giftToId; // 선물 받는 유저
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})
     @JoinColumn(name = "member_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member; // 결제 유저 정보

@@ -44,7 +44,7 @@ public class Gift {
     @Column(name = "membership_downloadCount")
     private int membershipDownloadCount; // Membership 다운로드 횟수 저장
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "membership_id", nullable = true)
     @OnDelete(action = OnDeleteAction.SET_NULL) // 부모 삭제 시 FK NULL 처리
     private Membership membership;
