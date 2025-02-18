@@ -1,11 +1,13 @@
 package com.himedia.projectteamdive.repository;
 
+import com.himedia.projectteamdive.entity.Member;
 import com.himedia.projectteamdive.entity.Membership;
 import com.himedia.projectteamdive.entity.Membership_user;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface MembershipUserRepository extends JpaRepository<Membership_user, Integer> {
@@ -18,4 +20,12 @@ public interface MembershipUserRepository extends JpaRepository<Membership_user,
             "ORDER BY mu.startDate DESC") // 마지막으로 추가된 멤버십
     Membership_user getLatestActiveMembershipByCategory(@Param("memberId") String memberId, @Param("membershipCategory") String membershipCategory);
 
+    List<Membership_user> member(Member member);
+
+    @Query("SELECT mu FROM Membership_user mu " +
+            "JOIN mu.member m " +
+            "WHERE m.memberId = :memberId " + // 구매하려는 유저
+            "AND (mu.endDate IS NULL OR mu.endDate > CURRENT_TIMESTAMP) " + // 활성화 기간 검토
+            "ORDER BY mu.startDate DESC") // 마지막으로 추가된 멤버십
+    Object getLatestActiveMembership(String memberId);
 }
