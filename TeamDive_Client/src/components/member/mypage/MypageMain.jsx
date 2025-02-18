@@ -11,43 +11,40 @@ import { useParams } from 'react-router-dom';
 const MypageMain = () => {
 
 
-    const [likeList, setLikeList] = useState();
-    const [replyList, setReplyList] = useState();
-    const [member, setMember] = useState({});
-    const {memberId} = useParams();
     
+    const [likeArtistList, setLikeArtistList] = useState([]);
+    const [likeAlbumList, setLikeAlbumList] = useState([]);
+    const [likeMusicList, setLikeMusicList] = useState([]);
+
+    
+    const [replyArtistList, setReplyArtistList] = useState([]);
+    const [replyAlbumList, setReplyAlbumList] = useState([]);
+    const [replyMusicList, setReplyMusicList] = useState([]);
+
+    const [memberShipUser, setMemberShipUser] = useState({});
+        
     const loginUser = useSelector(state=>state.user);
 
-    useEffect(()=>{
-        jaxios.get(`/api/memeber/getLoginUser`, {params:{memberId}})
-        .then((result)=>{
-            setMember(result.data.member);
-            console.log("loginUser", result.data.member);
-        })
-        .catch((err)=>{
-            console.error(err);
-        })
-    },[]);
 
-    useEffect(()=>{
-        jaxios.get('/api/like/likeList')
-        .then((result)=>{
-            setLikeList(result.data.likeList);
-        })
-        .catch((err)=>{
-            console.log(err);
-        })
-    },[]);
+    // useEffect(()=>{
+    //     jaxios.get('/api/like/likeList')
+    //     .then((result)=>{
+    //         setLikeList(result.data.likeList);
+    //     })
+    //     .catch((err)=>{
+    //         console.log(err);
+    //     })
+    // },[]);
 
-    useEffect(()=>{
-        jaxios.get('/api/like/replyList')
-        .then((result)=>{
-            setReplyList(result.data.replyList);
-        })
-        .catch((err)=>{
-            console.log(err);
-        })
-    },[]);
+    // useEffect(()=>{
+    //     jaxios.get('/api/like/replyList')
+    //     .then((result)=>{
+    //         setReplyList(result.data.replyList);
+    //     })
+    //     .catch((err)=>{
+    //         console.log(err);
+    //     })
+    // },[]);
 
     return (
         <div className={mypageStyle.main}>
@@ -61,19 +58,19 @@ const MypageMain = () => {
                         <div className={mypageStyle.profileDetails}>
                             <div className={mypageStyle.field}>
                                 <label>아이디</label>&nbsp;&nbsp;&nbsp;
-                                {<>{loginUser.memberId}</>}
+                                <div>{loginUser.memberId}</div>
                             </div>
                             <div className={mypageStyle.field}>
                                 <label>닉네임</label>&nbsp;&nbsp;&nbsp;
-                                {<>{loginUser.nickname}</>}
+                                <div>{loginUser.nickname}</div>
                             </div>
                             <div className={mypageStyle.field}>
                                 <label>이메일</label>&nbsp;&nbsp;&nbsp;
-                                {<>{loginUser.email}</>}
+                                <div>{loginUser.email}</div>
                             </div>
                             <div className={mypageStyle.field}>
                                 <label>소개</label>&nbsp;&nbsp;&nbsp;
-                                {<>{loginUser.introduction}</>}
+                                <div>{loginUser.introduction}</div>
                             </div>
                         </div>
                     </div>
@@ -83,26 +80,58 @@ const MypageMain = () => {
                 <div className={mypageStyle.membership}>
                     <h2>사용 중인 멤버십</h2>
                     <div>
-                        <div>
-                            <label>멤버십 이름</label>
-                            {
-                                
-                            }
-                        </div>
+                        {
+                            (memberShipUser)?(
+                                <section className={mypageStyle.memberShipUser}>
+                                    <div className={mypageStyle.field}> 
+                                        <label>멤버십 이름</label>
+                                        <div>{memberShipUser.membership}</div>
+                                    </div>
+                                    <div className={mypageStyle.field}> 
+                                        <label>기간</label>
+                                        <div>{memberShipUser.startDate+' ~ '+memberShipUser.endDate}</div>
+                                    </div>
+                                    
+                                </section>
+                            ):(<h2>Loading....</h2>)   
+                        }
                         <button>멤버십 해지</button>
                     </div>
                 </div>
             </section>
                 
-            
 
             {/* 좋아요한 리스트 */}
             <section className={mypageStyle.likeList}>
-                <h2>좋아요 리스트</h2>
+                <h2>좋아요 가수 리스트</h2>
                 {/* 각 좋아요한 곡 또는 앨범 항목 */}
                 {
-                    (likeList)?(
-                        likeList.map((like, idx)=>{
+                    (likeArtistList)?(
+                        likeArtistList.map((likeArtist, idx)=>{
+                            return(<></>)
+                        })
+                    ):(<>Loading....</>)
+                }
+            </section>
+            {/* 좋아요한 리스트 */}
+            <section className={mypageStyle.likeList}>
+                <h2>좋아요 앨범 리스트</h2>
+                {/* 각 좋아요한 곡 또는 앨범 항목 */}
+                {
+                    (likeAlbumList)?(
+                        likeArtistList.map((likeAlbum, idx)=>{
+                            return(<></>)
+                        })
+                    ):(<>Loading....</>)
+                }
+            </section>
+            {/* 좋아요한 리스트 */}
+            <section className={mypageStyle.likeList}>
+                <h2>좋아요 곡 리스트</h2>
+                {/* 각 좋아요한 곡 또는 앨범 항목 */}
+                {
+                    (likeMusicList)?(
+                        likeMusicList.map((likeMusic, idx)=>{
                             return(<></>)
                         })
                     ):(<>Loading....</>)
@@ -111,11 +140,35 @@ const MypageMain = () => {
 
             {/* 댓글 리스트 */}
             <section className={mypageStyle.replyList}>
-                <h2>댓글 리스트</h2>
+                <h2>댓글(가수) 리스트</h2>
                 {/* 댓글리스트 항목 */}
                 {
-                    (replyList)?(
-                        replyList.map((reply, idx)=>{
+                    (replyArtistList)?(
+                        replyArtistList.map((replyArtist, idx)=>{
+                            return(<></>)
+                        })
+                    ):(<>Loading....</>)
+                }
+            </section>
+            {/* 댓글 리스트 */}
+            <section className={mypageStyle.replyList}>
+                <h2>댓글(앨범) 리스트</h2>
+                {/* 댓글리스트 항목 */}
+                {
+                    (replyAlbumList)?(
+                        replyAlbumList.map((replyAlbum, idx)=>{
+                            return(<></>)
+                        })
+                    ):(<>Loading....</>)
+                }
+            </section>
+            {/* 댓글 리스트 */}
+            <section className={mypageStyle.replyList}>
+                <h2>댓글(음악) 리스트</h2>
+                {/* 댓글리스트 항목 */}
+                {
+                    (replyMusicList)?(
+                        replyMusicList.map((replyMusic, idx)=>{
                             return(<></>)
                         })
                     ):(<>Loading....</>)
