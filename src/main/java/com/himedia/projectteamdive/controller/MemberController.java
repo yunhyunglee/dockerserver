@@ -246,7 +246,7 @@ public class MemberController {
         response.sendRedirect("http://localhost:5173/KakaoLogin/"+member.getMemberId());
     }
 
-    @RequestMapping("/getMember")
+    @GetMapping("/getMember")
     public HashMap<String, Object> getMember(@RequestParam("giftToId") String memberId){
         HashMap<String, Object> result = new HashMap<>();
         Member member = ms.getMember(memberId);
@@ -257,6 +257,17 @@ public class MemberController {
         }
         return result;
     }
+
+    @PostMapping("/updateMember")
+    public HashMap<String, Object> updateMember(@RequestBody Member member){
+        HashMap<String, Object> result = new HashMap<>();
+        Member updateMember = ms.updateMember(member);
+        result.put("updateMember", updateMember);
+        result.put("msg", "yes");
+        return result;
+    }
+
+
 
 
 
