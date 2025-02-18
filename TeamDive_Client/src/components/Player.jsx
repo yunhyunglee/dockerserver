@@ -30,7 +30,7 @@ import music5 from '../sampleMusic/music5.mp3';
 
 
 const originalPlaylist = [
-  { src: music1, title: '별별별', artist: '엔믹스' },
+  { src: 'https://d9k8tjx0yo0q5.cloudfront.net/music/482b8d00-08e4-4391-a40c-535aaaebcfbdHopeful - Nat Keefe.mp3', title: '별별별', artist: '엔믹스' },
   { src: music2, title: 'Dash', artist: '엔믹스' },
   { src: music3, title: '럽미랔뎃', artist: '엔믹스' },
   { src: music4, title: '고민중독', artist: 'QWER' },

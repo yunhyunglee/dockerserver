@@ -10,7 +10,7 @@ const PlaylistPage = () => {
 
     return (
         <div>
-            <div></div>
+            <div>플리</div>
         </div>
     )
 }
@@ -31,3 +31,5 @@ const PlaylistPage = () => {
 
 // 전체 컨테이너
     
+
+export {PlaylistPage }

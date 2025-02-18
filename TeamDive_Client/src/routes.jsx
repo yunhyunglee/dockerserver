@@ -6,7 +6,8 @@ import Membership from "./components/membership/Membership";
 import MainPage from "./components/frame/mainpage/MainPage";
 import MusicDetail from "./components/music/MusicDetail";
 import PopularChart from "./components/PopularChart";
-import { Storage } from "./components/storage/storage";
+import { Storage } from "./components/storage/Storage";
+import { PlaylistPage } from "./components/playlist/PlaylistPage";
 
 import PaymentsCheckout from "./components/payments/PaymentsCheckout";
 import PaymentsSuccess from "./components/payments/PaymentsSuccess";
@@ -19,7 +20,7 @@ function AppRoutes() {
         <Routes>
             <Route path="/" element={<MainPage />} />
             <Route path="/today" element={<PopularChart />} />
-            <Route path="/playList" element={<h4>플리페이지임</h4>} />
+            <Route path="/playList" element={<PlaylistPage />} />
             <Route path="/membership/:category" element={<Membership/>} />
             <Route path="/storage" element={<Storage />} />
             <Route path="/menu3" element={<h4>메뉴3 페이지임</h4>} />

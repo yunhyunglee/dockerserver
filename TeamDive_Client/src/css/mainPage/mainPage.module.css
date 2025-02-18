@@ -23,12 +23,12 @@
 }
 
 .top100Section,
-.myPlaylistSection {
+.recentMusicSection {
   text-align: center;
 }
 
 .top100Section h2,
-.myPlaylistSection h2 {
+.recentMusicSection h2 {
   font-size: 1.5rem;
   margin-bottom: 10px;
   
@@ -43,7 +43,7 @@
   margin-bottom: 10px;
 }
 
-.myPlaylistSection .playlistGrid {
+.recentMusicSection .recentMusicGrid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 10px;
@@ -52,13 +52,13 @@
 
 
 .top100Card,
-.playlistCard {
+.recentMusicCard {
   background-color: #2c2c2c;
   padding: 10px;
   border-radius: 5px;
 }
 
-.playlistCard {
+.recentMusicCard {
   background-repeat: no-repeat;
   background-size: cover; /* 100% 100%  둘중 고민중*/
   background-position: center;
@@ -66,13 +66,13 @@
 
 
 .top100Rank,
-.playlistRank {
+.recentMusicRank {
   font-weight: bold;
  
 }
 
 .top100Title,
-.playlistTitle {
+.recentMusictitle {
   font-size: 0.9rem;
   margin: 5px 0;
 }
@@ -83,7 +83,7 @@
 }
 
 .moreButtonTop100,
-.moreButtonPlaylist {
+.moreButtonRecentMusic {
   background-color: transparent;
   border: 1px solid #ff4081;
   color: #ff4081;
