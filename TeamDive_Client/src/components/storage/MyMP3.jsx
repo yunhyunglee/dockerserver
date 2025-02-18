@@ -1,4 +1,5 @@
 import styles from "../../css/storage.module.css";
+import { PurchasedMp3 } from "./PurchasedMp3";
 
 
 const MyMP3 = ({ activeMp3Tab, setActiveMp3Tab, pendingMp3, purchasedMp3 }) => {
@@ -29,11 +30,7 @@ const MyMP3 = ({ activeMp3Tab, setActiveMp3Tab, pendingMp3, purchasedMp3 }) => {
                 <p>구매한 MP3가 없습니다.</p>
               </div>
             ) : (
-              <ul>
-                {purchasedMp3.map((mp3, idx) => (
-                  <li key={idx}>{mp3}</li>
-                ))}
-              </ul>
+              <PurchasedMp3 purchasedMp3={purchasedMp3}/>
             )
           ) : (
             pendingMp3.length === 0 ? (
@@ -42,11 +39,7 @@ const MyMP3 = ({ activeMp3Tab, setActiveMp3Tab, pendingMp3, purchasedMp3 }) => {
                 <p>구매하려고 담아둔 MP3가 없습니다.</p>
               </div>
             ) : (
-              <ul>
-                {pendingMp3.map((mp3, idx) => (
-                  <li key={idx}>{mp3}</li>
-                ))}
-              </ul>
+              <PendingMp3 pendingMp3={pendingMp3}/>
             )
           )}
         </div>
