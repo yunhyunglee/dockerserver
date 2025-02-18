@@ -21,9 +21,21 @@ const MypageMain = () => {
     const [replyAlbumList, setReplyAlbumList] = useState([]);
     const [replyMusicList, setReplyMusicList] = useState([]);
 
-    const [memberShipUser, setMemberShipUser] = useState({});
+    const [memberShipUserList, setMemberShipUserList] = useState([]);
         
     const loginUser = useSelector(state=>state.user);
+
+    useEffect(()=>{
+        jaxios.get('/api/membership/getActiveMembership', {params:{memberId:loginUser.memberId}})
+        .then((result)=>{
+            console.log('memberShipUserList',result.data);
+            setMemberShipUserList(result.data.memberShipUserList);
+            
+        })
+        .catch((err)=>{
+            console.error(err);
+        })
+    },[]);
 
 
     // useEffect(()=>{
@@ -81,67 +93,146 @@ const MypageMain = () => {
                     <h2>사용 중인 멤버십</h2>
                     <div>
                         {
-                            (memberShipUser)?(
-                                <section className={mypageStyle.memberShipUser}>
-                                    <div className={mypageStyle.field}> 
-                                        <label>멤버십 이름</label>
-                                        <div>{memberShipUser.membership}</div>
-                                    </div>
-                                    <div className={mypageStyle.field}> 
-                                        <label>기간</label>
-                                        <div>{memberShipUser.startDate+' ~ '+memberShipUser.endDate}</div>
-                                    </div>
-                                    
-                                </section>
-                            ):(<h2>Loading....</h2>)   
+                            (memberShipUserList)?(
+                                memberShipUserList.map((memberShipUser, key)=>{
+                                    return(
+                                        <section className={mypageStyle.memberShipUser} idx={key}>
+                                            <div className={mypageStyle.field}> 
+                                                <label>멤버십 이름</label>
+                                                <div>{memberShipUser.membershipName}</div>
+                                            </div>
+                                            <div className={mypageStyle.field}> 
+                                                <label>기간</label>
+                                                {memberShipUser.startDate.substring(0, 10) + " ~ " + memberShipUser.endDate.substring(0, 10)}
+                                            </div>
+                                            {   
+                                                (memberShipUser.membershipCategory==='download')?(
+                                                    <div className={mypageStyle.field}>
+                                                        <label>남은 횟수</label>
+                                                        <div>{memberShipUser.downloadCount+' 회'}</div>
+                                                    </div>
+                                                ):(
+                                                    <div className={mypageStyle.field}>
+                                                        <label>남은 횟수</label>
+                                                        <div>{'-'}</div>
+                                                    </div>
+                                                )
+                                            }
+                                            <button>멤버십 해지</button>
+                                        </section>
+                                    )
+                                })
+                            ):(<div>구독한 멤버십이 없습니다.</div>)
                         }
-                        <button>멤버십 해지</button>
                     </div>
                 </div>
             </section>
                 
 
-            {/* 좋아요한 리스트 */}
+            {/* 좋아요한 가수 / 앨범 리스트 */}
             <section className={mypageStyle.likeList}>
-                <h2>좋아요 가수 리스트</h2>
-                {/* 각 좋아요한 곡 또는 앨범 항목 */}
-                {
-                    (likeArtistList)?(
-                        likeArtistList.map((likeArtist, idx)=>{
-                            return(<></>)
-                        })
-                    ):(<>Loading....</>)
-                }
-            </section>
-            {/* 좋아요한 리스트 */}
-            <section className={mypageStyle.likeList}>
-                <h2>좋아요 앨범 리스트</h2>
-                {/* 각 좋아요한 곡 또는 앨범 항목 */}
-                {
-                    (likeAlbumList)?(
-                        likeArtistList.map((likeAlbum, idx)=>{
-                            return(<></>)
-                        })
-                    ):(<>Loading....</>)
-                }
-            </section>
-            {/* 좋아요한 리스트 */}
+                {/* 좋아요한 가수 리스트 */}
+                <div>
+                    <h2>좋아요 가수 리스트</h2>
+                    {/* 각 좋아요한 가수 항목 */}
+                    {
+                        (likeArtistList)?(
+                            likeArtistList.slice(0, 6).map((likeArtist, idx)=>{
+                                return(
+                                    <div className={mypageStyle.field} key={idx}>
+                                        <div>
+                                            <img src={''}/>
+                                        </div>
+                                        <div>
+                                            <label>가수이름</label>
+                                            <div>{likeArtist.name}</div>
+                                        </div>
+                                        <div>
+                                            <label>데뷔일</label>
+                                            <div>
+                                                {
+                                                    (likeArtist.debut)?(likeArtist.debut.substring(0, 10)):('')
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                )
+                            })
+                        ):(<>Loading....</>)
+                    }
+                </div>
+                {/* 좋아요한 앨범 리스트 */}
+                <div className={mypageStyle.likeList}>
+                    <h2>좋아요 앨범 리스트</h2>
+                    {/* 각 좋아요한 앨범 항목 */}
+                    {
+                        (likeAlbumList)?(
+                            likeArtistList.slice(0, 6).map((likeAlbum, idx)=>{
+                                return(
+                                    <div className={mypageStyle.field} key={idx}>
+                                        <div>
+                                            <img src={''}/>
+                                        </div>
+                                        <div>
+                                            <label>앨범이름</label>
+                                            <div>{likeAlbum.name}</div>
+                                        </div>
+                                        <div>
+                                            <label>발매일</label>
+                                            <div>
+                                                {
+                                                    (likeAlbum.indate)?(likeAlbum.indate.substring(0, 10)):('')
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                )
+                            })
+                        ):(<>Loading....</>)
+                    }
+                </div>
+                
+            </section>    
+            {/* 좋아요한 곡 리스트 */}
             <section className={mypageStyle.likeList}>
                 <h2>좋아요 곡 리스트</h2>
-                {/* 각 좋아요한 곡 또는 앨범 항목 */}
-                {
-                    (likeMusicList)?(
-                        likeMusicList.map((likeMusic, idx)=>{
-                            return(<></>)
-                        })
-                    ):(<>Loading....</>)
+                {/* 각 좋아요한 음악 항목 */}
+                {   
+                    <div className={mypageStyle.field}>
+                        <div className={mypageStyle.title}>
+                            <div className={mypageStyle.column}>제목</div>
+                            <div className={mypageStyle.column}>가수</div>
+                            <div className={mypageStyle.column}>앨범</div>
+                            <div className={mypageStyle.column}>장르</div>
+                        </div>
+                        {
+                            (likeMusicList)?(
+                                likeMusicList.map((likeMusic, idx)=>{
+                                    return(
+                                        <div className={mypageStyle.title} key={idx}>
+                                            <div className={mypageStyle.column}>
+                                                {likeMusic.title}
+                                            </div>
+                                            <div className={mypageStyle.column}>
+                                                {likeMusic.artist.artistName}
+                                            </div>
+                                            <div className={mypageStyle.column}>
+                                                {likeMusic.album.title}
+                                            </div>
+                                            <div className={mypageStyle.column}>
+                                                {likeMusic.genre}
+                                            </div>
+                                        </div>
+                                    )
+                                })
+                            ):(<>Loading....</>)
+                        }
+                    </div>
                 }
             </section>
-
-            {/* 댓글 리스트 */}
+            {/* 댓글 리스트 - 봐서 따로 컴포넌트룰 구성해서 연결시킬지 말지 구상
             <section className={mypageStyle.replyList}>
                 <h2>댓글(가수) 리스트</h2>
-                {/* 댓글리스트 항목 */}
                 {
                     (replyArtistList)?(
                         replyArtistList.map((replyArtist, idx)=>{
@@ -150,10 +241,9 @@ const MypageMain = () => {
                     ):(<>Loading....</>)
                 }
             </section>
-            {/* 댓글 리스트 */}
+           
             <section className={mypageStyle.replyList}>
                 <h2>댓글(앨범) 리스트</h2>
-                {/* 댓글리스트 항목 */}
                 {
                     (replyAlbumList)?(
                         replyAlbumList.map((replyAlbum, idx)=>{
@@ -162,10 +252,10 @@ const MypageMain = () => {
                     ):(<>Loading....</>)
                 }
             </section>
-            {/* 댓글 리스트 */}
+            
             <section className={mypageStyle.replyList}>
                 <h2>댓글(음악) 리스트</h2>
-                {/* 댓글리스트 항목 */}
+               
                 {
                     (replyMusicList)?(
                         replyMusicList.map((replyMusic, idx)=>{
@@ -174,6 +264,7 @@ const MypageMain = () => {
                     ):(<>Loading....</>)
                 }
             </section>
+            */}
         </div>
     )
 }

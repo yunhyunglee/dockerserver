@@ -9,20 +9,24 @@ const UpdateMemberForm = () => {
 
     const navigate = useNavigate();
 
+    const loginUser = useSelector(state=>state.user);
+    
+    
+
     function confirm(){
 
     };
 
     return (
         <div className={mypageStyle.updateMemberForm}>
-            <>회원정보수정 FORM</>
+            <h1>회원정보수정 FORM</h1>
             <div>
-                <img src={` `}/>
+                <img src={`http://localhost:8070/profileImage/${loginUser.image}`}/>
                 <input type='file' />
             </div>
             <div>
                 <label>아이디</label>
-                <input type='text'/>
+                <input type='text' value={loginUser.memberId} readOnly/>
             </div>
             <div>
                 <label>패스워드</label>
@@ -40,7 +44,9 @@ const UpdateMemberForm = () => {
             <div>
                 <label>우편번호</label>
                 <input type='text'/>
-                <button type='button'>검색</button>
+                <button type='button' onClick={()=>{
+
+                }}>검색</button>
             </div>
             <div>
                 <label>주소</label>
@@ -52,6 +58,10 @@ const UpdateMemberForm = () => {
             </div>
             <div>
                 <label>추가주소</label>
+                <input type='text'/>
+            </div>
+            <div>
+                <label>소개</label>
                 <input type='text'/>
             </div>
             <div>

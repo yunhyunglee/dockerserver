@@ -36,7 +36,8 @@ public class MembershipService {
     }
 
     /* 현재 로그인 유저에게 활성화된 멤버십이 있는지 확인 */
-    public Object getActiveMembership(String memberId) {
-        return msru.getLatestActiveMembership(memberId);
+    public List<Membership_user> getActiveMembership(String memberId) {
+        List<Membership_user> list = msru.getActiveMembership(memberId);
+        return list;
     }
 }
