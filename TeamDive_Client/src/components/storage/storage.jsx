@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import styles from "../../css/storage.module.css";
@@ -6,8 +6,12 @@ import { LikedMusic } from "./LikedMusic";
 import { LikedArtist } from "./LikedArtist";
 import {LikedAlbum} from "./LikedAlbum";
 import { MyMP3 } from "./MyMP3";
+import { ThemeContext } from "@emotion/react";
 
 const Storage = () => {
+
+  const zzz = useContext(ThemeContext);
+
   const loginUser = useSelector((state) => state.user);
   const navigate = useNavigate();
 
