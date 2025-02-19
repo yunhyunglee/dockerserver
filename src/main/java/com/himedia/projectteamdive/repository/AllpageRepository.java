@@ -10,4 +10,5 @@ public interface AllpageRepository extends JpaRepository<Allpage, Integer> {
 
 
     Allpage findByEntityIdAndPagetype(int entityId, Pagetype pagetype);
+
 }
