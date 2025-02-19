@@ -155,9 +155,9 @@ public class PaymentService {
     /* 결제 내역 조회 */
     public List<PaymentResponseDto> getPaymentList(String memberId) {
         Member member = memberRepo.findByMemberId(memberId);
-        List<Payment> list = paymentRepo.findByMember(member);
+        List<Payment> paymentList = paymentRepo.findByMember(member);
 
-        return list.stream()
+        return paymentList.stream()
                 .map(PaymentResponseDto::new) // Payment -> PaymentResponseDto 변환
                 .collect(Collectors.toList());
     }

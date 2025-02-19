@@ -13,15 +13,29 @@ const PendingMp3 = () => {
 
     const [musicList, setMusicList] = useState([]);
     const [selectedMusic, setSelectedMusic] = useState([]);
+    const totalPrice = selectedMusic.reduce((sum, id) => {
+        const music = musicList.find((m) => m.id === id);
+        return sum + (music ? music.price : 0);
+    }, 0);
 
-    useEffect( () => {
-        if(!loginUser){
-            alert('로그인 후 이용 가능한 서비스입니다');
-            navigate('/login');
-        }else{
-            //const response = jaxios.get('/api/cart/getCartList', {params: {memberId: loginUser.memberId}})
-        }
-    }, []);
+    useEffect(() => {
+        const fetchCartList = async () => {
+            if (!loginUser) {
+                alert('로그인 후 이용 가능한 서비스입니다');
+                navigate('/login');
+            } else {
+                try {
+                    const response = await jaxios.get('/api/cart/getCartList', { params: { memberId: loginUser.memberId } });
+                    setMusicList([...response.data.cartList]);
+                    console.log('장바구니', response.data.cartList);
+                } catch (error) {
+                    console.error('장바구니 목록 가져오기 오류', error);
+                }
+            }
+        };
+    
+        fetchCartList();
+    }, [loginUser, navigate]);
 
     const toggleSelectMusic = (id) => {
         setSelectedMusic((prev) =>
@@ -32,11 +46,6 @@ const PendingMp3 = () => {
     const removeSelectedMusic = () => {
         setSelectedMusic([]);
     };
-
-    const totalPrice = selectedMusic.reduce((sum, id) => {
-        const music = musicList.find((m) => m.id === id);
-        return sum + (music ? music.price : 0);
-    }, 0);
 
     return (
         <div className={pendingStyle.container}>
@@ -54,7 +63,7 @@ const PendingMp3 = () => {
                         <div>
                             {
                                 musicList.map((music) => (
-                                    <div key={music.id} className={pendingStyle.musicItem}>
+                                    <div key={music.musicId} className={pendingStyle.musicItem}>
                                         <input
                                             type="checkbox"
                                             checked={selectedMusic.includes(music.id)}
