@@ -1,78 +1,186 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import styles from "../../css/storage/storage.module.css";
+import styles from "../../css/storage/likedMusic.module.css";
 
 const LikedMusic = () => {
-  
-  const likedMusic = [
-    {
-      musicId: 1,
-      title: "별별별",
-      genre: "아이돌",
-      artist: "엔믹스",
-      image: "/public/image/album/album1.jpg", 
-    },
-    {
-      musicId: 2,
-      title: "고민중독",
-      genre: "밴드",
-      artist: "QWER",
-      image: "/public/image/album/album2.jpg", 
-    },
-    {
-      musicId: 3,
-      title: "Dash",
-      genre: "아이돌",
-      artist: "엔믹스",
-      image: "/public/image/album/album3.jpg", 
-    },
-    {
-      musicId: 4,
-      title: "럽미랔뎃",
-      genre: "아이돌",
-      artist: "엔믹스",
-      image: "/public/image/album/album8.jpg", 
-    },
-  ];
+    // 더미 데이터: "liked" 곡들
+    const [likedMusic, setLikedMusic] = useState([
+      {
+        musicId: 1,
+        title: "별별별",
+        genre: "아이돌",
+        artist: "엔믹스",
+        image: "/public/image/album/album1.jpg",
+      },
+      {
+        musicId: 2,
+        title: "고민중독",
+        genre: "밴드",
+        artist: "QWER",
+        image: "/public/image/album/album2.jpg",
+      },
+      {
+        musicId: 3,
+        title: "Dash",
+        genre: "아이돌",
+        artist: "엔믹스",
+        image: "/public/image/album/album3.jpg",
+      },
+      {
+        musicId: 4,
+        title: "Love me Like that",
+        genre: "아이돌",
+        artist: "엔믹스",
+        image: "/public/image/album/album8.jpg",
+      },
+    ]);
 
-  return (
-    <div className={styles.sectionContainer}>
-      <h2 className={styles.sectionTitle}>좋아하는 노래</h2>
+    useEffect(()=>{
+      
+    })
+    
 
-      {likedMusic.length === 0 ? (
-        <div className={styles.emptyMessage}>
-          <h2>좋아하는 노래가 없어요!</h2>
-          <p>내가 좋아하는 노래들을 추가해보세요.</p>
-        </div>
-      ) : (
-        <div className={styles.musicGrid}>
-          {likedMusic.map((music) => (
-            <div className={styles.musicCard} key={music.musicId}>
-              {/* 이미지 영역 */}
-              <div className={styles.musicImageWrapper}>
-                <img
-                  src={music.image}
-                  alt={music.title}
-                  className={styles.musicImage}
+    // 체크박스 선택 상태 (musicId 배열)
+    const [selectedIds, setSelectedIds] = useState([]);
+
+    // "전체선택" 체크박스 토글
+    const toggleSelectAll = (checked) => {
+      if (checked) {
+        setSelectedIds(likedMusic.map((song) => song.musicId));
+      } else {
+        setSelectedIds([]);
+      }
+    };
+
+    // 개별 곡 체크박스 토글
+    const toggleSelect = (id) => {
+      setSelectedIds((prev) =>
+        prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+      );
+    };
+
+    // 좋아요 취소 -> confirm 후 제거
+    const handleUnlike = (id) => {
+      if (window.confirm("좋아요를 취소할까요?")) {
+        setLikedMusic((prev) => prev.filter((song) => song.musicId !== id));
+        // 혹시 선택 목록에도 있으면 제거
+        setSelectedIds((prev) => prev.filter((x) => x !== id));
+      }
+    };
+
+    // "전체 재생" 버튼 클릭
+    const handlePlayAll = () => {
+      alert(`전체 재생: 선택된 곡 ${selectedIds.length}개`);
+    };
+
+    // "전체 구매" 버튼 클릭
+    const handleBuyAll = () => {
+      alert(`전체 구매: 선택된 곡 ${selectedIds.length}개`);
+    };
+
+    // 곡별 MP3 구매 버튼
+    const handleBuyOne = (id) => {
+      alert(`곡 (ID: ${id})을(를) 구매합니다!`);
+    };
+
+    const isAllSelected =
+      likedMusic.length > 0 && selectedIds.length === likedMusic.length;
+    const isSomeSelected = selectedIds.length > 0;
+
+    return (
+      <div className={styles.sectionContainer}>
+        <h2 className={styles.sectionTitle}>좋아하는 노래</h2>
+
+        {/* 노래가 하나도 없을 때 */}
+        {likedMusic.length === 0 ? (
+          <div className={styles.emptyMessage}>
+            <h2>좋아하는 노래가 없어요!</h2>
+            <p>내가 좋아하는 노래들을 추가해보세요.</p>
+          </div>
+        ) : (
+          <>
+            {/* 상단: 전체선택, 전체재생, 전체구매 */}
+            <div className={styles.topBar}>
+              <label className={styles.checkAllLabel}>
+                <input
+                  type="checkbox"
+                  checked={isAllSelected}
+                  onChange={(e) => toggleSelectAll(e.target.checked)}
                 />
-              </div>
+                전체선택
+              </label>
 
-              {/* 노래 제목 (클릭 시 /music/:musicId 로 이동) */}
-              <Link to={`/music/${music.musicId}`} className={styles.musicTitle}>
-                {music.title}
-              </Link>
-
-              {/* 장르 & 아티스트 */}
-              <div className={styles.musicMeta}>
-                <span className={styles.genre}>{music.genre}</span>
-                <span className={styles.artist}>{music.artist}</span>
-              </div>
+              <button
+                className={styles.topBtn}
+                onClick={handlePlayAll}
+                disabled={!isSomeSelected}
+              >
+                전체 재생
+              </button>
+              <button
+                className={styles.topBtn}
+                onClick={handleBuyAll}
+                disabled={!isSomeSelected}
+              >
+                전체 구매
+              </button>
             </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
+
+            <div className={styles.songList}>
+              {likedMusic.map((music) => (
+                <div className={styles.songRow} key={music.musicId}>
+                  {/* 개별 체크박스 */}
+                  <input
+                    type="checkbox"
+                    className={styles.rowCheckbox}
+                    checked={selectedIds.includes(music.musicId)}
+                    onChange={() => toggleSelect(music.musicId)}
+                  />
+
+                  {/* 앨범 커버 */}
+                  <div className={styles.coverWrapper}>
+                    <img
+                      src={music.image}
+                      alt={music.title}
+                      className={styles.coverImage}
+                    />
+                  </div>
+
+                  {/* 제목 */}
+                  <div className={styles.title}>
+                    <Link to={`/music/${music.musicId}`} className={styles.titleLink}>
+                      {music.title}
+                    </Link>
+                  </div>
+
+                  {/* 가수 */}
+                  <div className={styles.artist}>{music.artist}</div>
+
+                  {/* 장르 */}
+                  <div className={styles.genre}>{music.genre}</div>
+
+                  {/* MP3 구매 버튼 */}
+                  <button
+                    className={styles.buyBtn}
+                    onClick={() => handleBuyOne(music.musicId)}
+                  >
+                    MP3구매
+                  </button>
+
+                  {/* 좋아요(하트) 버튼 */}
+                  <button
+                    className={styles.heartBtn}
+                    onClick={() => handleUnlike(music.musicId)}
+                  >
+                    ♥
+                  </button>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+    );
 };
 
 export default LikedMusic;
