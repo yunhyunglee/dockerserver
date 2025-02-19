@@ -13,10 +13,7 @@ const PendingMp3 = () => {
 
     const [musicList, setMusicList] = useState([]);
     const [selectedMusic, setSelectedMusic] = useState([]);
-    const totalPrice = selectedMusic.reduce((sum, id) => {
-        const music = musicList.find((m) => m.id === id);
-        return sum + (music ? music.price : 0);
-    }, 0);
+    const totalPrice = selectedMusic.length * 770;
 
     useEffect(() => {
         const fetchCartList = async () => {
@@ -60,25 +57,42 @@ const PendingMp3 = () => {
                             </button>
                         </div>
           
-                        <div>
-                            {
-                                musicList.map((music) => (
-                                    <div key={music.musicId} className={pendingStyle.musicItem}>
-                                        <input
-                                            type="checkbox"
-                                            checked={selectedMusic.includes(music.id)}
-                                            onChange={ () => toggleSelectMusic(music.id) }
-                                        />
-                                        <div className={pendingStyle.musicInfo}>
-                                            <p className={pendingStyle.musicTitle}>{music.title}</p>
-                                            <p className={pendingStyle.musicArtist}>{music.artist}</p>
-                                        </div>
-                                            <p className={pendingStyle.musicPrice}>{music.price}원</p>
-                                            <button className={pendingStyle.trashButton}>🗑</button>
-                                    </div>
-                                ))
-                            }
+                        <div className={pendingStyle.musicItemHeader}>
+                            <input
+                                type="checkbox"
+                                //checked={}
+                                onChange={ () => {} }
+                            />
+                            <div className={pendingStyle.info}>
+                                <div className={pendingStyle.musicInfo}>
+                                    <p className={pendingStyle.musicTitle}>노래제목</p>
+                                </div>
+                                <p className={pendingStyle.musicArtist}>아티스트</p>
+                                <p className={pendingStyle.musicPrice}>가격</p>
+                                <p className={pendingStyle.musicDelete}>삭제</p>
+                            </div>
                         </div>
+                        {
+                            musicList.map((music) => (
+                                <div key={music.musicId} className={pendingStyle.musicItem}>
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedMusic.includes(music.musicId)}
+                                        onChange={ () => toggleSelectMusic(music.musicId) }
+                                    />
+                                    <div className={pendingStyle.info}>
+                                        <div className={pendingStyle.musicInfo}>
+                                            <img src={music.image} alt={music.title} className={pendingStyle.musicImage} />
+                                            <p className={pendingStyle.musicTitle}>{music.title}</p>
+                                            
+                                        </div>
+                                        <p className={pendingStyle.musicArtist}>{music.artist}</p>
+                                        <p className={pendingStyle.musicPrice}>770원</p>
+                                        <button className={pendingStyle.trashButton}>X</button>
+                                    </div>
+                                </div>
+                            ))
+                        }
                     </>
                 ) : (
                     <div className={storageStyle.emptyMessage}>
@@ -88,9 +102,9 @@ const PendingMp3 = () => {
                 )
             }
             <div className={pendingStyle.payment}>
-                <p className={pendingStyle.totalPrice}>총 결제금액:
-                    <span className={pendingStyle.totalAmount}>{totalPrice}원</span>
-                </p>
+                <div className={pendingStyle.totalPrice}>총 결제금액 :
+                    <span className={pendingStyle.totalAmount}> {totalPrice}원</span>
+                </div>
                 <button
                     className={pendingStyle.paymentButton}
                     disabled={selectedMusic.length === 0}>

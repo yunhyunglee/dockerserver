@@ -10,16 +10,18 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
+    margin: 20px 0;
 }
 
 .deleteButton {
-    background: red;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    cursor: pointer;
-    border-radius: 4px;
+    background-color: #262626;
+    border-radius: 2px;
+    color: #fff;
+    display: inline-block;
+    font-size: 13px;
+    line-height: 28px;
+    padding: 0 10px;
+    vertical-align: top;
 }
 
 .musicItem {
@@ -27,42 +29,72 @@
     align-items: center;
     justify-content: space-between;
     padding: 10px;
-    border-bottom: 1px solid #ddd;
 }
 
-.musicInfo {
+.musicItemHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 2px solid #999;
+    border-bottom: 1px solid #999;
+    padding: 0 10px;
+    color: gray;
+}
+
+.info {
+    display: flex;
     flex: 1;
     margin-left: 10px;
 }
 
+.musicInfo {
+    display: flex;
+    flex: 8;
+}
+
+.musicImage {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+    border: 1px solid salmon;
+}
+
 .musicTitle {
-    font-weight: bold;
+    flex: 3;
 }
 
 .musicArtist {
+    flex: 6;
     color: gray;
-    font-size: 14px;
 }
 
 .musicPrice {
-    font-weight: bold;
+    flex: 2;
+}
+
+.musicDelete {
+    flex: 1;
 }
 
 .trashButton {
+    flex: 1;
     background: none;
     border: none;
     cursor: pointer;
     font-size: 18px;
+    color: gray;
 }
 
 .payment {
-    margin-top: 20px;
-    text-align: center;
+    text-align: right;
 }
 
 .totalPrice {
+    padding: 10px 0;
     font-size: 18px;
     font-weight: bold;
+    border-top: 1px solid #999;
+    box-sizing: border-box;
 }
 
 .totalAmount {
@@ -70,13 +102,12 @@
 }
 
 .paymentButton {
-    background: blue;
+    background: #ff4081;
     color: white;
     border: none;
     padding: 10px 20px;
     cursor: pointer;
     border-radius: 4px;
-    margin-top: 10px;
 }
 
 .paymentButton:disabled {
