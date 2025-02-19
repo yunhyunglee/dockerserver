@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import Modal from "react-modal";
 import DaumPostcode from "react-daum-postcode";
 import { Cookies } from 'react-cookie'
-import { loginAction } from '../../../store/UserSlice'
+import { loginAction, logoutAction } from '../../../store/UserSlice'
 
 import mypageStyle from '../../../css/mypage/mypage.module.css'
 import joinStyles from '../../../css/joinForm.module.css'
@@ -51,8 +51,6 @@ const UpdateMemberForm = () => {
         },
     };
 
-    
-
     useEffect(()=>{
         setMemberId(loginUser.memberId);
         setPhone(loginUser.phone);
@@ -67,7 +65,7 @@ const UpdateMemberForm = () => {
             setPassword('kakao');
             setPasswordCheck('kakao');
         }
-    });
+    },[]);
 
     const completeHandler=(data)=>{
         console.log(data)
@@ -134,6 +132,24 @@ const UpdateMemberForm = () => {
         }catch(err){
             console.error(err);
         }
+    };
+
+    function deleteMember(){
+        if (!window.confirm('정말 회원 탈퇴 하시겠습니까?')) {
+            return;
+        }
+        jaxios.delete(`/api/member/deleteMember/${memberId}`)
+        .then((result)=>{
+            if(result.data.msg === 'yes'){
+                alert('회원탈퇴 되었습니다.');
+                cookies.remove('user');
+                dispatch( logoutAction() );
+                navigate('/');
+            }
+        })
+        .catch((err)=>{
+            console.error(err)
+        })
     };
 
     return (
@@ -262,6 +278,9 @@ const UpdateMemberForm = () => {
                     navigate(-1);
                 }}>뒤로</button>
             </div>
+            <button type='button' className={joinStyles.button} onClick={()=>{
+                    deleteMember();
+                }}>회원탈퇴</button>
         </div>
     )
 }

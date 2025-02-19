@@ -30,6 +30,7 @@ public class Artist {
     private Timestamp debut;
     private String country;
     private String image;
+    private String content;
 
     @OneToMany(mappedBy = "artist",  cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
     @JsonManagedReference("artist-album")
