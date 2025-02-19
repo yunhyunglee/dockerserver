@@ -1,5 +1,6 @@
 package com.himedia.projectteamdive.controller;
 
+import com.himedia.projectteamdive.dto.CartRequestDto;
 import com.himedia.projectteamdive.entity.Music;
 import com.himedia.projectteamdive.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +19,9 @@ public class CartController {
     /* 장바구니에 구매할 곡 넣기 */
     @PostMapping("/insertCart")
     public HashMap<String, Object> insertCart(
-            @RequestBody List<Integer> musicIdList,
-            @RequestParam("memberId") String memberId) {
+            @RequestBody CartRequestDto requestDto) {
         HashMap<String, Object> result = new HashMap<>();
-        cs.insertCart(memberId, musicIdList);
+        cs.insertCart(requestDto);
         return result;
     }
 

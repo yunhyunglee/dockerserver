@@ -35,7 +35,7 @@ const MypageMain = () => {
         .catch((err)=>{
             console.error(err);
         })
-    },[]);
+    },[loginUser]);
 
 
     // useEffect(()=>{
@@ -93,7 +93,7 @@ const MypageMain = () => {
                     <h2>사용 중인 멤버십</h2>
                     <div>
                         {
-                            (memberShipUserList)?(
+                            (memberShipUserList && memberShipUserList.length > 0)?(
                                 memberShipUserList.map((memberShipUser, key)=>{
                                     return(
                                         <section className={mypageStyle.memberShipUser} idx={key}>

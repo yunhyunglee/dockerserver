@@ -1,5 +1,7 @@
 package com.himedia.projectteamdive.service;
 
+import com.himedia.projectteamdive.dto.CartRequestDto;
+import com.himedia.projectteamdive.dto.CartResponseDto;
 import com.himedia.projectteamdive.entity.Cart;
 import com.himedia.projectteamdive.entity.Member;
 import com.himedia.projectteamdive.entity.Music;
@@ -13,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -26,10 +29,11 @@ public class CartService {
     MusicRepository musicRepo;
 
     /* 장바구니에 구매할 곡 넣기 */
-    public void insertCart(String memberId, List<Integer> musicIdList) {
-        Member member = memberRepo.findByMemberId(memberId);
+    public void insertCart(CartRequestDto requestDto) {
+        Member member = memberRepo.findByMemberId(requestDto.getMemberId());
         Cart newCart = new Cart();
         newCart.setMember(member);
+        List<Integer> musicIdList = requestDto.getMusicIdList();
 
         for (Integer musicId : musicIdList) {
             Music music = musicRepo.findByMusicId(musicId);
@@ -42,8 +46,12 @@ public class CartService {
     }
 
     /* 장바구니 조회 */
-    public List<Cart> getCartList(String memberId) {
-        return cartRepo.findByMember(memberRepo.findByMemberId(memberId));
+    public List<CartResponseDto> getCartList(String memberId) {
+        Member member = memberRepo.findByMemberId(memberId);
+        List<Cart> cartList = cartRepo.findByMember(member);
+        return cartList.stream()
+                .map(CartResponseDto::new) // Cart 객체를 CartResponseDto로 변환
+                .collect(Collectors.toList());
     }
 
 }

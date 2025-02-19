@@ -23,10 +23,11 @@ public class CommunityService {
 
     @Autowired
     MemberRepository mr;
-    public void insertReply(Reply reply, String type, int entityId) {
+    public void insertReply(Reply reply, String type, int entityId,String memberId) {
         Pagetype pagetype= Pagetype.valueOf(type);
         Allpage allpage=apr.findByEntityIdAndPagetype(entityId,pagetype);
         reply.setAllpage(allpage);
+        reply.setMember(mr.findByMemberId(memberId));
         rr.save(reply);
     }
 
@@ -56,5 +57,10 @@ public class CommunityService {
 
     public List<Likes> getLikes(String memberId) {
         return lr.findByMember(mr.findByMemberId(memberId));
+    }
+
+    public List<Reply> getReplyList(String type, String memberId) {
+        Pagetype pagetype = Pagetype.valueOf(type.toUpperCase());
+        return rr.findByMemberIdAndPagetype(memberId, pagetype);
     }
 }

@@ -86,7 +86,8 @@ const PlaylistPage = () => {
       {/* 장르별 플레이리스트 */}
       <div className={styles.genrePlaylist}>
         <div className={styles.sectionHeader}>
-          <span className={styles.spanTitle}>장르별 플레이리스트</span>
+          <span className={styles.spanTitle}>My 기분 맞춤 플레이리스트</span>
+          <div className={styles.genreMenu}>적적한 기분 / 신날 때 / ??? </div>
         </div>
         <div className={styles.genreSection}>
           {playlist.slice(0, 5).map((item, idx) => (

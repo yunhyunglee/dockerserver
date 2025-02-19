@@ -67,7 +67,7 @@ const UpdateMemberForm = () => {
             setPassword('kakao');
             setPasswordCheck('kakao');
         }
-    },[]);
+    });
 
     const completeHandler=(data)=>{
         console.log(data)
@@ -202,7 +202,7 @@ const UpdateMemberForm = () => {
             </div>
             <div className={joinStyles.formGroup}>
                 <label>우편번호</label>
-                <input type='text' value={zipCode} onChange={(e)=>{setZipCode(e.currentTarget.value)}}/>
+                <input type='text' value={zipCode} onChange={(e)=>{setZipCode(e.currentTarget.value)}} readOnly/>
                 <button type='button' onClick={()=>{
                     toggle();
                 }}>검색</button>
@@ -217,7 +217,11 @@ const UpdateMemberForm = () => {
             {/* ======================= */}
             <div className={joinStyles.formGroup}>
                 <label>주소</label>
-                <input type='text' value={address} onChange={(e)=>{setAddress(e.currentTarget.value)}}/>
+                <input 
+                type='text' 
+                value={address} 
+                onChange={(e)=>{setAddress(e.currentTarget.value)}}
+                readOnly />
             </div>
             <div className={joinStyles.formGroup}>
                 <label>상세주소</label>
@@ -235,6 +239,7 @@ const UpdateMemberForm = () => {
                     id="addressExtra"
                     value={addressExtra}
                     onChange={(e) => setAddressExtra(e.target.value)}
+                    readOnly
                 />
             </div>
             <div className={joinStyles.formGroup}>

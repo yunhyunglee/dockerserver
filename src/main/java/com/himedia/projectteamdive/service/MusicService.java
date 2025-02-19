@@ -1,11 +1,13 @@
 package com.himedia.projectteamdive.service;
 
+import com.himedia.projectteamdive.dto.AlbumDto;
+import com.himedia.projectteamdive.dto.ArtistDto;
+import com.himedia.projectteamdive.dto.MusicDto;
 import com.himedia.projectteamdive.entity.*;
 import com.himedia.projectteamdive.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -269,20 +271,26 @@ public class MusicService {
 
     public HashMap<String, Object> getAllMusic() {
         HashMap<String, Object> result=new HashMap<>();
-        result.put("music",mr.findAll());
+        List<MusicDto>musicDtoList= mr.findAll().stream()
+                .map(MusicDto::new).collect(Collectors.toList());
+        result.put("music",musicDtoList);
         return result;
     }
 
     public HashMap<String, Object> getAllArtist() {
         HashMap<String, Object> result=new HashMap<>();
-        List<Artist> artistList = arr.findAll(Sort.by(Sort.Direction.ASC, "artistId"));
-        result.put("artist",artistList);
+        List<ArtistDto> artistDtoList = arr.findAll().stream()
+                .map(artist -> new ArtistDto(artist))  // Artist를 ArtistDTO로 변환
+                .collect(Collectors.toList());
+        result.put("artist",artistDtoList);
         return result;
     }
 
     public HashMap<String, Object> getAllAlbum() {
         HashMap<String, Object> result=new HashMap<>();
-        result.put("album",arr.findAll());
+        List<AlbumDto> albumDtoList = ar.findAll().stream()
+                        .map(AlbumDto::new).collect(Collectors.toList());
+        result.put("album",albumDtoList);
         return result;
     }
 

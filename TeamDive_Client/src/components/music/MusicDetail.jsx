@@ -11,9 +11,15 @@ const MusicDetail = () => {
     const { musicId } = useParams();
     const [musicDetail, setMusicDetail] = useState(null);
     const [expandedLyrics, setExpandedLyrics] = useState(false);
-    const [commentText, setCommentText] = useState('');
-    const [comments, setComments] = useState([]);
+
+    //const [commentText, setCommentText] = useState('');
+    //const [comments, setComments] = useState([]);
+    const [nickname, setNickname] = useState('');
+    const [content, setContent] = useState('');
+    const [replyMusicList, setReplyMusicList] = useState([]);
+    const [reply, setReply] = useState({});
     const [like, setLike] = useState(null);
+    const [musicIdList, setMusicIdList] = useState([musicId]);
 
     const loginUser = useSelector((state) => state.user);
     const navigate = useNavigate();
@@ -50,46 +56,28 @@ const MusicDetail = () => {
             }
         };
         setMusicDetail(sample);
-
-        const sampleReply = [
-            {
-                replyId: 1,
-                musicId: musicId,
-                memberNickname: "user123",
-                content: "이 노래 정말 좋아요!",
-                indate: "2025-02-12 10:00",
-                like: 5
-            },
-            {
-                replyId: 2,
-                musicId: musicId,
-                memberNickname: "user456",
-                content: "가사가 인상적이네요.",
-                indate: "2025-02-12 11:30",
-                like: 3
-            }
-        ];
-        setComments(sampleReply);
-
-        /* 
-        // 백엔드 구현 후 실제 API 호출 예시:
-        axios.get(`/api/music/${musicId}`)
-        .then(response => {
-            setMusicDetail(response.data);
+       
+        axios.get('/api/community/getReplyList', {params:{pagetype:'MUSIC', entityId: musicId,}})
+        .then((result)=>{
+                setReplyMusicList(result.data.replyList);
         })
-        .catch(error => console.error("Error fetching music detail:", error));
-        */
+        .catch((err)=>{
+                console.error(err);
+        })
     }, [musicId]);
 
     /* 개별곡 구매를 위한 장바구니 담기 */
-    async function insertCart(musicId){
+    async function insertCart(){
         if(!loginUser){
             alert('로그인이 필요한 서비스입니다');
             navigate('/login');
         }else{
-            try{
-                //const response = await jaxios.post('/api/cart/insertCart', null, {params: {memberId: loginUser.memberId, musicId}});
-                
+             try{
+                const response = await jaxios.post('/api/cart/insertCart', {
+                    memberId: loginUser.memberId,
+                    musicIdList
+                });
+                navigate('/storage/myMP3/pending');
             }catch(error){
                 console.error('장바구니 담기 실패', error)
             }
@@ -106,19 +94,22 @@ const MusicDetail = () => {
         if (!loginUser.memberId) {alert("로그인하세요"); return; }
 
         // 빈칸 return
-        if (!commentText.trim()) {alert('댓글을 입력해주세요'); return; }
+        if (!content.trim()) {alert('댓글을 입력해주세요'); return; }
 
-        const newComment = {
-            replyId: Date.now(),
-            musicId: musicId,
-            memberNickname: loginUser.nickname,
-            content: commentText,
-            indate: new Date().toLocaleString(),
-            like: 0
-        };
-
-        setComments([...comments, newComment]);
-        setCommentText('');
+      
+        setNickname(loginUser.nickname);
+       
+        jaxios.post('/api/community/insertReply', {nickname, content},{params:{pagetype:'MUSIC', entityId: musicId, memberId: loginUser.memberId}})
+        .then((result)=>{
+            if(result.data.msg === 'yes'){
+                alert('댓글이 추가되었습니다.');
+                setContent('');
+                navigate(`/music/${musicId}`);
+            }
+        })
+        .catch((err)=>{
+            console.error(err);
+        })
     };
 
     if (!musicDetail) {
@@ -138,7 +129,7 @@ const MusicDetail = () => {
                     <p className={styles.like}>Likes: {musicDetail.like}</p>
                     <p className={styles.releaseDate}>Release Date: {musicDetail.album.releaseDate}</p>
                     {/* (css 조정 필요) 장바구니 버튼 */}
-                    <button onClick={ insertCart(musicId) }>구매</button>
+                    <button onClick={ insertCart }>구매</button>
                 </div>
             </div>
 
@@ -162,24 +153,28 @@ const MusicDetail = () => {
                 <h2>댓글</h2>
                 <form onSubmit={handleCommentSubmit} className={styles.commentForm}>
                     <textarea
-                        value={commentText}
-                        onChange={(e) => setCommentText(e.target.value)}
+                        value={content}
+                        onChange={(e) => setContent(e.target.value)}
                         placeholder="댓글을 입력하세요..."
                         className={styles.commentInput}
                     />
-                    <button type="submit" className={styles.submitButton}>
-                        댓글 작성
+                    <button type="submit" className={styles.submitButton}> 댓글 작성
                     </button>
                 </form>
                 <div className={styles.commentsList}>
-                    {comments.map((comment) => (
-                        <div key={comment.replyId} className={styles.commentItem}>
-                        <p className={styles.commentAuthor}>{comment.memberNickname}</p>
-                        <p className={styles.commentContent}>{comment.content}</p>
-                        <small className={styles.commentDate}>{comment.indate}</small>
-                        <span className={styles.commentLike}>좋아요 {comment.like}</span>
-                        </div>
-                    ))}
+                    {                    
+                        (replyMusicList && replyMusicList.length>0)?(
+                            replyMusicList.map((replyMusic, idx)=>{
+                                return(
+                                    <div className={styles.commentItem} key={idx}>
+                                        <p className={styles.commentAuthor}>{replyMusic.member.memberId}</p>
+                                        <p className={styles.commentContent}>{replyMusic.content}</p>
+                                        <small className={styles.commentDate}>{replyMusic.indate.substring(0.10)}</small>
+                                    </div>
+                                )
+                            })
+                        ):(<div>댓글이 없습니다.</div>)
+                    }
                 </div>
             </div>
         </div>

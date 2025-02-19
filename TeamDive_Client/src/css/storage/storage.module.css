@@ -1,60 +1,185 @@
 /* 전체 배경을 어둡게 */
+
+
+
 .storageContainer {
-    background-color: #000; /* 검정 배경 */
-    min-height: 100vh;      /* 화면 전체 높이 */
-    color: #fff;            /* 텍스트 색상은 흰색 */
-    padding: 2rem;
-  }
-  
-  /* 큰 제목(보관함) 스타일 */
-  .pageTitle {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-  }
-  
-  /* 탭 메뉴 컨테이너 */
-  .tabMenu {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 2rem;
-  }
-  
-  /* 탭 버튼 기본 스타일 */
-  .tabButton {
-    background: none;
-    border: none;
-    font-size: 1rem;
-    color: #ccc; /* 비활성 탭은 회색 */
-    cursor: pointer;
-    padding: 0.5rem 1rem;
-    transition: 0.2s;
-  }
-  
-  /* 호버 시 색상 */
-  .tabButton:hover {
-    color: #f0f0f0;
-  }
-  
-  /* 활성 탭 스타일 */
-  .active {
-    color: #fff;
-    border-bottom: 2px solid hotpink; /* 탭 아래에 포인트 */
-  }
-  
-  /* 콘텐츠 영역 */
-  .contentArea {
-    margin-top: 2rem;
-  }
-  
-  /* 좋아하는 노래 없을 때 메시지 */
-  .emptyMessage {
-    text-align: center;
-    margin-top: 5rem;
-  }
-  
-  .emptyMessage h2 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-    color: hotpink;
-  }
-  
+  background-color: #000; /* 검정 배경 */
+  min-height: 100vh;      /* 화면 전체 높이 */
+  color: #fff;            /* 텍스트 색상은 흰색 */
+  padding: 2rem;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+/* 큰 제목(보관함) 스타일 */
+.pageTitle {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+/* 메뉴(탭) 컨테이너 */
+.tabMenu {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+/* 메뉴(탭) 버튼(링크) 기본 스타일 */
+.tabButton {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  color: #ccc; /* 비활성 탭은 회색 */
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  transition: 0.2s;
+  text-decoration: none; /* 링크 밑줄 제거 */
+}
+
+/* 호버 시 색상 */
+.tabButton:hover {
+  color: #f0f0f0;
+}
+
+/* 활성 탭 스타일 */
+.active {
+  color: #fff;
+  border-bottom: 2px solid hotpink; /* 탭 아래에 포인트 */
+}
+
+/* 실제 콘텐츠 영역 */
+.contentArea {
+  margin-top: 2rem;
+}
+
+/* 비어있을 때 메시지 */
+.emptyMessage {
+  text-align: center;
+  margin-top: 5rem;
+}
+
+.emptyMessage h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: hotpink;
+}
+
+
+
+/* 섹션 박스 스타일 */
+.sectionContainer {
+  background-color: #111; /* 조금 더 밝은 배경 */
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+}
+
+/* 섹션 제목 */
+.sectionTitle {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: hotpink; /* 포인트 컬러 */
+}
+
+/* 목록 스타일 */
+.itemList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.itemList li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #333;
+  color: #ccc;
+}
+
+.itemList li:last-child {
+  border-bottom: none;
+}
+
+/* 빈 메시지 */
+.emptyMessage {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+
+/* 섹션 컨테이너, 섹션 타이틀, emptyMessage 등은 기존 그대로 사용한다고 가정 */
+
+/* 그리드, 카드, 제목, 메타 스타일 (이미 존재한다고 가정) */
+.musicGrid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+}
+
+.musicCard {
+  background: #222;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.musicCard:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 8px rgba(255,255,255,0.1);
+}
+
+/* 이미지 래퍼 */
+.musicImageWrapper {
+  width: 100%;
+  height: 200px; /* 원하는 높이 (현재 카드 크기가 딱 좋다면 200px 정도) */
+  overflow: hidden;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+}
+
+/* 실제 이미지 */
+.musicImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 이미지 비율 유지하면서 꽉 채움 */
+  display: block;
+}
+
+/* 노래 제목 링크 */
+.musicTitle {
+  font-size: 1.1rem;
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.2s;
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+.musicTitle:hover {
+  color: hotpink;
+}
+
+/* 메타 정보 컨테이너 */
+.musicMeta {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* 장르, 아티스트 태그 */
+.genre {
+  background: #333;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  color: #ccc;
+  font-size: 0.85rem;
+}
+
+.artist {
+  background: #444;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  color: #ccc;
+  font-size: 0.85rem;
+}
