@@ -23,26 +23,30 @@ import java.util.stream.Collectors;
 public class PaymentService {
 
     @Autowired
-    PaymentRepository pr;
+    PaymentRepository paymentRepo;
     @Autowired
-    MemberRepository mr;
+    MemberRepository memberRepo;
     @Autowired
-    MembershipRepository msr;
+    MembershipRepository membershipRepo;
     @Autowired
-    MembershipUserRepository msur;
+    MembershipUserRepository membershipUserRepo;
     @Autowired
-    PaymentConfig pc;
+    PaymentConfig paymentConfig;
     @Autowired
-    GiftRepository gr;
+    GiftRepository giftRepo;
+    @Autowired
+    MusicRepository musicRepo;
+    @Autowired
+    PurchasedMusicRepository purchasedMusicRepo;
 
     /* 결제 정보 저장 */
     public PaymentResponseDto savePaymentInfo(PaymentRequestDto requestDto, String memberId) {
         Payment payment = new Payment();
-        Optional<Member> member = Optional.ofNullable(mr.findByMemberId(memberId));
+        Optional<Member> member = Optional.ofNullable(memberRepo.findByMemberId(memberId));
         if(member.isPresent()) {
             requestDto.setMember(member.get());
             payment = requestDto.toEntity();
-            pr.save(payment);
+            paymentRepo.save(payment);
         }else {
             throw new IllegalArgumentException("memberId 에 해당하는 member 가 없습니다");
         }
@@ -58,7 +62,11 @@ public class PaymentService {
         payment.setPaymentKey(paymentKey); // 결제 검증 키 저장
         payment.setPaid(true); // 결제 완료 처리
 
-        if(membership.getCategory().equals("gift")){
+        if(membership == null) {
+            String purchaseMemberId =
+                    (payment.getGiftToId() != null) ? (payment.getGiftToId()) : (payment.getMember().getMemberId());
+            insertPurchasedMusic(payment.getMusicIdList(), purchaseMemberId); // 개별곡 구매
+        }else if(membership.getCategory().equals("gift")){
             giftMembership(membership, payment); // 멤버십 선물
         }else{
             activeMembership(membership, payment.getMember()); // 멤버십 활성화
@@ -68,7 +76,7 @@ public class PaymentService {
 
     /* 결제 요청 가격, 실제 결제된 금액이 같은지 확인 */
     private Payment validatePayment(String orderId, int amount) {
-        Payment payment = pr.findByOrderId(orderId)
+        Payment payment = paymentRepo.findByOrderId(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("결제 정보 없음"));
 
         if (payment.getAmount() != amount) {
@@ -81,10 +89,10 @@ public class PaymentService {
     private Membership validateOrderId(String orderId) {
         int index = orderId.indexOf("-"); // "-"의 위치 찾기
         if (index == -1) { // "-"가 없을 경우 예외 발생
-            throw new IllegalArgumentException("orderId 에서 membershipId 를 찾을 수 없습니다");
+            throw new IllegalArgumentException("orderId 형식이 잘못되었습니다");
         }
         String membershipId = orderId.substring(0, index);
-        return msr.findByMembershipId(Integer.parseInt(membershipId));
+        return membershipRepo.findByMembershipId(Integer.parseInt(membershipId));
     }
 
     /* 토스 페이먼츠 api 에 결제 승인 요청 전달 */
@@ -95,7 +103,7 @@ public class PaymentService {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         // 토스페이먼츠 시크릿 키 (Base64 인코딩 필요)
-        String secretKey = pc.getSecretApiKey();
+        String secretKey = paymentConfig.getSecretApiKey();
         String encodedAuth = Base64.getEncoder().encodeToString((secretKey + ":").getBytes(StandardCharsets.UTF_8));
         headers.set("Authorization", "Basic " + encodedAuth);
 
@@ -105,9 +113,18 @@ public class PaymentService {
         body.put("amount", amount);
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers); // 요청 데이터와 요청 해더를 포함한 요청 객체 생성
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class); // 요청 보내고 응답 받기
 
-        return response;
+        return restTemplate.exchange(url, HttpMethod.POST, entity, String.class); // 요청 보내고 응답 받기
+    }
+
+    /* 구매한 개별곡 등록 */
+    private void insertPurchasedMusic(List<Integer> musicIdList, String purchaseMemberId) {
+        PurchasedMusic purchasedMusic = new PurchasedMusic();
+        purchasedMusic.setMember(memberRepo.findByMemberId(purchaseMemberId));
+        for (Integer musicId : musicIdList) {
+            purchasedMusic.setMusic(musicRepo.findByMusicId(musicId));
+            purchasedMusicRepo.save(purchasedMusic);
+        }
     }
 
     /* 멤버십 선물 */
@@ -117,18 +134,18 @@ public class PaymentService {
         giftRequestDto.setGiftFrom(payment.getMember().getMemberId());
         giftRequestDto.setGiftTo(payment.getGiftToId());
         Gift gift = new Gift(giftRequestDto, membership);
-        gr.save(gift);
+        giftRepo.save(gift);
     }
 
     /* 멤버십 등록 */
     private void activeMembership(Membership membership, Member member) {
         Membership_user membershipUser = new Membership_user(member, membership);
-        msur.save(membershipUser); // 멤버십 정보 저장
+        membershipUserRepo.save(membershipUser); // 멤버십 정보 저장
     }
 
     /* 결제 요청 실패 이유 저장 */
     public void paymentFail(String failReason, String orderId) {
-        Optional<Payment> payment = pr.findByOrderId(orderId);
+        Optional<Payment> payment = paymentRepo.findByOrderId(orderId);
         if(payment.isPresent()) {
             payment.get().setPaid(false);
             payment.get().setFailReason(failReason);
@@ -137,8 +154,8 @@ public class PaymentService {
 
     /* 결제 내역 조회 */
     public List<PaymentResponseDto> getPaymentList(String memberId) {
-        Member member = mr.findByMemberId(memberId);
-        List<Payment> list = pr.findByMember(member);
+        Member member = memberRepo.findByMemberId(memberId);
+        List<Payment> list = paymentRepo.findByMember(member);
 
         return list.stream()
                 .map(PaymentResponseDto::new) // Payment -> PaymentResponseDto 변환

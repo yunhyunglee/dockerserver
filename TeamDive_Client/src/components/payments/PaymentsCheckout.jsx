@@ -8,15 +8,31 @@ import paymentsStyle from '../../css/membership/payments.module.css';
 
 const clientKey = "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
 
-const PaymentsCheckout = ({ membership, giftToId }) => {
+const PaymentsCheckout = ({ membership, musicIdList, giftToId }) => {
     const loginUser = useSelector(state => state.user);
     const navigate = useNavigate();
 
     const customerKey = loginUser.memberKey;
     const [amount, setAmount] = useState({
         currency: "KRW",
-        value: (membership?.price * (1 - (membership?.discount / 100))) || 0,
+        value: (
+            (membership) ? (
+                (membership.price) * (1 - (membership?.discount / 100))
+            ) : (
+                musicIdList.length * 770
+            )
+        )
     });
+    const [orderId, setOrderId] = useState(
+        (membership) ? (
+            `${membership.membershipId}-${Date.now()}`
+        ) : (
+            `m-${Date.now()}`
+        )
+    );
+    const [orderName, setOrderName] = useState(
+        (membership) ? (membership.name) : (`mp3 ${musicIdList.length}곡`)
+    )
     const [ready, setReady] = useState(false);
     const [widgets, setWidgets] = useState(null);
 
@@ -82,10 +98,11 @@ const PaymentsCheckout = ({ membership, giftToId }) => {
 
             // 결제 정보를 백엔드에 저장
             const response = await jaxios.post("/api/payments/orderRequest", {
-                orderId: `${membership.membershipId}-${Date.now()}`,
+                orderId,
                 amount: amount.value,
-                orderName: membership.name,
-                giftToId
+                orderName,
+                giftToId,
+                musicIdList
             }, {params: {memberId: loginUser.memberId}});
 
             if (response.status === 200) {
@@ -94,7 +111,7 @@ const PaymentsCheckout = ({ membership, giftToId }) => {
                 // 토스 결제창 실행
                 await widgets.requestPayment({
                     orderId: orderId,
-                    orderName: membership.name,
+                    orderName,
                     successUrl: `${window.location.origin}/success`,
                     failUrl: `${window.location.origin}/fail`,
                     customerEmail: loginUser.email,
