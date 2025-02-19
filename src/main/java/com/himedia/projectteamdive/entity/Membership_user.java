@@ -51,7 +51,7 @@ public class Membership_user {
         this.endDate = Timestamp.valueOf(LocalDateTime.now().plusMonths(membership.getPeriod()));
     }
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "member_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;

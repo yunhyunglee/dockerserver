@@ -21,13 +21,18 @@ public class Cart {
     @Column(name = "cart_id")
     private int cartId;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "member_userid")
     @OnDelete(action = OnDeleteAction.CASCADE)
     Member member;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "music_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Music music;
+
+    public Cart(Member member, Music music) {
+        this.member = member;
+        this.music = music;
+    }
 }
