@@ -1,5 +1,6 @@
 package com.himedia.projectteamdive.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -40,11 +41,11 @@ public class Music {
     @Column(name ="bucket_path")
     private String bucketPath;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "album_id")
+    @ManyToOne
+    @JoinColumn(name = "album_id")@JsonBackReference("album-music")
     Album album;
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "artist_id")
+    @ManyToOne
+    @JoinColumn(name = "artist_id")@JsonBackReference("artist-music")
     Artist artist;
 
     @ManyToMany(mappedBy = "musicList")

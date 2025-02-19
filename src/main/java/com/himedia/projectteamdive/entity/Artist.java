@@ -1,5 +1,6 @@
 package com.himedia.projectteamdive.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,7 +31,8 @@ public class Artist {
     private String country;
     private String image;
 
-    @OneToMany(mappedBy = "artist",  cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "artist",  cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
+    @JsonManagedReference("artist-album")
     List<Album> albums=new ArrayList<>();
 
     // 앨범 추가 메서드
@@ -44,7 +46,8 @@ public class Artist {
         albums.remove(album); // 리스트에서 제거
     }
 
-    @OneToMany(mappedBy = "artist", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "artist", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
+    @JsonManagedReference("artist-music")
     List<Music> musicList=new ArrayList<>();
 
     public void addMusic(Music music) {

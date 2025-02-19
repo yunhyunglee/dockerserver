@@ -1,5 +1,7 @@
 package com.himedia.projectteamdive.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.himedia.projectteamdive.repository.MusicRepository;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -30,12 +32,12 @@ public class Album {
     private String image;
     private Timestamp indate;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "artist_id")
+    @ManyToOne
+    @JoinColumn(name = "artist_id")@JsonBackReference("artist-album")
     Artist artist;
 
     @OneToMany(mappedBy = "album",cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderBy("trackNumber ASC")
+    @OrderBy("trackNumber ASC")@JsonManagedReference("album-music")
     List<Music> musicList =new ArrayList<>();
 
     // 음악 추가 메서드
