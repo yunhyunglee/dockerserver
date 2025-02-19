@@ -6,6 +6,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Getter
@@ -44,8 +45,17 @@ public class Payment {
     private String cancelReason; // 취소 이유
     @Column(name = "gift_to_id")
     private String giftToId; // 선물 받는 유저
+
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})
     @JoinColumn(name = "member_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member; // 결제 유저 정보
+
+    @ElementCollection
+    @CollectionTable(
+            name = "payment_music", // 컬렉션 테이블 이름
+            joinColumns = @JoinColumn(name = "payment_id") // 조인 컬럼 명시
+    )
+    @Column(name = "music_id") // 컬렉션 테이블의 컬럼 이름
+    private List<Integer> musicIdList; // 음악 ID 저장
 }

@@ -18,8 +18,8 @@ public class CartController {
     /* 장바구니에 구매할 곡 넣기 */
     @PostMapping("/insertCart")
     public HashMap<String, Object> insertCart(
-            @RequestBody List<Integer> musicIdList,
-            @RequestParam("memberId") String memberId) {
+            @RequestParam("memberId") String memberId,
+            @RequestParam List<Integer> musicIdList) {
         HashMap<String, Object> result = new HashMap<>();
         cs.insertCart(memberId, musicIdList);
         return result;

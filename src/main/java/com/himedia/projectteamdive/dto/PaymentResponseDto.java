@@ -15,7 +15,6 @@ public class PaymentResponseDto {
     private String cancelStatus; // 결제 취소 상태
     private String cancelReason; // 취소 이유
 
-
     public PaymentResponseDto(Payment payment) {
         this.orderId = payment.getOrderId();
         this.amount = payment.getAmount();
