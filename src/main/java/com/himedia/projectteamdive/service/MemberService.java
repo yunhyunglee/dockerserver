@@ -65,4 +65,9 @@ public class MemberService {
         return updateMember;
 
     }
+
+    public void deleteMember(String memberId) {
+        Member member = mr.findByMemberId(memberId);
+        mr.delete(member);
+    }
 }

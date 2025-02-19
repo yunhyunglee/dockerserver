@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import mypageReplyStyle from '../../../css/mypage/mypageReply.module.css'
 import mypageStyle from '../../../css/mypage/mypage.module.css'
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import jaxios from '../../../util/JwtUtil';
 
@@ -13,7 +13,7 @@ const ReplyListForm = () => {
     const [replyList, setReplyList] = useState([]);
     const [nickname, setNickname] = useState('');
     const [category, setCategory] = useState("artist");
-
+    const { replyId } = useParams;
     const navigate = useNavigate();
 
     useEffect(()=>{
@@ -35,6 +35,22 @@ const ReplyListForm = () => {
             console.error(err);
         });
     };
+    
+    function deleteReply(){
+        if(!window.confirm('해당 댓글을 삭제하시겟습니까?')){
+            return;
+        }
+        jaxios.delete(`/api/community/deleteReply/${replyId}`)
+        .then((result)=>{
+            if(result.data.msg === 'yes'){
+                alert('댓글이 삭제되었습니다.');
+                navigate('/mypage');
+            }
+        })
+        .catch((err)=>{
+            console.error(err);
+        })
+    }
     
 
     return (
@@ -70,7 +86,9 @@ const ReplyListForm = () => {
                                             <div className={mypageReplyStyle.colitem}>{reply.member.nickname}</div>
                                             <div className={mypageReplyStyle.colitem}>{reply.content}</div>
                                             <div className={mypageReplyStyle.colitem}>{reply.indate.substring(0,10)}</div>
-                                            <button>삭제</button>
+                                            <button onClick={()=>{
+                                                deleteReply();
+                                            }}>삭제</button>
                                         </div>
                                     </div>
                                 )

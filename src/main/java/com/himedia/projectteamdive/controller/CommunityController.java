@@ -23,8 +23,8 @@ public class CommunityController {
         return map;
     }
 
-    @DeleteMapping("/deleteReply")
-    public HashMap<String,Object> deleteReply(@RequestParam("replyId")int replyId) {
+    @DeleteMapping("/deleteReply/{replyId}")
+    public HashMap<String,Object> deleteReply(@PathVariable("replyId")int replyId) {
         HashMap<String,Object> map = new HashMap<>();
         cs.deleteReply(replyId);
         map.put("msg","yes");

@@ -267,6 +267,14 @@ public class MemberController {
         return result;
     }
 
+    @DeleteMapping("/deleteMember/{memberId}")
+    public HashMap<String, Object> deleteMember(@PathVariable("memberId") String memberId){
+        HashMap<String, Object> result = new HashMap<>();
+        ms.deleteMember(memberId);
+        result.put("msg", "yes");
+        return result;
+    }
+
 
 
 

@@ -188,7 +188,8 @@ public class MusicService {
         a.setArtistName(artist.getArtistName());
         a.setDebut(artist.getDebut());
         a.setCountry(artist.getCountry());
-
+        a.setImage(artist.getImage());
+        a.setContent(artist.getContent());
     }
 
     public void updateAlbum(Album album) {

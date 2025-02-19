@@ -88,6 +88,20 @@ const MusicDetail = () => {
         setExpandedLyrics((prev) => !prev);
     };
 
+    // ========Reply UI를 재조회하여 댓글추가후 재 조회하는 함수수
+
+    const fetchReply = () => {
+        axios.get('/api/community/getReplyList', {params:{pagetype:'MUSIC', entityId: musicId,}})
+        .then((result) => {
+        // 서버로부터 받은 댓글 데이터로 상태 업데이트
+        setReplyMusicList(result.data.replyList);
+        })
+        .catch((err) => {
+        console.error(err);
+        });
+    };
+
+
     const handleCommentSubmit = (e) => {
         e.preventDefault();
         // 로그인 여부 확인
@@ -96,7 +110,6 @@ const MusicDetail = () => {
         // 빈칸 return
         if (!content.trim()) {alert('댓글을 입력해주세요'); return; }
 
-      
         setNickname(loginUser.nickname);
        
         jaxios.post('/api/community/insertReply', {nickname, content},{params:{pagetype:'MUSIC', entityId: musicId, memberId: loginUser.memberId}})
@@ -104,6 +117,7 @@ const MusicDetail = () => {
             if(result.data.msg === 'yes'){
                 alert('댓글이 추가되었습니다.');
                 setContent('');
+                fetchReply();
                 navigate(`/music/${musicId}`);
             }
         })
