@@ -56,44 +56,15 @@ const MusicDetail = () => {
             }
         };
         setMusicDetail(sample);
-        // 더미 데이터터===========================================
-        // const sampleReply = [
-        //     {
-        //         replyId: 1,
-        //         musicId: musicId,
-        //         memberNickname: "user123",
-        //         content: "이 노래 정말 좋아요!",
-        //         indate: "2025-02-12 10:00",
-        //         like: 5
-        //     },
-        //     {
-        //         replyId: 2,
-        //         musicId: musicId,
-        //         memberNickname: "user456",
-        //         content: "가사가 인상적이네요.",
-        //         indate: "2025-02-12 11:30",
-        //         like: 3
-        //     }
-        // ];
-        // setComments(sampleReply);
-        // 더미 데이터터===========================================
-
-        /* 
-        // 백엔드 구현 후 실제 API 호출 예시:
-        axios.get(`/api/music/${musicId}`)
-        .then(response => {
-            setMusicDetail(response.data);
+       
+        axios.get('/api/community/getReplyList', {params:{pagetype:'MUSIC', entityId: musicId,}})
+        .then((result)=>{
+                setReplyMusicList(result.data.replyList);
         })
-        .catch(error => console.error("Error fetching music detail:", error));
-        */
-       axios.get('/api/community/getReplyList', {params:{pagetype:'MUSIC', entityId: musicId,}})
-       .then((result)=>{
-            setReplyMusicList(result.data.replyList);
-       })
-       .catch((err)=>{
-            console.error(err);
-       })
-    }, [musicId, replyMusicList]);
+        .catch((err)=>{
+                console.error(err);
+        })
+    }, [musicId]);
 
     /* 개별곡 구매를 위한 장바구니 담기 */
     async function insertCart(){

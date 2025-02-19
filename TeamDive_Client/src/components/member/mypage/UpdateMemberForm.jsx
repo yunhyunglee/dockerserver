@@ -67,7 +67,7 @@ const UpdateMemberForm = () => {
             setPassword('kakao');
             setPasswordCheck('kakao');
         }
-    },[]);
+    });
 
     const completeHandler=(data)=>{
         console.log(data)
