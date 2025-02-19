@@ -1,6 +1,7 @@
 package com.himedia.projectteamdive.controller;
 
 import com.himedia.projectteamdive.entity.Likes;
+import com.himedia.projectteamdive.entity.Member;
 import com.himedia.projectteamdive.entity.Reply;
 import com.himedia.projectteamdive.service.CommunityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,15 +10,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 
 @RestController
-@RequestMapping("/Community")
+@RequestMapping("/community")
 public class CommunityController {
     @Autowired
     CommunityService cs;
 
     @PostMapping("/insertReply")
-    public HashMap<String,Object> insertReply(@RequestBody Reply reply, @RequestParam("pagetype")String type,@RequestParam("entityId")int entityId) {
+    public HashMap<String,Object> insertReply(@RequestBody Reply reply, @RequestParam("pagetype")String type,@RequestParam("entityId")int entityId,@RequestParam("memberId")String memberId) {
         HashMap<String,Object> map = new HashMap<>();
-        cs.insertReply(reply,type,entityId);
+        cs.insertReply(reply,type,entityId,memberId);
         map.put("msg","yes");
         return map;
     }
@@ -39,10 +40,10 @@ public class CommunityController {
         return map;
     }
 
-    @GetMapping("/getReply")
+    @GetMapping("/getReplyList")
     public HashMap<String,Object> getReply(@RequestParam("pagetype")String type,@RequestParam("entityId")int entityId) {
         HashMap<String,Object> map = new HashMap<>();
-        map.put("reply",cs.getReply(type,entityId));
+        map.put("replyList",cs.getReply(type,entityId));
         return map;
     }
 
@@ -51,6 +52,17 @@ public class CommunityController {
     ) {
         HashMap<String,Object> map = new HashMap<>();
         map.put("LikesList",cs.getLikes(memberId));
+        return map;
+    }
+
+    @GetMapping("/getReplyListUser")
+    public HashMap<String, Object> getReplyList(
+            @RequestParam("pageType")String pageType,
+            @RequestParam("memberId")String memberId){
+        HashMap<String,Object> map = new HashMap<>();
+
+        map.put("replyList", cs.getReplyList(pageType, memberId));
+
         return map;
     }
 

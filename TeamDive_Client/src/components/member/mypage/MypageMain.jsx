@@ -35,7 +35,7 @@ const MypageMain = () => {
         .catch((err)=>{
             console.error(err);
         })
-    },[]);
+    },[loginUser]);
 
 
     // useEffect(()=>{
