@@ -19,6 +19,7 @@ const MusicDetail = () => {
     const [replyMusicList, setReplyMusicList] = useState([]);
     const [reply, setReply] = useState({});
     const [like, setLike] = useState(null);
+    const [musicIdList, setMusicIdList] = useState([musicId]);
 
     const loginUser = useSelector((state) => state.user);
     const navigate = useNavigate();
@@ -95,14 +96,17 @@ const MusicDetail = () => {
     }, [musicId, replyMusicList]);
 
     /* 개별곡 구매를 위한 장바구니 담기 */
-    async function insertCart(musicId){
+    async function insertCart(){
         if(!loginUser){
             alert('로그인이 필요한 서비스입니다');
             navigate('/login');
         }else{
-            try{
-                //const response = await jaxios.post('/api/cart/insertCart', null, {params: {memberId: loginUser.memberId, musicId}});
-                
+             try{
+                const response = await jaxios.post('/api/cart/insertCart', {
+                    memberId: loginUser.memberId,
+                    musicIdList
+                });
+                navigate('/storage/myMP3/pending');
             }catch(error){
                 console.error('장바구니 담기 실패', error)
             }
@@ -141,8 +145,6 @@ const MusicDetail = () => {
         return <div className={styles.loading}>Loading...</div>;
     }
 
-    
-
     return (
         <div className={styles.container}>
             {/* 음악 상세 정보 */}
@@ -156,7 +158,7 @@ const MusicDetail = () => {
                     <p className={styles.like}>Likes: {musicDetail.like}</p>
                     <p className={styles.releaseDate}>Release Date: {musicDetail.album.releaseDate}</p>
                     {/* (css 조정 필요) 장바구니 버튼 */}
-                    <button onClick={ insertCart(musicId) }>구매</button>
+                    <button onClick={ insertCart }>구매</button>
                 </div>
             </div>
 
