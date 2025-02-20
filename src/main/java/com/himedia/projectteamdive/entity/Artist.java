@@ -2,10 +2,7 @@ package com.himedia.projectteamdive.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -34,6 +31,7 @@ public class Artist {
 
     @OneToMany(mappedBy = "artist",  cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
     @JsonManagedReference("artist-album")
+    @Builder.Default
     List<Album> albums=new ArrayList<>();
 
     // 앨범 추가 메서드
@@ -49,6 +47,7 @@ public class Artist {
 
     @OneToMany(mappedBy = "artist", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
     @JsonManagedReference("artist-music")
+    @Builder.Default
     List<Music> musicList=new ArrayList<>();
 
     public void addMusic(Music music) {

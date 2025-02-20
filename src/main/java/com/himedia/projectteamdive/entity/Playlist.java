@@ -1,10 +1,7 @@
 package com.himedia.projectteamdive.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -35,6 +32,7 @@ public class Playlist {
             joinColumns = @JoinColumn(name = "playlist_id"),
             inverseJoinColumns = @JoinColumn(name = "music_id"))
     @OrderColumn(name = "order_index")  // 추가: 순서 컬럼 지정
+    @Builder.Default
     private List<Music> musicList = new ArrayList<>();
 
     @ColumnDefault("false")

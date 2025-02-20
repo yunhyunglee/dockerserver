@@ -28,6 +28,7 @@ public class ArtistDto {
     private Timestamp debut;
     private String country;
     private String image;
+    private String content;
     private List<AlbumDto> albums;  // 앨범 정보
     private List<MusicDto> musicList;  // 음악 정보
 
@@ -38,6 +39,7 @@ public class ArtistDto {
         this.debut = artist.getDebut();
         this.country = artist.getCountry();
         this.image = artist.getImage();
+        this.content = artist.getContent();
         // 앨범과 음악 리스트는 DTO로 변환
         this.albums = artist.getAlbums().stream().map(AlbumDto::new).collect(Collectors.toList());
         this.musicList = artist.getMusicList().stream().map(MusicDto::new).collect(Collectors.toList());

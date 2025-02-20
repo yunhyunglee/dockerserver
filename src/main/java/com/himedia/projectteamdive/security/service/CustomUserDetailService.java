@@ -40,7 +40,7 @@ public class CustomUserDetailService  implements UserDetailsService {
         );
 
         System.out.println(memberDto);
-        System.out.println(member);
+//        System.out.println(member);
         return memberDto;
     }
 }
