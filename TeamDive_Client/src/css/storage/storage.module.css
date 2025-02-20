@@ -1,7 +1,4 @@
 /* 전체 배경을 어둡게 */
-
-
-
 .storageContainer {
   background-color: #000; /* 검정 배경 */
   min-height: 100vh;      /* 화면 전체 높이 */
@@ -9,7 +6,6 @@
   padding: 2rem;
   box-sizing: border-box;
   font-family: sans-serif;
-  
 }
 
 /* 큰 제목(보관함) 스타일 */
