@@ -304,4 +304,12 @@ public class MusicService {
         result.put("playlist",playlist);
         return result;
     }
+
+    public HashMap<String, Object> getMemberPlaylist(String memberId) {
+        HashMap<String, Object> result=new HashMap<>();
+        List<Playlist>list=pr.findAllByMember_MemberId(memberId);
+        result.put("playlist",list);
+        return result;
+
+    }
 }

@@ -262,6 +262,13 @@ public class MusicController {
         return map;
     }
 
+    @GetMapping("/getMemberPlaylist")
+    public HashMap<String, Object> getMemberPlaylist(@RequestParam("memberId")String memberId) {
+        HashMap<String,Object> map= ms.getMemberPlaylist(memberId);
+        return map;
+    }
+
+
 
 
 
