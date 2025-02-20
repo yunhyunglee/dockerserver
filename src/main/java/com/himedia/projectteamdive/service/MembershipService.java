@@ -22,7 +22,9 @@ public class MembershipService {
     @Autowired
     MembershipRepository msr;
     @Autowired
-    MembershipUserRepository msru;
+    MembershipUserRepository msur;
+    @Autowired
+    GiftRepository gr;
 
     /* 카테고리에 해당하는 멤버십 정보 가져오기 */
     public List<Membership> getMembership(String category) {
@@ -34,20 +36,16 @@ public class MembershipService {
 
     /* 카테고리를 기준으로 활성화된 멤버십이 있는지 확인 */
     public Membership_user checkActiveMembership(String memberId, String membershipCategory) {
-        return msru.getLatestActiveMembershipByCategory(memberId, membershipCategory);
+        return msur.getLatestActiveMembershipByCategory(memberId, membershipCategory);
     }
 
     /* 현재 로그인 유저에게 활성화된 멤버십이 있는지 확인 */
     public List<Membership_user> getActiveMembership(String memberId) {
-        List<Membership_user> list = msru.getActiveMembership(memberId);
-        return list;
+        return msur.getActiveMembership(memberId);
     }
 
-    @Autowired
-    GiftRepository gr;
-
-    public List<Gift> getMembershipGiftList(String memberId) {
-        List<Gift> list = gr.findByGiftTo(memberId);
-        return list;
+    /* 선물 리스트 조회 */
+    public List<Gift> getGiftList(String giftTo) {
+        return gr.findByGiftTo(giftTo);
     }
 }

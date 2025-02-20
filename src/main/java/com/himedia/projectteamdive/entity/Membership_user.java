@@ -35,14 +35,8 @@ public class Membership_user {
     @Column(name = "membership_category")
     private String membershipCategory;   // Membership 카테고리 저장
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "membership_id", nullable = true)
-    @OnDelete(action = OnDeleteAction.SET_NULL) // 부모 삭제 시 FK NULL 처리
-    private Membership membership;
-
     public Membership_user(Member member, Membership membership) {
         this.member = member;
-        this.membership = membership;
         this.membershipName = membership.getName();
         this.membershipPeriod = membership.getPeriod();
         this.membershipCategory = membership.getCategory();

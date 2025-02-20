@@ -44,18 +44,12 @@ public class Gift {
     @Column(name = "membership_downloadCount")
     private int membershipDownloadCount; // Membership 다운로드 횟수 저장
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "membership_id", nullable = true)
-    @OnDelete(action = OnDeleteAction.SET_NULL) // 부모 삭제 시 FK NULL 처리
-    private Membership membership;
-
     public Gift(GiftRequestDto requestDto, Membership membership) {
         this.giftName = requestDto.getGiftName();
         this.giftTo = requestDto.getGiftTo();
         this.giftFrom = requestDto.getGiftFrom();
         this.giftDate = Timestamp.valueOf(LocalDateTime.now());
         this.isActive = false;
-        this.membership = membership;
         this.membershipName = membership.getName();
         this.membershipPeriod = membership.getPeriod();
         this.membershipCategory = membership.getCategory();
