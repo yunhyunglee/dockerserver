@@ -6,6 +6,16 @@
     box-sizing: border-box;
 }
 
+.mp3Container {
+    background-color: #111;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 2rem;
+    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-family: sans-serif;
+}
+
 .header {
     display: flex;
     justify-content: space-between;

@@ -46,7 +46,7 @@ const LikedMusic = () => {
     // "전체선택" 체크박스 토글
     const toggleSelectAll = (checked) => {
       if (checked) {
-        setSelectedIds(likedMusic.map((song) => song.musicId));
+        setSelectedIds(likedMusic.map((music) => music.musicId));
       } else {
         setSelectedIds([]);
       }
@@ -62,7 +62,7 @@ const LikedMusic = () => {
     // 좋아요 취소 -> confirm 후 제거
     const handleUnlike = (id) => {
       if (window.confirm("좋아요를 취소할까요?")) {
-        setLikedMusic((prev) => prev.filter((song) => song.musicId !== id));
+        setLikedMusic((prev) => prev.filter((music) => music.musicId !== id));
         // 혹시 선택 목록에도 있으면 제거
         setSelectedIds((prev) => prev.filter((x) => x !== id));
       }
