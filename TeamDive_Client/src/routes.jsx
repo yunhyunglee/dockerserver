@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
-import { LoginPage } from "./components/frame/loginPage";
-import KakaoLogin from "./components/frame/KakaoLogin";
-import { JoinForm } from "./components/frame/JoinForm";
+import LoginPage from "./components/member/loginPage";
+import KakaoLogin from "./components/member/KakaoLogin";
+import JoinForm from "./components/member/JoinForm";
 import Membership from "./components/membership/Membership";
 import MainPage from "./components/frame/mainpage/MainPage";
 import MusicDetail from "./components/music/MusicDetail";
