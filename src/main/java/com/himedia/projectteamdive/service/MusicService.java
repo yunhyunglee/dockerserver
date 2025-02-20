@@ -3,6 +3,7 @@ package com.himedia.projectteamdive.service;
 import com.himedia.projectteamdive.dto.AlbumDto;
 import com.himedia.projectteamdive.dto.ArtistDto;
 import com.himedia.projectteamdive.dto.MusicDto;
+import com.himedia.projectteamdive.dto.PlaylistDto;
 import com.himedia.projectteamdive.entity.*;
 import com.himedia.projectteamdive.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,9 +79,14 @@ public class MusicService {
 
     @Autowired
     MemberRepository memr;
-    public void insertPlayList(String username) {
+    public void insertPlayList(String username, Playlist playlist) {
         Member member = memr.findByMemberId(username);
-        Playlist playList= pr.save(new Playlist());
+        Playlist playList= pr.save(new Playlist().builder()
+                .title(playlist.getTitle())
+                .content(playlist.getContent())
+                .coverImage(playlist.getCoverImage())
+                .member(member)
+                .build());
         playList.setMember(member);
         Allpage allpage=new Allpage();
         allpage.setEntityId(playList.getPlaylistId());
@@ -115,7 +121,7 @@ public class MusicService {
 
                 Playcountlist playcountlist= pcr.findByMusicAndMemberIdAndIndate(music,memberId,indate);
                 if(playcountlist==null){
-                    Playcountlist playcountlist2=new Playcountlist(music,memberId,indate,1);
+                    Playcountlist playcountlist2=new Playcountlist(music,memberId,indate,playcountToday);
                     pcr.save(playcountlist2);
                 }else{
                     playcountlist.setPlayCount(playcountlist.getPlayCount()+playcountToday);
@@ -156,7 +162,7 @@ public class MusicService {
         return chart;
     }
 
-    public List<Album> getAlbumChart() {
+    public List<AlbumDto> getAlbumChart() {
         return ar.findTop10ByMusicPlayCount();
     }
 
@@ -175,11 +181,11 @@ public class MusicService {
 
     public HashMap<String, Object> search(String key) {
         HashMap<String, Object> result=new HashMap<>();
-        result.put("artist",arr.findByArtistNameContainingIgnoreCase("%"+key+"%"));
-        result.put("album",ar.findByTitleContainingIgnoreCase("%"+key+"%"));
-        result.put("music",mr.findByTitleContainingIgnoreCase("%"+key+"%"));
-        result.put("musiclyrics",mr.findByLyricsContainingIgnoreCase("%"+key+"%"));
-        result.put("playlist",pr.findByTitleContainingIgnoreCase("%"+key+"%"));
+        result.put("artist",arr.findByArtistNameContainingIgnoreCase(key));
+        result.put("album",ar.findByTitleContainingIgnoreCase(key));
+        result.put("music",mr.findByTitleContainingIgnoreCase(key));
+        result.put("musiclyrics",mr.findByLyricsContainingIgnoreCase(key));
+        result.put("playlist",pr.findByTitleContainingIgnoreCase(key));
         return result;
     }
 
@@ -307,7 +313,7 @@ public class MusicService {
 
     public HashMap<String, Object> getMemberPlaylist(String memberId) {
         HashMap<String, Object> result=new HashMap<>();
-        List<Playlist>list=pr.findAllByMember_MemberId(memberId);
+        List<PlaylistDto>list=pr.findAllByMember_MemberId(memberId);
         result.put("playlist",list);
         return result;
 

@@ -18,7 +18,8 @@ public class AlbumDto {
     private String image;
     private Timestamp indate;
     private List<MusicDto> musicList;  // 음악 리스트
-
+    private int artistId;
+    private String artistName;
 
     // Album -> AlbumDTO 변환
     public AlbumDto(Album album) {
@@ -28,7 +29,9 @@ public class AlbumDto {
         this.indate = album.getIndate();
         // 음악 리스트를 MusicDTO로 변환
         this.musicList = album.getMusicList().stream()
-                .map(music -> new MusicDto(music))  // MusicDTO는 별도로 만들어야 함
+                .map(MusicDto::new)  // MusicDTO는 별도로 만들어야 함
                 .collect(Collectors.toList());
+        this.artistId=album.getArtist().getArtistId();
+        this.artistName=album.getArtist().getArtistName();
     }
 }

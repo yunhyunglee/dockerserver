@@ -22,6 +22,7 @@ public class Playlist {
     @Column(name = "playlist_id")
     private int playlistId;
     private String title;
+    @Column(name = "cover_image")
     private String coverImage;
     private String content;
 
