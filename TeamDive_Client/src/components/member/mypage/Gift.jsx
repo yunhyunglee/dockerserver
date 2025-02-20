@@ -1,36 +1,31 @@
-import React ,{useState, useEffect}from 'react';
-import axios from 'axios';
-import jaxios from '../../../../util/JwtUtil';
-import { useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import React, {useState, useEffect} from 'react'
+import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom';
+import jaxios from '../../../util/JwtUtil'
 
-import mypageMemberShipStyle from '../../../../css/mypage/mypageMemberShip.module.css';
-import membershipStyle from '../../../../css/membership/memberShip.module.css';
+import mypageMemberShipStyle from '../../../css/mypage/mypageMemberShip.module.css';
+import membershipStyle from '../../../css/membership/memberShip.module.css';
 
-
-const MemberShipReceive = () => {
-
-    const loginUser = useSelector(state=>state.user);
-
-    const [membershipGiftList, setMembershipGiftList] = useState([]);
-    const {giftId} = useParams();
+const Gift = () => {
+    const loginUser = useSelector(state => state.user);
+    const [giftList, setGiftList] = useState([]);
     const navigate = useNavigate();
 
-    useEffect(()=>{
-        jaxios.get('/api/member/getMembershipGiftList', {params:{giftTo:loginUser.memberId}})
-        .then((result)=>{
-            if(result.data.msg === 'yes'){
-                setMembershipGiftList(result.data.membershipGiftList);
-            }
-        })
-        .catch((err)=>{
-            console.error(err);
-        })
-    });
+    useEffect(
+        () => {
+            jaxios.get('/api/membership/getGiftList', {params: {giftTo: loginUser.memberId}})
+            .then((result) => {
+                setGiftList(result.data.giftList);
+            })
+            .catch((err) => {
+                console.error('선물 리스트 불러오기 실패', err);
+            })
+        }, []
+    );
 
     //요기가 엑티베이트 하려고하는 곳임~
     function onActivate(giftId){
-        jaxios.post('/api/member/membershipActivate', null, {params:{giftId}})
+        jaxios.post('/api/membership/membershipActivate', null, {params:{giftId}})
         .then((result)=>{
             if(result.data.msg === 'yes'){
                 alert('멤버십이 활성화 되었습니다.');
@@ -46,19 +41,19 @@ const MemberShipReceive = () => {
         <section className={mypageMemberShipStyle.page}>
             <div className={membershipStyle.container}>
                 {
-                    (membershipGiftList.length > 0) ? (
-                        membershipGiftList.map((membershipGift, idx) => {
+                    (giftList.length > 0) ? (
+                        giftList.map((gift, idx) => {
                             return (
                                 <div className={membershipStyle.item} key={idx}>
                                     <div className={membershipStyle.title}>
-                                        {membershipGift.giftName}
+                                        {gift.giftName}
                                     </div>
                                     <div className={membershipStyle.content}>
-                                        {membershipGift.giftDate.substring(0,10)}
+                                        {gift.giftDate.substring(0,10)}
                                     </div>
                                     <div className={membershipStyle.subscribe}>
                                         <button onClick={()=>{
-                                            onActivate(membershipGift.giftId);
+                                            onActivate(gift.giftId);
                                         }}>구독 시작</button>
                                     </div>
                                 </div>
@@ -75,4 +70,4 @@ const MemberShipReceive = () => {
     )
 }
 
-export default MemberShipReceive
+export default Gift;

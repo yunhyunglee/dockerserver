@@ -15,8 +15,6 @@ import PaymentsSuccess from "./components/payments/PaymentsSuccess";
 import PaymentsFail from "./components/payments/PaymentsFail";
 
 import Mypage from "./components/member/mypage/Mypage";
-import UseMemberShip from "./components/member/mypage/UseMemberShip";
-
 
 function AppRoutes() {
     return (
@@ -40,14 +38,10 @@ function AppRoutes() {
 
             {/* 마이페이지 */}
             <Route path="/mypage/:mypageCategory" element={<Mypage />} />
-            <Route path="/mypage/useMemberShip/:memberShipCategory" element={<UseMemberShip />} />
-
 
             {/* 스토리지 */}
             <Route path="/storage/:storageCategory" element={<Storage />}/>
             <Route path="/storage/:storageCategory/:mp3Category" element={<Storage />} />
-
-
         </Routes>
     );
 }

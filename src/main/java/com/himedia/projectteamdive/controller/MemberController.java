@@ -250,9 +250,7 @@ public class MemberController {
     @GetMapping("/getMember")
     public HashMap<String, Object> getMember(@RequestParam("giftToId") String memberId){
         HashMap<String, Object> result = new HashMap<>();
-        System.out.println("1"+memberId);
         Member member = ms.getMember(memberId);
-        System.out.println("2"+member);
         if(member != null){
             result.put("message", "yes");
         }else{
@@ -277,27 +275,6 @@ public class MemberController {
         result.put("msg", "yes");
         return result;
     }
-
-    @Autowired
-    MembershipService mss;
-
-    @GetMapping("/getMembershipGiftList")
-    public HashMap<String, Object> getMembershipGiftList(@RequestParam("giftTo")String memberId){
-        HashMap<String, Object> result = new HashMap<>();
-        Member member = ms.getMember(memberId);
-        result.put("msg", "yes");
-        result.put("membershipGiftList", mss.getMembershipGiftList(member.getMemberId()));
-        System.out.println("123"+result);
-        return result;
-    }
-
-
-
-
-
-
-
-
 }
 
 
