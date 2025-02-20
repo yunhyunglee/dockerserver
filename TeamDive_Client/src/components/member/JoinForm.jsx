@@ -66,4 +66,4 @@ const JoinForm = () => {
     );
 };
 
-export { JoinForm };
+export default JoinForm ;
