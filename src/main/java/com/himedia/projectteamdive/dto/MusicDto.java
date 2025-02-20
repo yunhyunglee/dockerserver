@@ -18,6 +18,10 @@ public class MusicDto {
     private boolean titleMusic;
     private int trackNumber;
     private String bucketPath;
+    private int artistId;
+    private String artistName;
+    private int albumId;
+    private String albumTitle;
 
     // Music -> MusicDTO 변환
     public MusicDto(Music music) {
@@ -30,5 +34,9 @@ public class MusicDto {
         this.titleMusic = music.isTitleMusic();
         this.trackNumber = music.getTrackNumber();
         this.bucketPath = music.getBucketPath();
+        this.artistId= music.getArtist().getArtistId();
+        this.artistName = music.getArtist().getArtistName();
+        this.albumId = music.getAlbum().getAlbumId();
+        this.albumTitle = music.getAlbum().getTitle();
     }
 }

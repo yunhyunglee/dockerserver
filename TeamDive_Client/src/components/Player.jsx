@@ -93,7 +93,7 @@ export default function Player() {
   
   // const playlist = originalPlaylist;
   const [playlist,setPlaylist]=useState([
-    { src: 'https://d9k8tjx0yo0q5.cloudfront.net/music/482b8d00-08e4-4391-a40c-535aaaebcfbdHopeful - Nat Keefe.mp3', title: '별별별', artist: '엔믹스' ,musicId:1},
+    { src: 'https://d9k8tjx0yo0q5.cloudfront.net/music/100b7476-1600-4133-9cfa-4706b31d45d5Moritas Moras - House of the Gipsies.mp3', title: '별별별', artist: '엔믹스' ,musicId:1},
     { src: music2, title: 'Dash', artist: '엔믹스' ,musicId:2},
     { src: music3, title: '럽미랔뎃', artist: '엔믹스' ,musicId:3},
     { src: music4, title: '고민중독', artist: 'QWER' ,musicId:4},
@@ -109,6 +109,7 @@ export default function Player() {
 
   const loginUser=useSelector(state=>state.user);
   const [playCounts,setPlayCounts]=useState({});
+  const [isPlayed,setIsplayed]=useState(false);
   const musicPlay = (songId) => {
       // alert('재생했다')
       setPlayCounts(prev => ({
@@ -124,7 +125,7 @@ export default function Player() {
                 .then(() => setPlayCounts({})) // 성공하면 초기화
                 .catch(err => console.error("Error sending play counts:", err));
         }
-    }, 5000); // 60초마다 전송
+    }, 60000); // 60초마다 전송
     return () => clearInterval(interval);
   }, [playCounts]);
 
@@ -140,6 +141,19 @@ export default function Player() {
       prevPlaylist.current=playlist;
     },[playlist]
   );
+  const play30second = () => {
+    const audio = audioRef.current;
+    const interval = setInterval(() => {
+      if (audio.currentTime >= 30 && isPlayed==false) {
+        musicPlay(currentSong.musicId);
+        setIsplayed(true);
+        clearInterval(interval); 
+      }
+    }, 1000); // 1초마다 확인
+  };
+  useEffect(()=>{
+    setIsplayed(false);
+  },[currentSong]);
 
 
 
@@ -342,7 +356,7 @@ export default function Player() {
   return (
     <footer className="footer">
       {/* 현재 곡 */}
-      <audio ref={audioRef} muted={mute} src={currentSong.src} />
+      <audio ref={audioRef} muted={mute} src={currentSong.src} onPlay={play30second} />
       <CustomPaper>
         <Box
           sx={{
