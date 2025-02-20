@@ -22,6 +22,8 @@ public class Playlist {
     @Column(name = "playlist_id")
     private int playlistId;
     private String title;
+    private String coverImage;
+    private String content;
 
     @ManyToOne
     @JoinColumn(name = "member_id")

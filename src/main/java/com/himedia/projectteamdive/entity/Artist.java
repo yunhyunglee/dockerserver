@@ -30,7 +30,6 @@ public class Artist {
     private String content;
 
     @OneToMany(mappedBy = "artist",  cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
-    @JsonManagedReference("artist-album")
     @Builder.Default
     List<Album> albums=new ArrayList<>();
 
@@ -46,7 +45,6 @@ public class Artist {
     }
 
     @OneToMany(mappedBy = "artist", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
-    @JsonManagedReference("artist-music")
     @Builder.Default
     List<Music> musicList=new ArrayList<>();
 

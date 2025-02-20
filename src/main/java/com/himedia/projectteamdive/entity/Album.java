@@ -30,11 +30,11 @@ public class Album {
     private Timestamp indate;
 
     @ManyToOne
-    @JoinColumn(name = "artist_id")@JsonBackReference("artist-album")
+    @JoinColumn(name = "artist_id")
     Artist artist;
 
     @OneToMany(mappedBy = "album",cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderBy("trackNumber ASC")@JsonManagedReference("album-music")
+    @OrderBy("trackNumber ASC")
     @Builder.Default
     List<Music> musicList =new ArrayList<>();
 
