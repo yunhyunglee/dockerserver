@@ -19,7 +19,7 @@ const MypageMenu = () => {
                 댓글 리스트
             </Link>
             <Link to='/mypage/useMemberShip' className = {mypageStyle.link}>
-                사용중인 멤버십
+                멤버십
             </Link>
         </div>
     )

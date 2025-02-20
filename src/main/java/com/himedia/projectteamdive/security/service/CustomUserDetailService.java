@@ -39,7 +39,7 @@ public class CustomUserDetailService  implements UserDetailsService {
                 member.getMemberRoleList().stream().map(roleName -> roleName.name()).collect(Collectors.toList())
         );
 
-        System.out.println(memberDto);
+        //System.out.println(memberDto);
 //        System.out.println(member);
         return memberDto;
     }

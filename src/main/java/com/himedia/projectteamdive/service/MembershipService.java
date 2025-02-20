@@ -1,7 +1,9 @@
 package com.himedia.projectteamdive.service;
 
+import com.himedia.projectteamdive.entity.Gift;
 import com.himedia.projectteamdive.entity.Membership;
 import com.himedia.projectteamdive.entity.Membership_user;
+import com.himedia.projectteamdive.repository.GiftRepository;
 import com.himedia.projectteamdive.repository.MemberRepository;
 import com.himedia.projectteamdive.repository.MembershipRepository;
 import com.himedia.projectteamdive.repository.MembershipUserRepository;
@@ -38,6 +40,14 @@ public class MembershipService {
     /* 현재 로그인 유저에게 활성화된 멤버십이 있는지 확인 */
     public List<Membership_user> getActiveMembership(String memberId) {
         List<Membership_user> list = msru.getActiveMembership(memberId);
+        return list;
+    }
+
+    @Autowired
+    GiftRepository gr;
+
+    public List<Gift> getMembershipGiftList(String memberId) {
+        List<Gift> list = gr.findByGiftTo(memberId);
         return list;
     }
 }
