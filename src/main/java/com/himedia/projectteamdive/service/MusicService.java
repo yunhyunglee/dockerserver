@@ -151,7 +151,7 @@ public class MusicService {
 
         chartDays = new Timestamp(System.currentTimeMillis() - (24L * 60 * 60 * 1000)); // 1일 전
         //일간차트
-        chart.put("Top100toDay",pcr.findTop100ByMusicWeekCart(chartDays, pageable));
+        chart.put("Top100toDay",pcr.findTop100ByMusictoday(chartDays, pageable));
 
         return chart;
     }
@@ -161,16 +161,16 @@ public class MusicService {
     }
 
 
-    public Artist getArtist(int artistId) {
-        return arr.findByArtistId(artistId);
+    public ArtistDto getArtist(int artistId) {
+        return new ArtistDto(arr.findByArtistId(artistId));
     }
 
-    public Album getAlbum(int albumId) {
-        return  ar.findByAlbumId(albumId);
+    public AlbumDto getAlbum(int albumId) {
+        return  new AlbumDto(ar.findByAlbumId(albumId));
     }
 
-    public Music getMusic(int musicId) {
-        return  mr.findByMusicId(musicId);
+    public MusicDto getMusic(int musicId) {
+        return  new MusicDto(mr.findByMusicId(musicId));
     }
 
     public HashMap<String, Object> search(String key) {
