@@ -12,7 +12,7 @@ import MypageMain from './MypageMain';
 import UpdateMemberForm from './UpdateMemberForm';
 import LikeListForm from './LikeListForm';
 import ReplyListForm from './ReplyListForm';
-import UseMembership from './UseMembership';
+import UseMemberShip from './UseMemberShip';
 
 
 
@@ -44,7 +44,7 @@ const Mypage = () => {
                         {mypageCategory === "updateMemberForm" && <UpdateMemberForm />}
                         {mypageCategory === "likeListForm" && <LikeListForm />}
                         {mypageCategory === "replyListForm" && <ReplyListForm />}
-                        {mypageCategory === "useMemberShip" && <UseMembership />}
+                        {mypageCategory === "useMemberShip" && <UseMemberShip />}
                     </div>
                 )}
             </div>

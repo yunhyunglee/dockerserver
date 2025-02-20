@@ -1,0 +1,15 @@
+.page{
+    display: flex;
+    flex-direction: row;
+}
+
+.arrowButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.arrowImage {
+    width: 80px; /* 원하는 크기 */
+    height: auto;
+}
