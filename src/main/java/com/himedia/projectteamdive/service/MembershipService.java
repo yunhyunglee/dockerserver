@@ -46,6 +46,6 @@ public class MembershipService {
 
     /* 선물 리스트 조회 */
     public List<Gift> getGiftList(String giftTo) {
-        return gr.findByGiftTo(giftTo);
+        return gr.findGiftsByGiftToOrderByMembershipDownloadCountAndGiftDate(giftTo);
     }
 }

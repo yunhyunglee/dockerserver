@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
 import jaxios from '../../../util/JwtUtil'
 
-import mypageMemberShipStyle from '../../../css/mypage/mypageMemberShip.module.css';
+import mypageStyle from '../../../css/mypage/mypage.module.css';
 import membershipStyle from '../../../css/membership/memberShip.module.css';
 
 const Gift = () => {
@@ -38,35 +38,36 @@ const Gift = () => {
     }
 
     return (
-        <section className={mypageMemberShipStyle.page}>
-            <div className={membershipStyle.container}>
-                {
-                    (giftList.length > 0) ? (
-                        giftList.map((gift, idx) => {
-                            return (
-                                <div className={membershipStyle.item} key={idx}>
-                                    <div className={membershipStyle.title}>
-                                        {gift.giftName}
-                                    </div>
-                                    <div className={membershipStyle.content}>
-                                        {gift.giftDate.substring(0,10)}
-                                    </div>
-                                    <div className={membershipStyle.subscribe}>
-                                        <button onClick={()=>{
-                                            onActivate(gift.giftId);
-                                        }}>구독 시작</button>
-                                    </div>
+        <div className={mypageStyle.container}>
+            {
+                (giftList.length > 0) ? (
+                    giftList.map((gift, idx) => {
+                        return (
+                            <div className={membershipStyle.item} key={idx}>
+                                <div className={membershipStyle.title}>
+                                    {gift.giftName}
                                 </div>
-                            )
-                        })
-                    ) : (
-                        <div className={membershipStyle.item}>
-                            <span>선물받은 구독권이 없습니다...</span>
-                        </div>
-                    )
-                }
-            </div>
-        </section>
+                                <div className={membershipStyle.content}>
+                                    {gift.giftDate.substring(0,10)}
+                                </div>
+                                <div className={membershipStyle.content}>
+                                    {gift.giftFrom}
+                                </div>
+                                <div className={membershipStyle.subscribe}>
+                                    <button onClick={()=>{
+                                        onActivate(gift.giftId);
+                                    }}>구독 시작</button>
+                                </div>
+                            </div>
+                        )
+                    })
+                ) : (
+                    <div className={membershipStyle.item}>
+                        <span>선물받은 구독권이 없습니다...</span>
+                    </div>
+                )
+            }
+        </div>
     )
 }
 
