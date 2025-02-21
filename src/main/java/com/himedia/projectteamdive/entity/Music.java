@@ -38,6 +38,8 @@ public class Music {
     private int trackNumber=0;
     @Column(name ="bucket_path")
     private String bucketPath;
+    @Column(length = 1000)
+    private String content;
 
     @ManyToOne
     @JoinColumn(name = "album_id")

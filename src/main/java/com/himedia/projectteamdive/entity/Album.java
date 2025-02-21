@@ -28,6 +28,8 @@ public class Album {
     private String title;
     private String image;
     private Timestamp indate;
+    @Column(length = 1000)
+    private String content;
 
     @ManyToOne
     @JoinColumn(name = "artist_id")
