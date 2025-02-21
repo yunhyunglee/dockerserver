@@ -27,7 +27,7 @@ public class Allpage {
     @Column(name = "entity_id")
     private int entityId;
 
-    @ElementCollection(fetch = FetchType.LAZY)
+    @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
     private List<Pagetype> pagetype = new ArrayList<Pagetype>();
 }

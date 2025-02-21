@@ -44,11 +44,8 @@ public class Member {
     private String memberKey;
     private String introduction;
 
-    @ElementCollection(fetch = FetchType.LAZY)
+    @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
     private List<RoleName> memberRoleList = new ArrayList<RoleName>();
 
-    @OneToMany(mappedBy = "member",cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    List<Playlist> playLists=new ArrayList<>();
 }
