@@ -87,6 +87,9 @@ public class JWTCheckFilter extends OncePerRequestFilter {
         if(path.startsWith("/music/addPlayCount")){
             return true;
         }
+        if (path.startsWith("/music/getAllArtist")) {  // ✅ 여기에 추가
+            return true;
+        }
 
 
         return false;
