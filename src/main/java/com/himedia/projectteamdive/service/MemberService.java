@@ -1,7 +1,10 @@
 package com.himedia.projectteamdive.service;
 
+import com.himedia.projectteamdive.dto.GiftRequestDto;
+import com.himedia.projectteamdive.entity.Gift;
 import com.himedia.projectteamdive.entity.Member;
 import com.himedia.projectteamdive.entity.RoleName;
+import com.himedia.projectteamdive.repository.GiftRepository;
 import com.himedia.projectteamdive.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -65,4 +68,11 @@ public class MemberService {
         return updateMember;
 
     }
+
+    public void deleteMember(String memberId) {
+        Member member = mr.findByMemberId(memberId);
+        mr.delete(member);
+    }
+
+
 }

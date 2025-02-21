@@ -7,6 +7,7 @@ import com.himedia.projectteamdive.entity.Member;
 import com.himedia.projectteamdive.security.util.CustomJWTException;
 import com.himedia.projectteamdive.security.util.JWTUtil;
 import com.himedia.projectteamdive.service.MemberService;
+import com.himedia.projectteamdive.service.MembershipService;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
@@ -267,12 +268,13 @@ public class MemberController {
         return result;
     }
 
-
-
-
-
-
-
+    @DeleteMapping("/deleteMember/{memberId}")
+    public HashMap<String, Object> deleteMember(@PathVariable("memberId") String memberId){
+        HashMap<String, Object> result = new HashMap<>();
+        ms.deleteMember(memberId);
+        result.put("msg", "yes");
+        return result;
+    }
 }
 
 

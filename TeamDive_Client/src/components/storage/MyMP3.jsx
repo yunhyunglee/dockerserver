@@ -19,8 +19,7 @@ const MyMP3 = () => {
   }, [mp3Category, navigate]);
 
   return (
-    <div className={styles.mp3Container}>
-      
+    <div>
       <nav className={styles.subTabMenu}>
         <Link
           to="/storage/myMP3/purchased"

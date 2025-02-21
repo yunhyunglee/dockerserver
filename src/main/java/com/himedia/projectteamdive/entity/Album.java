@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.himedia.projectteamdive.repository.MusicRepository;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -33,11 +30,12 @@ public class Album {
     private Timestamp indate;
 
     @ManyToOne
-    @JoinColumn(name = "artist_id")@JsonBackReference("artist-album")
+    @JoinColumn(name = "artist_id")
     Artist artist;
 
     @OneToMany(mappedBy = "album",cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderBy("trackNumber ASC")@JsonManagedReference("album-music")
+    @OrderBy("trackNumber ASC")
+    @Builder.Default
     List<Music> musicList =new ArrayList<>();
 
     // 음악 추가 메서드

@@ -1,5 +1,6 @@
 package com.himedia.projectteamdive.controller;
 
+import com.himedia.projectteamdive.dto.AlbumDto;
 import com.himedia.projectteamdive.entity.*;
 import com.himedia.projectteamdive.service.MusicService;
 import com.himedia.projectteamdive.service.S3Service;
@@ -144,9 +145,9 @@ public class MusicController {
     //=====================================================
 
     @PostMapping("/insertPlaylist")
-    public HashMap<String, Object> insertPlayList(@AuthenticationPrincipal User user) {
+    public HashMap<String, Object> insertPlayList(@RequestParam("memberId")String memberId,@RequestBody Playlist playlist) {
         HashMap<String, Object> map = new HashMap<>();
-        ms.insertPlayList(user.getUsername());
+        ms.insertPlayList(memberId,playlist);
         map.put("msg","yes");
         return map;
     }
@@ -212,7 +213,7 @@ public class MusicController {
     @GetMapping("/getAlbumChart")
     public HashMap<String, Object> getAlbumChart() {
         HashMap<String, Object> map = new HashMap<>();
-        List<Album>albumList= ms.getAlbumChart();
+        List<AlbumDto>albumList= ms.getAlbumChart();
         map.put("albumList",albumList);
         return map;
     }
@@ -263,6 +264,13 @@ public class MusicController {
         HashMap<String, Object> map = ms.getCurrentPlaylist(playlist);
         return map;
     }
+
+    @GetMapping("/getMemberPlaylist")
+    public HashMap<String, Object> getMemberPlaylist(@RequestParam("memberId")String memberId) {
+        HashMap<String,Object> map= ms.getMemberPlaylist(memberId);
+        return map;
+    }
+
 
 
 

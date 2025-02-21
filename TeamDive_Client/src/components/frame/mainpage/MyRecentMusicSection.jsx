@@ -2,14 +2,17 @@
 import React, { useState } from 'react';
 import styles from '../../../css/mainPage/mainPage.module.css';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const MyRecentMusicSection = () => {
+
+    const navigate = useNavigate();
 
 
     const loginUser = useSelector(state => state.user);
 
     // 더미 데이터: 로그인한 사용자의 최근노래임 (API로 대체 가능)
-    const recentMusic = [
+    const music = [
       { musicId: 1, title: '음악1', image: '/public/image/album/album1.jpg' },
       { musicId: 2, title: '음악2', image: '/public/image/album/album2.jpg' },
       { musicId: 3, title: '음악3', image: '/public/image/album/album3.jpg' },
@@ -21,7 +24,7 @@ const MyRecentMusicSection = () => {
     
     const [visibleCount, setVisibleCount] = useState(5);
 
-    const displayItems = recentMusic.slice(0,visibleCount);
+    const displayItems = music.slice(0,visibleCount);
 
     const more = () => {
       setVisibleCount(prevCount => prevCount + 5);   
@@ -34,7 +37,9 @@ const MyRecentMusicSection = () => {
         <h2><span style={{fontSize: '30px'}}>{loginUser.nickname}</span> 님의 자주 듣는 노래</h2>
         <div className={styles.recentMusicGrid}>
           {displayItems.map((item, index) => (
-            <div key={item.musicId} className={styles.recentMusicCard} style={{backgroundImage: `url(${item.image})`}}>
+            <div key={item.musicId} className={styles.recentMusicCard} style={{backgroundImage: `url(${item.image})`}}
+            onClick={()=>{navigate(`/music/${item.musicId}`)}}
+            >
               <span className={styles.recentMusicRank}>{index + 1}</span>
               <div className={styles.recentMusicInfo}>
                 <p className={styles.recentMusictitle}>{item.title}</p>
@@ -42,7 +47,7 @@ const MyRecentMusicSection = () => {
             </div>
           ))}
         </div>
-        {visibleCount < recentMusic.length && (
+        {visibleCount < music.length && (
           <button className={styles.moreButtonRecentMusic} onClick={more}>
             더보기
           </button>

@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
-import { LoginPage } from "./components/frame/loginPage";
-import KakaoLogin from "./components/frame/KakaoLogin";
-import { JoinForm } from "./components/frame/JoinForm";
+import LoginPage from "./components/member/loginPage";
+import KakaoLogin from "./components/member/KakaoLogin";
+import JoinForm from "./components/member/JoinForm";
 import Membership from "./components/membership/Membership";
 import MainPage from "./components/frame/mainpage/MainPage";
 import MusicDetail from "./components/music/MusicDetail";
@@ -15,6 +15,8 @@ import PaymentsSuccess from "./components/payments/PaymentsSuccess";
 import PaymentsFail from "./components/payments/PaymentsFail";
 
 import Mypage from "./components/member/mypage/Mypage";
+import UseMemberShip from "./components/member/mypage/UseMemberShip";
+import Top100 from "./components/Top100";
 
 
 function AppRoutes() {
@@ -40,10 +42,12 @@ function AppRoutes() {
             {/* 마이페이지 */}
             <Route path="/mypage/:mypageCategory" element={<Mypage />} />
 
-
             {/* 스토리지 */}
             <Route path="/storage/:storageCategory" element={<Storage />}/>
             <Route path="/storage/:storageCategory/:mp3Category" element={<Storage />} />
+
+            {/* top100 */}
+            <Route path="/top100" element={<Top100 />}/>
 
 
         </Routes>

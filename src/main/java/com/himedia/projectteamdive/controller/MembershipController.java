@@ -1,5 +1,6 @@
 package com.himedia.projectteamdive.controller;
 
+import com.himedia.projectteamdive.entity.Member;
 import com.himedia.projectteamdive.entity.Membership_user;
 import com.himedia.projectteamdive.service.MembershipService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,14 @@ public class MembershipController {
         List<Membership_user>list = mss.getActiveMembership(memberId);
         result.put("memberShipUserList", list);
         System.out.println(result);
+        return result;
+    }
+
+    /* 선물 리스트 출력 */
+    @GetMapping("/getGiftList")
+    public HashMap<String, Object> getGiftList(@RequestParam("giftTo") String giftTo){
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("giftList", mss.getGiftList(giftTo));
         return result;
     }
 }

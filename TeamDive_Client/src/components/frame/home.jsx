@@ -4,7 +4,7 @@ import AppRoutes from '../../routes';
 import { useDispatch, useSelector } from 'react-redux';
 import { Cookies } from 'react-cookie';
 import { useEffect } from 'react';
-import { logoutAction } from '../../store/userSlice';
+import { logoutAction } from '../../store/UserSlice';
 
 function Home({ menubar }) {
 

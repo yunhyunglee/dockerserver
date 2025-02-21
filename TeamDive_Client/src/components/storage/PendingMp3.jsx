@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+
 
 import jaxios from '../../util/JwtUtil';
 
 import storageStyle from "../../css/storage/storage.module.css";
 import pendingStyle from "../../css/storage/pendingMp3.module.css";
+import musicStyle from "../../css/storage/likedMusic.module.css";
 
 const PendingMp3 = () => {
     const loginUser = useSelector(state => state.user);
@@ -13,10 +15,7 @@ const PendingMp3 = () => {
 
     const [musicList, setMusicList] = useState([]);
     const [selectedMusic, setSelectedMusic] = useState([]);
-    const totalPrice = selectedMusic.reduce((sum, id) => {
-        const music = musicList.find((m) => m.id === id);
-        return sum + (music ? music.price : 0);
-    }, 0);
+    const totalPrice = selectedMusic.length * 770;
 
     useEffect(() => {
         const fetchCartList = async () => {
@@ -37,47 +36,86 @@ const PendingMp3 = () => {
         fetchCartList();
     }, [loginUser, navigate]);
 
+
+    /* 전체선택 체크박스 토글 */
+    const toggleSelectAll = (checked) => {
+        if (checked) {
+            setSelectedMusic(musicList.map((music) => music.musicId));
+        } else {
+            setSelectedMusic([]);
+        }
+    };
+
+    /* 개별 곡 체크박스 토글 */
     const toggleSelectMusic = (id) => {
         setSelectedMusic((prev) =>
             prev.includes(id) ? prev.filter((musicId) => musicId !== id) : [...prev, id]
         );
     };
 
-    const removeSelectedMusic = () => {
-        setSelectedMusic([]);
-    };
+    const isAllSelected =
+        musicList.length > 0 && selectedMusic.length === musicList.length;
 
     return (
-        <div className={pendingStyle.container}>
+        <div className={pendingStyle.mp3Container}>
+            <h2 className={musicStyle.sectionTitle}>장바구니</h2>
             {
                 (musicList.length) !== 0 ? (
                     <>
-                        <div className={pendingStyle.header}>
-                            <button
-                                onClick={removeSelectedMusic}
-                                className={pendingStyle.deleteButton}>
-                                선택 삭제 ({selectedMusic.length}곡)
-                            </button>
+                        <div className={musicStyle.topBar}>
+                            <label className={musicStyle.checkAllLabel}>
+                            <input
+                                type="checkbox"
+                                checked={isAllSelected}
+                                onChange={ (e) => toggleSelectAll(e.target.checked) }/>
+                                전체선택
+                            </label>
                         </div>
           
-                        <div>
-                            {
-                                musicList.map((music) => (
-                                    <div key={music.musicId} className={pendingStyle.musicItem}>
-                                        <input
-                                            type="checkbox"
-                                            checked={selectedMusic.includes(music.id)}
-                                            onChange={ () => toggleSelectMusic(music.id) }
+                        <div className={musicStyle.songList}>
+                        {
+                            musicList.map((music) => (
+                                <div key={music.musicId} className={musicStyle.songRow}>
+                                    {/* 개별 체크박스 */}
+                                    <input
+                                        type="checkbox"
+                                        className={musicStyle.rowCheckbox}
+                                        checked={selectedMusic.includes(music.musicId)}
+                                        onChange={ () => toggleSelectMusic(music.musicId) }
+                                    />
+
+                                    {/* 앨범 커버 */}
+                                    <div className={musicStyle.coverWrapper}>
+                                        <img
+                                            src={music.image}
+                                            alt={music.title}
+                                            className={musicStyle.coverImage}
                                         />
-                                        <div className={pendingStyle.musicInfo}>
-                                            <p className={pendingStyle.musicTitle}>{music.title}</p>
-                                            <p className={pendingStyle.musicArtist}>{music.artist}</p>
-                                        </div>
-                                            <p className={pendingStyle.musicPrice}>{music.price}원</p>
-                                            <button className={pendingStyle.trashButton}>🗑</button>
                                     </div>
-                                ))
-                            }
+
+                                    {/* 제목 */}
+                                    <div className={musicStyle.title}>
+                                        <Link to={`/music/${music.musicId}`} className={musicStyle.titleLink}>
+                                        {music.title}
+                                        </Link>
+                                    </div>
+
+                                    {/* 가수 */}
+                                    <div className={musicStyle.artist}>{music.artist}</div>
+
+                                    {/* 가격 */}
+                                    <div className={musicStyle.genre}>770원</div>
+
+                                    {/* 장바구니 삭제 */}
+                                    <button
+                                        className={musicStyle.heartBtn}
+                                        onClick={() => {}}
+                                    >
+                                        X
+                                    </button>
+                                </div>
+                            ))
+                        }
                         </div>
                     </>
                 ) : (
@@ -88,9 +126,9 @@ const PendingMp3 = () => {
                 )
             }
             <div className={pendingStyle.payment}>
-                <p className={pendingStyle.totalPrice}>총 결제금액:
-                    <span className={pendingStyle.totalAmount}>{totalPrice}원</span>
-                </p>
+                <div className={pendingStyle.totalPrice}>총 결제금액 :
+                    <span className={pendingStyle.totalAmount}> {totalPrice}원</span>
+                </div>
                 <button
                     className={pendingStyle.paymentButton}
                     disabled={selectedMusic.length === 0}>

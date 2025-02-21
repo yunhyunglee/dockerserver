@@ -5,6 +5,7 @@ import jaxios from '../../../util/JwtUtil';
 import { useSelector } from 'react-redux';
 
 import { useParams } from 'react-router-dom';
+import zIndex from '@mui/material/styles/zIndex';
 
 
 
@@ -94,9 +95,9 @@ const MypageMain = () => {
                     <div>
                         {
                             (memberShipUserList && memberShipUserList.length > 0)?(
-                                memberShipUserList.map((memberShipUser, key)=>{
+                                memberShipUserList.map((memberShipUser, idx)=>{
                                     return(
-                                        <section className={mypageStyle.memberShipUser} idx={key}>
+                                        <section className={mypageStyle.memberShipUser} key={idx}>
                                             <div className={mypageStyle.field}> 
                                                 <label>멤버십 이름</label>
                                                 <div>{memberShipUser.membershipName}</div>
