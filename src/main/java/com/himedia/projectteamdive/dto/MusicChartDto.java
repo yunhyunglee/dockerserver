@@ -5,11 +5,11 @@ import lombok.Data;
 
 @Data
 public class MusicChartDto {
-    private Music music;
+    private MusicDto music;
     private Long totalPlayCount;
 
     public MusicChartDto(Music music, Long totalPlayCount) {
-        this.music = music;
+        this.music = new MusicDto(music);
         this.totalPlayCount = totalPlayCount;
     }
 

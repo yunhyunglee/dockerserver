@@ -22,7 +22,6 @@ public class Music {
     @Column(name = "music_id")
     private int musicId;
     private String title;
-    private String image;
     @Column(name = "play_count")
     private int playCount=0;
 //    @Column(name = "play_count_day")
