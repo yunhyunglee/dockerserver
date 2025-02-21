@@ -54,51 +54,48 @@ const ReplyListForm = () => {
     
 
     return (
-        <div className={mypageStyle.replyListForm}>
-            <section className={mypageReplyStyle.replyListForm}>
-                <h1>댓글리스트</h1>
+        <section className={mypageReplyStyle.replyListForm}>
+            <h1>댓글리스트</h1>
 
-                {/* 카테고리 선택 UI */}
-                <div className={mypageReplyStyle.categoryButtons}>
-                {['ARTIST', 'ALBUM', 'MUSIC'].map((type) => (
-                    <button
-                    key={type}
-                    onClick={() => setCategory(type)}
-                    className={(category === type)?(mypageStyle.active):("")}
-                    >
-                    {type.toUpperCase()}
-                    </button>
-                ))}
+            {/* 카테고리 선택 UI */}
+            <div className={mypageReplyStyle.categoryButtons}>
+            {['ARTIST', 'ALBUM', 'MUSIC'].map((type) => (
+                <button
+                key={type}
+                onClick={() => setCategory(type)}
+                className={(category === type)?(mypageStyle.active):("")}
+                >
+                {type.toUpperCase()}
+                </button>
+            ))}
+            </div>
+
+            <div className={mypageReplyStyle.field}>
+                <div className={mypageReplyStyle.title}>
+                    <div className={mypageReplyStyle.item}>닉네임</div>
+                    <div className={mypageReplyStyle.item}>내용</div>
+                    <div className={mypageReplyStyle.item}>작성일</div>
                 </div>
-
-                <div className={mypageReplyStyle.field}>
-                    <div className={mypageReplyStyle.title}>
-                        <div className={mypageReplyStyle.item}>닉네임</div>
-                        <div className={mypageReplyStyle.item}>내용</div>
-                        <div className={mypageReplyStyle.item}>작성일</div>
-                    </div>
-                    {
-                        (replyList && replyList.length>0)?(
-                            replyList.map((reply, idx)=>{
-                                return(
-                                    <div className={mypageReplyStyle.colfield} key={idx}>
-                                        <div className={mypageReplyStyle.coltitle}>
-                                            <div className={mypageReplyStyle.colitem}>{reply.member.nickname}</div>
-                                            <div className={mypageReplyStyle.colitem}>{reply.content}</div>
-                                            <div className={mypageReplyStyle.colitem}>{reply.indate.substring(0,10)}</div>
-                                            <button onClick={()=>{
-                                                deleteReply();
-                                            }}>삭제</button>
-                                        </div>
+                {
+                    (replyList && replyList.length>0)?(
+                        replyList.map((reply, idx)=>{
+                            return(
+                                <div className={mypageReplyStyle.colfield} key={idx}>
+                                    <div className={mypageReplyStyle.coltitle}>
+                                        <div className={mypageReplyStyle.colitem}>{reply.member.nickname}</div>
+                                        <div className={mypageReplyStyle.colitem}>{reply.content}</div>
+                                        <div className={mypageReplyStyle.colitem}>{reply.indate.substring(0,10)}</div>
+                                        <button onClick={()=>{
+                                            deleteReply();
+                                        }}>삭제</button>
                                     </div>
-                                )
-                            })
-                        ):(<div>작성한 댓글이 없습니다.</div>)
-                    }
-                </div>
-            </section>
-
-        </div>
+                                </div>
+                            )
+                        })
+                    ):(<div>작성한 댓글이 없습니다.</div>)
+                }
+            </div>
+        </section>
     )
 }
 
