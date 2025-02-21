@@ -94,7 +94,6 @@ const LikedAlbum = () => {
                   </div>
                 </div>
               </div>
-
             </div>
           </div>
         ))}
