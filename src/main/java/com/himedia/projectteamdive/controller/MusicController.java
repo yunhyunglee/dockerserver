@@ -139,6 +139,14 @@ public class MusicController {
         }
         return map;
     }
+    @DeleteMapping("/deleteImage")
+    public HashMap<String, Object> deleteImage(@RequestParam("image")String image) {
+        HashMap<String, Object> map = new HashMap<>();
+        String s = image.replace("https://d9k8tjx0yo0q5.cloudfront.net/","https://divestreaming.s3.ap-northeast-2.amazonaws.com/");
+        ss.deleteFile(s);
+        map.put("msg","yes");
+        return map;
+    }
 
 
     //=====================================================

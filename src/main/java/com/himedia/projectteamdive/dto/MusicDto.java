@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 public class MusicDto {
     private int musicId;
     private String title;
-    private String image;
     private int playCount;
     private String genre;
     private String lyrics;
@@ -27,7 +26,6 @@ public class MusicDto {
     public MusicDto(Music music) {
         this.musicId = music.getMusicId();
         this.title = music.getTitle();
-        this.image = music.getImage();
         this.playCount = music.getPlayCount();
         this.genre = music.getGenre();
         this.lyrics = music.getLyrics();

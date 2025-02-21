@@ -211,7 +211,6 @@ public class MusicService {
         Music m=mr.findByMusicId(music.getMusicId());
         m.setAlbum(music.getAlbum());
         m.setTitle(music.getTitle());
-        m.setImage( music.getImage());
         m.setGenre(music.getGenre());
         m.setLyrics(music.getLyrics());
         m.setTitleMusic(music.isTitleMusic());
