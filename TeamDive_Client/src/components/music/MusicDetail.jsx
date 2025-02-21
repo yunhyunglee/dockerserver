@@ -42,8 +42,8 @@ const MusicDetail = () => {
 
         const sample = {
             musicId: musicId,
-            title: "Dummy Music Title",
-            artist: "Dummy Artist",
+            title: "제목",
+            artist: "가수",
             image: lion,
             playCount: 1234,
             genre: "Pop",
@@ -88,7 +88,7 @@ const MusicDetail = () => {
         setExpandedLyrics((prev) => !prev);
     };
 
-    // ========Reply UI를 재조회하여 댓글추가후 재 조회하는 함수수
+    // ========Reply UI를 재조회하여 댓글추가후 재 조회하는 함수
 
     const fetchReply = () => {
         axios.get('/api/community/getReplyList', {params:{pagetype:'MUSIC', entityId: musicId,}})
@@ -139,11 +139,14 @@ const MusicDetail = () => {
                     <h1 className={styles.title}>{musicDetail.title}</h1>
                     <p className={styles.artist}>By {musicDetail.artist}</p>
                     <p className={styles.genre}>Genre: {musicDetail.genre}</p>
-                    <p className={styles.playCount}>Plays: {musicDetail.playCount}</p>
                     <p className={styles.like}>Likes: {musicDetail.like}</p>
                     <p className={styles.releaseDate}>Release Date: {musicDetail.album.releaseDate}</p>
                     {/* (css 조정 필요) 장바구니 버튼 */}
-                    <button onClick={ insertCart }>구매</button>
+                    <div>
+                        <button >재생</button>
+                        <button onClick={ insertCart }>구매</button>
+                        <button >좋아요</button>
+                    </div>
                 </div>
             </div>
 

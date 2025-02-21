@@ -1,15 +1,10 @@
 import React, { useEffect, useState } from "react";
-import styles from "../css/top100.module.css";
+import styles from "../../css/chartMore.module.css";
 import axios from "axios";
-
 const Top100 = () => {
- 
-
   // 체크된 곡들을 저장할 상태
   const [selectedItems, setSelectedItems] = useState([]);
   const [monthlyCharts,setMonthlyCharts]=useState([]);
-
-  
   useEffect(
     ()=>{
       axios.get('/api/music/getMusicChart')
@@ -19,45 +14,35 @@ const Top100 = () => {
       }).catch((err)=>{ console.error(err);})
     },[]
   );
-
-
   // 체크박스 변경 처리
   const handleCheckboxChange = (music, checked) => {
     if (checked) {
-    
       setSelectedItems((prev) => [...prev, music]);
     } else {
-     
       setSelectedItems((prev) => prev.filter((item) => item.rank !== music.rank));
     }
   };
-
- 
   const handleSelectedListen = () => {
     alert(
       "선택된 곡 듣기: " + selectedItems.map((item) => item.title).join(", ")
     );
   };
-
   const handleSelectedAdd = () => {
     alert(
       "선택된 곡 재생목록에 추가: " +
         selectedItems.map((item) => item.title).join(", ")
     );
   };
-
   const handleSelectedBuy = () => {
     alert(
       "선택된 곡 구매: " + selectedItems.map((item) => item.title).join(", ")
     );
   };
-
   return (
     <div className={styles.container}>
       {/* 상단 영역 */}
       <div className={styles.header}>
         <h1 className={styles.title}>오늘 Top 100</h1>
-
         <div className={styles.buttonGroup}>
           {selectedItems.length === 0 ? (
             // 선택된 곡이 없으면 기존 버튼들
@@ -81,12 +66,11 @@ const Top100 = () => {
           )}
         </div>
       </div>
-
       {/* 테이블 영역 */}
       <table className={styles.table}>
         <thead>
           <tr>
-            <th></th> 
+            <th></th>
             <th className={styles.rankColumn}>순위</th>
             <th>곡</th>
             <th>아티스트</th>
@@ -97,11 +81,9 @@ const Top100 = () => {
         </thead>
         <tbody>
           {monthlyCharts.map((music, index) => {
-            
             const isChecked = selectedItems.some(
               (item) => item.music.musicId === music.music.musicId
             );
-
             return (
               <tr key={music.music.musicId}>
                 <td>
@@ -151,5 +133,4 @@ const Top100 = () => {
     </div>
   );
 };
-
 export default Top100;

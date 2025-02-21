@@ -15,60 +15,7 @@ const PopularChartsPage = () => {
 
   useEffect(() => {
     
-    /*
-    axios.get('/api/charts/weekly')
-      .then(response => setWeeklyCharts(response.data))
-      .catch(error => console.error('Error fetching weekly charts:', error));
-
-    axios.get('/api/charts/monthly')
-      .then(response => setMonthlyCharts(response.data))
-      .catch(error => console.error('Error fetching monthly charts:', error));
-
-    axios.get('/api/charts/domestic')
-      .then(response => setDomesticCharts(response.data))
-      .catch(error => console.error('Error fetching domestic charts:', error));
-
-    axios.get('/api/charts/foreign')
-      .then(response => setForeignCharts(response.data))
-      .catch(error => console.error('Error fetching foreign charts:', error));
-    */
-
-    // // 더미 데이터 사용 
-    // setWeeklyCharts([
-    //   { musicId: 1, title: 'Weekly Song 1', image: '/image/kakao_lion.png', playCount: 5200, artist: { name: 'Artist A' } },
-    //   { musicId: 2, title: 'Weekly Song 2', image: '/image/song2.jpg', playCount: 5000, artist: { name: 'Artist B' } },
-    //   { musicId: 3, title: 'Weekly Song 3', image: '/image/song3.jpg', playCount: 4800, artist: { name: 'Artist C' } },
-    //   { musicId: 4, title: 'Weekly Song 4', image: '/image/song4.jpg', playCount: 4600, artist: { name: 'Artist D' } },
-    //   { musicId: 5, title: 'Weekly Song 5', image: '/image/song5.jpg', playCount: 4400, artist: { name: 'Artist E' } },
-    //   { musicId: 6, title: 'Weekly Song 6', image: '/image/song6.jpg', playCount: 4200, artist: { name: 'Artist F' } },
-    // ]);
-
-    // setMonthlyCharts([
-    //   { musicId: 7, title: 'Monthly Song 1', image: '/image/song7.jpg', playCount: 6800, artist: { name: 'Artist G' } },
-    //   { musicId: 8, title: 'Monthly Song 2', image: '/image/song8.jpg', playCount: 6600, artist: { name: 'Artist H' } },
-    //   { musicId: 9, title: 'Monthly Song 3', image: '/image/song9.jpg', playCount: 6400, artist: { name: 'Artist I' } },
-    //   { musicId: 10, title: 'Monthly Song 4', image: '/image/song10.jpg', playCount: 6200, artist: { name: 'Artist J' } },
-    //   { musicId: 11, title: 'Monthly Song 5', image: '/image/song11.jpg', playCount: 6000, artist: { name: 'Artist K' } },
-    //   { musicId: 12, title: 'Monthly Song 6', image: '/image/song12.jpg', playCount: 5800, artist: { name: 'Artist L' } },
-    // ]);
-
-    // setDomesticCharts([
-    //   { musicId: 13, title: 'Domestic Song 1', image: '/image/song13.jpg', playCount: 7500, artist: { name: 'Artist M' } },
-    //   { musicId: 14, title: 'Domestic Song 2', image: '/image/song14.jpg', playCount: 7300, artist: { name: 'Artist N' } },
-    //   { musicId: 15, title: 'Domestic Song 3', image: '/image/song15.jpg', playCount: 7100, artist: { name: 'Artist O' } },
-    //   { musicId: 16, title: 'Domestic Song 4', image: '/image/song16.jpg', playCount: 6900, artist: { name: 'Artist P' } },
-    //   { musicId: 17, title: 'Domestic Song 5', image: '/image/song17.jpg', playCount: 6700, artist: { name: 'Artist Q' } },
-    //   { musicId: 18, title: 'Domestic Song 6', image: '/image/song18.jpg', playCount: 6500, artist: { name: 'Artist R' } },
-    // ]);
-
-    // setForeignCharts([
-    //   { musicId: 19, title: 'Foreign Song 1', image: '/image/song19.jpg', playCount: 8000, artist: { name: 'Artist S' } },
-    //   { musicId: 20, title: 'Foreign Song 2', image: '/image/song20.jpg', playCount: 7800, artist: { name: 'Artist T' } },
-    //   { musicId: 21, title: 'Foreign Song 3', image: '/image/song21.jpg', playCount: 7600, artist: { name: 'Artist U' } },
-    //   { musicId: 22, title: 'Foreign Song 4', image: '/image/song22.jpg', playCount: 7400, artist: { name: 'Artist V' } },
-    //   { musicId: 23, title: 'Foreign Song 5', image: '/image/song23.jpg', playCount: 7200, artist: { name: 'Artist W' } },
-    //   { musicId: 24, title: 'Foreign Song 6', image: '/image/song24.jpg', playCount: 7000, artist: { name: 'Artist X' } },
-    // ]);
+ 
     axios.get('/api/music/getMusicChart')
     .then((result)=>{
       console.log(result.data);
