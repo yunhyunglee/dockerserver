@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo, useCallback  } from 'react'
-import axios from 'axios'
-
+import axios from 'axios';
+import jaxios from "../../../util/JwtUtil";
 import { useNavigate } from "react-router-dom";
 import "../../../style/music.scss";
 
@@ -14,7 +14,7 @@ const Music = () => {
     };
 
 
-  
+
 
 
     const getMusicList = async () => {

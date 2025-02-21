@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import "../../../style/music.scss";
 import AddArtistModal from './AddArtistModal';
 import UpdateArtistModal from './UpdateArtistModal';
+import jaxios from '../../../util/JwtUtil';
 
 const Artist = () => {
     const [artistList, setArtistList] = useState([]);

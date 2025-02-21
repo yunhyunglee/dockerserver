@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "../../../style/artistModal.scss";
+import jaxios from '../../../util/JwtUtil';
 
 const AddArtistModal = ({ onClose, addArtistToList }) => {
 
