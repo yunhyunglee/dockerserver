@@ -106,7 +106,7 @@ public class MemberController {
         }else{
             result.put("msg", "no");
         }
-        System.out.println(member);
+//        System.out.println(member);
         System.out.println(result);
 
         return result;
