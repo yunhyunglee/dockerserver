@@ -1,16 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../css/top100.module.css";
+import axios from "axios";
 
 const Top100 = () => {
-  // 더미 데이터
-  const top100Dummy = Array.from({ length: 100 }, (_, i) => ({
-    rank: i + 1,
-    title: `TOP 100 곡 ${i + 1}`,
-    artist: { name: `가수 ${i + 1}` },
-  }));
+ 
 
   // 체크된 곡들을 저장할 상태
   const [selectedItems, setSelectedItems] = useState([]);
+  const [monthlyCharts,setMonthlyCharts]=useState([]);
+
+  
+  useEffect(
+    ()=>{
+      axios.get('/api/music/getMusicChart')
+        .then((result)=>{
+        console.log(result.data);
+        setMonthlyCharts(result.data.Top100Month);
+      }).catch((err)=>{ console.error(err);})
+    },[]
+  );
+
 
   // 체크박스 변경 처리
   const handleCheckboxChange = (music, checked) => {
@@ -87,14 +96,14 @@ const Top100 = () => {
           </tr>
         </thead>
         <tbody>
-          {top100Dummy.map((music) => {
+          {monthlyCharts.map((music, index) => {
             
             const isChecked = selectedItems.some(
-              (item) => item.rank === music.rank
+              (item) => item.music.musicId === music.music.musicId
             );
 
             return (
-              <tr key={music.rank}>
+              <tr key={music.music.musicId}>
                 <td>
                     <label className={styles.customCheckbox}>
                         <input
@@ -107,13 +116,13 @@ const Top100 = () => {
                         <span className={styles.checkmark}></span>
                     </label>
                 </td>
-                <td className={styles.rankColumn}>{music.rank}</td>
-                <td>{music.title}</td>
-                <td>{music.artist.name}</td>
+                <td className={styles.rankColumn}>{index+1}</td>
+                <td>{music.music.title}</td>
+                <td>{music.music.artistName}</td>
                 <td>
                   <button
                     className={styles.optionBtn}
-                    onClick={() => alert(`듣기: ${music.title}`)}
+                    onClick={() => alert(`듣기: ${music.music.title}`)}
                   >
                     듣기
                   </button>
@@ -121,7 +130,7 @@ const Top100 = () => {
                 <td>
                   <button
                     className={styles.optionBtn}
-                    onClick={() => alert(`재생목록에 추가: ${music.title}`)}
+                    onClick={() => alert(`재생목록에 추가: ${music.music.title}`)}
                   >
                     추가
                   </button>
@@ -129,7 +138,7 @@ const Top100 = () => {
                 <td>
                   <button
                     className={styles.optionBtn}
-                    onClick={() => alert(`구매: ${music.title}`)}
+                    onClick={() => alert(`구매: ${music.music.title}`)}
                   >
                     구매
                   </button>

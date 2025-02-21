@@ -1,17 +1,23 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from '../../../css/mainPage/mainPage.module.css';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const Top100Section = () => {
-  // 더미 데이터: 실제 TOP 100 데이터로 대체 가능
-  const top100Dummy = Array.from({ length: 100 }, (_, i) => ({
-    musicId: i + 1,
-    title: `TOP 100 곡 ${i + 1}`,
-    artist: { name: `아티스트 ${i + 1}` }
-  }));
-
   
-  const displayItems = top100Dummy.slice(0, 10);
+  const [monthlyCharts,setMonthlyCharts]=useState([]);
+
+  const displayItems = monthlyCharts.slice(0, 10);
+  useEffect(
+    ()=>{
+      axios.get('/api/music/getMusicChart')
+    .then((result)=>{
+      console.log(result.data);
+      setMonthlyCharts(result.data.Top100Month);
+    }).catch((err)=>{ console.error(err);})
+    },[]
+  );
+
 
   return (
     <div className={styles.top100Section}>
@@ -33,12 +39,12 @@ const Top100Section = () => {
           </tr>
         </thead>
         <tbody>
-          {displayItems.map((item) => (
-            <tr key={item.musicId}>
-              <td>{item.musicId}</td>
+          {displayItems.map((item,index) => (
+            <tr key={item.music.musicId}>
+              <td>{index+1}</td>
 
-              <td>{item.title}</td>
-              <td>{item.artist.name}</td>
+              <td>{item.music.title}</td>
+              <td>{item.music.artistName}</td>
               <td>
                 <button
                   className={styles.actionButton}
