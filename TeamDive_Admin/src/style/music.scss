@@ -9,18 +9,16 @@ $font-color: #4e5968;
 
 
 .musicPage {
+
     width: 700px;
-    display: flex;
-    height: 800px;
-    margin-left: 100px;
-    overflow:auto;
+    position: relative;
+    height: 600px;
     scrollbar-width:none;
-  
+    overflow: scroll,;
 
 
 
     .musicContent {
-
         flex-grow: 1;
         padding-top: 0;
         padding-left: 20px;
@@ -70,8 +68,8 @@ $font-color: #4e5968;
 
     .searchInput {
         position: relative;
-        left: -130px;
-        background-color: #eeeeeed2;;    
+        left: -110px;
+        background-color: #f1f1f1;;    
         width: 35%;
         height: 80%;
         padding: 8px;

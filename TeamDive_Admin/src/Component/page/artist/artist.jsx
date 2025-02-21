@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import axios from 'axios'
+import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import "../../../style/music.scss";
 import AddArtistModal from './AddArtistModal';
@@ -14,19 +15,26 @@ const Artist = () => {
 
     const onSearch = (e) => { setSearch(e.target.value); };
 
+    const formatDate = (dateString) => {
+        return format(new Date(dateString), "yyyy-MM-dd");
+    };
+
     
 
     // 전체 가수 목록 불러오기
     const getArtistList = async () => {
         try {
             const response = await axios.get("/api/music/getAllArtist"); 
-            setArtistList(response.data.artist || []);
+            const artistListData = response.data.artist || []; 
+            setArtistList(artistListData);
+            
         } catch (error) {
             console.error("가수 목록 불러오기 실패:", error);
         }
     };
 
     useEffect(() => {
+
         getArtistList();
     }, []);
 
@@ -50,6 +58,7 @@ const Artist = () => {
         }
     };
 
+ //--------------------------------------------------------------------------
     const openUpdateModal = async (artistId) => {
         try{
             const response = await axios.get(`/api/music/getArtist?artistId=${artistId}`);
@@ -60,6 +69,8 @@ const Artist = () => {
         }
     };
 
+    
+ //--------------------------------------------------------------------------
     const deleteArtist = async (artistId) => {
         if(!window.confirm("정말 삭제하시겠습니까?")) return;
 
@@ -71,9 +82,6 @@ const Artist = () => {
             }else{
                 alert("삭제 실패");
             }
-
-
-
         }catch(error){
             console.error("가수 삭제 오류:", error);
             alert("삭제 중 오류 발생");
@@ -82,19 +90,15 @@ const Artist = () => {
     };
 
 
-
-
-
-
-
-
-
+    
 
 
 
     const searchFilter = search === "" ? artistList : artistList.filter(artist =>
+        
         artist.artistName.toLowerCase().includes(search.toLowerCase()) ||   
         artist.country.toLowerCase().includes(search.toLowerCase())
+        
     );
 
 
@@ -136,7 +140,7 @@ const Artist = () => {
                                             {artist.country}
                                         </span>
                                     </td>                               
-                                    <td>{artist.debut}</td>
+                                    <td>{formatDate(artist.debut)}</td>
                                     <td><img src={artist.image} alt="가수 이미지" width="50" /></td>
                                     <td>
                                     <button className="deleteBtn" onClick={() => deleteArtist(artist.artistId)}>🗑 삭제</button>

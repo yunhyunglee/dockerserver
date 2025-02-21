@@ -1,3 +1,5 @@
+// 📌 addMusicModal.scss
+
 .modalOverlay {
     position: fixed;
     top: 0;
@@ -8,72 +10,95 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1002;
+    z-index: 1000;
 }
 
 .modalContent {
-    background: white;
+    background: #fff;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     width: 400px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+h2 {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+/* 📌 입력 폼 스타일 */
+form {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+}
 
-    h2 {
-        color: #1976d2;
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+textarea {
+    resize: none;
+    height: 100px;
+    margin-left: 25px;
+}
+
+/* 📌 파일 업로드 스타일 */
+label {
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+input[type="file"] {
+    margin: 10px 0;
+}
+
+/* 📌 모달 버튼 스타일 */
+.modalActions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s ease-in-out;
+}
+
+button[type="submit"] {
+    background: #007bff;
+    color: white;
+}
+
+button.cancel {
+    background: #ccc;
+    color: black;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+/* 📌 애니메이션 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
     }
-
-    input, textarea {
-        font-size: 16px;
-        padding: 8px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        width: 100%;
-
-        &:focus {
-            border-color: #1976d2;
-            outline: none;
-        }
-    }
-
-    .checkboxContainer {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
-
-    .modalActions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-        margin-top: 10px;
-
-        .primaryBtn {
-            background: #1976d2;
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-
-            &:hover {
-                background: #64b5f6;
-            }
-        }
-
-        .secondaryBtn {
-            background: gray;
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-
-            &:hover {
-                background: darkgray;
-            }
-        }
+    to {
+        opacity: 1;
+        transform: scale(1);
     }
 }

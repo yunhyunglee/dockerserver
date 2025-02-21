@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useMemo, useCallback  } from 'react'
 import axios from 'axios'
+
 import { useNavigate } from "react-router-dom";
 import "../../../style/music.scss";
 
 const Music = () => {
     const [musicList, setMusicList] = useState([]);
-
     const [search, setSearch] = useState("");
     const navigate = useNavigate();
 
@@ -14,41 +14,33 @@ const Music = () => {
     };
 
 
-    const searchFilter = search === "" 
-    ? musicList : musicList.filter(music =>
-        (music.album_title ? music.album_title.toLowerCase().includes(search.toLowerCase()) : false) ||   
-        (music.title ? music.title.toLowerCase().includes(search.toLowerCase()) : false) ||
-        (music.genre ? music.genre.toLowerCase().includes(search.toLowerCase()) : false) 
+  
+
+
+    const getMusicList = async () => {
+        try {
+            const response = await axios.get("/api/music/getAllMusic");
+            setMusicList(response.data.music);
+            console.log("🎵 음악 리스트 불러오기 성공:", response.data.music);
+        } catch (error) {
+            console.error("음악 목록을 불러오지 못했습니다:", error);
+        }
+    };
+
+    useEffect(() => {
+        getMusicList();
+    }, []);
+
+    useEffect(() => {
+
+    }, [musicList]); 
+
+
+    const searchFilter = search === "" ? musicList : musicList.filter(music =>    
+        music.title.toLowerCase().includes(search.toLowerCase()) ||   
+        music.genre.toLowerCase().includes(search.toLowerCase())
         
     );
-
-
-    // const PostMusicList = async () => {
-    //     try {
-    //         const response = await axios.post("/api/music/");
-    //         setMusicList(response.data);
-    //     } catch (error) {
-    //         console.error("음원 목록을 불러오지 못했습니다:", error);
-    //     }
-    // };
-
-    // useEffect(() => {
-    //     PostMusicList();
-    // }, [])
-
-
-
-
-
-    // useEffect(()=>{
-    //     axios.get("/api/music/")
-    //         .then((res) => { 
-    //             console.log("음원데이터: ", res.data);
-    //             setMusicList(res.data);
-    //         })
-    //         .catch((error)=>{console.error("음원 목록을 불러오지 못했습니다2", error)});       
-    // }, []);
-
     
 
 
@@ -58,11 +50,12 @@ const Music = () => {
             <h1>음원 관리</h1>
                 <div className='top2' >
                 <input type="text" className="searchInput" placeholder="음원 검색 (제목 또는 장르)" value={search} onChange={onSearch}/>
-                <button className="addMusicButton" onClick={() => navigate("/AddAlbum")}>음원 추가</button>   
+                <button className="addMusicButton" onClick={() => navigate("/AddAlbum")}>앨범 추가</button>   
                 </div>   
                     <table>
                         <thead>
                             <tr>
+                                <th>가수</th>
                                 <th>앨범</th>
                                 <th>제목</th>                         
                                 <th>장르</th>
@@ -71,33 +64,41 @@ const Music = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {musicList.length === 0 ? ( 
+                            {musicList.length === 0 ? (
                                 <tr>
-                                    <td colSpan="7" className="noData">등록된 음원이 없습니다.</td>
+                                    <td colSpan="6" className="noData">등록된 음원이 없거나 검색 결과가 없습니다.</td>
                                 </tr>
-                            ) : searchFilter.length === 0 ? (
-                                <tr>
-                                    <td colSpan="7" className="noData">검색 결과가 없습니다.</td>
-                                </tr>
-                            ) : ( 
-                                searchFilter.map((music, index) => (
-                                    <tr key={index}>
-                                        <td>{music.album_title}</td>
-                                        <td>{music.title}</td>                               
-                                        <td>{music.genre}</td>
-                                        <td><img src={music.image} alt={music.title} width="50" /></td>
-                                        <td>
-                                            <audio controls>
-                                                <source src={music.audio_url} type="audio/mpeg" />
-                                                브라우저가 오디오 태그를 지원하지 않습니다.
-                                            </audio>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
+                            ) : (                 
+                                searchFilter.length === 0 ? ( 
+                                    <tr><td colSpan="4" className="noData">등록된 가수가 없습니다.</td></tr>
+                                ) : searchFilter.length === 0 ? (
+                                    <tr><td colSpan="4" className="noData">검색 결과가 없습니다.</td></tr>
+                                ) : ( 
+                                    searchFilter.map((music, index) => (
+                                        <tr key={index}>
+                                                <td></td>
+                                                <td></td>
+                                                <td>{music.title}</td>                               
+                                                <td>{music.genre}</td>
+                                                <td><img src={music.image} alt={music.title} width="50" /></td>
+                                                <td>
+                                                    {music.bucketPath ? (
+                                                        <audio controls>
+                                                            <source src={music.bucketPath} type="audio/mpeg" />
+                                                            브라우저가 오디오 태그를 지원하지 않습니다.
+                                                        </audio>
+                                                    ) : (
+                                                        "파일 없음"
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )
+                                )}
+
                         </tbody>
                     </table>                         
-            </div>
+            </div>  
         </div>
     );
 };

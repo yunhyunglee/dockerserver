@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../../../style/addMusicModal.scss";
 
@@ -14,6 +14,9 @@ const AddMusicModal = ({ onClose, onAddMusic, albumId, artistId }) => {
         bucketPath: "",
     });
 
+
+
+
     const onChange = (e) => {
         setNewSong({ ...newSong, [e.target.name]: e.target.value });
     };
@@ -23,15 +26,12 @@ const AddMusicModal = ({ onClose, onAddMusic, albumId, artistId }) => {
     const onFileUpload = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
-
         const formData = new FormData();
         formData.append("music", file);
-
         try {
             const response = await axios.post("/api/music/musicUpload", formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
-
             if (response.data.music) {
                 setNewSong((prev) => ({ ...prev, bucketPath: response.data.music }));
             }
@@ -40,6 +40,7 @@ const AddMusicModal = ({ onClose, onAddMusic, albumId, artistId }) => {
             alert("음원 업로드 실패");
         }
     };
+
 
     const onSubmit = (e) => {
         e.preventDefault();
@@ -53,6 +54,7 @@ const AddMusicModal = ({ onClose, onAddMusic, albumId, artistId }) => {
             titleMusic: false,
         };
 
+        console.log("🎵 추가되는 음악 데이터:", musicData);
         onAddMusic(musicData);
         onClose();
     };
@@ -64,9 +66,10 @@ const AddMusicModal = ({ onClose, onAddMusic, albumId, artistId }) => {
                 <form onSubmit={onSubmit}>
                 <input type="text" name="title" value={newSong.title} onChange={onChange} placeholder="곡 제목" required />
                     <select name="genre" value={newSong.genre} onChange={onChange} required>
-                        <option value="">장르 선택</option>
                         {GENRES.map((genre) => (
-                            <option key={genre} value={genre}>{genre}</option>
+                            <option key={genre} value={genre}>
+                                {genre}
+                            </option>
                         ))}
                     </select>
                     

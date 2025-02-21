@@ -5,8 +5,11 @@ import SideBar from "./component/SideBar";
 import NavigationBar from "./component/NavigationBar";
 import User from "./component/page/User";
 import Music from "./component/page/music/Music";
+import Album from "./component/page/music/Album";
 import AddAlbum from "./component/page/music/AddAlbum";
+import UpdateAlbum from "./component/page/music/UpdateAlbum";
 import Login from "./component/Login";
+import MusicController from "./component/page/MusicController";
 import Artist from "./component/page/artist/Artist";
 import "./style/global.scss";
 import { useSelector } from "react-redux";
@@ -31,9 +34,15 @@ const App = () => {
                             <>
                                 <Route path="/dashboard" element={<Dashboard />} />
                                 <Route path="/user" element={<User />} />
-                                <Route path="/music" element={<Music />} />
                                 <Route path="/addAlbum" element={<AddAlbum />} />
+                                <Route path="/updateAlbum/:albumId" element={<UpdateAlbum />} />
                                 <Route path="/artist" element={<Artist />} />
+                                
+                                <Route path="/musicController" element={<MusicController />}>
+                                    <Route path="music" element={<Music />} />
+                                    <Route path="artist" element={<Artist />} />
+                                    <Route path="album" element={<Album />} />
+                                </Route>
                             </>
                             ) : (
                                 <Route path="*" element={<Login />} />

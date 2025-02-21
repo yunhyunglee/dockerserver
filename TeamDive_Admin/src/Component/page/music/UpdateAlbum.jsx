@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import AddMusicModal from "./AddMusicModal";
 import axios from "axios";
 import { format } from "date-fns";
 import "../../../style/addAlbum.scss";
 
-const AddAlbum = () => {
+const UpdateAlbum = ( {getAlbumList}) => {
     const navigate = useNavigate();
     const [showModal, setShowModal] = useState(false);
     const [artist, setArtist] = useState([]);
+    const { albumId } = useParams();
+    const [album, setAlbum] = useState(null);
 
-    const [newAlbum, setNewAlbum] = useState({
+    const [updateAlbum, setUpdateAlbum] = useState({
         title: "",
         image: "/images/default_image.jpg",
         albumId: null,
@@ -21,22 +23,70 @@ const AddAlbum = () => {
     });
 
 
-    const onChange = (e) => {
-        setNewAlbum({ ...newAlbum, [e.target.name]: e.target.value });
-    };
+    useEffect(()=> {
+        const getAlbum = async () => {
+            try{
+                const response = await axios.get(`/api/music/getAlbum?albumId=${albumId}`);
+                console.log("📀 가져온 앨범 데이터:", response.data.album);
+                setAlbum(response.data.album);
+            } catch(error){
+                console.error("앨범 정보를 불러오는 중 오류", error);
+                alert("앨범 정보를 불러오는 중 오류");
+            }
+        };
+        if (albumId) getAlbum();
+    }, [albumId]);
 
 
     useEffect(() => {
+        if (album) {
+    
+            setUpdateAlbum({
+                title: album.title || "",
+                image: album.image || "/images/default_image.jpg",
+                albumId: album.albumId || null,
+                artistId: album.artist?.artistId || "", 
+                musicList: album.musicList || [],
+                indate: album.indate || format(new Date(), "yyyy-MM-dd"),
+                trackNumber: album.trackNumber || 0,
+            });
+        }
+    }, [album]); 
+    
+
+
+
+
+
+    useEffect(()=> {
         const getArtistList = async () => {
-            try {
-                const response = await axios.get("api/music/getAllArtist");
-                setArtist(response.data.artist);
-            } catch (error) {
-                console.error("아티스트 목록 불러오기 실패", error);
+            try{
+                const response = await axios.get("/api/music/getAllArtist");
+                setArtist(response.data.artist || response.data.artists || []);
+            }catch(error){
+                console.error("아티스트 목록을 불러오는 중 애러");
+                alert("아티스트 목록을 불러오는 중 애러");
             }
         };
         getArtistList();
-    }, []);
+    }, []) ;
+
+    useEffect(() => {
+        console.log("🎤 현재 artist 상태:", artist);
+    }, [artist]);
+    
+    useEffect(() => {
+        console.log("🎶 현재 updateAlbum 상태:", updateAlbum);
+    }, [updateAlbum]);
+
+
+
+    const onChange = (e) => {
+        setUpdateAlbum({ ...updateAlbum, [e.target.name]: e.target.value });
+    };
+
+
+    
 
 
     const onImageUpload = async (e) => {
@@ -48,7 +98,7 @@ const AddAlbum = () => {
             const response = await axios.post("/api/music/imageUpload", formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
-            setNewAlbum((prev) => ({ ...prev, image: response.data.image }));
+            setUpdateAlbum((prev) => ({ ...prev, image: response.data.image }));
         } catch (error) {
             console.error("이미지 업로드 실패", error);
             alert("이미지 업로드 실패");
@@ -56,7 +106,7 @@ const AddAlbum = () => {
     };
 
     const addMusic = (newSong) => {
-        setNewAlbum((prev) => {
+        setUpdateAlbum((prev) => {
             const maxTrackNumber = prev.musicList.length > 0 
             ? Math.max(...prev.musicList.map((song) => song.trackNumber)) 
             : 0;
@@ -78,7 +128,7 @@ const AddAlbum = () => {
     };
 
     const checkTitleMusic = (index) => {
-        setNewAlbum((prev) => ({
+        setUpdateAlbum((prev) => ({
             ...prev,
             musicList: prev.musicList.map((song, i) => ({
                 ...song,
@@ -88,31 +138,31 @@ const AddAlbum = () => {
     };
 
     const onSubmit = async () => {
-        if (!newAlbum.title) return alert("앨범 제목을 입력하세요");
-        if (!newAlbum.artistId) return alert("가수를 선택하세요");
-        if (newAlbum.musicList.length === 0) return alert("노래를 추가하세요");
+        if (!updateAlbum.title) return alert("앨범 제목을 입력하세요");
+        if (!updateAlbum.artistId) return alert("가수를 선택하세요");
+        if (updateAlbum.musicList.length === 0) return alert("노래를 추가하세요");
 
         try {
-            let albumId = newAlbum.albumId;
+            let albumId = updateAlbum.albumId;
             if (!albumId) {
-                const albumResponse = await axios.post("/api/music/insertAlbum", {
-                    title: newAlbum.title,
-                    artist: { artistId: Number(newAlbum.artistId) }, // artistId 변환
-                    image: newAlbum.image,
+                const albumResponse = await axios.post("/api/music/updateAlbum", {
+                    title: updateAlbum.title,
+                    artist: { artistId: Number(updateAlbum.artistId) }, // artistId 변환
+                    image: updateAlbum.image,
                 });
-                if(albumResponse.data.album) {
+                if(albumResponse.data.album ==="yes") {
                     albumId = albumResponse.data.album.albumId;
-                    setNewAlbum((prev) => ({ ...prev, albumId }));
+                    setUpdateAlbum((prev) => ({ ...prev, albumId }));
                 } else{
                     return alert("앨범 등록 실패");
                 }
             }
 
-            for (const music of newAlbum.musicList) {
+            for (const music of updateAlbum.musicList) {
                 await axios.post("/api/music/insertMusic", {
                     ...music,
                     album: { albumId },
-                    artist: { artistId: Number(newAlbum.artistId) }, // artistId 변환
+                    artist: { artistId: Number(updateAlbum.artistId) }, // artistId 변환
                 });
             }
             alert("음원이 등록되었습니다!");
@@ -129,13 +179,13 @@ const AddAlbum = () => {
                 <div className="topBox">
                     <div className="imageUploadContainer">
                         <input type="file" id="imageUpload" accept="image/*" onChange={onImageUpload} style={{ display: "none" }} />
-                        <img src={newAlbum.image} alt="앨범 커버" className="albumCover"  onClick={() => document.getElementById("imageUpload").click()} />
+                        <img src={updateAlbum.image} alt="앨범 커버" className="albumCover"  onClick={() => document.getElementById("imageUpload").click()} />
                     </div>
 
                     <div className="musicInfo">
-                        <input type="text"  name="title" value={newAlbum.title} onChange={onChange} placeholder="앨범 제목" />
+                        <input type="text"  name="title" value={updateAlbum.title} onChange={onChange} placeholder="앨범 제목" />
 
-                        <select value={newAlbum.artistId || ""} onChange={(e) => setNewAlbum({ ...newAlbum, artistId: Number(e.target.value) })}>
+                        <select value={updateAlbum.artistId || ""} onChange={(e) => setUpdateAlbum({ ...updateAlbum, artistId: Number(e.target.value) })}>
                             <option value="">가수 선택</option>
                             {artist.map((artist) => (
                                 <option key={artist.artistId} value={artist.artistId}>
@@ -143,14 +193,14 @@ const AddAlbum = () => {
                                 </option>
                             ))}
                         </select>
-                        <input type="date" name="indate" value={newAlbum.indate} onChange={onChange} required />    
+                        <input type="date" name="indate" value={updateAlbum.indate} onChange={onChange} required />    
 
                     </div>
                 </div>
 
                 <div className="bottomBox">
                     <button className="addMusicBtn" onClick={() => setShowModal(true)}>+ 노래 추가</button>
-                    {showModal && <AddMusicModal onClose={() => setShowModal(false)} onAddMusic={addMusic} albumId={newAlbum.albumId} artistId={newAlbum.artistId} />}
+                    {showModal && <AddMusicModal onClose={() => setShowModal(false)} onAddMusic={addMusic} albumId={updateAlbum.albumId} artistId={updateAlbum.artistId} />}
                     <button type="submit" className="btn submitBtn" onClick={onSubmit}>등록</button>
                     <button type="button" className="btn cancelBtn" onClick={() => navigate("/music")}>취소</button>
                 </div>
@@ -168,13 +218,13 @@ const AddAlbum = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {newAlbum.musicList.length === 0 ? (
+                        {updateAlbum.musicList.length === 0 ? (
                             <tr>
                                 <td colSpan="6">등록된 노래가 없습니다.</td>
                             </tr>
                         ) : (
                             
-                            newAlbum.musicList.map((music, index) => (
+                            updateAlbum.musicList.map((music, index) => (
                                 <tr key={index}>
                                     <td><input type="checkbox"checked={music.titleMusic}onChange={() => checkTitleMusic(index)} />
                                     </td>
@@ -192,4 +242,4 @@ const AddAlbum = () => {
     );
 };
 
-export default AddAlbum;
+export default UpdateAlbum;
