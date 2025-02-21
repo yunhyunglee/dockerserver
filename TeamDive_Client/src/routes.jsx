@@ -8,7 +8,7 @@ import MusicDetail from "./components/music/MusicDetail";
 import PopularChart from "./components/PopularChart";
 import Storage from "./components/storage/storage";
 import { PlaylistPage } from "./components/playlist/PlaylistPage";
-import MyMP3 from "./components/storage/MyMP3";
+
 
 import PaymentsCheckout from "./components/payments/PaymentsCheckout";
 import PaymentsSuccess from "./components/payments/PaymentsSuccess";
@@ -16,18 +16,21 @@ import PaymentsFail from "./components/payments/PaymentsFail";
 
 import Mypage from "./components/member/mypage/Mypage";
 
-import Top100 from "./components/Top100";
+import Top100 from "./components/chartmore/Top100";
+import Weekly from "./components/chartmore/Weekly";
+import Monthly from "./components/chartmore/Monthly";
+import Domestic from "./components/chartmore/Domestic";
+import Foreign from "./components/chartmore/Foreign";
 
 
 function AppRoutes() {
     return (
         <Routes>
             <Route path="/" element={<MainPage />} />
-            <Route path="/today" element={<PopularChart />} />
+            <Route path="/charts" element={<PopularChart />} />
             <Route path="/playList" element={<PlaylistPage />} />
             <Route path="/membership/:category" element={<Membership />} />
             <Route path="/storage" element={<Storage />} />
-            <Route path="/menu3" element={<h4>메뉴3 페이지임</h4>} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/kakaoLogin/:memberId" element={<KakaoLogin />} />
             <Route path="/sign-up" element={<JoinForm />} />
@@ -46,8 +49,15 @@ function AppRoutes() {
             <Route path="/storage/:storageCategory" element={<Storage />}/>
             <Route path="/storage/:storageCategory/:mp3Category" element={<Storage />} />
 
-            {/* top100 */}
+            {/* 차트 더보기기 */}
             <Route path="/top100" element={<Top100 />}/>
+            <Route path="/charts/weekly" element={<Weekly />}/>
+            <Route path="/charts/monthly" element={<Monthly />}/>
+            <Route path="/charts/domestic" element={<Domestic />}/>
+            <Route path="/charts/foreign" element={<Foreign />}/>
+
+
+
 
 
         </Routes>

@@ -9,10 +9,18 @@
 
 .topSection {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 20px;
   margin-bottom: 40px;
 }
+
+.conditionalSection1 {
+  background-color: #1e1e1e;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+}
+
 
 .conditionalSection {
   flex: 1 1 300px;
