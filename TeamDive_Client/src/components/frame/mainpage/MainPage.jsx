@@ -72,9 +72,19 @@ const MainPage = () => {
             {!loginUser.memberId ? (showAdModal && (<AdModal/>)) : ''}
             
         <div className={styles.topSection}>
-            <section className={styles.conditionalSection}>
-            { !loginUser.memberId ? <Top100Section /> : <MyRecentMusicSection /> }
+
+            { !loginUser.memberId ? "" :
+            <section className={styles.conditionalSection1}>
+                <MyRecentMusicSection />  
             </section>
+            }
+
+            <section className={styles.conditionalSection}>
+                
+                <Top100Section />
+                
+            </section>
+
         </div>
 
         <section className={styles.section}>

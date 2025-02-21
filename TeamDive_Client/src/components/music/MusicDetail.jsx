@@ -9,7 +9,7 @@ import jaxios from '../../util/JwtUtil';
 
 const MusicDetail = () => {
     const { musicId } = useParams();
-    const [musicDetail, setMusicDetail] = useState(null);
+    const [musicDetail, setMusicDetail] = useState({});
     const [expandedLyrics, setExpandedLyrics] = useState(false);
 
     //const [commentText, setCommentText] = useState('');
@@ -40,23 +40,29 @@ const MusicDetail = () => {
 
     useEffect(() => {
 
-        const sample = {
-            musicId: musicId,
-            title: "Dummy Music Title",
-            artist: "Dummy Artist",
-            image: lion,
-            playCount: 1234,
-            genre: "Pop",
-            lyrics:
-                " \n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. \n\nUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. \n\nExcepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            like: 256,
-            album: {
-                albumId: 201,
-                indate: "2025-02-11"
-            }
-        };
-        setMusicDetail(sample);
-       
+    //     const sample = {
+    //         musicId: musicId,
+    //         title: "제목",
+    //         artist: "가수",
+    //         image: lion,
+    //         playCount: 1234,
+    //         genre: "Pop",
+    //         lyrics:
+    //             " \n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. \n\nUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. \n\nExcepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    //         like: 256,
+    //         album: {
+    //             albumId: 201,
+    //             indate: "2025-02-11"
+    //         }
+    //     };
+    //     setMusicDetail(sample);
+        axios.get('/api/music/getMusic',{params:{musicId}})
+        .then((result)=>{
+            console.log(result.data.music);
+            setMusicDetail(result.data.music);
+        }).catch((err)=>{console.error(err);})
+
+
         axios.get('/api/community/getReplyList', {params:{pagetype:'MUSIC', entityId: musicId,}})
         .then((result)=>{
                 setReplyMusicList(result.data.replyList);
@@ -88,7 +94,7 @@ const MusicDetail = () => {
         setExpandedLyrics((prev) => !prev);
     };
 
-    // ========Reply UI를 재조회하여 댓글추가후 재 조회하는 함수수
+    // ========Reply UI를 재조회하여 댓글추가후 재 조회하는 함수
 
     const fetchReply = () => {
         axios.get('/api/community/getReplyList', {params:{pagetype:'MUSIC', entityId: musicId,}})
@@ -137,13 +143,16 @@ const MusicDetail = () => {
                 <img src={musicDetail.image} alt={musicDetail.title} className={styles.image} />
                 <div className={styles.info}>
                     <h1 className={styles.title}>{musicDetail.title}</h1>
-                    <p className={styles.artist}>By {musicDetail.artist}</p>
+                    <p className={styles.artist}>By {musicDetail.artistName}</p>
                     <p className={styles.genre}>Genre: {musicDetail.genre}</p>
-                    <p className={styles.playCount}>Plays: {musicDetail.playCount}</p>
-                    <p className={styles.like}>Likes: {musicDetail.like}</p>
-                    <p className={styles.releaseDate}>Release Date: {musicDetail.album.releaseDate}</p>
+                    {/* <p className={styles.like}>Likes: {musicDetail.like}</p> */}
+                    {/* <p className={styles.releaseDate}>Release Date: {musicDetail.album.indate}</p> */}
                     {/* (css 조정 필요) 장바구니 버튼 */}
-                    <button onClick={ insertCart }>구매</button>
+                    <div>
+                        <button >재생</button>
+                        <button onClick={ insertCart }>구매</button>
+                        <button >좋아요</button>
+                    </div>
                 </div>
             </div>
 
@@ -151,14 +160,17 @@ const MusicDetail = () => {
             <div className={styles.lyricsSection}>
                 <h2>가사</h2>
                 <div className={styles.lyrics}>
-                {expandedLyrics
-                    ? musicDetail.lyrics
-                    : musicDetail.lyrics.slice(0, 200) + (musicDetail.lyrics.length > 200 ? "..." : "")}
+                {musicDetail.lyrics 
+                    ? expandedLyrics
+                        ? musicDetail.lyrics
+                        : musicDetail.lyrics.slice(0, 200) + (musicDetail.lyrics.length > 200 ? "..." : "")
+                    : "가사가 없습니다."
+                }
                 </div>
-                {musicDetail.lyrics.length > 200 && (
-                <button className={styles.toggleButton} onClick={toggleLyrics}>
-                    {expandedLyrics ? "가사 접기" : "더보기"}
-                </button>
+                {musicDetail.lyrics && musicDetail.lyrics.length > 200 && (
+                    <button className={styles.toggleButton} onClick={toggleLyrics}>
+                        {expandedLyrics ? "가사 접기" : "더보기"}
+                    </button>
                 )}
             </div>
 
