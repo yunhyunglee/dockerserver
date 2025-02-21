@@ -5,10 +5,7 @@ import com.himedia.projectteamdive.entity.Membership_user;
 import com.himedia.projectteamdive.service.MembershipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -60,6 +57,21 @@ public class MembershipController {
     public HashMap<String, Object> getGiftList(@RequestParam("giftTo") String giftTo){
         HashMap<String, Object> result = new HashMap<>();
         result.put("giftList", mss.getGiftList(giftTo));
+        return result;
+    }
+
+    /* 멤버십 활성화 */
+    @PostMapping("/membershipActivate")
+    public HashMap<String, Object> membershipActivate(
+            @RequestParam("giftId") int giftId,
+            @RequestParam("membershipCategory") String membershipCategory) {
+        HashMap<String, Object> result = new HashMap<>();
+        Boolean isActive = mss.membershipActive(giftId, membershipCategory);
+        if(isActive) {
+            result.put("message", "yes");
+        }else{
+            result.put("message", "no");
+        }
         return result;
     }
 }

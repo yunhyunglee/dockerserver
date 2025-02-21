@@ -1,6 +1,7 @@
 package com.himedia.projectteamdive.service;
 
 import com.himedia.projectteamdive.entity.Gift;
+import com.himedia.projectteamdive.entity.Member;
 import com.himedia.projectteamdive.entity.Membership;
 import com.himedia.projectteamdive.entity.Membership_user;
 import com.himedia.projectteamdive.repository.GiftRepository;
@@ -24,6 +25,8 @@ public class MembershipService {
     @Autowired
     MembershipUserRepository msur;
     @Autowired
+    MemberRepository mr;
+    @Autowired
     GiftRepository gr;
 
     /* 카테고리에 해당하는 멤버십 정보 가져오기 */
@@ -46,6 +49,21 @@ public class MembershipService {
 
     /* 선물 리스트 조회 */
     public List<Gift> getGiftList(String giftTo) {
-        return gr.findGiftsByGiftToOrderByMembershipDownloadCountAndGiftDate(giftTo);
+        return gr.findInactiveGiftsByGiftToOrderByMembershipDownloadCountAndGiftDate(giftTo);
+    }
+
+    /* 멤버십 활성화 */
+    public Boolean membershipActive(int giftId, String membershipCategory) {
+        Gift gift = gr.findByGiftId(giftId);
+        Optional<Membership_user> currentActiveMembership = Optional.ofNullable(msur.getLatestActiveMembershipByCategory(gift.getGiftTo(), membershipCategory));
+        System.out.println(currentActiveMembership.isPresent());
+        if(currentActiveMembership.isEmpty()) {
+            Member member = mr.findByMemberId(gift.getGiftTo());
+            msur.save(new Membership_user(member, gift)); // 멤버십 활성화
+            gift.setActive(true); // 선물 사용 표시
+            return true;
+        }else{
+            return false;
+        }
     }
 }

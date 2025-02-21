@@ -5,6 +5,7 @@ import jaxios from '../../../util/JwtUtil'
 
 import mypageStyle from '../../../css/mypage/mypage.module.css';
 import membershipStyle from '../../../css/membership/memberShip.module.css';
+import musicStyle from "../../../css/storage/likedMusic.module.css";
 
 const Gift = () => {
     const loginUser = useSelector(state => state.user);
@@ -13,50 +14,60 @@ const Gift = () => {
 
     useEffect(
         () => {
-            jaxios.get('/api/membership/getGiftList', {params: {giftTo: loginUser.memberId}})
-            .then((result) => {
-                setGiftList(result.data.giftList);
-            })
-            .catch((err) => {
-                console.error('선물 리스트 불러오기 실패', err);
-            })
+            getGiftList();
         }, []
     );
 
-    //요기가 엑티베이트 하려고하는 곳임~
-    function onActivate(giftId){
-        jaxios.post('/api/membership/membershipActivate', null, {params:{giftId}})
-        .then((result)=>{
-            if(result.data.msg === 'yes'){
-                alert('멤버십이 활성화 되었습니다.');
-                navigate('/');
+    /* 선물 받은 미사용 목록 가져오기 */
+    const getGiftList = async () => {
+        try{
+            const response = await jaxios.get('/api/membership/getGiftList', {params: {giftTo: loginUser.memberId}});
+            setGiftList(response.data.giftList);
+        }catch(error){
+            console.error('선물 리스트 불러오기 실패', error);
+        }
+    }
+
+    /* 선물 받은 멤버십 활성화 */
+    async function onActivateMembership(giftFrom, giftId, membershipCategory){
+        const check = window.confirm(`${giftFrom}님의 선물을 사용하겠습니까?`);
+        if(check){
+            try{
+                const response = await jaxios.post('/api/membership/membershipActivate', null, { params: { giftId, membershipCategory } })
+                if(response.data.message === 'yes'){
+                    alert('멤버십이 활성화 되었습니다');
+                    getGiftList();
+                }else{
+                    alert('이미 활성화된 멤버십이 있습니다');
+                }
+            }catch(error){
+                console.error('멤버십 활성화 오류', error);
             }
-        })
-        .catch((err)=>{
-            console.error(err);
-        })
+        }        
     }
 
     return (
-        <div className={mypageStyle.container}>
+        <div className={musicStyle.sectionContainer}>
             {
                 (giftList.length > 0) ? (
                     giftList.map((gift, idx) => {
                         return (
-                            <div className={membershipStyle.item} key={idx}>
-                                <div className={membershipStyle.title}>
+                            <div className={musicStyle.songRow} key={idx}>
+                                <div className={musicStyle.title}>
                                     {gift.giftName}
                                 </div>
-                                <div className={membershipStyle.content}>
+                                <div className={musicStyle.title}>
+                                    {gift.membershipDownload}
+                                </div>
+                                <div className={musicStyle.titlet}>
                                     {gift.giftDate.substring(0,10)}
                                 </div>
-                                <div className={membershipStyle.content}>
+                                <div className={musicStyle.title}>
                                     {gift.giftFrom}
                                 </div>
-                                <div className={membershipStyle.subscribe}>
-                                    <button onClick={()=>{
-                                        onActivate(gift.giftId);
-                                    }}>구독 시작</button>
+                                <div className={musicStyle.heartBtn}>
+                                    <button
+                                        onClick={ ()=>{ onActivateMembership(gift.giftFrom, gift.giftId, gift.membershipCategory); } }>구독</button>
                                 </div>
                             </div>
                         )
