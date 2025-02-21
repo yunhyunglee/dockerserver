@@ -45,6 +45,16 @@ public class Membership_user {
         this.endDate = Timestamp.valueOf(LocalDateTime.now().plusMonths(membership.getPeriod()));
     }
 
+    public Membership_user(Member member, Gift gift) {
+        this.member = member;
+        this.membershipName = gift.getMembershipName();
+        this.membershipPeriod = gift.getMembershipPeriod();
+        this.membershipCategory = gift.getMembershipCategory();
+        this.downloadCount = gift.getMembershipDownloadCount();
+        this.startDate = Timestamp.valueOf(LocalDateTime.now());
+        this.endDate = Timestamp.valueOf(LocalDateTime.now().plusMonths(gift.getMembershipPeriod()));
+    }
+
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "member_id")
     @OnDelete(action = OnDeleteAction.CASCADE)

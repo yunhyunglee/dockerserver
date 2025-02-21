@@ -33,8 +33,6 @@ public class Artist {
     private String country;
     private String image;
     private String content;
-    @Column(length = 2000)
-    private String artistContent;
 
     @OneToMany(mappedBy = "artist",  cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
     @Builder.Default

@@ -32,8 +32,8 @@ public class Gift {
     private String giftFrom; // 보내는 이
     @Column(name = "gift_to")
     private String giftTo; // 받는 이
-    @Column(name = "is_active")
-    private boolean isActive = false;
+    @Column(name = "active")
+    private boolean active = false;
 
     @Column(name = "membership_name")
     private String membershipName; // Membership 이름 저장
@@ -49,10 +49,14 @@ public class Gift {
         this.giftTo = requestDto.getGiftTo();
         this.giftFrom = requestDto.getGiftFrom();
         this.giftDate = Timestamp.valueOf(LocalDateTime.now());
-        this.isActive = false;
+        this.active = false;
         this.membershipName = membership.getName();
         this.membershipPeriod = membership.getPeriod();
-        this.membershipCategory = membership.getCategory();
+        if(membership.getDownloadCount() == 0) {
+            this.membershipCategory = "streaming";
+        }else{
+            this.membershipCategory = "download";
+        }
         this.membershipDownloadCount = membership.getDownloadCount();
     }
 }
