@@ -15,6 +15,9 @@ import PaymentsSuccess from "./components/payments/PaymentsSuccess";
 import PaymentsFail from "./components/payments/PaymentsFail";
 
 import Mypage from "./components/member/mypage/Mypage";
+import UseMemberShip from "./components/member/mypage/UseMemberShip";
+import Top100 from "./components/Top100";
+
 
 function AppRoutes() {
     return (
@@ -42,6 +45,11 @@ function AppRoutes() {
             {/* 스토리지 */}
             <Route path="/storage/:storageCategory" element={<Storage />}/>
             <Route path="/storage/:storageCategory/:mp3Category" element={<Storage />} />
+
+            {/* top100 */}
+            <Route path="/top100" element={<Top100 />}/>
+
+
         </Routes>
     );
 }
