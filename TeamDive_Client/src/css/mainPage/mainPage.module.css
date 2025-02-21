@@ -2,7 +2,7 @@
 
 .mainPageContainer {
   padding: 20px;
-  background-color: #121212;
+  background-color: black;
   color: #fff;
   min-height: 100vh;
 }
@@ -15,7 +15,7 @@
 }
 
 .conditionalSection1 {
-  background-color: #1e1e1e;
+  background-color: black;
   padding: 15px;
   border-radius: 8px;
   text-align: center;
