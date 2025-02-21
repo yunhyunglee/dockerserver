@@ -4,11 +4,47 @@ import AddMusicModal from "./AddMusicModal";
 import axios from "axios";
 import { format } from "date-fns";
 import "../../../style/addAlbum.scss";
+import jaxios from '../../../util/JwtUtil';
 
 const AddAlbum = () => {
     const navigate = useNavigate();
     const [showModal, setShowModal] = useState(false);
     const [artist, setArtist] = useState([]);
+    const [searchArtist, setSearchArtist] = useState(""); // 입력값 상태
+    const [filteredArtists, setFilteredArtists] = useState([]); // 필터링된 가수 목록
+    const [showDropdown, setShowDropdown] = useState(false); // 드롭다운 표시 여부
+
+
+    const onSearchChange = (e)=> {
+        const value = e.target.value;
+        setSearchArtist(value);
+
+        if(value === ""){
+            setFilteredArtists([]);
+            setShowDropdown(false);
+            return;
+        }
+
+        const filtered = artist.filter((a) => 
+            a.artistName.toLowerCase().includes(value.toLowerCase())
+        );
+        setFilteredArtists(filtered);
+        setShowDropdown(true);
+    };
+
+    const onSelectArtist = (selectedArtist) => {
+        setNewAlbum((prev) => ({
+            ...prev,
+            artistId: selectedArtist.artistId,
+            artistName: selectedArtist.artistName,
+        }));
+        setSearchArtist(selectedArtist.artistName);
+        setShowDropdown(false);
+    }
+
+
+
+
 
     const [newAlbum, setNewAlbum] = useState({
         title: "",
@@ -134,15 +170,24 @@ const AddAlbum = () => {
 
                     <div className="musicInfo">
                         <input type="text"  name="title" value={newAlbum.title} onChange={onChange} placeholder="앨범 제목" />
-
-                        <select value={newAlbum.artistId || ""} onChange={(e) => setNewAlbum({ ...newAlbum, artistId: Number(e.target.value) })}>
-                            <option value="">가수 선택</option>
-                            {artist.map((artist) => (
-                                <option key={artist.artistId} value={artist.artistId}>
-                                    {artist.artistName}
-                                </option>
-                            ))}
-                        </select>
+                        <div className="artist-autocomplete">
+                            <input
+                                type="text"
+                                placeholder="가수 검색"
+                                value={searchArtist}
+                                onChange={onSearchChange}
+                                onFocus={() => setShowDropdown(true)} // 포커스 시 드롭다운 열기
+                            />
+                            {showDropdown && filteredArtists.length > 0 && (
+                                <ul className="dropdown">
+                                    {filteredArtists.map((a) => (
+                                        <li key={a.artistId} onClick={() => onSelectArtist(a)}>
+                                            {a.artistName}
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                        </div>
                         <input type="date" name="indate" value={newAlbum.indate} onChange={onChange} required />    
 
                     </div>
@@ -150,9 +195,7 @@ const AddAlbum = () => {
 
                 <div className="bottomBox">
                     <button className="addMusicBtn" onClick={() => setShowModal(true)}>+ 노래 추가</button>
-                    {showModal && <AddMusicModal onClose={() => setShowModal(false)} onAddMusic={addMusic} albumId={newAlbum.albumId} artistId={newAlbum.artistId} />}
-                    <button type="submit" className="btn submitBtn" onClick={onSubmit}>등록</button>
-                    <button type="button" className="btn cancelBtn" onClick={() => navigate("/music")}>취소</button>
+                    {showModal && <AddMusicModal onClose={() => setShowModal(false)} onAddMusic={addMusic} albumId={newAlbum.albumId} artistId={newAlbum.artistId} />}                  
                 </div>
 
                 <table className="musicTable">
@@ -162,8 +205,7 @@ const AddAlbum = () => {
                             <th>번호</th>
                             <th>제목</th>
                             <th>장르</th>
-                            <th>파일</th>
-                            
+                            <th>파일</th>                          
                             <th></th>
                         </tr>
                     </thead>
@@ -181,12 +223,25 @@ const AddAlbum = () => {
                                     <td>{music.trackNumber}</td>
                                     <td>{music.title}</td>
                                     <td>{music.genre}</td>
-                                    <td>{music.bucketPath ? "파일 있음" : "파일 없음"}</td>
+                                    <td>
+                                        {music.bucketPath ? (
+                                            <audio controls>
+                                            <source src={music.bucketPath} type="audio/mpeg" />
+                                            브라우저가 오디오 태그를 지원하지 않습니다.
+                                            </audio>
+                                        ) : (
+                                            "파일 없음"
+                                        )}
+                                    </td>
                                 </tr>
                             ))
                         )}
                     </tbody>
                 </table>
+                <div className="bottomBox">                
+                    <button type="submit" className="btn submitBtn" onClick={onSubmit}>등록</button>
+                    <button type="button" className="btn cancelBtn" onClick={() => navigate("/musicController/album")}>취소</button>
+                </div>
             </div>
         </div>
     );

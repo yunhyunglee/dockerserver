@@ -33,7 +33,7 @@ const MusicController = () => {
                     <li key={index} className={currentPath === item.path ? "active" : ""}>
                         <Link to={item.path}>{item.text}</Link>
                     </li>
-                 );
+                );
                 })}
             </ul>
         </div>

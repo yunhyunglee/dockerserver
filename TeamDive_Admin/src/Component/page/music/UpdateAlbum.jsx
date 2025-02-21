@@ -4,13 +4,20 @@ import AddMusicModal from "./AddMusicModal";
 import axios from "axios";
 import { format } from "date-fns";
 import "../../../style/addAlbum.scss";
+import jaxios from '../../../util/JwtUtil';
 
 const UpdateAlbum = ( {getAlbumList}) => {
     const navigate = useNavigate();
     const [showModal, setShowModal] = useState(false);
     const [artist, setArtist] = useState([]);
     const { albumId } = useParams();
-    const [album, setAlbum] = useState(null);
+    // const [album, setAlbum] = useState(null);
+    const [searchArtist, setSearchArtist] = useState(""); // 입력값 상태
+    const [filteredArtists, setFilteredArtists] = useState([]); // 필터링된 가수 목록
+    const [showDropdown, setShowDropdown] = useState(false); // 드롭다운 표시 여부
+
+
+
 
     const [updateAlbum, setUpdateAlbum] = useState({
         title: "",
@@ -23,41 +30,49 @@ const UpdateAlbum = ( {getAlbumList}) => {
     });
 
 
-    useEffect(()=> {
+
+    
+
+
+
+
+
+    /** ✅ 앨범 정보 불러오기 */
+    
         const getAlbum = async () => {
-            try{
+            try {
                 const response = await axios.get(`/api/music/getAlbum?albumId=${albumId}`);
-                console.log("📀 가져온 앨범 데이터:", response.data.album);
-                setAlbum(response.data.album);
-            } catch(error){
+                const albumData = response.data.album;
+                if (albumData) {
+                    setUpdateAlbum({
+                        title: albumData.title || "",
+                        image: albumData.image || "/images/default_image.jpg",
+                        albumId: albumData.albumId || null,
+                        artistId: albumData.artistId ? String(albumData.artistId) : "",
+                        artistName: albumData.artistName || "",
+                        musicList: albumData.musicList || [],
+                        indate: albumData.indate || format(new Date(), "yyyy-MM-dd"),
+                        trackNumber: albumData.trackNumber || 0,
+                    });
+                    setSearchArtist(albumData.artistName || ""); // 가수 이름 초기 설정
+                }
+            } catch (error) {
                 console.error("앨범 정보를 불러오는 중 오류", error);
                 alert("앨범 정보를 불러오는 중 오류");
             }
         };
-        if (albumId) getAlbum();
-    }, [albumId]);
 
 
     useEffect(() => {
-        if (album) {
-    
-            setUpdateAlbum({
-                title: album.title || "",
-                image: album.image || "/images/default_image.jpg",
-                albumId: album.albumId || null,
-                artistId: album.artist?.artistId || "", 
-                musicList: album.musicList || [],
-                indate: album.indate || format(new Date(), "yyyy-MM-dd"),
-                trackNumber: album.trackNumber || 0,
-            });
-        }
-    }, [album]); 
+
+        if (albumId) getAlbum();
+    }, [albumId, ]);
     
 
 
 
 
-
+    /** 가수 목록 불러오기 */
     useEffect(()=> {
         const getArtistList = async () => {
             try{
@@ -71,24 +86,47 @@ const UpdateAlbum = ( {getAlbumList}) => {
         getArtistList();
     }, []) ;
 
-    useEffect(() => {
-        console.log("🎤 현재 artist 상태:", artist);
-    }, [artist]);
     
-    useEffect(() => {
-        console.log("🎶 현재 updateAlbum 상태:", updateAlbum);
-    }, [updateAlbum]);
 
 
+    /**가수 검색 기능 */
+    const onSearchChange = (e)=> {
+        const value = e.target.value;
+        setSearchArtist(value);
 
+        if(value === ""){
+            setFilteredArtists([]);
+            setShowDropdown(false);
+            return;
+        }
+
+        const filtered = artist.filter((a) => 
+            a.artistName.toLowerCase().includes(value.toLowerCase())
+        );
+        setFilteredArtists(filtered);
+        setShowDropdown(true);
+    };
+
+
+    /** 가수 선택 시 updateAlbum 업데이트 */
+    const onSelectArtist = (selectedArtist) => {
+        setUpdateAlbum((prev) => ({
+            ...prev,
+            artistId: selectedArtist.artistId,
+            artistName: selectedArtist.artistName,
+        }));
+        setSearchArtist(selectedArtist.artistName);
+        setShowDropdown(false);
+    }
+
+
+    /**입력값 변경 시 updateAlbum 업데이트 */
     const onChange = (e) => {
         setUpdateAlbum({ ...updateAlbum, [e.target.name]: e.target.value });
     };
 
 
-    
-
-
+    /** 이미지 업로드 */
     const onImageUpload = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
@@ -105,6 +143,7 @@ const UpdateAlbum = ( {getAlbumList}) => {
         }
     };
 
+    /** 음악 추가 */
     const addMusic = (newSong) => {
         setUpdateAlbum((prev) => {
             const maxTrackNumber = prev.musicList.length > 0 
@@ -127,6 +166,7 @@ const UpdateAlbum = ( {getAlbumList}) => {
         setShowModal(false);
     };
 
+
     const checkTitleMusic = (index) => {
         setUpdateAlbum((prev) => ({
             ...prev,
@@ -137,6 +177,7 @@ const UpdateAlbum = ( {getAlbumList}) => {
         }));
     };
 
+    /** 앨범 정보 업데이트 */
     const onSubmit = async () => {
         if (!updateAlbum.title) return alert("앨범 제목을 입력하세요");
         if (!updateAlbum.artistId) return alert("가수를 선택하세요");
@@ -173,6 +214,47 @@ const UpdateAlbum = ( {getAlbumList}) => {
         }
     };
 
+
+
+
+    const deleteMusic = async (music) => {
+        if (!window.confirm("정말로 삭제하시겠습니까?")) return;
+
+        try{
+            const response = await axios.post("/api/music/deleteMusic", music);
+
+            if (response.data.msg === "yes") {
+                alert("음악이 삭제되었습니다!");
+
+                setUpdateAlbum((prev)=> {
+                    const updateMusicList = prev.musicList 
+                    .filter((m) => m.musicId !== music.musicId)
+                    .sort((a, b) => a.trackNumber - b.trackNumber)
+                    .map((m, index) => ({...m, trackNumber: index +1 }));
+                return {
+                    ...prev,
+                    musicList: updateMusicList.map((m, i) => ({
+                        ...m,
+                        titleMusic: i === 0, // ✅ 첫 번째 곡을 타이틀곡으로 설정
+                    })),
+                };
+            });
+            
+                setTimeout(() => {
+                    getAlbum();
+                }, 200); // 0.1초 딜레이 후 최신 데이터 불러오기
+            } else {
+                alert("음악 삭제 실패!");
+            }
+        }catch(error){
+            console.error("음악 삭제 실패:", error);
+            alert("음악 삭제중 오류 발생");
+        }
+
+        
+    };
+
+
     return (
         <div className="mainContainer">
             <div className="contentBox">
@@ -185,14 +267,18 @@ const UpdateAlbum = ( {getAlbumList}) => {
                     <div className="musicInfo">
                         <input type="text"  name="title" value={updateAlbum.title} onChange={onChange} placeholder="앨범 제목" />
 
-                        <select value={updateAlbum.artistId || ""} onChange={(e) => setUpdateAlbum({ ...updateAlbum, artistId: Number(e.target.value) })}>
-                            <option value="">가수 선택</option>
-                            {artist.map((artist) => (
-                                <option key={artist.artistId} value={artist.artistId}>
-                                    {artist.artistName}
-                                </option>
-                            ))}
-                        </select>
+                        <div className="artist-autocomplete">
+                            <input type="text" placeholder="가수 검색" value={searchArtist} onChange={onSearchChange} onFocus={() => setShowDropdown(true)} />
+                            {showDropdown && filteredArtists.length > 0 && (
+                                <ul className="dropdown">
+                                    {filteredArtists.map((a) => (
+                                        <li key={a.artistId} onClick={() => onSelectArtist(a)}>
+                                            {a.artistName}
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                        </div>
                         <input type="date" name="indate" value={updateAlbum.indate} onChange={onChange} required />    
 
                     </div>
@@ -201,8 +287,7 @@ const UpdateAlbum = ( {getAlbumList}) => {
                 <div className="bottomBox">
                     <button className="addMusicBtn" onClick={() => setShowModal(true)}>+ 노래 추가</button>
                     {showModal && <AddMusicModal onClose={() => setShowModal(false)} onAddMusic={addMusic} albumId={updateAlbum.albumId} artistId={updateAlbum.artistId} />}
-                    <button type="submit" className="btn submitBtn" onClick={onSubmit}>등록</button>
-                    <button type="button" className="btn cancelBtn" onClick={() => navigate("/music")}>취소</button>
+                    
                 </div>
 
                 <table className="musicTable">
@@ -213,8 +298,8 @@ const UpdateAlbum = ( {getAlbumList}) => {
                             <th>제목</th>
                             <th>장르</th>
                             <th>파일</th>
+                            <th>삭제</th>
                             
-                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -222,8 +307,7 @@ const UpdateAlbum = ( {getAlbumList}) => {
                             <tr>
                                 <td colSpan="6">등록된 노래가 없습니다.</td>
                             </tr>
-                        ) : (
-                            
+                        ) : (                          
                             updateAlbum.musicList.map((music, index) => (
                                 <tr key={index}>
                                     <td><input type="checkbox"checked={music.titleMusic}onChange={() => checkTitleMusic(index)} />
@@ -231,12 +315,28 @@ const UpdateAlbum = ( {getAlbumList}) => {
                                     <td>{music.trackNumber}</td>
                                     <td>{music.title}</td>
                                     <td>{music.genre}</td>
-                                    <td>{music.bucketPath ? "파일 있음" : "파일 없음"}</td>
+                                    <td>
+                                        {music.bucketPath ? (
+                                            <audio controls>
+                                            <source src={music.bucketPath} type="audio/mpeg" />
+                                            브라우저가 오디오 태그를 지원하지 않습니다.
+                                            </audio>
+                                        ) : (
+                                            "파일 없음"
+                                        )}
+                                    </td>
+                                    <td>
+                                        <button className="deleteBtn" onClick={() => deleteMusic(music)}>🗑</button>  
+                                    </td>                                  
                                 </tr>
                             ))
                         )}
                     </tbody>
                 </table>
+                <div className="bottomBox">             
+                    <button type="submit" className="btn submitBtn" onClick={onSubmit}>등록</button>
+                    <button type="button" className="btn cancelBtn" onClick={() =>navigate("/musicController/album")}>취소</button>
+                </div>
             </div>
         </div>
     );

@@ -109,7 +109,7 @@ public class MusicController {
         map.put("msg","yes");
         return map;
     }
-    @DeleteMapping("/deleteMusic")
+    @PostMapping("/deleteMusic")
     public HashMap<String, Object> deleteMusic(@RequestBody Music music) {
         HashMap<String, Object> map = new HashMap<>();
         String s = music.getBucketPath().replace("https://d9k8tjx0yo0q5.cloudfront.net/","https://divestreaming.s3.ap-northeast-2.amazonaws.com/");

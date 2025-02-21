@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../../../style/addMusicModal.scss";
+import jaxios from '../../../util/JwtUtil';
 
 const AddMusicModal = ({ onClose, onAddMusic, albumId, artistId }) => {
     // const [uploadedBucketPath, setUploadedBucketPath] = useState(""); // ✅ S3 업로드 URL 저장
