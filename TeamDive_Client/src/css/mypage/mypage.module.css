@@ -6,7 +6,6 @@
 .replyListForm,
 .memberShipForm
 {
-    border: 2px dotted white;
     width: 100%;
 
 }
@@ -58,21 +57,46 @@
 }
 
 .userInfo{
-    border:1px solid blue;
     display: block;
 }
 
 .profile{
     display: flex;
     padding: 30px;
-    border-radius: 20px;
-    border:9 2px dotted blue;
-   
+    border-radius: 20px;   
 }
-.profileImage{
-    width: 350px;
+.profileImage {
+    width: 100%;
+    max-width: 150px; /* 너무 크지 않도록 조절 */
+    height: auto;
     border-radius: 50%;
+    object-fit: cover;
 }
+
+.profileDetails {
+    margin-left: 20px;
+}
+
+.field {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.field label {
+    font-weight: bold;
+    margin-right: 10px;
+    min-width: 80px;
+}
+
+.membership {
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+
+
 
 
 

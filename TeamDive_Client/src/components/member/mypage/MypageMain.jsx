@@ -130,13 +130,13 @@ const MypageMain = () => {
             </section>
                 
 
-            {/* 좋아요한 가수 / 앨범 리스트 */}
-            <section className={mypageStyle.likeList}>
+            {/* 좋아요한 가수 / 앨범 리스트 카드 영역역*/}
+            {/* <section className={mypageStyle.likeList}> */}
                 {/* 좋아요한 가수 리스트 */}
-                <div>
-                    <h2>좋아요 가수 리스트</h2>
+                {/* <div>
+                    <h2>좋아요 가수 리스트</h2> */}
                     {/* 각 좋아요한 가수 항목 */}
-                    {
+                    {/* {
                         (likeArtistList)?(
                             likeArtistList.slice(0, 6).map((likeArtist, idx)=>{
                                 return(
@@ -161,12 +161,13 @@ const MypageMain = () => {
                             })
                         ):(<>Loading....</>)
                     }
-                </div>
+                </div> */}
+
                 {/* 좋아요한 앨범 리스트 */}
-                <div className={mypageStyle.likeList}>
-                    <h2>좋아요 앨범 리스트</h2>
+                {/* <div className={mypageStyle.likeList}>
+                    <h2>좋아요 앨범 리스트</h2> */}
                     {/* 각 좋아요한 앨범 항목 */}
-                    {
+                    {/* {
                         (likeAlbumList)?(
                             likeArtistList.slice(0, 6).map((likeAlbum, idx)=>{
                                 return(
@@ -193,12 +194,13 @@ const MypageMain = () => {
                     }
                 </div>
                 
-            </section>    
+            </section>     */}
+            
             {/* 좋아요한 곡 리스트 */}
-            <section className={mypageStyle.likeList}>
-                <h2>좋아요 곡 리스트</h2>
+            {/* <section className={mypageStyle.likeList}>
+                <h2>좋아요 곡 리스트</h2> */}
                 {/* 각 좋아요한 음악 항목 */}
-                {   
+                {/* {   
                     <div className={mypageStyle.field}>
                         <div className={mypageStyle.title}>
                             <div className={mypageStyle.column}>제목</div>
@@ -230,7 +232,7 @@ const MypageMain = () => {
                         }
                     </div>
                 }
-            </section>
+            </section> */}
             {/* 댓글 리스트 - 봐서 따로 컴포넌트룰 구성해서 연결시킬지 말지 구상
             <section className={mypageStyle.replyList}>
                 <h2>댓글(가수) 리스트</h2>

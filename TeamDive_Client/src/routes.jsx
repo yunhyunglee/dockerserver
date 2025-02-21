@@ -15,7 +15,7 @@ import PaymentsSuccess from "./components/payments/PaymentsSuccess";
 import PaymentsFail from "./components/payments/PaymentsFail";
 
 import Mypage from "./components/member/mypage/Mypage";
-import UseMemberShip from "./components/member/mypage/UseMemberShip";
+
 import Top100 from "./components/Top100";
 
 

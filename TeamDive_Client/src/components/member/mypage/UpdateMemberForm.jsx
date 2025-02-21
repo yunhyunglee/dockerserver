@@ -9,7 +9,7 @@ import { Cookies } from 'react-cookie'
 import { loginAction, logoutAction } from '../../../store/UserSlice'
 
 import mypageStyle from '../../../css/mypage/mypage.module.css'
-import joinStyles from '../../../css/joinForm.module.css'
+import updateStyles from '../../../css/mypage/mypageUpdate.module.css'
 
 const UpdateMemberForm = () => {
 
@@ -154,133 +154,131 @@ const UpdateMemberForm = () => {
 
     return (
         <div className={mypageStyle.updateMemberForm}>
-            <div className={joinStyles.formGroup}>
+            <div className={updateStyles.imageContainer}>
                 {preview ? (
                     <img
                     src={preview}
                     alt="Preview"
-                    style={{
-                        width: "150px",
-                        height: "150px",
-                        objectFit: "cover",
-                        borderRadius: "10px",
-                    }}
                     />
                 ) : (
                     <h3>이미지 미리보기가 없습니다.</h3>
                 )}
                 <input type="file" id="image" onChange={(fileUp)} />
-                
             </div>
-            <div className={joinStyles.formGroup}>
-                <label>아이디</label>
-                <input type='text' value={memberId} readOnly/>
+            <div className={updateStyles.formGroupContainer}>         
+                <div className={updateStyles.formGroup}>
+                    <label>아이디</label>
+                    <input type='text' value={memberId} readOnly/>
+                </div>
+                <div className={updateStyles.formGroup}>
+                    <label>패스워드</label>
+                    {
+                        (loginUser.provider==='kakao')?(
+                            <input 
+                            type="password" 
+                            value={passwordCheck}
+                            readOnly/>
+                        ):(
+                            <input 
+                            type="password" 
+                            value={password}
+                            placeholder="수정 할 비밀번호를 입력하세요." 
+                            onChange={
+                                (e)=>{ setPassword(e.currentTarget.value )}
+                            }/>
+                        )
+                    }
+                    {
+                        (loginUser.provider==='kakao')?(
+                            <input type="password" value={passwordCheck} readOnly/>
+                        ):(
+                            <input 
+                            type="password" 
+                            value={passwordCheck}
+                            placeholder="수정 할 비밀번호를 다시 입력하세요."
+                            onChange={
+                                (e)=>{ setPasswordCheck(e.currentTarget.value )}
+                            }/>
+                        )
+                    }
+                </div>
+                <div className={updateStyles.formGroup}>
+                    <label>전화번호</label>
+                    <input type='text' value={phone} onChange={(e)=>{setPhone(e.currentTarget.value)}}/>
+                </div>
+                <div className={updateStyles.formGroup}>
+                    <label>닉네임</label>
+                    <input type='text' value={nickname} onChange={(e)=>{setNickname(e.currentTarget.value)}}/>
+                </div>
+                <div className={updateStyles.zipCodeContainer}>
+                    <label>우편번호</label>
+                    
+                    <div className={updateStyles.zipCode}>
+                        <input type='text' value={zipCode} onChange={(e)=>{setZipCode(e.currentTarget.value)}} readOnly/>
+                        <button type='button' onClick={()=>{
+                            toggle();
+                        }}>검색</button>
+                    </div>
+                </div>
+                {/* 주소 검색을 위한 모달창 */}
+                <div>   
+                    <Modal isOpen={isOpen}  ariaHideApp={false}  style={customStyles} >
+                        <DaumPostcode onComplete={completeHandler} /><br />
+                        <button onClick={()=>{ setIsOpen(false) }}>닫기</button>
+                    </Modal>
+                </div>
+                {/* ======================= */}
+                <div className={updateStyles.formGroup}>
+                    <label>주소</label>
+                    <input 
+                    type='text' 
+                    value={address} 
+                    onChange={(e)=>{setAddress(e.currentTarget.value)}}
+                    readOnly />
+                </div>
+                <div className={updateStyles.formGroup}>
+                    <label>상세주소</label>
+                    <input
+                        type="text"
+                        id="address"
+                        value={addressDetail}
+                        onChange={(e) => setAddressDetail(e.target.value)}
+                    />
+                </div>
+                <div className={updateStyles.formGroup}>
+                    <label>추가주소</label>
+                    <input
+                        type="text"
+                        id="addressExtra"
+                        value={addressExtra}
+                        onChange={(e) => setAddressExtra(e.target.value)}
+                        readOnly
+                    />
+                </div>
+                <div className={updateStyles.formGroup}>
+                    <label>소개</label>
+                    <textarea
+                        id="introduction"
+                        value={introduction}
+                        rows="5" 
+                        cols="40" 
+                        placeholder="자기소개를 입력해주세요."
+                        onChange={(e) => setIntroduction(e.target.value)}
+                    >    
+                    </textarea>
+                </div>
+                <div className={updateStyles.buttonGroup}>
+                    <button type='button' className={updateStyles.button} onClick={()=>{
+                        onSubmit();
+                    }}>수정</button>
+                    <button type='button' className={updateStyles.button} onClick={()=>{
+                        navigate(-1);
+                    }}>뒤로</button>
+                    <button type='button' className={updateStyles.deleteButton} onClick={()=>{
+                        deleteMember(); }}>회원탈퇴
+                    </button>
+                </div>
             </div>
-            <div className={joinStyles.formGroup}>
-                <label>패스워드</label>
-                {
-                    (loginUser.provider==='kakao')?(
-                        <input 
-                        type="password" 
-                        value={passwordCheck}
-                        readOnly/>
-                    ):(
-                        <input 
-                        type="password" 
-                        value={password}
-                        placeholder="수정 할 비밀번호를 입력하세요." 
-                        onChange={
-                            (e)=>{ setPassword(e.currentTarget.value )}
-                        }/>
-                    )
-                }
-                {
-                    (loginUser.provider==='kakao')?(
-                        <input type="password" value={passwordCheck} readOnly/>
-                    ):(
-                        <input 
-                        type="password" 
-                        value={passwordCheck}
-                        placeholder="수정 할 비밀번호를 다시 입력하세요."
-                        onChange={
-                            (e)=>{ setPasswordCheck(e.currentTarget.value )}
-                        }/>
-                    )
-                }
-            </div>
-            <div className={joinStyles.formGroup}>
-                <label>전화번호</label>
-                <input type='text' value={phone} onChange={(e)=>{setPhone(e.currentTarget.value)}}/>
-            </div>
-            <div className={joinStyles.formGroup}>
-                <label>닉네임</label>
-                <input type='text' value={nickname} onChange={(e)=>{setNickname(e.currentTarget.value)}}/>
-            </div>
-            <div className={joinStyles.formGroup}>
-                <label>우편번호</label>
-                <input type='text' value={zipCode} onChange={(e)=>{setZipCode(e.currentTarget.value)}} readOnly/>
-                <button type='button' onClick={()=>{
-                    toggle();
-                }}>검색</button>
-            </div>
-            {/* 주소 검색을 위한 모달창 */}
-            <div>   
-                <Modal isOpen={isOpen}  ariaHideApp={false}  style={customStyles} >
-                    <DaumPostcode onComplete={completeHandler} /><br />
-                    <button onClick={()=>{ setIsOpen(false) }}>닫기</button>
-                </Modal>
-            </div>
-            {/* ======================= */}
-            <div className={joinStyles.formGroup}>
-                <label>주소</label>
-                <input 
-                type='text' 
-                value={address} 
-                onChange={(e)=>{setAddress(e.currentTarget.value)}}
-                readOnly />
-            </div>
-            <div className={joinStyles.formGroup}>
-                <label>상세주소</label>
-                <input
-                    type="text"
-                    id="address"
-                    value={addressDetail}
-                    onChange={(e) => setAddressDetail(e.target.value)}
-                />
-            </div>
-            <div className={joinStyles.formGroup}>
-                <label>추가주소</label>
-                <input
-                    type="text"
-                    id="addressExtra"
-                    value={addressExtra}
-                    onChange={(e) => setAddressExtra(e.target.value)}
-                    readOnly
-                />
-            </div>
-            <div className={joinStyles.formGroup}>
-                <label>소개</label>
-                <textarea
-                    id="introduction"
-                    value={introduction}
-                    rows="5" 
-                    cols="40" 
-                    placeholder="자기소개를 입력해주세요."
-                    onChange={(e) => setIntroduction(e.target.value)}
-                >    
-                </textarea>
-            </div>
-            <div className={joinStyles.buttonGroup}>
-                <button type='button' className={joinStyles.button} onClick={()=>{
-                    onSubmit();
-                }}>수정</button>
-                <button type='button' className={joinStyles.button} onClick={()=>{
-                    navigate(-1);
-                }}>뒤로</button>
-            </div>
-            <button type='button' className={joinStyles.button} onClick={()=>{
-                    deleteMember();
-                }}>회원탈퇴</button>
         </div>
     )
 }
