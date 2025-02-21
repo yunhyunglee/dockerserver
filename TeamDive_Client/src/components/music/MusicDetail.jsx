@@ -2,14 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import styles from '../../css/music/musicDetail.module.css';
-import lion from '../../../public/image/kakao_lion.png';
 
 import axios from 'axios';
 import jaxios from '../../util/JwtUtil';
 
 const MusicDetail = () => {
     const { musicId } = useParams();
-    const [musicDetail, setMusicDetail] = useState({});
+    const [musicDetail, setMusicDetail] = useState(null);
     const [expandedLyrics, setExpandedLyrics] = useState(false);
 
     //const [commentText, setCommentText] = useState('');
@@ -24,22 +23,30 @@ const MusicDetail = () => {
     const loginUser = useSelector((state) => state.user);
     const navigate = useNavigate();
 
-    //   useEffect(() => {
-   
-//     axios.get(`/api/music/${musicId}`)
-//       .then(response => {
-        
-//         setMusicDetail(response.data);
-//       })
-//       .catch(error => console.error('Error fetching music detail:', error));
-//   }, [musicId]);
 
-//   if (!musicDetail) {
-//     return <div className={styles.loading}>Loading...</div>;
-//   }
+    const handleLike = () => {
+        setLike(prevLike => !prevLike);
+    }
+
 
     useEffect(() => {
 
+        const sample = {
+            musicId: musicId,
+            title: "테스트제목",
+            artistName: "테스트가수",
+            image: "/public/image/album/album1.jpg",
+            playCount: 1234,
+            genre: "Pop",
+            lyrics:
+                " \n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. \n\nUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. \n\nExcepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+
+            albumId: 201,
+            albumtitle: "테스트앨범이름",
+            albumIndate: "2024-12-12"
+        };
+        setMusicDetail(sample);
+       
     //     const sample = {
     //         musicId: musicId,
     //         title: "제목",
@@ -142,37 +149,54 @@ const MusicDetail = () => {
             <div className={styles.detailHeader}>
                 <img src={musicDetail.image} alt={musicDetail.title} className={styles.image} />
                 <div className={styles.info}>
+                <div className={styles.titleContainer}>
                     <h1 className={styles.title}>{musicDetail.title}</h1>
+                    <button className={styles.likeButton} onClick={handleLike}>
+                    {like ? "❤️" : "♡"}
+                    </button>
+                </div>
                     <p className={styles.artist}>By {musicDetail.artistName}</p>
-                    <p className={styles.genre}>Genre: {musicDetail.genre}</p>
-                    {/* <p className={styles.like}>Likes: {musicDetail.like}</p> */}
-                    {/* <p className={styles.releaseDate}>Release Date: {musicDetail.album.indate}</p> */}
+                    <p className={styles.genre}>장르: {musicDetail.genre}</p>
+                    <p className={styles.like}>Likes: 미구현</p>
+
                     {/* (css 조정 필요) 장바구니 버튼 */}
-                    <div>
-                        <button >재생</button>
-                        <button onClick={ insertCart }>구매</button>
-                        <button >좋아요</button>
+                    <div className={styles.buttonGroup}>
+                        <button className={styles.playButton}>▶ 재생</button>
+                        <button className={styles.purchaseButton} onClick={insertCart}>구매</button>
+
                     </div>
                 </div>
             </div>
 
             {/* 가사 영역 */}
             <div className={styles.lyricsSection}>
-                <h2>가사</h2>
+                <h3>가사</h3>
                 <div className={styles.lyrics}>
-                {musicDetail.lyrics 
-                    ? expandedLyrics
-                        ? musicDetail.lyrics
-                        : musicDetail.lyrics.slice(0, 200) + (musicDetail.lyrics.length > 200 ? "..." : "")
-                    : "가사가 없습니다."
-                }
+                {expandedLyrics
+                    ? musicDetail.lyrics
+                    : musicDetail.lyrics.slice(0, 200) + (musicDetail.lyrics.length > 200 ? "..." : "")}
                 </div>
-                {musicDetail.lyrics && musicDetail.lyrics.length > 200 && (
-                    <button className={styles.toggleButton} onClick={toggleLyrics}>
-                        {expandedLyrics ? "가사 접기" : "더보기"}
-                    </button>
+                {musicDetail.lyrics.length > 200 && (
+                <button className={styles.toggleButton} onClick={toggleLyrics}>
+                    {expandedLyrics ? "가사 접기" : "더보기"}
+                </button>
                 )}
             </div>
+
+
+
+            <div className={styles.albumSection}>
+                <h3>수록 앨범</h3>
+                <div className={styles.album}>
+                    <div><img src={musicDetail.image}  className={styles.albumImage}/></div>
+                    <div className={styles.albumTitle}>{musicDetail.albumtitle}</div>
+                    <div className={styles.albumArtist}>{musicDetail.artistName}</div>
+                    <div className={styles.albumIndate}>{musicDetail.albumIndate}</div>
+                </div>
+            </div>
+
+
+
 
             {/* 댓글 영역 */}
             <div className={styles.commentsSection}>
