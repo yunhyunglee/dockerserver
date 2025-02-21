@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,6 +25,7 @@ public class MusicDto {
     private int albumId;
     private String albumTitle;
     private String image;
+    private Timestamp albumIndate;
 
     // Music -> MusicDTO 변환
     public MusicDto(Music music) {
@@ -40,5 +43,6 @@ public class MusicDto {
         this.albumId = music.getAlbum().getAlbumId();
         this.albumTitle = music.getAlbum().getTitle();
         this.image = music.getAlbum().getImage();
+        this.albumIndate=music.getAlbum().getIndate();
     }
 }
