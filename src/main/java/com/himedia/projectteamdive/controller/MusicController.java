@@ -83,38 +83,24 @@ public class MusicController {
     }
 
     @DeleteMapping("/deleteArtist")
-    public HashMap<String, Object> deleteArtist(@RequestBody Artist artist) {
+    public HashMap<String, Object> deleteArtist(@RequestParam("artistId")int artistId) {
         HashMap<String, Object> map = new HashMap<>();
-        List<Album>albumList=artist.getAlbums();
-        for(Album album:albumList){
-            List<Music>musicList=album.getMusicList();
-            for(Music music:musicList){
-                String s = music.getBucketPath().replace("https://d9k8tjx0yo0q5.cloudfront.net/","https://divestreaming.s3.ap-northeast-2.amazonaws.com/");
-                ss.deleteFile(s);
-            }
-        }
-        ms.deleteArtist(artist);
+        ms.deleteArtist(artistId);
         map.put("msg","yes");
         return map;
     }
     @DeleteMapping("/deleteAlbum")
-    public HashMap<String, Object> deleteAlbum(@RequestBody Album album) {
+    public HashMap<String, Object> deleteAlbum(@RequestParam("albumId")int albumId) {
         HashMap<String, Object> map = new HashMap<>();
-        List<Music> musicList=album.getMusicList();
-        for (Music music : musicList) {
-            String s = music.getBucketPath().replace("https://d9k8tjx0yo0q5.cloudfront.net/","https://divestreaming.s3.ap-northeast-2.amazonaws.com/");
-            ss.deleteFile(s);
-        }
-        ms.deleteAlbum(album);
+        ms.deleteAlbum(albumId);
         map.put("msg","yes");
         return map;
     }
     @PostMapping("/deleteMusic")
-    public HashMap<String, Object> deleteMusic(@RequestBody Music music) {
+    public HashMap<String, Object> deleteMusic(@RequestParam("musicId")int musicId) {
         HashMap<String, Object> map = new HashMap<>();
-        String s = music.getBucketPath().replace("https://d9k8tjx0yo0q5.cloudfront.net/","https://divestreaming.s3.ap-northeast-2.amazonaws.com/");
-        ss.deleteFile(s);
-        ms.deleteMusic(music);
+
+        ms.deleteMusic(musicId);
         map.put("msg","yes");
         return map;
     }
@@ -142,8 +128,11 @@ public class MusicController {
         }
         return map;
     }
-    @DeleteMapping("/deleteImage")
-    public HashMap<String, Object> deleteImage(@RequestParam("image")String image) {
+    @DeleteMapping("/deleteFile")
+    public HashMap<String, Object> deleteFile(@RequestParam(value = "file",required = false)String image) {
+        if(image==null){
+            image="";
+        }
         HashMap<String, Object> map = new HashMap<>();
         String s = image.replace("https://d9k8tjx0yo0q5.cloudfront.net/","https://divestreaming.s3.ap-northeast-2.amazonaws.com/");
         ss.deleteFile(s);
@@ -280,6 +269,12 @@ public class MusicController {
         return map;
     }
 
+    @GetMapping("/getMemberRecentMusics")
+    public HashMap<String, Object> getMemberRecentMusics(@RequestParam("memberId")String memberId) {
+        HashMap<String,Object> map= ms.getMemberRecentMusics(memberId);
+        return map;
+
+    }
 
 
 
