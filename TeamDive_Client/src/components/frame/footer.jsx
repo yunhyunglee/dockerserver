@@ -1,46 +1,33 @@
 // src/components/Footer.jsx
-import { useEffect, useRef, useState } from 'react';
-import styles from '../../css/footer.module.css';
-import jaxios from '../../util/JWTUtil';
-import Player from '../Player';
+import React from 'react';
+import styles from '../../css/footer.module.css'; // CSS 모듈 사용 (선택)
 
-const playList=[];
+const Footer = () => {
+  return (
+    <footer className={styles.footerContainer}>
+      <div className={styles.companyInfo}>
+        {/* 첫 줄: 회사명, 사업자등록번호, 대표자명 */}
+        <p>
+          <strong>(주) 예시회사</strong> | 사업자등록번호: 000-00-00000 | 대표: 홍길동
+        </p>
 
-function Footer() {
-    const [playCounts,setPlayCounts]=useState({});
-    const [isplaying,setIsplaying]=useState(false);
-    const [music,setMusic]=useState({});
-    const audioRef=useRef(null);
+        {/* 둘째 줄: 주소, 연락처 */}
+        <p>
+          주소: 서울특별시 어딘가구 무슨동 123-45 | 전화: 02-123-4567 | 이메일: info@example.com
+        </p>
 
-    const musicPlay = (songId) => {
-        alert('재생했다')
-        setPlayCounts(prev => ({
-            ...prev,
-            [songId]: (prev[songId] || 0) + 1
-        }));
-        console.log(playCounts)
-    };
-    useEffect(() => {
-      
-        const interval = setInterval(() => {
-            // alert('인터벌 작동중')
-            if (Object.keys(playCounts).length > 0) {
-                jaxios.post("/api/music/addplayCount",null,{ playCounts }) // 서버에 전송
-                    .then(() => setPlayCounts({})) // 성공하면 초기화
-                    .catch(err => console.error("Error sending play counts:", err));
-            }
-        }, 60000); // 60초마다 전송
+        {/* 셋째 줄: 통신판매업 신고번호 등 */}
+        <p>
+          통신판매업 신고: 2023-서울-0000 | 호스팅 제공자: (주)예시호스팅
+        </p>
 
-        return () => clearInterval(interval);
-    }, [playCounts]);
+        {/* 넷째 줄: 저작권 표시 등 */}
+        <p>
+          COPYRIGHT © 2023 <strong>예시회사</strong>. ALL RIGHTS RESERVED.
+        </p>
+      </div>
+    </footer>
+  );
+};
 
-
-
-    return (
-        <div className={styles.footer}>
-            <Player />
-        </div>
-    );
-}
-
-export { Footer };
+export default Footer;

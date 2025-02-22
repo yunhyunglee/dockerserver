@@ -4,7 +4,7 @@ import AppRoutes from '../../routes';
 import { useDispatch, useSelector } from 'react-redux';
 import { Cookies } from 'react-cookie';
 import { useEffect } from 'react';
-import { logoutAction } from '../../store/userSlice';
+import { logoutAction } from '../../store/UserSlice';
 
 function Home({ menubar }) {
 
@@ -34,15 +34,12 @@ function Home({ menubar }) {
           
             <div className={`${styles.sidebar} ${menubar ? styles.open : ''}`}>
                 <Link to='/' className={styles.link}>🏠</Link> <br />
-                <Link to='/today' className={styles.link}>오늘의 인기차트</Link><br />
+                <Link to='/charts' className={styles.link}>오늘의 인기차트</Link><br />
                 <Link to='/playList' className={styles.link}>플레이리스트 모음</Link><br />
                 <Link to='/storage' className={styles.link}>보관함</Link><br />
                 <Link to='/membership/all' className={styles.link}>멤버십</Link><br />
                 
-                <Link to='/mypage' className={styles.link}>마에페이지</Link><br />
-
-                <Link to='/menu3' className={styles.link}>메뉴3</Link><br />
-
+                <Link to='/mypage/myPageMain' className={styles.link}>마이페이지</Link><br />
                 <div className={styles.sidebarEnd}>
                     {
                         (loginUser.memberId)?(

@@ -5,7 +5,7 @@ import App from "./App";
 import store from "./store/index";
 import { persistUserState } from "./store/UserSlice";
 import { Provider } from "react-redux";
-import "./style/global.scss";
+
 
 persistUserState(store);
 

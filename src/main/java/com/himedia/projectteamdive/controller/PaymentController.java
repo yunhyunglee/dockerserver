@@ -2,10 +2,13 @@ package com.himedia.projectteamdive.controller;
 
 import com.himedia.projectteamdive.dto.PaymentRequestDto;
 import com.himedia.projectteamdive.dto.PaymentResponseDto;
+import com.himedia.projectteamdive.entity.Payment;
 import com.himedia.projectteamdive.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/payments")
@@ -32,9 +35,21 @@ public class PaymentController {
     }
 
     /* 결제 요청 실패 이유 저장 */
-//    @PostMapping("/paymentFail")
-//    public ResponseEntity<String> paymentFail(@RequestParam("failReason") String failReason) {
-//        return ps.paymentFail(failReason);
-//    }
+    @PostMapping("/paymentFail")
+    public void paymentFail(
+            @RequestParam("failReason") String failReason,
+            @RequestParam("orderId") String orderId) {
+        ps.paymentFail(failReason, orderId);
+    }
+
+    /* 결제 내역 조회 */
+    @GetMapping("/getPaymentList")
+    public HashMap<String, Object> getPaymentList(@RequestParam("memberId") String memberId) {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("paymentList", ps.getPaymentList(memberId));
+        return result;
+    }
+
+    /* 결제 취소 */
 
 }

@@ -1,5 +1,6 @@
 package com.himedia.projectteamdive.repository;
 
+import com.himedia.projectteamdive.dto.MusicDto;
 import com.himedia.projectteamdive.entity.Music;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -12,12 +13,12 @@ public interface MusicRepository extends JpaRepository<Music, Integer> {
 
     Music findByMusicId(int musicId);
 
-    List<Music> findByTitleContainingIgnoreCase(String title);
+    List<MusicDto> findByTitleContainingIgnoreCase(String title);
 
-    Object findByLyricsContainingIgnoreCase(String lyrics);
+    List<MusicDto> findByLyricsContainingIgnoreCase(String lyrics);
 
-    @Query("SELECT m FROM Music m WHERE m.musicId IN :ids ORDER BY m.tracknumber ASC")
-    List<Music> findAllByMusicId(@Param("ids") List<Integer> ids);
+//    @Query("SELECT m FROM Music m WHERE m.musicId IN :ids ORDER BY m.tracknumber ASC")
+//    List<Music> findAllByMusicId(@Param("ids") List<Integer> ids);
 
 
 //    @Modifying

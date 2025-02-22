@@ -26,6 +26,6 @@ public class Membership {
     private String category;
     @Column(name = "download_count")
     private int downloadCount;
-    @Column(name = "is_active")
-    private boolean isActive = true;
+    @Column(name = "active")
+    private boolean active = true;
 }

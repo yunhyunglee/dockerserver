@@ -1,95 +1,43 @@
-import React,{ useState, useEffect} from 'react'
-import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
-import jaxios from '../../../util/JwtUtil'
-import { useSelector, useDispatch } from 'react-redux'
+import React,{ useEffect} from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+
 import MypageMenu from './MypageMenu'
-import { Cookies } from 'react-cookie'
+import MypageMain from './MypageMain';
+import UpdateMemberForm from './UpdateMemberForm';
+import ReplyListForm from './ReplyListForm';
+import Gift from './Gift';
 
 import mypageStyle from '../../../css/mypage/mypage.module.css'
 
-
-
 const Mypage = () => {
-
     const loginUser = useSelector(state=>state.user);
-    
-    const [member, setMember] = useState({});
-
     const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const cookies = new Cookies();
-
+    const {mypageCategory} = useParams();
+   
     useEffect(()=>{
         if(!loginUser.memberId){
             alert('로그인이 필요한 서비스 입니다.');
             navigate('/login');
         }
-        jaxios.get('/api/member/loginUser')
-        .then((result)=>{
-            
-        })
-        .catch((err)=>{
-            console.error(err);
-        })
-    },[]);
-
-    function confirm(){
-
-    };
+    }, []);
 
     return (
-        <div className={mypageStyle}>
-            <div>
-                <h1>MYPAGE</h1>
-                <MypageMenu />
-                <div>
-                    <img src={`http://localhost:8070/profileImage/${member.image} `}/>
-                    <button>사진 변경</button>
-                </div>
-                <div>
-                    <label>아이디</label>
-                    <input type='text'/>
-                </div>
-                <div>
-                    <label>패스워드</label>
-                    <input type='text'/>
-                    <input type='text'/>
-                </div>
-                <div>
-                    <label>전화번호</label>
-                    <input type='text'/>
-                </div>
-                <div>
-                    <label>닉네임</label>
-                    <input type='text'/>
-                </div>
-                <div>
-                    <label>우편번호</label>
-                    <input type='text'/>
-                    <button type='button'>검색</button>
-                </div>
-                <div>
-                    <label>주소</label>
-                    <input type='text'/>
-                </div>
-                <div>
-                    <label>상세주소</label>
-                    <input type='text'/>
-                </div>
-                <div>
-                    <label>추가주소</label>
-                    <input type='text'/>
-                </div>
-                <div>
-                    <button type='button' onClick={()=>{
-                        confirm();
-                    }}>수정</button>
-                    <button type='button' onClick={()=>{
-                        navigate('/mypage')
-                    }}>뒤로</button>
-                </div>
-            </div>
+        <div className={mypageStyle.mypageContainer}>
+            <MypageMenu />
+            {/* 마이페이지 카테고리별로 표시할 컴포넌트를 설정 */}
+            {
+                mypageCategory && (
+                    <div className={mypageStyle.container}>
+                        {/* 조건부 렌더링 */}
+                        {mypageCategory === "myPageMain" && <MypageMain />}
+                        {mypageCategory === "updateMemberForm" && <UpdateMemberForm />}
+                        {mypageCategory === "likeListForm" && <LikeListForm />}
+                        {mypageCategory === "replyListForm" && <ReplyListForm />}
+                        {mypageCategory === "gift" && <Gift />}
+                    </div>
+                )
+            }
         </div>
     )
 }

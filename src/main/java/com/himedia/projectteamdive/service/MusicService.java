@@ -1,15 +1,21 @@
 package com.himedia.projectteamdive.service;
 
+import com.himedia.projectteamdive.dto.AlbumDto;
+import com.himedia.projectteamdive.dto.ArtistDto;
+import com.himedia.projectteamdive.dto.MusicDto;
+import com.himedia.projectteamdive.dto.PlaylistDto;
 import com.himedia.projectteamdive.entity.*;
 import com.himedia.projectteamdive.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -17,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@EnableScheduling
 @Service
 @Transactional
 public class MusicService {
@@ -34,9 +41,12 @@ public class MusicService {
     PlaycountlistRepository pcr;
 
     public void insertMusic(Music music) {
+        Artist artist=arr.findByArtistId(music.getArtist().getArtistId());
+        Album album=ar.findByAlbumId(music.getAlbum().getAlbumId());
+        music.setArtist(artist);
+        music.setAlbum(album);
         Music m=mr.save(music);
-        Album album= m.getAlbum();
-        album.addAlbum(music);
+
 
         Allpage allpage=new Allpage();
         allpage.setEntityId(m.getMusicId());
@@ -44,27 +54,39 @@ public class MusicService {
         allr.save(allpage);
     }
 
-    public void insertAlbum(Album album) {
+
+    public Album insertAlbum(Album album) {
+        Artist artist=arr.findByArtistId(album.getArtist().getArtistId());
+        album.setArtist(artist);
         Album a=ar.save(album);
+
+
         Allpage allpage=new Allpage();
         allpage.setEntityId(a.getAlbumId());
         allpage.setPagetype(Arrays.asList(Pagetype.ALBUM));
         allr.save(allpage);
+        return a;
     }
 
-    public void insertArtist(Artist artist) {
+    public Artist insertArtist(Artist artist) {
         Artist a=arr.save(artist);
         Allpage allpage=new Allpage();
         allpage.setEntityId(a.getArtistId());
         allpage.setPagetype(Arrays.asList(Pagetype.ARTIST));
         allr.save(allpage);
+        return a;
     }
 
     @Autowired
     MemberRepository memr;
-    public void insertPlayList(String username) {
+    public void insertPlayList(String username, Playlist playlist) {
         Member member = memr.findByMemberId(username);
-        Playlist playList= pr.save(new Playlist());
+        Playlist playList= pr.save(new Playlist().builder()
+                .title(playlist.getTitle())
+                .content(playlist.getContent())
+                .coverImage(playlist.getCoverImage())
+                .member(member)
+                .build());
         playList.setMember(member);
         Allpage allpage=new Allpage();
         allpage.setEntityId(playList.getPlaylistId());
@@ -73,11 +95,23 @@ public class MusicService {
     }
 
 
-
-    public void addPlayCount(HashMap<Integer,Integer> playCount) {
+    @Autowired
+    MemberRecentMusicsRepository mrmr;
+    public void addPlayCount(HashMap<Integer,Integer> playCount,String memberId) {
         playCount.forEach((musicId,playcountToday)->{
             Music music= mr.findByMusicId(musicId);
             if(music!=null) {
+
+                MemberRecentMusics recentMusic=MemberRecentMusics.builder()
+                        .member(memr.findByMemberId(memberId))
+                        .musicId(musicId).build();
+                mrmr.save(recentMusic);
+                List<MemberRecentMusics> recentMusics=mrmr.findByMember_MemberIdOrderByIdAsc(memberId);
+                if(recentMusics.size()>30){
+                    MemberRecentMusics recentMusic2=recentMusics.get(0);
+                    mrmr.delete(recentMusic2);
+                }
+
                 music.setPlayCount(music.getPlayCount()+ playcountToday);
                 long currentTimeMillis = System.currentTimeMillis();
                 Timestamp indate = new Timestamp(currentTimeMillis);
@@ -85,9 +119,9 @@ public class MusicService {
                 LocalDateTime midnightLocalDateTime = indate.toLocalDateTime().toLocalDate().atStartOfDay();
                 indate= Timestamp.valueOf(midnightLocalDateTime);
 
-                Playcountlist playcountlist= pcr.findByMusic_MusicIdAndIndate(musicId,indate);
+                Playcountlist playcountlist= pcr.findByMusicAndMemberIdAndIndate(music,memberId,indate);
                 if(playcountlist==null){
-                    Playcountlist playcountlist2=new Playcountlist(music,indate,1);
+                    Playcountlist playcountlist2=new Playcountlist(music,memberId,indate,playcountToday);
                     pcr.save(playcountlist2);
                 }else{
                     playcountlist.setPlayCount(playcountlist.getPlayCount()+playcountToday);
@@ -96,11 +130,14 @@ public class MusicService {
 
         });
     }
-//    // 자정에 playCountDay를 초기화
-//    @Scheduled(cron = "0 0 0 * * *") // 매일 자정
-//    public void resetPlayCountDay() {
-//        mr.resetPlayCountDay();
-//    }
+
+    @Scheduled(cron = "0 0 0 * * ?")  // 매일 자정에 실행
+    public void deleteOldPages() {
+        LocalDate thirtyDaysAgo = LocalDate.now().minusDays(30);
+        List<Playcountlist> oldPages = pcr.findAllByIndateBefore(thirtyDaysAgo);
+        pcr.deleteAll(oldPages);
+    }
+
 
     public HashMap<String, Object> getMusicChart() {
         HashMap<String, Object> chart=new HashMap<>();
@@ -120,35 +157,35 @@ public class MusicService {
 
         chartDays = new Timestamp(System.currentTimeMillis() - (24L * 60 * 60 * 1000)); // 1일 전
         //일간차트
-        chart.put("Top100toDay",pcr.findTop100ByMusicWeekCart(chartDays, pageable));
+        chart.put("Top100toDay",pcr.findTop100ByMusictoday(chartDays, pageable));
 
         return chart;
     }
 
-    public List<Album> getAlbumChart() {
+    public List<AlbumDto> getAlbumChart() {
         return ar.findTop10ByMusicPlayCount();
     }
 
 
-    public Artist getArtist(int artistId) {
-        return arr.findByArtistId(artistId);
+    public ArtistDto getArtist(int artistId) {
+        return new ArtistDto(arr.findByArtistId(artistId));
     }
 
-    public Album getAlbum(int albumId) {
-        return  ar.findByAlbumId(albumId);
+    public AlbumDto getAlbum(int albumId) {
+        return  new AlbumDto(ar.findByAlbumId(albumId));
     }
 
-    public Music getMusic(int musicId) {
-        return  mr.findByMusicId(musicId);
+    public MusicDto getMusic(int musicId) {
+        return  new MusicDto(mr.findByMusicId(musicId));
     }
 
     public HashMap<String, Object> search(String key) {
         HashMap<String, Object> result=new HashMap<>();
-        result.put("artist",arr.findByArtistNameContainingIgnoreCase("%"+key+"%"));
-        result.put("album",ar.findByTitleContainingIgnoreCase("%"+key+"%"));
-        result.put("music",mr.findByTitleContainingIgnoreCase("%"+key+"%"));
-        result.put("musiclyrics",mr.findByLyricsContainingIgnoreCase("%"+key+"%"));
-        result.put("playlist",pr.findByTitleContainingIgnoreCase("%"+key+"%"));
+        result.put("artist",arr.findByArtistNameContainingIgnoreCase(key));
+        result.put("album",ar.findByTitleContainingIgnoreCase(key));
+        result.put("music",mr.findByTitleContainingIgnoreCase(key));
+        result.put("musiclyrics",mr.findByLyricsContainingIgnoreCase(key));
+        result.put("playlist",pr.findByTitleContainingIgnoreCase(key));
         return result;
     }
 
@@ -157,7 +194,8 @@ public class MusicService {
         a.setArtistName(artist.getArtistName());
         a.setDebut(artist.getDebut());
         a.setCountry(artist.getCountry());
-
+        a.setImage(artist.getImage());
+        a.setContent(artist.getContent());
     }
 
     public void updateAlbum(Album album) {
@@ -173,26 +211,30 @@ public class MusicService {
         Music m=mr.findByMusicId(music.getMusicId());
         m.setAlbum(music.getAlbum());
         m.setTitle(music.getTitle());
-        m.setImage( music.getImage());
         m.setGenre(music.getGenre());
         m.setLyrics(music.getLyrics());
         m.setTitleMusic(music.isTitleMusic());
     }
 
     public void deleteArtist(Artist artist) {
+        allr.deleteById(artist.getArtistId());
         arr.delete(artist);
+
     }
 
     public void deleteAlbum(Album album) {
+        allr.deleteById(album.getAlbumId());
         ar.delete(album);
     }
 
     public void deleteMusic(Music music) {
+        allr.deleteById(music.getMusicId());
         mr.delete(music);
     }
 
     public void deletePlaylist(int playlistId) {
         Playlist playlist=pr.findByPlaylistId(playlistId);
+        allr.deleteById(playlist.getPlaylistId());
         pr.delete(playlist);
     }
 
@@ -229,5 +271,50 @@ public class MusicService {
         Playlist playlist=pr.findByPlaylistId(playlistId);
         List<Music> updatedMusicList = musicIds.stream().map(musicid -> mr.findByMusicId(musicid)).collect(Collectors.toList());
         playlist.setMusicList(updatedMusicList);
+    }
+
+    public HashMap<String, Object> getAllMusic() {
+        HashMap<String, Object> result=new HashMap<>();
+        List<MusicDto>musicDtoList= mr.findAll().stream()
+                .map(MusicDto::new).collect(Collectors.toList());
+        result.put("music",musicDtoList);
+        return result;
+    }
+
+    public HashMap<String, Object> getAllArtist() {
+        HashMap<String, Object> result=new HashMap<>();
+        List<ArtistDto> artistDtoList = arr.findAll().stream()
+                .map(artist -> new ArtistDto(artist))  // Artist를 ArtistDTO로 변환
+                .collect(Collectors.toList());
+        result.put("artist",artistDtoList);
+        return result;
+    }
+
+    public HashMap<String, Object> getAllAlbum() {
+        HashMap<String, Object> result=new HashMap<>();
+        List<AlbumDto> albumDtoList = ar.findAll().stream()
+                        .map(AlbumDto::new).collect(Collectors.toList());
+        result.put("album",albumDtoList);
+        return result;
+    }
+
+    public HashMap<String, Object> getCurrentPlaylist(List<HashMap<String, Object>> playlist) {
+        HashMap<String, Object> result=new HashMap<>();
+        for (HashMap<String, Object> playlistMap : playlist) {
+            Music music=mr.findByMusicId((int) playlistMap.get("musicId"));
+            playlistMap.put("src",music.getBucketPath());
+            playlistMap.put("title",music.getTitle());
+            playlistMap.put("artist",music.getArtist());
+        }
+        result.put("playlist",playlist);
+        return result;
+    }
+
+    public HashMap<String, Object> getMemberPlaylist(String memberId) {
+        HashMap<String, Object> result=new HashMap<>();
+        List<PlaylistDto>list=pr.findAllByMember_MemberId(memberId);
+        result.put("playlist",list);
+        return result;
+
     }
 }

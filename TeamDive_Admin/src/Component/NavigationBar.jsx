@@ -20,7 +20,7 @@ const NavigationBar = ({ SidebarOpen, setSidebarOpen }) => {
 
     return (
         <nav className="navigationBar">           
-            <h2>{` 현재 관리자: ${userName} `}</h2>
+            <p>{`${userName} `}</p>
             <button onClick={onLogout}>로그아웃</button>
         </nav>
     )

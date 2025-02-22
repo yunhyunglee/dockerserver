@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-import { loginAction } from '../../store/userSlice'
+import { loginAction } from '../../store/UserSlice'
 import { Cookies } from 'react-cookie'
 import axios from 'axios'
 

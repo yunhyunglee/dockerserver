@@ -22,7 +22,6 @@ public class Music {
     @Column(name = "music_id")
     private int musicId;
     private String title;
-    private String image;
     @Column(name = "play_count")
     private int playCount=0;
 //    @Column(name = "play_count_day")
@@ -35,8 +34,12 @@ public class Music {
     private String lyrics;
     @Column(name = "title_music")
     private boolean titleMusic =false;
+    @Column(name ="track_number")
     private int trackNumber=0;
+    @Column(name ="bucket_path")
     private String bucketPath;
+    @Column(length = 1000)
+    private String content;
 
     @ManyToOne
     @JoinColumn(name = "album_id")

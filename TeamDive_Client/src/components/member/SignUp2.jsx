@@ -7,17 +7,20 @@ import DaumPostcode from "react-daum-postcode";
 
 const SignUpStep2 = ({ setStep, step1Data }) => {
     const [image, setImage] = useState(null); // 업로드할 파일 저장
+    const [preview, setPreview] = useState(""); // 이미지 미리보기 URL
     const [profileImage, setProfileImage] = useState(""); // 서버에서 반환된 이미지 URL 저장
     const [address, setAddress] = useState("");
     const [addressDetail, setAddressDetail] = useState("");
     const [addressExtra, setAddressExtra] = useState("");
     const [zipCode, setZipCode] = useState("");
+    const [introduction, setIntroduction] = useState("");
     const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
     const [isOpen, setIsOpen]=useState(false);
 
     console.log("step1Data:", step1Data);
+   
 
     function toggle(){
         setIsOpen( !isOpen )
@@ -47,21 +50,34 @@ const SignUpStep2 = ({ setStep, step1Data }) => {
         setIsOpen(false);
     }
 
-    // 📌 파일 업로드 핸들러 수정
+    // 파일 업로드 및 미리보기 핸들러
     const fileUp = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
 
-        setImage(file); // 파일 객체 저장
+        // 파일 객체 상태 저장
+        setImage(file);
+
+        // FileReader를 사용하여 미리보기 URL 생성
+        const reader = new FileReader();
+        reader.onloadend = () => {
+        setPreview(reader.result);
+        };
+        reader.readAsDataURL(file);
+
+        // 서버 업로드 처리
         const formData = new FormData();
         formData.append("image", file);
 
         try {
-            const result = await axios.post("/api/member/fileUp", formData);
-            setProfileImage(`http://localhost:8070/profileImage/${result.data.image}`);
+        const result = await axios.post("/api/member/fileUp", formData);
+        // 서버에서 반환된 이미지 URL 저장
+        setProfileImage(`http://localhost:8070/profileImage/${result.data.image}`);
+        setImage(result.data.image);
+        console.log("image", image);
         } catch (error) {
-            console.error("파일 업로드 실패:", error);
-            alert("파일 업로드에 실패했습니다.");
+        console.error("파일 업로드 실패:", error);
+        alert("파일 업로드에 실패했습니다.");
         }
     };
 
@@ -74,10 +90,9 @@ const SignUpStep2 = ({ setStep, step1Data }) => {
         return emailDomain === "직접입력" ? `${emailId}@${customDomain}` : `${emailId}@${emailDomain}`;
     };
     
-    const emailFull = getFullEmail();
     
 
-    // 📌 최종 회원가입 처리
+    // 최종 회원가입 처리
     const handleSubmit = async (e) => {
         e.preventDefault();
         
@@ -93,19 +108,19 @@ const SignUpStep2 = ({ setStep, step1Data }) => {
         console.log("step1Data in SignUpStep1:", step1Data);
         
         formData.set('email', emailFull);
-        formData.append("image", image);
-        formData.append("zipCode", zipCode);
-        formData.append("address", address);
-        formData.append("addressDetail", addressDetail);
-        formData.append("addressExtra", addressExtra);
-
         // 이미지가 있을 경우 추가
         if (image) {
             formData.append("image", image);
         }
+        formData.append("zipCode", zipCode);
+        formData.append("address", address);
+        formData.append("addressDetail", addressDetail);
+        formData.append("addressExtra", addressExtra);
+        formData.append("introduction", introduction);
 
         try {
             setLoading(true);
+            console.log("image", image);
             await axios.post("/api/member/join", formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
@@ -126,17 +141,24 @@ const SignUpStep2 = ({ setStep, step1Data }) => {
             </div>
 
             {/* 프로필 이미지 업로드 */}
-            {/* <div className={joinStyles.formGroup}>
+            <div className={joinStyles.formGroup}>
                 <label htmlFor="image">프로필 이미지 (선택)</label>
-                <input type="file" id="image" onChange={fileUp} />
-                {profileImage ? (
-                    <div>
-                        <img src={profileImage} alt="Profile Preview" />
-                    </div>
+                <input type="file" id="image" onChange={(fileUp)} />
+                {preview ? (
+                    <img
+                    src={preview}
+                    alt="Preview"
+                    style={{
+                        width: "150px",
+                        height: "150px",
+                        objectFit: "cover",
+                        borderRadius: "10px",
+                    }}
+                    />
                 ) : (
-                    <>프로필 이미지 없음</>
+                    <>이미지 미리보기가 없습니다.</>
                 )}
-            </div> */}
+            </div>
 
             {/* 주소 입력 */}
             <div className={joinStyles.formGroup}>
@@ -187,6 +209,19 @@ const SignUpStep2 = ({ setStep, step1Data }) => {
                     value={addressExtra}
                     onChange={(e) => setAddressExtra(e.target.value)}
                 />
+            </div>
+
+            <div className={joinStyles.formGroup}>
+                <label htmlFor="introduction">소개</label>
+                <textarea
+                    id="introduction"
+                    value={introduction}
+                    rows="5" 
+                    cols="40" 
+                    placeholder="자기소개를 입력해주세요."
+                    onChange={(e) => setIntroduction(e.target.value)}
+                >    
+                </textarea>
             </div>
 
             {/* 버튼 그룹 */}

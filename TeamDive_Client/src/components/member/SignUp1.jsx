@@ -13,7 +13,7 @@ const SignUpStep1 = ({ setStep, step1Data, setStep1Data }) => {
     const { memberId, password, passwordCheck, emailId, emailDomain, customDomain, name, nickname, birth, gender, phone } = step1Data;
 
     // 정규식 정의
-    const idRegex = /^[a-zA-Z0-9]{4,20}$/;
+    const idRegex = /^(?=.*[a-zA-Z])[a-zA-Z0-9]{4,20}$/;
     const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
     const emailIdRegex = /^[a-zA-Z0-9_.+-]+$/;
     const nameRegex = /^[가-힣a-zA-Z\s]{2,}$/;
@@ -97,6 +97,8 @@ const SignUpStep1 = ({ setStep, step1Data, setStep1Data }) => {
           if(result.data.msg === 'no'){
               setMessageId('중복된 아이디입니다.');
               setStep1Data(prevState => ({ ...prevState, memberId: '' }));
+          }else if(result.data.msg ==='yes' && memberId.length <4){
+              setMessageId('아이디는 4~20자의 영문과 숫자조합이 필요합니다.');
           }else{
               setMessageId('회원가입이 가능한 아이디입니다.');
           }

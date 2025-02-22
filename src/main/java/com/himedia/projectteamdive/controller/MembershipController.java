@@ -1,15 +1,14 @@
 package com.himedia.projectteamdive.controller;
 
+import com.himedia.projectteamdive.entity.Member;
 import com.himedia.projectteamdive.entity.Membership_user;
 import com.himedia.projectteamdive.service.MembershipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 
 @RestController
 @RequestMapping("/membership")
@@ -26,7 +25,7 @@ public class MembershipController {
         return result;
     }
 
-    /* 활성화된 멤버십이 있는지 확인 */
+    /* 카테고리 기준으로 활성화된 멤버십이 있는지 확인 */
     @GetMapping("/checkActiveMembership")
     public HashMap<String, Object> checkActiveMembership(
             @RequestParam("memberId") String memberId,
@@ -42,4 +41,37 @@ public class MembershipController {
         return result;
     }
 
+    /* 로그인 유저의 활성화 멤버십 확인 */
+    @GetMapping("/getActiveMembership")
+    public HashMap<String, Object> getActiveMembership(
+            @RequestParam("memberId") String memberId) {
+        HashMap<String, Object> result = new HashMap<>();
+        List<Membership_user>list = mss.getActiveMembership(memberId);
+        result.put("memberShipUserList", list);
+        System.out.println(result);
+        return result;
+    }
+
+    /* 선물 리스트 출력 */
+    @GetMapping("/getGiftList")
+    public HashMap<String, Object> getGiftList(@RequestParam("giftTo") String giftTo){
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("giftList", mss.getGiftList(giftTo));
+        return result;
+    }
+
+    /* 멤버십 활성화 */
+    @PostMapping("/membershipActivate")
+    public HashMap<String, Object> membershipActivate(
+            @RequestParam("giftId") int giftId,
+            @RequestParam("membershipCategory") String membershipCategory) {
+        HashMap<String, Object> result = new HashMap<>();
+        Boolean isActive = mss.membershipActive(giftId, membershipCategory);
+        if(isActive) {
+            result.put("message", "yes");
+        }else{
+            result.put("message", "no");
+        }
+        return result;
+    }
 }

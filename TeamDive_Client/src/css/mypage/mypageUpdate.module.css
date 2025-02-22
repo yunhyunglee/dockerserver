@@ -1,0 +1,164 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
+
+.updateMemberForm {
+  display: flex;
+  flex-direction: row;
+  background: linear-gradient(135deg, #000, #1a1a1a);
+  font-family: 'Montserrat', sans-serif;
+  padding: 20px;
+}
+
+.imageContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  
+}
+
+.imageContainer img {
+  width: 300px;
+  height: 300px;
+  border-radius: 10px;
+  object-fit: cover;
+  transition: transform 0.3s ease-in-out;
+}
+
+.formGroupContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 500px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.formGroup label {
+  margin-bottom: 5px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #ddd;
+}
+
+.formGroup input,
+.formGroup select,
+.formGroup textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 15px;
+  outline: none;
+  transition: all 0.3s ease-in-out;
+}
+
+.formGroup input:focus,
+.formGroup select:focus,
+.formGroup textarea:focus {
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 10px rgba(255, 64, 129, 0.5);
+}
+
+.zipCodeContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.zipCode{
+    display: flex;
+    flex-direction: row;
+}
+
+.zipCodeContainer input {
+  flex: 3;
+  min-width: 0;
+}
+
+.zipCodeContainer button {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #ff4081, #ff79a9);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  text-align: center;
+}
+
+.zipCodeContainer button:hover {
+  background: linear-gradient(90deg, #ff79a9, #ff4081);
+  transform: scale(1.05);
+}
+
+/* 버튼 스타일 */
+.buttonGroup {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-start;
+  gap: 12px;
+}
+
+.button,
+.deleteButton {
+  padding: 12px 22px;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 5px 12px rgba(255, 64, 129, 0.5);
+}
+
+/* 저장 버튼 */
+.button {
+  background: linear-gradient(90deg, #ff4081, #ff79a9);
+}
+
+.button:hover {
+  background: linear-gradient(90deg, #ff79a9, #ff4081);
+  transform: scale(1.05);
+}
+
+.button:active {
+  transform: scale(0.95);
+}
+
+
+.deleteButton {
+  background: linear-gradient(90deg, #ff4b2b, #ff416c);
+}
+
+.deleteButton:hover {
+  background: linear-gradient(90deg, #ff416c, #ff4b2b);
+  transform: scale(1.05);
+}
+
+.deleteButton:active {
+  transform: scale(0.95);
+}
+
+/* 페이드인 애니메이션 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+

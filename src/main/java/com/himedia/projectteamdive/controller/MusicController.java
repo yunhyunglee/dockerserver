@@ -1,5 +1,6 @@
 package com.himedia.projectteamdive.controller;
 
+import com.himedia.projectteamdive.dto.AlbumDto;
 import com.himedia.projectteamdive.entity.*;
 import com.himedia.projectteamdive.service.MusicService;
 import com.himedia.projectteamdive.service.S3Service;
@@ -20,7 +21,7 @@ public class MusicController {
 
     @Autowired
     MusicService ms;
-//=============================================admin 사용기능
+    //=============================================admin 사용기능
     @PostMapping("/insertMusic")
     public HashMap<String, Object> insertMusic(@RequestBody Music music) {
         HashMap<String, Object> map = new HashMap<>();
@@ -32,15 +33,17 @@ public class MusicController {
     @PostMapping("/insertAlbum")
     public HashMap<String, Object> insertAlbum(@RequestBody Album album) {
         HashMap<String, Object> map = new HashMap<>();
-        ms.insertAlbum(album);
+        Album savedAlbum=ms.insertAlbum(album);
+        map.put("album",savedAlbum);
         map.put("msg","yes");
         return map;
     }
     @PostMapping("/insertArtist")
     public HashMap<String, Object> insertArtist(@RequestBody Artist artist) {
         HashMap<String, Object> map = new HashMap<>();
-        ms.insertArtist(artist);
+        Artist savedArtist = ms.insertArtist(artist);
         map.put("msg","yes");
+        map.put("artist", savedArtist);
         return map;
     }
 
@@ -50,6 +53,7 @@ public class MusicController {
         HashMap<String, Object> map = new HashMap<>();
         ms.updateArtist(artist);
         map.put("msg","yes");
+        map.put("artist", artist);
         return map;
     }
     @PostMapping("/updateAlbum")
@@ -57,6 +61,7 @@ public class MusicController {
         HashMap<String, Object> map = new HashMap<>();
         ms.updateAlbum(album);
         map.put("msg","yes");
+        map.put("album", album);
         return map;
     }
     @PostMapping("/updateAlbumReorder")
@@ -73,6 +78,7 @@ public class MusicController {
         HashMap<String, Object> map = new HashMap<>();
         ms.updateMusic(music);
         map.put("msg","yes");
+        map.put("music",music);
         return map;
     }
 
@@ -103,7 +109,7 @@ public class MusicController {
         map.put("msg","yes");
         return map;
     }
-    @DeleteMapping("/deleteMusic")
+    @PostMapping("/deleteMusic")
     public HashMap<String, Object> deleteMusic(@RequestBody Music music) {
         HashMap<String, Object> map = new HashMap<>();
         String s = music.getBucketPath().replace("https://d9k8tjx0yo0q5.cloudfront.net/","https://divestreaming.s3.ap-northeast-2.amazonaws.com/");
@@ -136,14 +142,22 @@ public class MusicController {
         }
         return map;
     }
+    @DeleteMapping("/deleteImage")
+    public HashMap<String, Object> deleteImage(@RequestParam("image")String image) {
+        HashMap<String, Object> map = new HashMap<>();
+        String s = image.replace("https://d9k8tjx0yo0q5.cloudfront.net/","https://divestreaming.s3.ap-northeast-2.amazonaws.com/");
+        ss.deleteFile(s);
+        map.put("msg","yes");
+        return map;
+    }
 
 
     //=====================================================
 
     @PostMapping("/insertPlaylist")
-    public HashMap<String, Object> insertPlayList(@AuthenticationPrincipal User user) {
+    public HashMap<String, Object> insertPlayList(@RequestParam("memberId")String memberId,@RequestBody Playlist playlist) {
         HashMap<String, Object> map = new HashMap<>();
-        ms.insertPlayList(user.getUsername());
+        ms.insertPlayList(memberId,playlist);
         map.put("msg","yes");
         return map;
     }
@@ -190,11 +204,12 @@ public class MusicController {
 
 
     //음악 재생수 증가메서드
-    @PostMapping("/addplayCount")
-    public HashMap<String, Object> addplayCount(@RequestBody HashMap<Integer,Integer> playCount) {
+    @PostMapping("/addPlayCount")
+    public HashMap<String, Object> addPlayCount(@RequestBody HashMap<Integer,Integer> playCount,@RequestParam(value = "memberId",required = false)String memberId) {
         System.out.println(playCount);
+        if(memberId==null) {memberId="";}
         HashMap<String, Object> map = new HashMap<>();
-        ms.addPlayCount(playCount);
+        ms.addPlayCount(playCount,memberId);
         map.put("msg","yes");
         return map;
     }
@@ -208,7 +223,7 @@ public class MusicController {
     @GetMapping("/getAlbumChart")
     public HashMap<String, Object> getAlbumChart() {
         HashMap<String, Object> map = new HashMap<>();
-        List<Album>albumList= ms.getAlbumChart();
+        List<AlbumDto>albumList= ms.getAlbumChart();
         map.put("albumList",albumList);
         return map;
     }
@@ -231,15 +246,39 @@ public class MusicController {
         map.put("music",ms.getMusic(musicId));
         return map;
     }
+    @GetMapping("/getAllMusic")
+    public HashMap<String, Object> getAllMusic() {
+        HashMap<String, Object> map = ms.getAllMusic();
+        return map;
+    }
 
     @GetMapping("/getSearch")
     public HashMap<String, Object> getSearch(@RequestParam("key")String key) {
         HashMap<String, Object> map = ms.search(key);
         return map;
     }
+    @GetMapping("/getAllArtist")
+    public HashMap<String, Object> getAllArtist() {
+        HashMap<String,Object> map= ms.getAllArtist();
+        return map;
+    }
+    @GetMapping("/getAllAlbum")
+    public HashMap<String, Object> getAllAlbum() {
+        HashMap<String,Object> map= ms.getAllAlbum();
+        return map;
+    }
 
+    @PostMapping("/getCurrentPlaylist")
+    public HashMap<String, Object> getCurrentPlaylist(@RequestBody List<HashMap<String,Object>> playlist) {
+        HashMap<String, Object> map = ms.getCurrentPlaylist(playlist);
+        return map;
+    }
 
-
+    @GetMapping("/getMemberPlaylist")
+    public HashMap<String, Object> getMemberPlaylist(@RequestParam("memberId")String memberId) {
+        HashMap<String,Object> map= ms.getMemberPlaylist(memberId);
+        return map;
+    }
 
 
 

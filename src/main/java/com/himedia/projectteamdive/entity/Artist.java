@@ -1,5 +1,7 @@
 package com.himedia.projectteamdive.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,12 +26,16 @@ public class Artist {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "artist_id")
     private int artistId;
+    @Column(name = "artist_name")
     private String artistName;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private Timestamp debut;
     private String country;
     private String image;
+    private String content;
 
-    @OneToMany(mappedBy = "artist",  cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "artist",  cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
+    @Builder.Default
     List<Album> albums=new ArrayList<>();
 
     // 앨범 추가 메서드
@@ -43,8 +49,17 @@ public class Artist {
         albums.remove(album); // 리스트에서 제거
     }
 
-    @OneToMany(mappedBy = "artist", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "artist", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
+    @Builder.Default
     List<Music> musicList=new ArrayList<>();
+
+    public void addMusic(Music music) {
+        musicList.add(music);
+        music.setArtist(this);
+    }
+    public void removeMusic(Music music) {
+        musicList.remove(music);
+    }
 
 
 

@@ -1,10 +1,7 @@
 package com.himedia.projectteamdive.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -45,11 +42,10 @@ public class Member {
     private String provider;
     @Column(name = "member_key")
     private String memberKey;
+    private String introduction;
 
-    @ElementCollection(fetch = FetchType.LAZY)
+    @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
     private List<RoleName> memberRoleList = new ArrayList<RoleName>();
 
-    @OneToMany(mappedBy = "member",cascade = CascadeType.ALL, orphanRemoval = true)
-    List<Playlist> playLists=new ArrayList<>();
 }

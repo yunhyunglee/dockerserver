@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Cookies } from 'react-cookie';
 import { useSelector, useDispatch } from 'react-redux';
-import { loginAction } from '../../store/userSlice';
+import { loginAction } from '../../store/UserSlice';
 
 
 const LoginPage =() => {
@@ -82,4 +82,4 @@ const LoginPage =() => {
       );
 }
 
-export { LoginPage };
+export default LoginPage;

@@ -1,177 +1,111 @@
 // src/components/MainPage.jsx
 import React, { useEffect, useState } from 'react';
-import NoticeBoard from './NoticeBoard';
-import TodayWhatToListen from './TodayWhatToListen';
+import Top100Section from './Top100Section';
+import MyRecentMusicSection from './MyRecentMusicSection.jsx';
 import LatestMusic from './LatestMusic.jsx';
 import LatestAlbums from './LatestAlbums';
 import RecommendedPlaylists from './RecommendedPlaylists';
 import styles from '../../../css/mainPage/mainPage.module.css';
-import lion from '../../../../public/image/kakao_lion.png';
-import axios from 'axios';
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+
 
 const MainPage = () => {
-  
-    const [notice, setNotice] = useState([]);
-    const [randomMusic, setRandomMusic] = useState(null);
+    const loginUser = useSelector(state => state.user);
+
+    const [showAdModal, setShowAdModal] = useState(false); // 초기값을 false로 설정
+
+    useEffect(() => {
+        // 0.5초 뒤에 광고 모달 띄우기
+        const timer = setTimeout(() => {
+            setShowAdModal(true);
+        }, 300);
+
+        return () => clearTimeout(timer); // 컴포넌트 언마운트 시 타이머 정리
+    }, []);
+
+
+    // 더미 데이터 (나중에 실제 API 호출로 대체)
     const [latestMusic, setLatestMusic] = useState([]);
     const [album, setAlbum] = useState([]);
     const [playList, setPlayList] = useState([]);
 
-    const loginUser = useSelector( state => state.user );
-
-    // if (!loginUser.memberId) {
-    // console.log('없음')
-    // } else {
-    //     console.log("있음")
-    // }
-
-
-    // useEffect(()=>{
-    //     axios.get(`api/notice/ `)
-    //     .then((result)=>{
-
-    //     }).catch((err)=>{console.log.err})    
-
-
-
-    //     axios.get(`api/music/랜덤 `)
-    //     .then((result)=>{
-
-    //     }).catch((err)=>{console.log.err})    
-
-
-
-    //     axios.get(`api/music/최신 `)
-    //     .then((result)=>{
-
-    //     }).catch((err)=>{console.log.err})    
-
-
-
-    //     axios.get(`api/album/최신 `)
-    //     .then((result)=>{
-
-    //     }).catch((err)=>{console.log.err})    
-
-
-
-    //     axios.get(`api/playList/랜덤 `)
-    //     .then((result)=>{
-
-    //     }).catch((err)=>{console.log.err})    
-    // },[])
-
-
     useEffect(() => {
-       
-        setNotice([
-            { noticeId: 1, title: '서비스 점검 안내', content: '내일 3시에 서버 점검이 있습니다.', indate: '2025-02-12', link: '/notice/1' },
-            { noticeId: 2, title: '신규 기능 업데이트', content: '새로운 기능이 추가되었습니다.', indate: '2025-02-10', link: '/notice/2' }
-        ]);
-
-        setRandomMusic({
-          
-          "musicId": 101,
-          "title": "오늘의 추천 곡",
-          "artist": "Random Artist",
-          "image": lion,
-          "playCount": 1234,
-          "genre": "Pop",
-          "lyrics": "여기에 가사가 들어갑니다.",
-          "like": 256,
-          "album": {
-            "albumId": 201,
-            "releaseDate": "2025-02-11"
-          }
-        });
-
+        // 최신등록음악 더미 데이터
         setLatestMusic([
-          {
-              musicId: 102,
-              title: '최신곡 1',
-              artist: 'Artist A',
-              image: lion,
-              playCount: 500,
-              genre: 'Rock',
-              lyrics: '...',
-              titleMusic: false
-          },
-          {
-              musicId: 103,
-              title: '최신곡 2',
-              artist: 'Artist B',
-              image: lion,
-              playCount: 750,
-              genre: 'Hip-hop',
-              lyrics: '...',
-              titleMusic: false
-          }
+        { musicId: 102, title: '최신곡 1', artist: 'Artist A', image: '/public/image/album/album1.jpg' },
+        { musicId: 103, title: '최신곡 2', artist: 'Artist B', image: '/public/image/album/album2.jpg' },
         ]);
 
+        // 최신등록앨범 더미 데이터
         setAlbum([
-            {
-                albumId: 201,
-                title: '신규 앨범 1',
-                image: lion,
-                indate: '2025-02-11',
-              
-            },
-            {
-                albumId: 202,
-                title: '신규 앨범 2',
-                image: lion,
-                indate: '2025-02-10'
-            }
+        { albumId: 201, title: '신규 앨범 1', image: '/public/image/album/album3.jpg' },
+        { albumId: 202, title: '신규 앨범 2', image: '/public/image/album/album4.jpg' },
         ]);
 
+        // 추천플레이리스트 더미 데이터
         setPlayList([
-            {
-                playListId: 301,
-                title: 'Chill Vibes',
-                
-            },
-            {
-                playListId: 302,
-                title: 'Workout Hits'
-            }
+        { playListId: 301, title: 'Chill Vibes' },
+        { playListId: 302, title: 'Workout Hits' },
         ]);
     }, []);
 
+    function AdModal() {
+        return (
+        <div className={styles.adModalOverlay}>
+            <div className={styles.adModal}>
+            <button className={styles.closeButton} onClick={() => setShowAdModal(false)}>
+                X
+            </button>
+            <div style={{ textAlign: 'center', marginTop: '40px' }}>
+                <Link to={'/membership/all'}><img src='/public/image/adImage.png' style={{width: '100%', height: '100%'}}/></Link>
+            </div>
+            </div>
+        </div>
+        );
+    }
+    
 
 
     return (
-
         <div className={styles.mainPageContainer}>
-            {/* <div className={styles.topSection}>
-                <section className={styles.noticeSection}>
-                    <h2>공지사항</h2>
-                    <NoticeBoard notice={notice} />
-                </section>
+            {!loginUser.memberId ? (showAdModal && (<AdModal/>)) : ''}
+            
+        <div className={styles.topSection}>
+
+            { !loginUser.memberId ? "" :
+            <section className={styles.conditionalSection1}>
+                <MyRecentMusicSection />  
+            </section>
+            }
+
+            <section className={styles.conditionalSection}>
                 
-                <section className={styles.todayRandomSection}>
-                    <h2>오늘 뭐듣지?</h2>
-                    <TodayWhatToListen music={randomMusic} />
-                </section>
-            </div> */}
+                <Top100Section />
+                
+            </section>
 
-          
-              <section className={styles.section}>
-                  <h2>최신등록음악</h2>
-                  <LatestMusic music={latestMusic} />
-              </section>
-
-              <section className={styles.section}>
-                  <h2>최신등록앨범</h2>
-                  <LatestAlbums album={album} />
-              </section>
-
-              <section className={styles.section}>
-                  <h2>추천플레이리스트</h2>
-                  <RecommendedPlaylists playList={playList} />
-              </section>
         </div>
+
+        <section className={styles.section}>
+            <h2>최신등록음악</h2>
+            <LatestMusic music={latestMusic} />
+        </section>
+
+        <section className={styles.section}>
+            <h2>최신등록앨범</h2>
+            <LatestAlbums album={album} />
+        </section>
+
+        <section className={styles.section}>
+            <h2>추천플레이리스트</h2>
+            <RecommendedPlaylists playList={playList} />
+        </section>
+        
+        </div>
+
+    
     );
-  };
+};
 
 export default MainPage;
