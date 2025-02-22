@@ -133,7 +133,7 @@ public class MusicService {
 
     @Scheduled(cron = "0 0 0 * * ?")  // 매일 자정에 실행
     public void deleteOldPages() {
-        LocalDate thirtyDaysAgo = LocalDate.now().minusDays(30);
+        LocalDateTime thirtyDaysAgo = LocalDateTime.now().minusDays(30);
         List<Playcountlist> oldPages = pcr.findAllByIndateBefore(thirtyDaysAgo);
         pcr.deleteAll(oldPages);
     }
