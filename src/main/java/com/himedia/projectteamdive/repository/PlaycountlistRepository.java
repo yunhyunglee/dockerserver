@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface PlaycountlistRepository  extends JpaRepository<Playcountlist, Integer> {
@@ -27,7 +28,7 @@ public interface PlaycountlistRepository  extends JpaRepository<Playcountlist, I
     @Query("select new com.himedia.projectteamdive.dto.MusicChartDto(p.music, sum(p.playCount)) from Playcountlist p where p.indate >= :chartDays and p.music.artist.country<>'korea' group by p.music order by sum(p.playCount) desc")
     List<MusicChartDto> findTop100ByMusicChartnoKor(Timestamp chartDays, Pageable pageable);
 
-    List<Playcountlist> findAllByIndateBefore(LocalDate thirtyDaysAgo);
+    List<Playcountlist> findAllByIndateBefore(LocalDateTime thirtyDaysAgo);
 
     Playcountlist findByMusicAndMemberIdAndIndate(Music music, String memberId, Timestamp indate);
 
