@@ -95,33 +95,114 @@
     color: gray;
 }
 
-.payment {
-    text-align: right;
+.wrapper {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    margin-top: 20px;
+    border-top: 1px solid #999;
+}  
+
+.paymentContainer {
+    color: #ffffff;
+    padding: 10px;
+    border-radius: 16px;
+    width: 320px;
+}
+
+.section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.sectionTotal {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 10px;
+    padding: 20px 0 10px 0;
+    font-size: 18px;
+    font-weight: bold;
+    color: #ff0050;
+    border-top: 1px solid #2a2a2a;
+}
+
+.label {
+    font-size: 18px;
+    color: #b0b0b0;
+}
+
+.value {
+    font-size: 18px;
+    color: #ffffff;
+}
+
+.valueRed {
+    font-size: 18px;
+    color: #ff0050;
 }
 
 .totalPrice {
-    padding: 10px 0;
-    font-size: 18px;
+    font-size: 22px;
+    color: #ff0050;
     font-weight: bold;
-    border-top: 1px solid #999;
-    box-sizing: border-box;
 }
 
-.totalAmount {
-    color: red;
+.taxInfo {
+    font-size: 18px;
+    color: #888888;
+    text-align: right;
+    width: 100%;
+    margin-top: -12px;
+}
+
+.checkboxSection {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.checkbox {
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+}
+
+.termsButton {
+    margin-left: auto;
+    background-color: #2a2a2a;
+    color: #ffffff;
+    border: none;
+    padding: 4px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.termsButton:hover {
+    background-color: #3a3a3a;
 }
 
 .paymentButton {
-    background: #ff4081;
-    color: white;
+    width: 100%;
+    padding: 12px;
+    background-color: #3a3a3a;
+    color: #ffffff;
     border: none;
-    padding: 10px 20px;
+    border-radius: 12px;
+    font-size: 18px;
     cursor: pointer;
-    border-radius: 4px;
 }
-
+  
 .paymentButton:disabled {
-    background: gray;
+    background-color: #1f1f1f;
+    color: #555555;
     cursor: not-allowed;
+}
+  
+.paymentButton:not(:disabled):hover {
+    background-color: #ff0050;
+    transition: background-color 0.3s ease;
 }
   

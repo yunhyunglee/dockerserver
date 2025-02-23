@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 
-
 import jaxios from '../../util/JwtUtil';
 
 import storageStyle from "../../css/storage/storage.module.css";
@@ -15,8 +14,12 @@ const PendingMp3 = () => {
 
     const [musicList, setMusicList] = useState([]);
     const [selectedMusic, setSelectedMusic] = useState([]);
+    const [downloadMembership, setDownloadMembership] = useState(null);
+    const [membershipCount, setMembershipCount] = useState(0);
+    const [payCount, setPayCount] = useState(0);
     const totalPrice = selectedMusic.length * 770;
 
+    /* 장바구니 정보와 멤버십 정보 가져오기 */
     useEffect(() => {
         const fetchCartList = async () => {
             if (!loginUser) {
@@ -24,11 +27,16 @@ const PendingMp3 = () => {
                 navigate('/login');
             } else {
                 try {
-                    const response = await jaxios.get('/api/cart/getCartList', { params: { memberId: loginUser.memberId } });
+                    let response = await jaxios.get('/api/cart/getCartList', { params: { memberId: loginUser.memberId } });
                     setMusicList([...response.data.cartList]);
                     console.log('장바구니', response.data.cartList);
+                    
+                    response = await jaxios.get('/api/membership/getDownloadMembership', {
+                        params: { memberId: loginUser.memberId } });
+                    setDownloadMembership(response.data.downloadMembership);
+                    console.log('다운로드 멤버십', response.data.downloadMembership);
                 } catch (error) {
-                    console.error('장바구니 목록 가져오기 오류', error);
+                    console.error('장바구니 초기 데이터 불러오기', error);
                 }
             }
         };
@@ -36,6 +44,22 @@ const PendingMp3 = () => {
         fetchCartList();
     }, [loginUser, navigate]);
 
+    /* 유료결제 곡 수 체크 */
+    useEffect(
+        () => {
+            if(downloadMembership && selectedMusic.length !== 0){
+                if(downloadMembership.downloadCount > selectedMusic.length){
+                    setPayCount(0);
+                    setMembershipCount(selectedMusic.length);
+                }else{
+                    setPayCount(selectedMusic.length - downloadCount);
+                    setMembershipCount(selectedMusic.length);
+                }
+            }else{
+                setPayCount(0);
+            }
+        }, [selectedMusic]
+    );
 
     /* 전체선택 체크박스 토글 */
     const toggleSelectAll = (checked) => {
@@ -125,15 +149,36 @@ const PendingMp3 = () => {
                     </div>
                 )
             }
-            <div className={pendingStyle.payment}>
-                <div className={pendingStyle.totalPrice}>총 결제금액 :
-                    <span className={pendingStyle.totalAmount}> {totalPrice}원</span>
+            <div className={pendingStyle.wrapper}>
+                <div className={pendingStyle.paymentContainer}>
+                    <div className={pendingStyle.section}>
+                        <div className={pendingStyle.label}>선택 곡 수</div>
+                        <div className={pendingStyle.value}>{selectedMusic.length}곡</div>
+                    </div>
+                    <div className={pendingStyle.section}>
+                        <div className={pendingStyle.label}>멤버십 차감 곡 수</div>
+                        <div className={pendingStyle.valueRed}>{membershipCount}곡</div>
+                    </div>
+                    <div className={pendingStyle.section}>
+                        <div className={pendingStyle.label}>유료결제 곡 수</div>
+                        <div className={pendingStyle.valueRed}>{payCount}곡</div>
+                    </div>
+                    <div className={pendingStyle.sectionTotal}>
+                        <div className={pendingStyle.label}>총 결제금액</div>
+                        <div className={pendingStyle.totalPrice}>{totalPrice}원</div>
+                    </div>
+                    <div className={pendingStyle.checkboxSection}>
+                        <input type="checkbox" id="terms" className={pendingStyle.checkbox} />
+                        <label htmlFor="terms">Dive 이용약관에 동의합니다.</label>
+                        <button className={pendingStyle.termsButton}>약관보기</button>
+                    </div>
+                    <button
+                        className={pendingStyle.paymentButton}
+                        disabled={selectedMusic.length === 0}
+                    >
+                        결제하기
+                    </button>
                 </div>
-                <button
-                    className={pendingStyle.paymentButton}
-                    disabled={selectedMusic.length === 0}>
-                    결제하기
-                </button>
             </div>
         </div>
     )
