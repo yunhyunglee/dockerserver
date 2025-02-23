@@ -1,0 +1,29 @@
+package com.himedia.projectteamdive.controller;
+
+import com.himedia.projectteamdive.service.AIService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.HashMap;
+
+@RestController
+@RequestMapping("/AI")
+public class AIController {
+
+    @Autowired
+    AIService AIs;
+
+    @GetMapping("/recommendList")
+    public HashMap<String, Object>recommendList(@RequestParam("mood")String mood){
+        HashMap<String, Object> result = new HashMap<>();
+        System.out.println(mood);
+        result.put("recommendList", AIs.getRecommend(mood));
+        return result;
+    }
+
+
+
+}
