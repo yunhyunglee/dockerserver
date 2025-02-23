@@ -14,11 +14,12 @@ const UpdateArtistModal = ({ onClose, artist, getArtistList }) => {
     });
 
     useEffect(() => {
+        console.log("현재 아티스트 데이터:", artist);
         if (artist) {
             setUpdateArtist({
                 artistName: artist.artistName || "",
                 country: artist.country || "",
-                debut: artist.debut || "",
+                debut: artist.debut ? artist.debut.split("T")[0] : "",
                 image: artist.image || "/images/default_image.jpg",
                 artistContent: artist.artistContent || "",
             });
@@ -36,7 +37,7 @@ const UpdateArtistModal = ({ onClose, artist, getArtistList }) => {
         const formData = new FormData();
         formData.append("image", file);
         try {
-            const response = await jaxios.post("/api/music/imageUpload", formData, {
+            const response = await axios.post("/api/music/imageUpload", formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
             setUpdateArtist({ ...updateArtist, image: response.data.image }); // ✅ 업로드된 이미지 URL 적용
@@ -54,7 +55,7 @@ const UpdateArtistModal = ({ onClose, artist, getArtistList }) => {
         if (!updateArtist.image) {return alert("가수 이미지를 선택해주세요"); }
 
         try{
-            const response = await jaxios.post("/api/music/updateArtist" , {
+            const response = await axios.post("/api/music/updateArtist" , {
                 artistId: artist.artistId,
                 artistName: updateArtist.artistName,
                 country: updateArtist.country,

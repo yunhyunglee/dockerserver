@@ -2,15 +2,23 @@ import React, { useEffect, useState, useMemo, useCallback  } from 'react'
 import axios from 'axios';
 import jaxios from "../../../util/JwtUtil";
 import { useNavigate } from "react-router-dom";
+import UpdateMusicModal from './UpdateMusicModal';
 import "../../../style/music.scss";
 
 const Music = () => {
     const [musicList, setMusicList] = useState([]);
     const [search, setSearch] = useState("");
     const navigate = useNavigate();
+    const [updateModal, setUpdateModal] = useState(false);
+    const [selectedMusic, setSelectedMusic] = useState(null);
 
     const onSearch = (e) => {
         setSearch(e.target.value);
+    };
+
+    const openUpdateModal = (music) => {
+        setSelectedMusic(music);
+        setUpdateModal(true);
     };
 
 
@@ -35,6 +43,11 @@ const Music = () => {
 
     }, [musicList]); 
 
+    const updateMusicList = () => {
+        getMusicList();
+        setUpdateModal(false);
+    };
+
 
     const searchFilter = search === "" ? musicList : musicList.filter(music =>    
         music.title.toLowerCase().includes(search.toLowerCase()) ||   
@@ -57,7 +70,7 @@ const Music = () => {
                             <tr>
                                 <th>가수</th>
                                 <th>앨범</th>
-                                <th>제목</th>                         
+                                <th>노래</th>                         
                                 <th>장르</th>
                                 <th>이미지</th>
                                 <th>재생</th>
@@ -76,9 +89,13 @@ const Music = () => {
                                 ) : ( 
                                     searchFilter.map((music, index) => (
                                         <tr key={index}>
-                                                <td></td>
-                                                <td></td>
-                                                <td>{music.title}</td>                               
+                                                <td>{music.artistName}</td>
+                                                <td>{music.albumTitle}</td>
+                                                <td>
+                                                    <span className="clickable" onClick={() => openUpdateModal(music)}>
+                                                    {music.title}
+                                                    </span>  
+                                                 </td>             
                                                 <td>{music.genre}</td>
                                                 <td><img src={music.image} alt={music.title} width="50" /></td>
                                                 <td>
@@ -97,7 +114,14 @@ const Music = () => {
                                 )}
 
                         </tbody>
-                    </table>                         
+                    </table>                 
+                    {updateModal && (
+                    <UpdateMusicModal 
+                        onClose={() => setUpdateModal(false)} 
+                        music={selectedMusic} 
+                        updateMusicList={updateMusicList}
+                    />
+                )}        
             </div>  
         </div>
     );

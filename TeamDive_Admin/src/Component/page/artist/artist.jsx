@@ -40,23 +40,8 @@ const Artist = () => {
     }, []);
 
     // 가수 추가 후 리스트 갱신
-    const addArtistToList = async (newArtist) => {
-        await getArtistList();
-        if (!newArtist || !newArtist.artistId) {
-            console.error("❌ 유효하지 않은 가수 데이터:", newArtist);
-            return;
-        }
-        try {
-            const response = await axios.get(`/api/music/getArtist?artistId=${newArtist.artistId}`);
-            const artistData  = response.data.artist;
-            if (artistData) {
-                setArtistList(prev => [...prev, artistData]);
-            } else {
-                console.error("❌ 응답 데이터에 가수 정보 없음:", response.data);
-            }
-        } catch (error) {
-            console.error("❌ 새로운 가수 정보 불러오기 실패:", error);
-        }
+    const addArtistToList = async () => {
+        await getArtistList(); // 전체 리스트를 새로 불러와 중복을 방지
     };
 
  //--------------------------------------------------------------------------

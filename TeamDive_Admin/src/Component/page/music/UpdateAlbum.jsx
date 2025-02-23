@@ -226,26 +226,38 @@ const UpdateAlbum = ( {getAlbumList}) => {
             if (response.data.msg === "yes") {
                 alert("음악이 삭제되었습니다!");
 
-                setUpdateAlbum((prev)=> {
-                    const updateMusicList = prev.musicList 
-                    .filter((m) => m.musicId !== music.musicId)
-                    .sort((a, b) => a.trackNumber - b.trackNumber)
-                    .map((m, index) => ({...m, trackNumber: index +1 }));
-                return {
-                    ...prev,
-                    musicList: updateMusicList.map((m, i) => ({
+                setUpdateAlbum((prev) => {
+                    // 1️⃣ 삭제된 곡을 제외한 리스트 필터링
+                    const filteredMusicList = prev.musicList.filter((m) => m.musicId !== music.musicId);
+    
+                    // 2️⃣ 트랙 번호를 1부터 다시 부여
+                    const reindexedMusicList = filteredMusicList.map((m, index) => ({
                         ...m,
-                        titleMusic: i === 0, // ✅ 첫 번째 곡을 타이틀곡으로 설정
-                    })),
-                };
+                        trackNumber: index + 1,
+                    }));
+    
+                    // 3️⃣ 첫 번째 곡을 타이틀 곡으로 설정 (리스트가 비어있지 않을 경우)
+                    if (reindexedMusicList.length > 0) {
+                        reindexedMusicList[0].titleMusic = true;
+                    }
+                    console.log("🛠 삭제 후 갱신된 musicList:", reindexedMusicList);
+    
+                    // ✅ 최종적으로 한 번만 상태 업데이트
+                    return {
+                        ...prev,
+                        musicList: reindexedMusicList,
+                    };
+               
             });
             
-                setTimeout(() => {
-                    getAlbum();
-                }, 200); // 0.1초 딜레이 후 최신 데이터 불러오기
+            setTimeout(() => {
+                getAlbum();
+            }, 300);
+
             } else {
                 alert("음악 삭제 실패!");
             }
+
         }catch(error){
             console.error("음악 삭제 실패:", error);
             alert("음악 삭제중 오류 발생");
@@ -309,10 +321,10 @@ const UpdateAlbum = ( {getAlbumList}) => {
                             </tr>
                         ) : (                          
                             updateAlbum.musicList.map((music, index) => (
-                                <tr key={index}>
+                                <tr key={music.musicId}>
                                     <td><input type="checkbox"checked={music.titleMusic}onChange={() => checkTitleMusic(index)} />
                                     </td>
-                                    <td>{music.trackNumber}</td>
+                                    <td>{index + 1}</td>
                                     <td>{music.title}</td>
                                     <td>{music.genre}</td>
                                     <td>

@@ -92,27 +92,23 @@ const Music = () => {
                                 <th>가수</th>
                                 <th>앨범</th>                         
                                 <th>이미지</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
-                            {albumList.length === 0 ? (
-                                <tr>
-                                    <td colSpan="6" className="noData">등록된 음원이 없거나 검색 결과가 없습니다.</td>
-                                </tr>
-                            ) : (                 
-                                searchFilter.length === 0 ? ( 
-                                    <tr><td colSpan="4" className="noData">등록된 가수가 없습니다.</td></tr>
-                                ) : searchFilter.length === 0 ? (
-                                    <tr><td colSpan="4" className="noData">검색 결과가 없습니다.</td></tr>
-                                ) : ( 
+                        {albumList.length === 0 ? (
+                                        <tr>
+                                            <td colSpan="6" className="noData">등록된 음원이 없거나 검색 결과가 없습니다.</td>
+                                        </tr>
+                                    ) : (     
                                     searchFilter.map((album, index) => (
                                         <tr key={index}>
-                                                <td></td>
+                                                <td>{album.artistName}</td>
                                                 <td>
                                                     <span className="clickable" onClick={() =>  navigate(`/UpdateAlbum/${album.albumId}`)}>
                                                         {album.title}
                                                     </span>
-                                                    </td>                               
+                                                </td>                               
                                                 <td>
                                                     <img src={album.image} alt={album.title} width="50" />
                                                 </td>
@@ -120,11 +116,9 @@ const Music = () => {
                                                     <button className="deleteBtn" onClick={() => deleteAlbum(album.albumId)}>🗑 삭제</button>
                                                 </td>
                                             </tr>
-                                        ))
-                                    )
-                                )}
-
-                        </tbody>
+                                         ))
+                                    )}
+                            </tbody>
                     </table>                         
             </div>  
         </div>
