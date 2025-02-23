@@ -10,6 +10,7 @@ import Footer from './components/frame/Footer';
 import ScrollToTop from './components/ScrollToTop';
 
 import { ThemeContext } from './context/ThemeContext';
+import { PlayerProvider } from './PlayerContext';
 
 function App() {
 
@@ -43,7 +44,7 @@ function App() {
 
         return (
             <ThemeContext.Provider value={{isDark, setIsDark}}>
-                <>
+                <PlayerProvider>
                     <MainHeader toggleMenu={toggleMenu} onMoodSelect={handleMoodSelect} />
 
                     <FloatingButton onClick={openChat} />
@@ -55,7 +56,7 @@ function App() {
                     <Home menubar={menubar} mood={mood}></Home>
                     <Footer />
                     <FooterPlayer />
-                </>
+                </PlayerProvider>
             </ThemeContext.Provider>
     )
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 
 import Typography from '@mui/material/Typography';
 import Slider from '@mui/material/Slider';
@@ -22,22 +22,11 @@ import ShuffleIcon from '@mui/icons-material/Shuffle';
 import RepeatIcon from '@mui/icons-material/Repeat';
 // ----------------------------------
 
-import music1 from '../sampleMusic/music1.mp3';
-import music2 from '../sampleMusic/music2.mp3';
-import music3 from '../sampleMusic/music3.mp3';
-import music4 from '../sampleMusic/music4.mp3';
-import music5 from '../sampleMusic/music5.mp3';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
+import { PlayerContext } from '../PlayerContext';
 
 
-// const playlist = [
-//   { src: 'https://d9k8tjx0yo0q5.cloudfront.net/music/482b8d00-08e4-4391-a40c-535aaaebcfbdHopeful - Nat Keefe.mp3', title: '별별별', artist: '엔믹스' ,musicId:1},
-//   { src: music2, title: 'Dash', artist: '엔믹스' ,musicId:2},
-//   { src: music3, title: '럽미랔뎃', artist: '엔믹스' ,musicId:3},
-//   { src: music4, title: '고민중독', artist: 'QWER' ,musicId:4},
-//   { src: music5, title: '디스코드', artist: 'QWER' ,musicId:5},
-// ];
 
 const CustomPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: 'black',
@@ -92,13 +81,7 @@ export default function Player() {
 
   
   // const playlist = originalPlaylist;
-  const [playlist,setPlaylist]=useState([
-    { src: 'https://d9k8tjx0yo0q5.cloudfront.net/music/100b7476-1600-4133-9cfa-4706b31d45d5Moritas Moras - House of the Gipsies.mp3', title: '별별별', artist: '엔믹스' ,musicId:1},
-    { src: music2, title: 'Dash', artist: '엔믹스' ,musicId:2},
-    { src: music3, title: '럽미랔뎃', artist: '엔믹스' ,musicId:3},
-    { src: music4, title: '고민중독', artist: 'QWER' ,musicId:4},
-    { src: music5, title: '디스코드', artist: 'QWER' ,musicId:5},
-  ]);
+  const [playlist,setPlaylist]=useState([]);
   
   let currentSong;
   if (isShuffle && shuffleQueue.length > 0) {
@@ -132,13 +115,15 @@ export default function Player() {
   const prevPlaylist=useRef([]);
   useEffect(
     ()=>{
-      if(playlist.length>prevPlaylist.length){
-        axios('/api/music/getCurrentPlaylist',{params:{playlist}})
-        .then((result)=>{
+      const fetchPlaylist = async () => {
+        if(playlist.length>prevPlaylist.current.length){
+          const result=await axios.post('/api/music/getCurrentPlaylist',playlist)
           setPlaylist(result.data.playlist);
-        }).catch((err)=>{console.error(err);})
+        }
+        prevPlaylist.current=playlist;
+        console.log(playlist);
       }
-      prevPlaylist.current=playlist;
+      fetchPlaylist();
     },[playlist]
   );
   const play30second = () => {
@@ -154,6 +139,15 @@ export default function Player() {
   useEffect(()=>{
     setIsplayed(false);
   },[currentSong]);
+  const {addPlaylist,setAddPlaylist}=useContext(PlayerContext);
+  useEffect(
+    ()=>{
+      if(addPlaylist){
+        setPlaylist((prevPlaylist)=>[...prevPlaylist,{musicId : addPlaylist}])
+        setAddPlaylist(null);
+      }
+    },[addPlaylist]
+  );
 
 
 
@@ -352,7 +346,7 @@ export default function Player() {
       />
     );
   };
-
+  if(playlist.length>0){
   return (
     <footer className="footer">
       {/* 현재 곡 */}
@@ -520,4 +514,5 @@ export default function Player() {
       </CustomPaper>
     </footer>
   );
+  }
 }
