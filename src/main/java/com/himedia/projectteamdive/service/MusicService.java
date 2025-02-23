@@ -367,21 +367,33 @@ public class MusicService {
         List<Object[]>artists= lr.findLikesRanking(Pagetype.ARTIST);
         List<Object[]>albums= lr.findLikesRanking(Pagetype.ALBUM);
         List<Object[]>musics= lr.findLikesRanking(Pagetype.MUSIC);
-        List<ArtistDto> artist=new ArrayList<>();
-        for(Object[] a:artists) {
-            artist.add(new ArtistDto(arr.findByArtistId((Integer) a[0])));
+
+        List<ArtistDto> artistList = new ArrayList<>();
+        for (Object[] a : artists) {
+            if (a[0] != null) {
+                Integer id = ((Number) a[0]).intValue(); // 안전한 변환
+                artistList.add(new ArtistDto(arr.findByArtistId(id)));
+            }
         }
-        List<AlbumDto> album=new ArrayList<>();
-        for(Object[] a:albums) {
-            album.add(new AlbumDto(ar.findByAlbumId((Integer) a[0])));
+
+        List<AlbumDto> albumList = new ArrayList<>();
+        for (Object[] a : albums) {
+            if (a[0] != null) {
+                Integer id = ((Number) a[0]).intValue();
+                albumList.add(new AlbumDto(ar.findByAlbumId(id)));
+            }
         }
-        List<MusicDto> music=new ArrayList<>();
-        for(Object[] a:musics) {
-            music.add(new MusicDto(mr.findByMusicId((Integer) a[0])));
+
+        List<MusicDto> musicList = new ArrayList<>();
+        for (Object[] a : musics) {
+            if (a[0] != null) {
+                Integer id = ((Number) a[0]).intValue();
+                musicList.add(new MusicDto(mr.findByMusicId(id)));
+            }
         }
-        result.put("artist",artist);
-        result.put("album",album);
-        result.put("music",music);
+        result.put("artist",artistList);
+        result.put("album",albumList);
+        result.put("music",musicList);
         return result;
     }
 }
