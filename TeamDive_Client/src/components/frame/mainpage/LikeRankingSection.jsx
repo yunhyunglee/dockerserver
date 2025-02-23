@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 // import axios from 'axios';
 import styles from '../../../css/mainPage/likeRankingSection.module.css';
+import axios from 'axios';
 
 const LikeRankingSection = () => {
   const [activeTab, setActiveTab] = useState('artist');
@@ -12,65 +13,73 @@ const LikeRankingSection = () => {
 
   useEffect(() => {
 
-    const dummyArtists = [
-      {
-        id: 1,
-        name: "아이유 (IU)",
-        image: "/public/image/artist/iu.jpg",
-      },
-      {
-        id: 2,
-        name: "BTS (방탄소년단)",
-        image: "/public/image/artist/bts.jpg",
-      },
-      {
-        id: 3,
-        name: "NewJeans",
-        image: "/public/image/artist/newjeans.jpg",
-      },
-    ];
-    setArtistRanking(dummyArtists);
+    // const dummyArtists = [
+    //   {
+    //     id: 1,
+    //     name: "아이유 (IU)",
+    //     image: "/public/image/artist/iu.jpg",
+    //   },
+    //   {
+    //     id: 2,
+    //     name: "BTS (방탄소년단)",
+    //     image: "/public/image/artist/bts.jpg",
+    //   },
+    //   {
+    //     id: 3,
+    //     name: "NewJeans",
+    //     image: "/public/image/artist/newjeans.jpg",
+    //   },
+    // ];
+    // setArtistRanking(dummyArtists);
 
-    const dummyAlbums = [
-      {
-        id: 1,
-        title: "Love Poem",
-        image: "/public/image/album/lovepoem.jpg",
-      },
-      {
-        id: 2,
-        title: "MAP OF THE SOUL : 7",
-        image: "/public/image/album/mots7.jpg",
-      },
-      {
-        id: 3,
-        title: "OMG",
-        image: "/public/image/album/omg.jpg",
-      },
-    ];
-    setAlbumRanking(dummyAlbums);
+    // const dummyAlbums = [
+    //   {
+    //     id: 1,
+    //     title: "Love Poem",
+    //     image: "/public/image/album/lovepoem.jpg",
+    //   },
+    //   {
+    //     id: 2,
+    //     title: "MAP OF THE SOUL : 7",
+    //     image: "/public/image/album/mots7.jpg",
+    //   },
+    //   {
+    //     id: 3,
+    //     title: "OMG",
+    //     image: "/public/image/album/omg.jpg",
+    //   },
+    // ];
+    // setAlbumRanking(dummyAlbums);
 
-    const dummyMusic = [
-      {
-        id: 1,
-        title: "Blueming",
-        artistName: "아이유 (IU)",
-        image: "/public/image/music/blueming.jpg",
-      },
-      {
-        id: 2,
-        title: "Dynamite",
-        artistName: "BTS",
-        image: "/public/image/music/dynamite.jpg",
-      },
-      {
-        id: 3,
-        title: "Hype Boy",
-        artistName: "NewJeans",
-        image: "/public/image/music/hypeboy.jpg",
-      },
-    ];
-    setMusicRanking(dummyMusic);
+    // const dummyMusic = [
+    //   {
+    //     id: 1,
+    //     title: "Blueming",
+    //     artistName: "아이유 (IU)",
+    //     image: "/public/image/music/blueming.jpg",
+    //   },
+    //   {
+    //     id: 2,
+    //     title: "Dynamite",
+    //     artistName: "BTS",
+    //     image: "/public/image/music/dynamite.jpg",
+    //   },
+    //   {
+    //     id: 3,
+    //     title: "Hype Boy",
+    //     artistName: "NewJeans",
+    //     image: "/public/image/music/hypeboy.jpg",
+    //   },
+    // ];
+    // setMusicRanking(dummyMusic);
+
+    axios.get('/api/music/getTop3')
+    .then((result)=>{
+      console.log(result.data);
+      setArtistRanking(result.data.artist);
+      setAlbumRanking(result.data.album);
+      setMusicRanking(result.data.music);
+    }).catch((err)=>{console.error(err)})    
 
 
     /*
@@ -138,7 +147,7 @@ const LikeRankingSection = () => {
       <div className={styles.rankList}>
         {getActiveData().map((item, index) => (
           <div
-            key={item.id}
+            key={index}
             className={styles.rankItem}
             onClick={() => handleItemClick(item)}
           >
@@ -156,7 +165,7 @@ const LikeRankingSection = () => {
                 </p>
               ) : (
             
-                <p className={styles.title}>{item.name || item.title}</p>
+                <p className={styles.title}>{ item.title || item.artistName }</p>
               )}
             </div>
           </div>

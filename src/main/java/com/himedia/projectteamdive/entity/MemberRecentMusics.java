@@ -20,6 +20,8 @@ public class MemberRecentMusics {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    private int musicId;
+    @ManyToOne
+    @JoinColumn(name = "music_id")
+    private Music music;
 
 }
