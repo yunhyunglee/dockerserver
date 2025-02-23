@@ -14,6 +14,6 @@ public interface MemberRecentMusicsRepository extends JpaRepository<MemberRecent
             "FROM MemberRecentMusics mr " +
             "JOIN mr.music m " +
             "JOIN mr.member mem " +
-            "WHERE mem.memberId = :memberId")
+            "WHERE mem.memberId = :memberId order by mr.id desc ")
     List<MemberRecentMusicsDto> findByMember_MemberId(String memberId);
 }
