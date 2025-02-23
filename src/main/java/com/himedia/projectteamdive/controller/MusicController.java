@@ -1,6 +1,8 @@
 package com.himedia.projectteamdive.controller;
 
 import com.himedia.projectteamdive.dto.AlbumDto;
+import com.himedia.projectteamdive.dto.MusicDto;
+import com.himedia.projectteamdive.dto.PlaylistDto;
 import com.himedia.projectteamdive.entity.*;
 import com.himedia.projectteamdive.service.MusicService;
 import com.himedia.projectteamdive.service.S3Service;
@@ -265,6 +267,7 @@ public class MusicController {
 
     @GetMapping("/getMemberPlaylist")
     public HashMap<String, Object> getMemberPlaylist(@RequestParam("memberId")String memberId) {
+        System.out.println("요청받은 memberId: " + memberId);
         HashMap<String,Object> map= ms.getMemberPlaylist(memberId);
         return map;
     }
@@ -275,6 +278,37 @@ public class MusicController {
         return map;
 
     }
+
+
+    // 인형 2/22~2/23
+    @GetMapping("/recommend")
+    public List<MusicDto> recommendMusic(@RequestParam("mood") String mood) {
+
+        return ms.findMusicByMood(mood);
+    }
+
+    @GetMapping("/playlistDetail")
+    public HashMap<String, Object> getPlaylistDetail(@RequestParam("playlistId")int playlistId) {
+
+        System.out.println("요청받은 playlistId: " + playlistId);
+
+        HashMap<String, Object> map = new HashMap<>();
+        PlaylistDto playlist = ms.getPlaylistDetail(playlistId);
+
+        if (playlist != null) {
+            map.put("playlist", playlist);
+        } else {
+            map.put("error", "플레이리스트를 찾을 수 없습니다.");
+        }
+
+        return map;
+
+
+
+    }
+
+
+
 
 
 

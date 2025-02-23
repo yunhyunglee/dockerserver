@@ -4,7 +4,8 @@ import KakaoLogin from "./components/member/KakaoLogin";
 import JoinForm from "./components/member/JoinForm";
 import Membership from "./components/membership/Membership";
 import MainPage from "./components/frame/mainpage/MainPage";
-import MusicDetail from "./components/music/MusicDetail";
+import MusicDetail from "./components/detail/MusicDetail";
+import AlbumDetail from "./components/detail/AlbumDetail";
 import PopularChart from "./components/PopularChart";
 import Storage from "./components/storage/storage";
 import { PlaylistPage } from "./components/playlist/PlaylistPage";
@@ -21,12 +22,14 @@ import Weekly from "./components/chartmore/Weekly";
 import Monthly from "./components/chartmore/Monthly";
 import Domestic from "./components/chartmore/Domestic";
 import Foreign from "./components/chartmore/Foreign";
+import ArtistDetail from "./components/detail/ArtistDetail";
+import PlaylistDetail from "./components/detail/PlaylistDetail";
 
 
-function AppRoutes() {
+function AppRoutes({mood}) {
     return (
         <Routes>
-            <Route path="/" element={<MainPage />} />
+            <Route path="/" element={<MainPage mood={mood}/>} />
             <Route path="/charts" element={<PopularChart />} />
             <Route path="/playList" element={<PlaylistPage />} />
             <Route path="/membership/:category" element={<Membership />} />
@@ -36,6 +39,10 @@ function AppRoutes() {
             <Route path="/sign-up" element={<JoinForm />} />
 
             <Route path="/music/:musicId" element={<MusicDetail />} />
+            <Route path="/album/:albumId" element={<AlbumDetail />} />
+            <Route path="/artist/:artistId" element={<ArtistDetail />}/>
+            <Route path="/playlist/:playlistId" element={<PlaylistDetail />}/>
+
 
             {/* 토스 페이먼트 api */}
             <Route path="/payments" element={<PaymentsCheckout />} />
@@ -49,7 +56,7 @@ function AppRoutes() {
             <Route path="/storage/:storageCategory" element={<Storage />}/>
             <Route path="/storage/:storageCategory/:mp3Category" element={<Storage />} />
 
-            {/* 차트 더보기기 */}
+            {/* 차트 더보기 */}
             <Route path="/top100" element={<Top100 />}/>
             <Route path="/charts/weekly" element={<Weekly />}/>
             <Route path="/charts/monthly" element={<Monthly />}/>

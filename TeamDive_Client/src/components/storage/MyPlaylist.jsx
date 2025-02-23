@@ -2,32 +2,28 @@ import React, { useEffect, useState } from "react";
 import styles from "../../css/storage/myPlaylist.module.css";
 import jaxios from "../../util/JwtUtil";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const MyPlaylist = () => {
 
   const loginUser = useSelector(state => state.user);
 
+  const navigate = useNavigate();
+
 
   const [showModal, setShowModal] = useState(false);
 
 
-  const [playlistTitle, setPlaylistTitle] = useState([]);
+  const [playlistTitle, setPlaylistTitle] = useState("");
   const [playlistContent, setPlaylistContent] = useState("");
   const [isPublic, setIsPublic] = useState(false);
 
   
-  const [preview, setPreview] = useState("");      // 로컬 미리보기
+  const [preview, setPreview] = useState("");      
   const [coverImageName, setCoverImageName] = useState(""); // 서버에서 반환된 파일명
 
-  // 로컬에 표시할 더미 플레이리스트
-  const [playlists, setPlaylists] = useState([
-    {
-      id: 1,
-      coverImage: "/public/image/album/album1.jpg",
-      title: "기본 리스트",
-      trackCount: 0,
-    },
-  ]);
+
+  const [playlists, setPlaylists] = useState([]);
 
   // 모달 열기
   const handleNewPlaylistClick = () => {
@@ -59,7 +55,7 @@ const MyPlaylist = () => {
       formData.append("image", file);
 
      
-      const res = await jaxios.post("/api/music/playlistFileUp", formData, {
+      const res = await jaxios.post("/api/music/imageUpload", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -113,33 +109,36 @@ const MyPlaylist = () => {
   };
 
 
-  // useEffect(()=>{
+  useEffect(()=>{
   
-  //   playlistView();
-  // },[]);
+    playlistView();
+  },[]);
 
-  // const playlistView = async () => {
-  //   try {
-  //     const result = await jaxios.get("/api/music/getPlaylist", {
-  //       params : {memberId : loginUser.memberId},
-  //     });
-  //     setPlaylists(result.data.playlists);
-  //     console.log(result.data)
-  //   } catch (error) {
-  //     console.log("플레이리스트 못가져옴 : " + error);
-  //   }
-  // };   플리 가져오는거 잠깐 멈춤 ㅠㅠㅠ
+  const playlistView = async () => {
+    try {
+      const result = await jaxios.get("/api/music/getMemberPlaylist", {
+        params: { memberId: loginUser.memberId },
+      });
+  
+  
+      if (result.data && result.data.playlist) { 
+        setPlaylists(result.data.playlist);
 
+      } else {
 
-
-
-
+        setPlaylists([]);  // 빈 배열로 설정
+      }
+    } catch (error) {
+      console.error(" 플레이리스트 못 가져옴:", error);
+      setPlaylists([]);  
+    }
+  };
+  
 
 
 
   return (
     <div className={styles.playlistContainer}>
-      <h2 className={styles.sectionTitle}>플레이리스트</h2>
 
       <div className={styles.playlistGrid}>
          
@@ -149,8 +148,8 @@ const MyPlaylist = () => {
         </div>
 
        
-        {playlists.map((pl) => (
-          <div key={pl.id} className={styles.playlistTile}>
+        {playlists.map((pl,i) => (
+          <div key={i} className={styles.playlistTile} onClick={()=>{navigate(`/playlist/${pl.playlistId}`)}}>
             <div
               className={styles.coverPlaceholder}
               style={{ backgroundImage: `url(${pl.coverImage})` }}

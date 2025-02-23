@@ -26,10 +26,7 @@ const MyRecentMusicSection = () => {
 
     const displayItems = music.slice(0,visibleCount);
 
-    const more = () => {
-      setVisibleCount(prevCount => prevCount + 5);   
-      // prevCount는 visible현재상태값을 의미함, 리액트 업뎃함수에서 사용하는겅미
-    }
+
 
 
     return (
@@ -40,18 +37,12 @@ const MyRecentMusicSection = () => {
             <div key={item.musicId} className={styles.recentMusicCard} style={{backgroundImage: `url(${item.image})`}}
             onClick={()=>{navigate(`/music/${item.musicId}`)}}
             >
-              <span className={styles.recentMusicRank}>{index + 1}</span>
               <div className={styles.recentMusicInfo}>
                 <p className={styles.recentMusictitle}>{item.title}</p>
               </div>
             </div>
           ))}
         </div>
-        {visibleCount < music.length && (
-          <button className={styles.moreButtonRecentMusic} onClick={more}>
-            더보기
-          </button>
-        )}
       </div>
     );
 };

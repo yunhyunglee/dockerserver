@@ -17,6 +17,8 @@ public interface MusicRepository extends JpaRepository<Music, Integer> {
 
     List<MusicDto> findByLyricsContainingIgnoreCase(String lyrics);
 
+    List<Music> findByMoodContaining(String mood);
+
 //    @Query("SELECT m FROM Music m WHERE m.musicId IN :ids ORDER BY m.tracknumber ASC")
 //    List<Music> findAllByMusicId(@Param("ids") List<Integer> ids);
 

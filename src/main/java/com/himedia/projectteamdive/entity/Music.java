@@ -59,6 +59,8 @@ public class Music {
         }
     }
 
+    private String mood;
+
 
 
 }

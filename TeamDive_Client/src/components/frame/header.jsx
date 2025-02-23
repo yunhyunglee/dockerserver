@@ -2,9 +2,10 @@ import { Link } from 'react-router-dom';
 import styles from '../../css/header.module.css';
 import React, { useContext, useState } from 'react';
 import Notice from './mainpage/Notice';
-import { ThemeContext } from '../../context/ThemeContext';
+import MoodDropdown from './MoodDropdown';
 
-function MainHeader({ toggleMenu }) {
+
+function MainHeader({ toggleMenu,onMoodSelect  }) {
   // 검색어 상태
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -58,8 +59,11 @@ function MainHeader({ toggleMenu }) {
           </button>
         </form>
       </div>
-
       
+      <div className={styles.moodContainer}>
+        <MoodDropdown onMoodSelect={onMoodSelect}/>
+      </div>
+
       <div className={styles.rightSection}>
           <Notice/>
       </div>
