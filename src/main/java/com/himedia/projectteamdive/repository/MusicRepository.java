@@ -32,6 +32,9 @@ public interface MusicRepository extends JpaRepository<Music, Integer> {
     @Query("Select m From Music m ORDER BY RAND() LIMIT :limit")
     List<MusicDto> getRandomMusic(@Param("limit") int limit);
 
+    @Query("SELECT m FROM Music m WHERE m.musicId IN :musicId")
+    List<MusicDto> getMusicByIds(@Param("musicId") List<Integer> musicId);
+
 //    @Query("SELECT m FROM Music m WHERE m.musicId IN :ids ORDER BY m.tracknumber ASC")
 //    List<Music> findAllByMusicId(@Param("ids") List<Integer> ids);
 

@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom';
 import LikeRankingSection from './LikeRankingSection.jsx';
 import RandomMusic from './RandomMusic.jsx';
 import axios from 'axios';
+import jaxios from '../../../util/JWTUtil.jsx';
 
 
 const MainPage = ({mood}) => {
@@ -35,10 +36,9 @@ const MainPage = ({mood}) => {
     //   }, [mood]);
     useEffect(() => {
     if (!mood) return;
-
     console.log('select mood', mood);
-
-    axios.get('/api/AI/recommendList', {params:{mood: mood}})
+    
+    jaxios.get('/api/AI/recommendList', {params:{mood: mood, memberId:loginUser.memberId}})
         .then((result) => {
             console.log('데이터', result.data);
             console.log('개수', result.data.recommendList.length)

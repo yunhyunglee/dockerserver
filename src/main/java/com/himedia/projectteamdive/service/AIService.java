@@ -16,39 +16,89 @@ public class AIService {
 
     @Autowired
     MusicRepository mr;
+    @Autowired
+    MemberRecentMusicsRepository mrmr;
 
-    public List<MusicDto> getRecommend(String mood) {
+    public List<MusicDto> getRecommend(String mood, String memberId) {
+        System.out.println("추천 시스템 실행: mood=" + mood + ", memberId=" + memberId);
 
-        List<String> genres = getRecommendedGenres(mood);   // 감정별 추천 장르
-        List<String> similarMoods = getSimilarMoods(mood);  // 유사 감정
-        RecommendationScore score = getRecommendationScore(mood); // 추천점수 점수
+        List<String> genre = getRecommendedGenres(mood);
+        List<String> similarMoods = getSimilarMoods(mood);
+        RecommendationScore score = getRecommendationScore(mood);
 
         List<MusicDto> musicList = new ArrayList<>();
 
         // 감정과 장르에 따른 추천
-        musicList.addAll(
-            mr.getMusicByMoodAndGenre(mood, genres, score.getEmotionScore())
-        );
+        try {
+            List<MusicDto> moodBasedMusic = mr.getMusicByMoodAndGenre(mood, genre, score.getEmotionScore());
+            if (moodBasedMusic == null || moodBasedMusic.isEmpty()) {
+                System.out.println("감정 기반 추천 결과 없음");
+            } else {
+                musicList.addAll(moodBasedMusic);
+                System.out.println("감정기반 추가된 개수: " + moodBasedMusic.size());
+            }
+        } catch (Exception e) {
+            System.out.println("감정 기반 추천 예외 발생: " + e.getMessage());
+            e.printStackTrace();
+        }
 
         // 유사 감정과 장르에 따른 추천
-        if (musicList.size()<score.getTotalLimit()){
-            musicList.addAll(mr.getMusicBySimilarMoodsAndGenre(similarMoods, genres, score.getSimilarScore()));
-        };
+        try {
+            if (musicList.size() < score.getTotalLimit()) {
+                List<MusicDto> similarMoodMusic = mr.getMusicBySimilarMoodsAndGenre(similarMoods, genre, score.getSimilarScore());
+                if (similarMoodMusic != null && !similarMoodMusic.isEmpty()) {
+                    musicList.addAll(similarMoodMusic);
+                    System.out.println("유사 감정 기반 추가된 개수: " + similarMoodMusic.size());
+                } else {
+                    System.out.println("유사 감정 기반 추천 결과 없음");
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("유사 감정 기반 추천 예외 발생: " + e.getMessage());
+            e.printStackTrace();
+        }
 
-        // 인기 음악 추천(playCount)
-        if (musicList.size()<score.getTotalLimit()){
-            musicList.addAll(mr.getPopularMusic(score.getPopularScore()));
-        };
+        // 최근 음악 재생 목록에서 추천
+        try {
+            if (musicList.size() < score.getTotalLimit()) {
+                List<Integer> recentMusicIds = mrmr.getRecentMusicIdsByMemberId(memberId, score.getRecentMusicScore());
+                if (recentMusicIds != null && !recentMusicIds.isEmpty()) {
+                    List<MusicDto> recentMusic = mr.getMusicByIds(recentMusicIds);
+                    if (recentMusic != null && !recentMusic.isEmpty()) {
+                        musicList.addAll(recentMusic);
+                        System.out.println("최근 음악 기반 추가된 개수: " + recentMusic.size());
+                    } else {
+                        System.out.println("최근 음악 추천 결과 없음");
+                    }
+                } else {
+                    System.out.println("최근 재생 음악 ID 없음");
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("최근 음악 추천 예외 발생: " + e.getMessage());
+            e.printStackTrace();
+        }
 
         // 부족할 경우 랜덤으로 추천
-        if (musicList.size()<score.getTotalLimit()){
-            musicList.addAll(mr.getRandomMusic(score.getRandomScore()));
-        };
+        try {
+            if (musicList.size() < score.getTotalLimit()) {
+                List<MusicDto> randomMusic = mr.getRandomMusic(score.getRandomScore());
+                if (randomMusic != null && !randomMusic.isEmpty()) {
+                    musicList.addAll(randomMusic);
+                    System.out.println("랜덤 추천 기반 추가된 개수: " + randomMusic.size());
+                } else {
+                    System.out.println("랜덤 추천 결과 없음");
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("랜덤 음악 추천 예외 발생: " + e.getMessage());
+            e.printStackTrace();
+        }
 
-        return musicList.stream().limit(50).toList(); // 최대 50개 리스트업
+        System.out.println("최종 추천 음악 개수: " + musicList.size());
+        return musicList.stream().limit(50).toList();
     }
 
-    // 감정별 추천 장르 정의
     private List<String> getRecommendedGenres(String mood) {
         switch (mood.toLowerCase()) {
             case "happy":
@@ -65,7 +115,6 @@ public class AIService {
         }
     }
 
-    // 감정별 유사 감정 정의
     private List<String> getSimilarMoods(String mood) {
         switch (mood.toLowerCase()) {
             case "happy":
@@ -82,21 +131,30 @@ public class AIService {
         }
     }
 
-    // 감정별 추천 비율
     private RecommendationScore getRecommendationScore(String mood) {
+        int totalLimit = 50;
+
         switch (mood.toLowerCase()) {
             case "happy":
-                return new RecommendationScore(30, 10, 5, 5);  // 60%, 20%, 10% 10% 비율로 50곡 구성
+                return calculateRecommendationScore(totalLimit, 0.6, 0.2, 0.1, 0.1);
             case "sad":
-                return new RecommendationScore(35, 10, 3, 2);  // 70%, 20%, 6% 4% 비율로 50곡 구성
+                return calculateRecommendationScore(totalLimit, 0.7, 0.2, 0.06, 0.04);
             case "angry":
-                return new RecommendationScore(30, 10, 7, 3);  // 60%, 20%, 14% 6% 비율로 50곡 구성
+                return calculateRecommendationScore(totalLimit, 0.6, 0.2, 0.14, 0.06);
             case "boring":
-                return new RecommendationScore(25, 15, 7, 3);  // 50%, 30%, 14% 6% 비율로 50곡 구성
+                return calculateRecommendationScore(totalLimit, 0.5, 0.3, 0.14, 0.06);
             case "normal":
             default:
-                return new RecommendationScore(20, 15, 10, 5); // 40%, 30%, 20% 10% 비율로 50곡 구성
+                return calculateRecommendationScore(totalLimit, 0.4, 0.3, 0.2, 0.1);
         }
     }
-}
 
+    private RecommendationScore calculateRecommendationScore(int total, double emotionRatio, double similarRatio, double recentRatio, double randomRatio) {
+        int emotionScore = (int) (total * emotionRatio);
+        int similarScore = (int) (total * similarRatio);
+        int recentScore = (int) (total * recentRatio);
+        int randomScore = total - (emotionScore + similarScore + recentScore);
+
+        return new RecommendationScore(emotionScore, similarScore, recentScore, randomScore);
+    }
+}

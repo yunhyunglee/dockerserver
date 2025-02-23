@@ -17,10 +17,11 @@ public class AIController {
     AIService AIs;
 
     @GetMapping("/recommendList")
-    public HashMap<String, Object>recommendList(@RequestParam("mood")String mood){
+    public HashMap<String, Object>recommendList(
+            @RequestParam("mood")String mood,
+            @RequestParam("memberId")String memberId){
         HashMap<String, Object> result = new HashMap<>();
-        System.out.println(mood);
-        result.put("recommendList", AIs.getRecommend(mood));
+        result.put("recommendList", AIs.getRecommend(mood, memberId));
         return result;
     }
 
