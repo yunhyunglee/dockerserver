@@ -1,10 +1,20 @@
 import React, { useEffect, useState } from "react";
 import styles from "../../css/chartMore.module.css";
 import axios from "axios";
+import Pagination from "../Pagination";
+
 const Top100 = () => {
   // 체크된 곡들을 저장할 상태
   const [selectedItems, setSelectedItems] = useState([]);
   const [monthlyCharts,setMonthlyCharts]=useState([]);
+
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentData = monthlyCharts.slice(indexOfFirstItem, indexOfLastItem);
+
   useEffect(
     ()=>{
       axios.get('/api/music/getMusicChart')
@@ -80,7 +90,7 @@ const Top100 = () => {
           </tr>
         </thead>
         <tbody>
-          {monthlyCharts.map((music, index) => {
+          {currentData.map((music, index) => {
             const isChecked = selectedItems.some(
               (item) => item.music.musicId === music.music.musicId
             );
@@ -130,6 +140,12 @@ const Top100 = () => {
           })}
         </tbody>
       </table>
+      <Pagination
+        totalCount={monthlyCharts.length}
+        itemsPerPage={itemsPerPage}
+        currentPage={currentPage}
+        onPageChange={setCurrentPage}
+      />
     </div>
   );
 };

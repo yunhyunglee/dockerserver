@@ -7,6 +7,7 @@ import { FooterPlayer } from './components/frame/FooterPlayer';
 import FloatingButton from './components/FloatingButton';
 import ChatModal from './components/ChatModal';
 import Footer from './components/frame/Footer';
+import ScrollToTop from './components/ScrollToTop';
 
 import { ThemeContext } from './context/ThemeContext';
 
@@ -21,6 +22,13 @@ function App() {
         console.log(menubar)
     }
 
+    const [mood, setMood] = useState('');
+    const handleMoodSelect = (selectedMood) => {
+        console.log('App에서 받은 기분:', selectedMood);
+        setMood(selectedMood);
+      };
+    
+    
 
     const [chatOpen, setChatOpen] = useState(false);
 
@@ -36,13 +44,15 @@ function App() {
         return (
             <ThemeContext.Provider value={{isDark, setIsDark}}>
                 <>
-                    <MainHeader toggleMenu={toggleMenu}></MainHeader>
+                    <MainHeader toggleMenu={toggleMenu} onMoodSelect={handleMoodSelect} />
 
                     <FloatingButton onClick={openChat} />
         
                     {/* 채팅 모달 */}
                     {chatOpen && <ChatModal onClose={closeChat} />}
-                    <Home menubar={menubar}></Home>
+
+                    <ScrollToTop />
+                    <Home menubar={menubar} mood={mood}></Home>
                     <Footer />
                     <FooterPlayer />
                 </>

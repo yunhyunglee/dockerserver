@@ -143,4 +143,9 @@
   .noticeLink:hover {
     background-color: #444;
   }
+
+
+  .moodContainer{
+    width: 300px;
+  }
   

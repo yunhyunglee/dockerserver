@@ -17,10 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @EnableScheduling
@@ -349,5 +346,21 @@ public class MusicService {
         List<MemberRecentMusics> musics=mrmr.findByMember_MemberIdOrderByIdAsc(memberId);
         result.put("musics",musics);
         return result;
+    }
+
+    public List<MusicDto> findMusicByMood(String mood) {
+
+        List<Music> musicList = mr.findByMoodContaining(mood);
+
+        // 엔티티 → DTO 변환
+        return musicList.stream()
+                .map(MusicDto::new)
+                .collect(Collectors.toList());
+    }
+
+    public PlaylistDto getPlaylistDetail(int playlistId) {
+        Optional<Playlist> playlist = pr.findById(playlistId);
+
+        return playlist.map(PlaylistDto::new).orElse(null);
     }
 }
