@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import styles from '../../../css/mainPage/top100Section.module.css';
+import { PlayerContext } from '../../../PlayerContext';
 
 const Top100Section = () => {
   const navigate = useNavigate();
@@ -21,9 +22,10 @@ const Top100Section = () => {
       });
   }, []);
 
-
+  const {setAddPlaylist}=useContext(PlayerContext);
   const handlePlay = (musicTitle) => {
     alert(`재생: ${musicTitle}`);
+    setAddPlaylist(musicTitle);
   };
 
 
@@ -46,7 +48,7 @@ const Top100Section = () => {
                 src={item.music.image}
                 // alt={item.music.title}
                 className={styles.top100Image}
-                onClick={() => handlePlay(item.music.title)}
+                onClick={() => handlePlay(item.music.musicId)}
               />
               <p className={styles.top100Rank}>{index + 1}</p>
               <div className={styles.titleArea}>

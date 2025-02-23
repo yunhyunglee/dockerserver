@@ -324,7 +324,7 @@ public class MusicService {
             Music music=mr.findByMusicId((int) playlistMap.get("musicId"));
             playlistMap.put("src",music.getBucketPath());
             playlistMap.put("title",music.getTitle());
-            playlistMap.put("artist",music.getArtist());
+            playlistMap.put("artist",music.getArtist().getArtistName());
         }
         result.put("playlist",playlist);
         return result;
