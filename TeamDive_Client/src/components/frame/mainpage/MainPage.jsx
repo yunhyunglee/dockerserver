@@ -21,19 +21,34 @@ const MainPage = ({mood}) => {
 
 
     const [recommendedSongs, setRecommendedSongs] = useState([]);
-    useEffect(() => {
-        if (!mood) return;
+    const [recommendList, setRecommendList] = useState([]);
+    // useEffect(() => {
+    //     if (!mood) return;
     
-        axios.get(`/api/music/recommend?mood=${mood}`)
-          .then((res) => {
-            setRecommendedSongs(res.data);
-          })
-          .catch((err) => {
-            console.error(err);
-          });
-      }, [mood]);
+    //     axios.get(`/api/music/recommend?mood=${mood}`)
+    //       .then((res) => {
+    //         setRecommendedSongs(res.data);
+    //       })
+    //       .catch((err) => {
+    //         console.error(err);
+    //       });
+    //   }, [mood]);
+    useEffect(() => {
+    if (!mood) return;
 
+    console.log('select mood', mood);
 
+    axios.get('/api/AI/recommendList', {params:{mood: mood}})
+        .then((result) => {
+            console.log('데이터', result.data);
+            console.log('개수', result.data.recommendList.length)
+            setRecommendList(result.data.recommendList);
+        })
+        .catch((err) => {
+        console.error(err);
+        });
+    }, [mood]);
+    
 
     useEffect(() => {
         
@@ -97,11 +112,17 @@ const MainPage = ({mood}) => {
                 : styles.recommendHidden
             }>
             <h3>추천 노래 목록</h3>
-            {recommendedSongs.map((music) => (
-                <div key={music.musicId} className={styles.songCard}>
-                <p className={styles.songTitle}><img src='{music.image}' /></p>
-                <p className={styles.songTitle}>{music.title}</p>
-                <p className={styles.songArtist}>{music.artistName}</p>
+            {recommendList.map((music, idx) => (
+                <div key={music.idx} className={styles.songCard}>
+                    <p className={styles.songTitle}>
+                        <img src='{music.image}' />
+                    </p>
+                    <p className={styles.songTitle}>
+                        {music.title}
+                    </p>
+                    <p className={styles.songArtist}>
+                        {music.artistName}
+                    </p>
                 </div>
             ))}
             </div>
