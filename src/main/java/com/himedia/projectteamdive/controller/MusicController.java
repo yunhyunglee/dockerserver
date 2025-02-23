@@ -306,6 +306,11 @@ public class MusicController {
 
 
     }
+    @GetMapping("/getTop3")
+    public HashMap<String, Object> getTop3() {
+        HashMap<String,Object> map= ms.getTop3();
+        return map;
+    }
 
 
 

@@ -1,9 +1,6 @@
 package com.himedia.projectteamdive.service;
 
-import com.himedia.projectteamdive.dto.AlbumDto;
-import com.himedia.projectteamdive.dto.ArtistDto;
-import com.himedia.projectteamdive.dto.MusicDto;
-import com.himedia.projectteamdive.dto.PlaylistDto;
+import com.himedia.projectteamdive.dto.*;
 import com.himedia.projectteamdive.entity.*;
 import com.himedia.projectteamdive.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,7 +98,7 @@ public class MusicService {
 
                 MemberRecentMusics recentMusic=MemberRecentMusics.builder()
                         .member(memr.findByMemberId(memberId))
-                        .musicId(musicId).build();
+                        .music(music).build();
                 mrmr.save(recentMusic);
                 List<MemberRecentMusics> recentMusics=mrmr.findByMember_MemberIdOrderByIdAsc(memberId);
                 if(recentMusics.size()>30){
@@ -343,7 +340,7 @@ public class MusicService {
 
     public HashMap<String, Object> getMemberRecentMusics(String memberId) {
         HashMap<String, Object> result=new HashMap<>();
-        List<MemberRecentMusics> musics=mrmr.findByMember_MemberIdOrderByIdAsc(memberId);
+        List<MemberRecentMusicsDto> musics=mrmr.findByMember_MemberId(memberId);
         result.put("musics",musics);
         return result;
     }
@@ -362,5 +359,29 @@ public class MusicService {
         Optional<Playlist> playlist = pr.findById(playlistId);
 
         return playlist.map(PlaylistDto::new).orElse(null);
+    }
+    @Autowired
+    LikesRepository lr;
+    public HashMap<String, Object> getTop3() {
+        HashMap<String, Object> result=new HashMap<>();
+        List<Object[]>artists= lr.findLikesRanking(Pagetype.ARTIST);
+        List<Object[]>albums= lr.findLikesRanking(Pagetype.ALBUM);
+        List<Object[]>musics= lr.findLikesRanking(Pagetype.MUSIC);
+        List<ArtistDto> artist=new ArrayList<>();
+        for(Object[] a:artists) {
+            artist.add(new ArtistDto(arr.findByArtistId((Integer) a[0])));
+        }
+        List<AlbumDto> album=new ArrayList<>();
+        for(Object[] a:albums) {
+            album.add(new AlbumDto(ar.findByAlbumId((Integer) a[0])));
+        }
+        List<MusicDto> music=new ArrayList<>();
+        for(Object[] a:musics) {
+            music.add(new MusicDto(mr.findByMusicId((Integer) a[0])));
+        }
+        result.put("artist",artist);
+        result.put("album",album);
+        result.put("music",music);
+        return result;
     }
 }
