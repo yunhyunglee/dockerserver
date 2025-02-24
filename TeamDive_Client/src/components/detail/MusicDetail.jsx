@@ -3,6 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import styles from '../../css/detail/musicDetail.module.css';
 
+import PlaylistSelectModal from './PlaylistSectionModal';
+
 import axios from 'axios';
 import jaxios from '../../util/JwtUtil';
 
@@ -27,6 +29,16 @@ const MusicDetail = () => {
     const handleLike = () => {
         setLike(prevLike => !prevLike);
     }
+
+    // 플리 추가 모달
+    const [showPlaylistModal, setShowPlaylistModal] = useState(false);
+
+    const handleAddToPlaylist = () => {
+      
+      setShowPlaylistModal(true);
+    };
+    
+    
 
 
     useEffect(() => {
@@ -148,8 +160,8 @@ const MusicDetail = () => {
           
                     <div className={styles.buttonGroup}>
                         <button className={styles.playButton}>▶ 재생</button>
+                        <button className={styles.addButton} onClick={handleAddToPlaylist}>플리 추가</button>
                         <button className={styles.purchaseButton} onClick={insertCart}>구매</button>
-
                     </div>
                 </div>
             </div>
@@ -218,6 +230,18 @@ const MusicDetail = () => {
                     }
                 </div>
             </div>
+
+            {/* 플레이리스트 선택 모달 */}
+            {showPlaylistModal && (
+                <PlaylistSelectModal
+                    musicIdList={[musicId]}
+                    onClose={() => setShowPlaylistModal(false)}
+                />
+                )}
+
+
+
+
         </div>
     );
 };

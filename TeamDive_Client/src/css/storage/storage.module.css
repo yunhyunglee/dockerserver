@@ -10,7 +10,8 @@
 
 /* 큰 제목(보관함) 스타일 */
 .pageTitle {
-  font-size: 2rem;
+  font-family: 'Ownglyph_ParkDaHyun';
+  font-size: 2.4rem;
   margin-bottom: 1rem;
 }
 

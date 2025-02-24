@@ -89,7 +89,6 @@ const LikedMusic = () => {
 
     return (
       <div className={styles.sectionContainer}>
-        <h2 className={styles.sectionTitle}>좋아하는 노래</h2>
 
         {/* 노래가 하나도 없을 때 */}
         {likedMusic.length === 0 ? (

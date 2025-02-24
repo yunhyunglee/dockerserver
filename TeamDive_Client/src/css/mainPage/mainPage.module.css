@@ -127,10 +127,11 @@
 }
 
 .section h2 {
-  font-size: 1.5rem;
+  font-family: 'Ownglyph_ParkDaHyun';
+  font-size: 28px;
   margin-bottom: 10px;
-  color: #ff4081;
-  border-bottom: 2px solid #ff4081;
+  color: whitesmoke;
+  border-bottom: 2px solid #333;
   padding-bottom: 5px;
 }
 
