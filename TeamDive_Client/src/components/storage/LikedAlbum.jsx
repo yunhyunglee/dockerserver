@@ -53,7 +53,6 @@ const LikedAlbum = () => {
 
   return (
     <div className={styles.albumContainer}>
-      <h2 className={styles.sectionTitle}>좋아하는 앨범</h2>
       <div className={styles.albumGrid}>
         {likedAlbums.map((album) => (
           <div className={styles.flipCard} key={album.albumId}>

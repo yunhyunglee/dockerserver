@@ -48,7 +48,6 @@ const LikedArtist = () => {
 
   return (
     <div className={styles.sectionContainer}>
-      <h2 className={styles.sectionTitle}>좋아하는 가수</h2>
       <div className={styles.artistGrid}>
         {likedArtists.map((artist) => (
           <div className={styles.artistCard} key={artist.artistId}>

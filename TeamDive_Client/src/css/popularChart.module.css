@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
 :root {
-  --primary-color: #ff4081;
+
   --secondary-color: #ffffff;
   --bg-color: #000000;
   --card-bg: rgba(255, 255, 255, 0.1);
@@ -23,7 +23,9 @@ body {
 }
 
 .pageTitle {
-  font-size: 32px;
+  color: #ff4081 !important;
+  font-family: 'Ownglyph_ParkDaHyun';
+  font-size: 47px;
   font-weight: 700;
   text-align: center;
   color: var(--primary-color);
@@ -45,7 +47,8 @@ body {
 }
 
 .sectionTitle {
-  font-size: 22px;
+  font-family: 'Ownglyph_ParkDaHyun';
+  font-size: 26px;
   font-weight: 600;
   color: var(--primary-color);
   text-shadow: 0px 0px 10px var(--shadow-color);
@@ -67,7 +70,7 @@ body {
   .dot {
     width: 10px;
     height: 10px;
-    background-color: var(--primary-color); 
+    background-color: white;
     border-radius: 50%;
     margin: 0 3px;
     opacity: 0.8;
