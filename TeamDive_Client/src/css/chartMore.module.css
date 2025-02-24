@@ -133,3 +133,37 @@
 .customCheckbox input:checked ~ .checkmark::after {
   opacity: 1;
 }
+
+
+
+
+/* 페이지네이션 버튼 컨테이너: 중앙 정렬 */
+.paginationContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+/* 페이지네이션 버튼 기본 스타일 */
+.paginationContainer button {
+  margin: 0 5px;
+  padding: 8px 12px;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+/* 호버 시 배경색 변경 */
+.paginationContainer button:hover {
+  background-color: #e0e0e0;
+}
+
+/* 활성화된 버튼 스타일 */
+.paginationContainer button.active {
+  background-color: #007bff;
+  color: #fff;
+  border-color: #007bff;
+}

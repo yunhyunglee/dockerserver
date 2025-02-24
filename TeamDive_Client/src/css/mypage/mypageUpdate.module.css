@@ -1,164 +1,138 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
 
-.updateMemberForm {
-  display: flex;
-  flex-direction: row;
-  background: linear-gradient(135deg, #000, #1a1a1a);
+/* 최상위 컨테이너 */
+.updateContainer {
+  max-width: 900px;
+  margin: 40px auto;
+  background: linear-gradient(135deg, #0d0d0d, #1a1a1a);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  color: #fff;
+  padding: 30px;
   font-family: 'Montserrat', sans-serif;
-  padding: 20px;
 }
 
-.imageContainer {
+/* 제목 */
+.updateTitle {
+  font-size: 1.8rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 30px;
+  color: white;
+}
+
+/* 이미지 섹션 */
+.imageSection {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  
+  align-items: center;
+  margin-bottom: 30px;
 }
 
-.imageContainer img {
-  width: 300px;
-  height: 300px;
-  border-radius: 10px;
+.profilePreview {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
   object-fit: cover;
-  transition: transform 0.3s ease-in-out;
+  margin-bottom: 15px;
+  border: 3px solid rgba(255, 255, 255, 0.2);
 }
 
-.formGroupContainer {
-  flex: 1;
+
+.formSection {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  width: 500px;
 }
+
+.formColumns {
+  display: flex;
+  gap: 40px; 
+  flex-wrap: wrap; 
+}
+
+
+.formColumn {
+  flex: 1; 
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
 
 .formGroup {
   display: flex;
   flex-direction: column;
-  width: 100%;
+  gap: 6px;
 }
 
 .formGroup label {
-  margin-bottom: 5px;
-  font-size: 15px;
   font-weight: 600;
-  color: #ddd;
+  color: #ff9f43;
 }
 
-.formGroup input,
-.formGroup select,
-.formGroup textarea {
-  width: 100%;
-  padding: 12px 16px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.2);
-  color: #fff;
-  font-size: 15px;
-  outline: none;
-  transition: all 0.3s ease-in-out;
-}
 
-.formGroup input:focus,
-.formGroup select:focus,
-.formGroup textarea:focus {
-  background: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 0 10px rgba(255, 64, 129, 0.5);
-}
-
-.zipCodeContainer {
+.zipcodeRow {
   display: flex;
-  flex-direction: column;
   gap: 10px;
-  width: 100%;
 }
 
-.zipCode{
-    display: flex;
-    flex-direction: row;
-}
 
-.zipCodeContainer input {
-  flex: 3;
-  min-width: 0;
-}
-
-.zipCodeContainer button {
-  flex: 1;
-  padding: 10px 16px;
-  border: none;
-  border-radius: 8px;
-  background: linear-gradient(90deg, #ff4081, #ff79a9);
+.formSection input[type='text'],
+.formSection input[type='password'],
+.formSection textarea {
+  background: #222;
+  border: 1px solid #444;
+  border-radius: 4px;
   color: #fff;
-  font-size: 14px;
+  padding: 8px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.formSection input[type='text']:focus,
+.formSection input[type='password']:focus,
+.formSection textarea:focus {
+  border-color: #ff9f43;
+}
+
+
+.buttonGroup {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+.submitButton {
+  background: #0d66a1;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  padding: 10px 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease-in-out;
-  text-align: center;
+  transition: background 0.3s;
 }
 
-.zipCodeContainer button:hover {
-  background: linear-gradient(90deg, #ff79a9, #ff4081);
-  transform: scale(1.05);
-}
 
-/* 버튼 스타일 */
-.buttonGroup {
-  margin-top: 20px;
-  display: flex;
-  justify-content: flex-start;
-  gap: 12px;
-}
-
-.button,
 .deleteButton {
-  padding: 12px 22px;
+  
   border: none;
-  border-radius: 8px;
+  border-radius: 4px;
   color: #fff;
-  font-size: 16px;
-  font-weight: 700;
+  padding: 10px 14px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease-in-out;
-  box-shadow: 0 5px 12px rgba(255, 64, 129, 0.5);
+  transition: background 0.3s;
 }
-
-/* 저장 버튼 */
-.button {
-  background: linear-gradient(90deg, #ff4081, #ff79a9);
-}
-
-.button:hover {
-  background: linear-gradient(90deg, #ff79a9, #ff4081);
-  transform: scale(1.05);
-}
-
-.button:active {
-  transform: scale(0.95);
+.submitButton:hover {
+  background: #5289ad;
 }
 
 
 .deleteButton {
-  background: linear-gradient(90deg, #ff4b2b, #ff416c);
+  background: #e74c3c;
 }
-
 .deleteButton:hover {
-  background: linear-gradient(90deg, #ff416c, #ff4b2b);
-  transform: scale(1.05);
+  background: #ff6f61;
 }
-
-.deleteButton:active {
-  transform: scale(0.95);
-}
-
-/* 페이드인 애니메이션 */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-

@@ -44,7 +44,7 @@ const PopularChartsPage = () => {
               key={item.music.musicId}
               className={styles.card}
               style={{ backgroundImage: `url(${item.image})` }}
-              onClick={() => navigate(`/music/${item.musicId}`)}
+              onClick={() => navigate(`/music/${item.music.musicId}`)}
               >
               
               <div className={styles.rank}>{index + 1}</div>

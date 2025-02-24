@@ -1,10 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 
 import Typography from '@mui/material/Typography';
 import Slider from '@mui/material/Slider';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
+import Slide from '@mui/material/Slide';
+import Pagination from '@mui/material/Pagination';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 import { styled } from '@mui/system';
 
 // ------------ ICONS -------------
@@ -20,25 +24,14 @@ import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
 
 import ShuffleIcon from '@mui/icons-material/Shuffle';
 import RepeatIcon from '@mui/icons-material/Repeat';
+import PlaylistPlayIcon from '@mui/icons-material/PlaylistPlay';
 // ----------------------------------
 
-import music1 from '../sampleMusic/music1.mp3';
-import music2 from '../sampleMusic/music2.mp3';
-import music3 from '../sampleMusic/music3.mp3';
-import music4 from '../sampleMusic/music4.mp3';
-import music5 from '../sampleMusic/music5.mp3';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
+import { PlayerContext } from '../PlayerContext';
 
-
-// const playlist = [
-//   { src: 'https://d9k8tjx0yo0q5.cloudfront.net/music/482b8d00-08e4-4391-a40c-535aaaebcfbdHopeful - Nat Keefe.mp3', title: '별별별', artist: '엔믹스' ,musicId:1},
-//   { src: music2, title: 'Dash', artist: '엔믹스' ,musicId:2},
-//   { src: music3, title: '럽미랔뎃', artist: '엔믹스' ,musicId:3},
-//   { src: music4, title: '고민중독', artist: 'QWER' ,musicId:4},
-//   { src: music5, title: '디스코드', artist: 'QWER' ,musicId:5},
-// ];
-
+// Custom Paper 스타일
 const CustomPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: 'black',
   margin: theme.spacing(0),
@@ -47,12 +40,11 @@ const CustomPaper = styled(Paper)(({ theme }) => ({
   boxShadow: 'none',
 }));
 
+// 커스텀 슬라이더
 const PSlider = styled(Slider)(({ theme, ...props }) => ({
   color: 'silver',
   height: 6,
-  '&:hover': {
-    cursor: 'pointer',
-  },
+  '&:hover': { cursor: 'pointer' },
   '& .MuiSlider-thumb': {
     width: '15px',
     height: '15px',
@@ -74,32 +66,38 @@ function shuffleArray(array) {
 export default function Player() {
   const audioRef = useRef();
 
-  // ========== 재생 상태 관련 ==========
-  const [index, setIndex] = useState(0);    
+  // 재생 상태 관련
+  const [index, setIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(30);
   const [mute, setMute] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const [duration, setDuration] = useState(0);
 
-  // ========== 반복, 셔플 ==========
-  const [isRepeat, setIsRepeat] = useState(false);   // 단일 곡 반복
-  const [isShuffle, setIsShuffle] = useState(false); // 랜덤 재생
-
- 
+  // 반복, 셔플 관련
+  const [isRepeat, setIsRepeat] = useState(false);
+  const [isShuffle, setIsShuffle] = useState(false);
   const [shuffleQueue, setShuffleQueue] = useState([]);
   const [shufflePos, setShufflePos] = useState(0);
 
+  // 초기 playlist 상태
+  const [playlist, setPlaylist] = useState([]);
   
-  // const playlist = originalPlaylist;
-  const [playlist,setPlaylist]=useState([
-    { src: 'https://d9k8tjx0yo0q5.cloudfront.net/music/100b7476-1600-4133-9cfa-4706b31d45d5Moritas Moras - House of the Gipsies.mp3', title: '별별별', artist: '엔믹스' ,musicId:1},
-    { src: music2, title: 'Dash', artist: '엔믹스' ,musicId:2},
-    { src: music3, title: '럽미랔뎃', artist: '엔믹스' ,musicId:3},
-    { src: music4, title: '고민중독', artist: 'QWER' ,musicId:4},
-    { src: music5, title: '디스코드', artist: 'QWER' ,musicId:5},
-  ]);
-  
+  // 리스트 토글 상태 (플레이리스트 보이기/숨기기)
+  const [showPlaylist, setShowPlaylist] = useState(false);
+
+  // 페이지네이션 관련 상태
+  const [currentPage, setCurrentPage] = useState(1);
+  const songsPerPage = 7; // 한 페이지에 7곡씩 표시
+
+  // 검색 기능 제거 → 전체 playlist 사용
+  const filteredPlaylist = playlist;
+
+  const indexOfLastSong = currentPage * songsPerPage;
+  const indexOfFirstSong = indexOfLastSong - songsPerPage;
+  const currentSongs = filteredPlaylist.slice(indexOfFirstSong, indexOfLastSong);
+
+  // 현재 재생할 곡 결정
   let currentSong;
   if (isShuffle && shuffleQueue.length > 0) {
     currentSong = playlist[shuffleQueue[shufflePos]];
@@ -107,56 +105,61 @@ export default function Player() {
     currentSong = playlist[index];
   }
 
-  const loginUser=useSelector(state=>state.user);
-  const [playCounts,setPlayCounts]=useState({});
-  const [isPlayed,setIsplayed]=useState(false);
+  const loginUser = useSelector(state => state.user);
+  const [playCounts, setPlayCounts] = useState({});
+  const [isPlayed, setIsplayed] = useState(false);
   const musicPlay = (songId) => {
-      // alert('재생했다')
-      setPlayCounts(prev => ({
-          ...prev,
-          [songId]:(prev[songId] || 0) + 1
-      }));
+    setPlayCounts(prev => ({
+      ...prev,
+      [songId]: (prev[songId] || 0) + 1
+    }));
   };
+
   useEffect(() => {
     const interval = setInterval(() => {
-        // alert('인터벌 작동중')
-        if (Object.keys(playCounts).length > 0) {
-            axios.post("/api/music/addPlayCount",playCounts,{params:{ memberId: loginUser.memberId }}) // 서버에 전송
-                .then(() => setPlayCounts({})) // 성공하면 초기화
-                .catch(err => console.error("Error sending play counts:", err));
-        }
-    }, 60000); // 60초마다 전송
+      if (Object.keys(playCounts).length > 0) {
+        axios.post("/api/music/addPlayCount", playCounts, { params: { memberId: loginUser.memberId } })
+          .then(() => setPlayCounts({}))
+          .catch(err => console.error("Error sending play counts:", err));
+      }
+    }, 60000);
     return () => clearInterval(interval);
   }, [playCounts]);
 
-  const prevPlaylist=useRef([]);
-  useEffect(
-    ()=>{
-      if(playlist.length>prevPlaylist.length){
-        axios('/api/music/getCurrentPlaylist',{params:{playlist}})
-        .then((result)=>{
-          setPlaylist(result.data.playlist);
-        }).catch((err)=>{console.error(err);})
+  const prevPlaylist = useRef([]);
+  useEffect(() => {
+    const fetchPlaylist = async () => {
+      if (playlist.length > prevPlaylist.current.length) {
+        const result = await axios.post('/api/music/getCurrentPlaylist', playlist);
+        setPlaylist(result.data.playlist);
       }
-      prevPlaylist.current=playlist;
-    },[playlist]
-  );
+      prevPlaylist.current = playlist;
+      console.log(playlist);
+    }
+    fetchPlaylist();
+  }, [playlist]);
+
   const play30second = () => {
     const audio = audioRef.current;
     const interval = setInterval(() => {
-      if (audio.currentTime >= 30 && isPlayed==false) {
+      if (audio.currentTime >= 30 && !isPlayed) {
         musicPlay(currentSong.musicId);
         setIsplayed(true);
-        clearInterval(interval); 
+        clearInterval(interval);
       }
-    }, 1000); // 1초마다 확인
+    }, 1000);
   };
-  useEffect(()=>{
+  useEffect(() => {
     setIsplayed(false);
-  },[currentSong]);
+  }, [currentSong]);
 
-
-
+  const { addPlaylist, setAddPlaylist } = useContext(PlayerContext);
+  useEffect(() => {
+    if (addPlaylist) {
+      setPlaylist(prevPlaylist => [...prevPlaylist, { musicId: addPlaylist }]);
+      setAddPlaylist(null);
+    }
+  }, [addPlaylist]);
 
   useEffect(() => {
     if (audioRef.current) {
@@ -173,23 +176,18 @@ export default function Player() {
     }
   }, [volume, mute, isPlaying]);
 
-  
   useEffect(() => {
     const audioEl = audioRef.current;
     if (!audioEl) return;
-
     const handleEnded = () => {
-      
       toggleSkipForward('auto');
     };
-
     audioEl.addEventListener('ended', handleEnded);
     return () => {
       audioEl.removeEventListener('ended', handleEnded);
     };
   }, [isShuffle, shuffleQueue, shufflePos, index, isRepeat]);
 
-  
   const togglePlay = () => {
     if (!isPlaying) {
       audioRef.current.play();
@@ -200,7 +198,6 @@ export default function Player() {
     }
   };
 
-  
   const handleAudioChange = (songIndex, autoPlay = true) => {
     const src = playlist[songIndex].src;
     audioRef.current.src = src;
@@ -210,7 +207,7 @@ export default function Player() {
         audioRef.current
           .play()
           .then(() => setIsPlaying(true))
-          .catch((err) => console.error('Play error:', err));
+          .catch(err => console.error('Play error:', err));
       } else {
         audioRef.current.pause();
         setIsPlaying(false);
@@ -220,19 +217,15 @@ export default function Player() {
 
   // ===== 이전 곡 =====
   const toggleSkipBackward = () => {
-    // 셔플 모드
     if (isShuffle) {
-      setShufflePos((prevPos) => {
+      setShufflePos(prevPos => {
         let newPos = prevPos - 1;
-        if (newPos < 0) {
-          newPos = shuffleQueue.length - 1;
-        }
+        if (newPos < 0) newPos = shuffleQueue.length - 1;
         handleAudioChange(shuffleQueue[newPos], true);
         return newPos;
       });
     } else {
-      // 일반 모드
-      setIndex((prevIndex) => {
+      setIndex(prevIndex => {
         const newIndex = prevIndex <= 0 ? playlist.length - 1 : prevIndex - 1;
         handleAudioChange(newIndex, true);
         return newIndex;
@@ -240,27 +233,20 @@ export default function Player() {
     }
   };
 
-  // ===== 다음 곡 =====
   const toggleSkipForward = (skipType = 'manual') => {
-   
     if (isRepeat && skipType === 'auto') {
-     
       audioRef.current.currentTime = 0;
-      audioRef.current.play().catch((err) => console.error('Play error:', err));
+      audioRef.current.play().catch(err => console.error('Play error:', err));
       return;
     }
-
-   
     if (isShuffle) {
-      setShufflePos((prevPos) => {
+      setShufflePos(prevPos => {
         let newPos = prevPos + 1;
-        
         if (newPos >= shuffleQueue.length) {
           const newQueue = shuffleArray([...playlist.keys()]);
           setShuffleQueue(newQueue);
           newPos = 0;
         }
-        
         if (skipType === 'auto' && newPos === 0) {
           handleAudioChange(shuffleQueue[newPos], false);
         } else {
@@ -270,9 +256,7 @@ export default function Player() {
       });
       return;
     }
-
-    
-    setIndex((prevIndex) => {
+    setIndex(prevIndex => {
       const newIndex = prevIndex >= playlist.length - 1 ? 0 : prevIndex + 1;
       if (skipType === 'auto' && newIndex === 0) {
         handleAudioChange(newIndex, false);
@@ -283,40 +267,26 @@ export default function Player() {
     });
   };
 
-  
   const toggleRepeat = () => {
-    setIsRepeat((prev) => !prev);
+    setIsRepeat(prev => !prev);
   };
 
- 
   const toggleShuffle = () => {
-    
     if (!isShuffle) {
       const newQueue = shuffleArray([...playlist.keys()]);
       setShuffleQueue(newQueue);
       setShufflePos(0);
-
-      
       const currentIndex = isShuffle ? shuffleQueue[shufflePos] : index;
-      const findPos = newQueue.findIndex((val) => val === currentIndex);
-      if (findPos !== -1) {
-        setShufflePos(findPos);
-      }
+      const findPos = newQueue.findIndex(val => val === currentIndex);
+      if (findPos !== -1) setShufflePos(findPos);
     }
-    setIsShuffle((prev) => !prev);
+    setIsShuffle(prev => !prev);
   };
 
-  // ===== 시간 포맷 함수 =====
   const formatTime = (time) => {
     if (time && !isNaN(time)) {
-      const minutes =
-        Math.floor(time / 60) < 10
-          ? `0${Math.floor(time / 60)}`
-          : Math.floor(time / 60);
-      const seconds =
-        Math.floor(time % 60) < 10
-          ? `0${Math.floor(time % 60)}`
-          : Math.floor(time % 60);
+      const minutes = Math.floor(time / 60) < 10 ? `0${Math.floor(time / 60)}` : Math.floor(time / 60);
+      const seconds = Math.floor(time % 60) < 10 ? `0${Math.floor(time % 60)}` : Math.floor(time % 60);
       return `${minutes}:${seconds}`;
     }
     return '00:00';
@@ -353,171 +323,254 @@ export default function Player() {
     );
   };
 
-  return (
-    <footer className="footer">
-      {/* 현재 곡 */}
-      <audio ref={audioRef} muted={mute} src={currentSong.src} onPlay={play30second} />
-      <CustomPaper>
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: { xs: 'center', sm: 'space-between' },
-            flexDirection: { xs: 'column', sm: 'row' },
-            width: { xs: '100vw', sm: '100vw' },
-            gap: 2,
-          }}
-        >
-          {/* 왼쪽: 볼륨 컨트롤 */}
-          <Stack
-            direction="row"
-            spacing={1}
-            sx={{
-              flex: { xs: 'unset', sm: 0.2 },
-              alignItems: 'center',
-              justifyContent: 'flex-start',
-              gap: 1.5,
-              padding: '0 0 0 14px'
-            }}
-          >
-            <VolumeBtns />
-            <Slider
-              min={0}
-              max={100}
-              value={volume}
-              onChange={(e, v) => setVolume(v)}
-              sx={{
-                color: 'silver',
-                width: {
-                  xs: '150px',
-                  sm: '100%',
-                },
-              }}
-            />
-          </Stack>
+  if (playlist.length > 0) {
+    // 선택한 곡으로 재생하고 리스트 숨김 처리
+    const handleSelectSong = (i) => {
+      setIndex(i);
+      handleAudioChange(i, true);
+      setShowPlaylist(false);
+    };
 
-          {/* 가운데: 재생 진행바 */}
-          <Stack
-            direction="row"
-            spacing={1}
+    // 페이지 변경 핸들러
+    const handlePageChange = (event, value) => {
+      setCurrentPage(value);
+    };
+
+    return (
+      <footer className="footer">
+        <audio ref={audioRef} muted={mute} src={currentSong.src} onPlay={play30second} />
+        <CustomPaper>
+          <Box
             sx={{
-              flex: { xs: 'unset', sm: 1. },
+              display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center',
+              justifyContent: { xs: 'center', sm: 'space-between' },
+              flexDirection: { xs: 'column', sm: 'row' },
+              width: { xs: '100vw', sm: '100vw' },
               gap: 2,
-              width: { xs: '90vw', sm: 'auto' },
             }}
           >
-            <Typography sx={{ color: 'silver' }}>
-              {formatTime(elapsed)}
-            </Typography>
-            <PSlider
-              min={0}
-              max={duration}
-              value={elapsed}
-              onChange={(e, newValue) => setElapsed(newValue)}
-              onChangeCommitted={(e, newValue) => {
-                if (audioRef.current) {
-                  audioRef.current.currentTime = newValue;
-                }
+            {/* 왼쪽: 볼륨 컨트롤 */}
+            <Stack
+              direction="row"
+              spacing={1}
+              sx={{
+                flex: { xs: 'unset', sm: 0.2 },
+                alignItems: 'center',
+                justifyContent: 'flex-start',
+                gap: 1.5,
+                padding: '0 0 0 14px',
               }}
-            />
-            <Typography sx={{ color: 'silver', padding: '0 20px  0 0' }}>
-              {formatTime(duration - elapsed)}
-            </Typography>
-          </Stack>
+            >
+              <VolumeBtns />
+              <Slider
+                min={0}
+                max={100}
+                value={volume}
+                onChange={(e, v) => setVolume(v)}
+                sx={{
+                  color: 'silver',
+                  width: { xs: '150px', sm: '100%' },
+                }}
+              />
+            </Stack>
 
-          {/* 오른쪽: 컨트롤 버튼들 */}
-          <Stack
-            direction="row"
-            spacing={1.5}
+            {/* 가운데: 재생 진행바 */}
+            <Stack
+              direction="row"
+              spacing={1}
+              sx={{
+                flex: { xs: 'unset', sm: 1 },
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 2,
+                width: { xs: '90vw', sm: 'auto' },
+              }}
+            >
+              <Typography sx={{ color: 'silver' }}>{formatTime(elapsed)}</Typography>
+              <PSlider
+                min={0}
+                max={duration}
+                value={elapsed}
+                onChange={(e, newValue) => setElapsed(newValue)}
+                onChangeCommitted={(e, newValue) => {
+                  if (audioRef.current) audioRef.current.currentTime = newValue;
+                }}
+              />
+              <Typography sx={{ color: 'silver', padding: '0 20px 0 0' }}>
+                {formatTime(duration - elapsed)}
+              </Typography>
+            </Stack>
+
+            {/* 오른쪽: 컨트롤 버튼들 */}
+            <Stack
+              direction="row"
+              spacing={1.5}
+              sx={{
+                flex: { xs: 'unset', sm: 0.5 },
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 2.5,
+              }}
+            >
+              <SkipPreviousIcon
+                sx={{ color: 'silver', '&:hover': { color: 'white', cursor: 'pointer' } }}
+                onClick={toggleSkipBackward}
+              />
+              {!isPlaying ? (
+                <PlayArrowIcon
+                  fontSize="large"
+                  sx={{
+                    color: 'silver',
+                    transform: 'scale(1.5)',
+                    '&:hover': {
+                      color: 'white',
+                      cursor: 'pointer',
+                      transform: 'scale(1.3)',
+                      transition: '0.3s',
+                    },
+                  }}
+                  onClick={togglePlay}
+                />
+              ) : (
+                <PauseIcon
+                  fontSize="large"
+                  sx={{
+                    color: 'silver',
+                    transform: 'scale(1.5)',
+                    '&:hover': {
+                      color: 'white',
+                      cursor: 'pointer',
+                      transform: 'scale(1.3)',
+                      transition: '0.3s',
+                    },
+                  }}
+                  onClick={togglePlay}
+                />
+              )}
+              <SkipNextIcon
+                sx={{ color: 'silver', '&:hover': { color: 'white', cursor: 'pointer' } }}
+                onClick={() => toggleSkipForward('manual')}
+              />
+              <RepeatIcon
+                sx={{
+                  color: isRepeat ? 'hotpink' : 'silver',
+                  '&:hover': { color: 'white', cursor: 'pointer' },
+                }}
+                onClick={toggleRepeat}
+              />
+              <ShuffleIcon
+                sx={{
+                  color: isShuffle ? 'hotpink' : 'silver',
+                  '&:hover': { color: 'white', cursor: 'pointer' },
+                }}
+                onClick={toggleShuffle}
+              />
+            </Stack>
+
+            {/* 현재 노래 정보 및 리스트 버튼 */}
+            <Stack
+              direction="row"
+              sx={{
+                flex: { xs: 'unset', sm: 0.5 },
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 20,
+                paddingRight: '14px',
+              }}
+            >
+              <Box>
+                <Typography variant="h6" sx={{ color: 'silver' }}>
+                  {currentSong.title}
+                </Typography>
+                <Typography variant="body2" sx={{ color: 'silver' }}>
+                  {currentSong.artist}
+                </Typography>
+              </Box>
+              <PlaylistPlayIcon
+                sx={{
+                  color: 'silver',
+                  '&:hover': { color: 'white', cursor: 'pointer' },
+                }}
+                onClick={() => setShowPlaylist(!showPlaylist)}
+              />
+            </Stack>
+          </Box>
+        </CustomPaper>
+
+        {/* 플레이리스트 슬라이드 (오른쪽 하단에서 위로 올라감) */}
+        <Slide direction="up" in={showPlaylist} mountOnEnter unmountOnExit>
+          <Box
             sx={{
-              flex: { xs: 'unset', sm: 0.5 },
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 1.5,
+              position: 'fixed',
+              right: 0,
+              bottom: 70,
+              width: '280px',
+              maxHeight: '60%',
+              overflowY: 'auto',
+              background: 'linear-gradient(135deg, #222, #000)',
+              borderTopLeftRadius: '12px',
+              borderBottomLeftRadius: '12px',
+              boxShadow: '0px 0px 20px rgba(0,0,0,0.8)',
+              padding: 2,
+              zIndex: 1300,
+              '&::-webkit-scrollbar': { width: '6px' },
+              '&::-webkit-scrollbar-thumb': {
+                background: '#555',
+                borderRadius: '3px',
+              },
             }}
           >
-            {/* 이전 곡 */}
-            <SkipPreviousIcon
-              sx={{ color: 'silver', '&:hover': { color: 'white', cursor: 'pointer' } }}
-              onClick={toggleSkipBackward}
-            />
-
-            {/* 재생/일시정지 */}
-            {!isPlaying ? (
-              <PlayArrowIcon
-                fontSize="large"
+            {/* 헤더 영역: 타이틀과 닫기 버튼 */}
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
+              <Typography variant="h6" sx={{ color: 'silver' }}>
+                Playlist
+              </Typography>
+              <IconButton size="small" onClick={() => setShowPlaylist(false)} sx={{ color: 'silver' }}>
+                <CloseIcon />
+              </IconButton>
+            </Box>
+            {currentSongs.map((song, i) => (
+              <Box
+                key={`${song.musicId}-${i}`}
                 sx={{
-                  color: 'silver',
-                  transform: 'scale(1.5)',
+                  paddingY: 1,
+                  paddingX: 1,
+                  borderRadius: '6px',
+                  mb: 1,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease-in-out',
                   '&:hover': {
-                    color: 'white',
-                    cursor: 'pointer',
-                    transform: 'scale(1.3)',
-                    transition: '0.3s',
+                    backgroundColor: 'rgba(255,255,255,0.1)',
+                    transform: 'scale(1.02)',
                   },
                 }}
-                onClick={togglePlay}
-              />
-            ) : (
-              <PauseIcon
-                fontSize="large"
-                sx={{
-                  color: 'silver',
-                  transform: 'scale(1.5)',
-                  '&:hover': {
-                    color: 'white',
-                    cursor: 'pointer',
-                    transform: 'scale(1.3)',
-                    transition: '0.3s',
-                  },
-                }}
-                onClick={togglePlay}
-              />
+                onClick={() => handleSelectSong(playlist.indexOf(song))}
+              >
+                <Typography variant="subtitle1" sx={{ color: 'silver' }}>
+                  {song.title}
+                </Typography>
+                <Typography variant="body2" sx={{ color: 'gray' }}>
+                  {song.artist}
+                </Typography>
+              </Box>
+            ))}
+            {filteredPlaylist.length > songsPerPage && (
+              <Box sx={{ display: 'flex', justifyContent: 'center', mt: 1 }}>
+                <Pagination
+                  count={Math.ceil(filteredPlaylist.length / songsPerPage)}
+                  page={currentPage}
+                  onChange={handlePageChange}
+                  size="small"
+                  sx={{
+                    '& .MuiPaginationItem-root': { color: 'silver' },
+                  }}
+                />
+              </Box>
             )}
-
-            {/* 다음 곡 */}
-            <SkipNextIcon
-              sx={{ color: 'silver', '&:hover': { color: 'white', cursor: 'pointer' } }}
-              onClick={() => toggleSkipForward('manual')}
-            />
-
-            {/* 반복 버튼 */}
-            <RepeatIcon
-              sx={{
-                color: isRepeat ? 'hotpink' : 'silver',
-                '&:hover': { color: 'white', cursor: 'pointer' },
-              }}
-              onClick={toggleRepeat}
-            />
-
-            {/* 셔플 버튼 */}
-            <ShuffleIcon
-              sx={{
-                color: isShuffle ? 'hotpink' : 'silver',
-                '&:hover': { color: 'white', cursor: 'pointer' },
-              }}
-              onClick={toggleShuffle}
-            />
-          </Stack>
-
-          {/* 현재 노래 정보 */}
-          <Stack
-            sx={{
-              flex: { xs: 'unset', sm: 0.4 },
-              alignItems: 'center',
-            }}
-          >
-            <Typography variant="h6" sx={{ color: 'silver' }}>
-              {currentSong.title}
-            </Typography>
-            <Typography variant="body2" sx={{ color: 'silver' }}>
-              {currentSong.artist}
-            </Typography>
-          </Stack>
-        </Box>
-      </CustomPaper>
-    </footer>
-  );
+          </Box>
+        </Slide>
+      </footer>
+    );
+  }
 }

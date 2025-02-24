@@ -2,12 +2,13 @@ import { Link } from 'react-router-dom';
 import styles from '../../css/header.module.css';
 import React, { useContext, useState } from 'react';
 import Notice from './mainpage/Notice';
-import { ThemeContext } from '../../context/ThemeContext';
+import MoodDropdown from './MoodDropdown';
+import { useSelector } from 'react-redux';
 
-function MainHeader({ toggleMenu }) {
+function MainHeader({ toggleMenu,onMoodSelect  }) {
   // 검색어 상태
   const [searchQuery, setSearchQuery] = useState('');
-
+  const loginUser = useSelector(state=>state.user);
   // 검색 제출
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -58,8 +59,13 @@ function MainHeader({ toggleMenu }) {
           </button>
         </form>
       </div>
-
       
+      <div className={styles.moodContainer}>
+        {
+           (loginUser)?((loginUser.memberId)?(<MoodDropdown onMoodSelect={onMoodSelect} />):(null)):(null) 
+        }
+      </div>
+
       <div className={styles.rightSection}>
           <Notice/>
       </div>

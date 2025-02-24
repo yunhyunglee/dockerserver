@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import styles from '../../css/music/musicDetail.module.css';
+import styles from '../../css/detail/musicDetail.module.css';
+
+import PlaylistSelectModal from './PlaylistSectionModal';
 
 import axios from 'axios';
 import jaxios from '../../util/JwtUtil';
@@ -28,6 +30,16 @@ const MusicDetail = () => {
         setLike(prevLike => !prevLike);
     }
 
+    // 플리 추가 모달
+    const [showPlaylistModal, setShowPlaylistModal] = useState(false);
+
+    const handleAddToPlaylist = () => {
+      
+      setShowPlaylistModal(true);
+    };
+    
+    
+
 
     useEffect(() => {
 
@@ -46,23 +58,7 @@ const MusicDetail = () => {
             albumIndate: "2024-12-12"
         };
         setMusicDetail(sample);
-       
-    //     const sample = {
-    //         musicId: musicId,
-    //         title: "제목",
-    //         artist: "가수",
-    //         image: lion,
-    //         playCount: 1234,
-    //         genre: "Pop",
-    //         lyrics:
-    //             " \n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. \n\nUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. \n\nExcepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-    //         like: 256,
-    //         album: {
-    //             albumId: 201,
-    //             indate: "2025-02-11"
-    //         }
-    //     };
-    //     setMusicDetail(sample);
+
         axios.get('/api/music/getMusic',{params:{musicId}})
         .then((result)=>{
             console.log(result.data.music);
@@ -155,15 +151,17 @@ const MusicDetail = () => {
                     {like ? "❤️" : "♡"}
                     </button>
                 </div>
-                    <p className={styles.artist}>By {musicDetail.artistName}</p>
+                    <p className={styles.artist} 
+                        onClick={()=>{navigate(`/artist/${musicDetail.artistId}`)}}>
+                            By <span style={{cursor: "pointer"}}>{musicDetail.artistName}</span></p>
                     <p className={styles.genre}>장르: {musicDetail.genre}</p>
                     <p className={styles.like}>Likes: 미구현</p>
 
-                    {/* (css 조정 필요) 장바구니 버튼 */}
+          
                     <div className={styles.buttonGroup}>
                         <button className={styles.playButton}>▶ 재생</button>
+                        <button className={styles.addButton} onClick={handleAddToPlaylist}>플리 추가</button>
                         <button className={styles.purchaseButton} onClick={insertCart}>구매</button>
-
                     </div>
                 </div>
             </div>
@@ -188,9 +186,14 @@ const MusicDetail = () => {
             <div className={styles.albumSection}>
                 <h3>수록 앨범</h3>
                 <div className={styles.album}>
-                    <div><img src={musicDetail.image}  className={styles.albumImage}/></div>
-                    <div className={styles.albumTitle}>{musicDetail.albumtitle}</div>
-                    <div className={styles.albumArtist}>{musicDetail.artistName}</div>
+                    <div><img src={musicDetail.image}  className={styles.albumImage} 
+                        onClick={()=>{navigate(`/album/${musicDetail.albumId}`)}} style={{cursor:'pointer'}}/></div>
+                    <div className={styles.albumTitle}
+                        onClick={()=>{navigate(`/album/${musicDetail.albumId}`)}} style={{cursor:'pointer'}}
+                    >{musicDetail.albumTitle}</div>
+                    <div className={styles.albumArtist}
+                        onClick={()=>{navigate(`/artist/${musicDetail.artistId}`)}} style={{cursor:'pointer'}}
+                    >{musicDetail.artistName}</div>
                     <div className={styles.albumIndate}>{musicDetail.albumIndate}</div>
                 </div>
             </div>
@@ -227,6 +230,18 @@ const MusicDetail = () => {
                     }
                 </div>
             </div>
+
+            {/* 플레이리스트 선택 모달 */}
+            {showPlaylistModal && (
+                <PlaylistSelectModal
+                    musicIdList={[musicId]}
+                    onClose={() => setShowPlaylistModal(false)}
+                />
+                )}
+
+
+
+
         </div>
     );
 };

@@ -10,11 +10,11 @@ import { Provider } from "react-redux";
 persistUserState(store);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-    <React.StrictMode>   
+    <BrowserRouter>
         <Provider store={store}>
-            <BrowserRouter>
+            
                 <App /> 
-            </BrowserRouter>
+            
         </Provider>  
-    </React.StrictMode>
+    </BrowserRouter>
 );      

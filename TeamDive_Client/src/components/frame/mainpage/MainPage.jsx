@@ -8,20 +8,55 @@ import RecommendedPlaylists from './RecommendedPlaylists';
 import styles from '../../../css/mainPage/mainPage.module.css';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import LikeRankingSection from './LikeRankingSection.jsx';
+import RandomMusic from './RandomMusic.jsx';
+import axios from 'axios';
+import jaxios from '../../../util/JWTUtil.jsx';
 
 
-const MainPage = () => {
+const MainPage = ({mood}) => {
     const loginUser = useSelector(state => state.user);
+    
 
-    const [showAdModal, setShowAdModal] = useState(false); // 초기값을 false로 설정
+    const [showAdModal, setShowAdModal] = useState(false); 
+
+
+    const [recommendedSongs, setRecommendedSongs] = useState([]);
+    const [recommendList, setRecommendList] = useState([]);
+    // useEffect(() => {
+    //     if (!mood) return;
+    
+    //     axios.get(`/api/music/recommend?mood=${mood}`)
+    //       .then((res) => {
+    //         setRecommendedSongs(res.data);
+    //       })
+    //       .catch((err) => {
+    //         console.error(err);
+    //       });
+    //   }, [mood]);
+    useEffect(() => {
+    if (!mood) return;
+    console.log('select mood', mood);
+    
+    jaxios.get('/api/AI/recommendList', {params:{mood: mood, memberId:loginUser.memberId}})
+        .then((result) => {
+            console.log('데이터', result.data);
+            console.log('개수', result.data.recommendList.length)
+            setRecommendList(result.data.recommendList);
+        })
+        .catch((err) => {
+        console.error(err);
+        });
+    }, [mood]);
+    
 
     useEffect(() => {
-        // 0.5초 뒤에 광고 모달 띄우기
+        
         const timer = setTimeout(() => {
             setShowAdModal(true);
         }, 300);
 
-        return () => clearTimeout(timer); // 컴포넌트 언마운트 시 타이머 정리
+        return () => clearTimeout(timer); 
     }, []);
 
 
@@ -33,20 +68,20 @@ const MainPage = () => {
     useEffect(() => {
         // 최신등록음악 더미 데이터
         setLatestMusic([
-        { musicId: 102, title: '최신곡 1', artist: 'Artist A', image: '/public/image/album/album1.jpg' },
-        { musicId: 103, title: '최신곡 2', artist: 'Artist B', image: '/public/image/album/album2.jpg' },
+        { musicId: 1, title: '최신곡 1', artist: 'Artist A', image: '/public/image/album/album1.jpg' },
+        { musicId: 3, title: '최신곡 2', artist: 'Artist B', image: '/public/image/album/album2.jpg' },
         ]);
 
         // 최신등록앨범 더미 데이터
         setAlbum([
-        { albumId: 201, title: '신규 앨범 1', image: '/public/image/album/album3.jpg' },
-        { albumId: 202, title: '신규 앨범 2', image: '/public/image/album/album4.jpg' },
+        { albumId: 1, title: '신규 앨범 1', image: '/public/image/album/album3.jpg' },
+        { albumId: 2, title: '신규 앨범 2', image: '/public/image/album/album4.jpg' },
         ]);
 
         // 추천플레이리스트 더미 데이터
         setPlayList([
-        { playListId: 301, title: 'Chill Vibes' },
-        { playListId: 302, title: 'Workout Hits' },
+        { playListId: 1, title: 'Chill Vibes' },
+        { playListId: 2, title: 'Workout Hits' },
         ]);
     }, []);
 
@@ -69,23 +104,55 @@ const MainPage = () => {
 
     return (
         <div className={styles.mainPageContainer}>
+
+            
+            <div className={
+            mood && mood !== ''
+                ? styles.recommendActive
+                : styles.recommendHidden
+            }>
+            <h3>추천 노래 목록</h3>
+            {recommendList.map((music, idx) => (
+                <div key={music.idx} className={styles.songCard}>
+                    <p className={styles.songTitle}>
+                        <img src='{music.image}' />
+                    </p>
+                    <p className={styles.songTitle}>
+                        {music.title}
+                    </p>
+                    <p className={styles.songArtist}>
+                        {music.artistName}
+                    </p>
+                </div>
+            ))}
+            </div>
+
+
             {!loginUser.memberId ? (showAdModal && (<AdModal/>)) : ''}
             
-        <div className={styles.topSection}>
+            <div className={styles.topSection}>
 
-            { !loginUser.memberId ? "" :
-            <section className={styles.conditionalSection1}>
-                <MyRecentMusicSection />  
-            </section>
-            }
+                <div className={styles.topRow}>
+                    <div className={styles.topLeft}><LikeRankingSection /></div>
 
-            <section className={styles.conditionalSection}>
-                
-                <Top100Section />
-                
-            </section>
+                  
+                    <section className={styles.conditionalSection1}>
+                    { !loginUser.memberId ? 
+                            <RandomMusic/>
+                        :
+                            <MyRecentMusicSection />  
+                    }
+                    </section>
+                  
 
-        </div>
+                </div>
+
+                <section className={styles.conditionalSection}>
+                        
+                        <Top100Section />
+                        
+                    </section>
+            </div>
 
         <section className={styles.section}>
             <h2>최신등록음악</h2>

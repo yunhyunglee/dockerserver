@@ -1,6 +1,8 @@
 package com.himedia.projectteamdive.controller;
 
 import com.himedia.projectteamdive.dto.AlbumDto;
+import com.himedia.projectteamdive.dto.MusicDto;
+import com.himedia.projectteamdive.dto.PlaylistDto;
 import com.himedia.projectteamdive.entity.*;
 import com.himedia.projectteamdive.service.MusicService;
 import com.himedia.projectteamdive.service.S3Service;
@@ -83,38 +85,24 @@ public class MusicController {
     }
 
     @DeleteMapping("/deleteArtist")
-    public HashMap<String, Object> deleteArtist(@RequestBody Artist artist) {
+    public HashMap<String, Object> deleteArtist(@RequestParam("artistId")int artistId) {
         HashMap<String, Object> map = new HashMap<>();
-        List<Album>albumList=artist.getAlbums();
-        for(Album album:albumList){
-            List<Music>musicList=album.getMusicList();
-            for(Music music:musicList){
-                String s = music.getBucketPath().replace("https://d9k8tjx0yo0q5.cloudfront.net/","https://divestreaming.s3.ap-northeast-2.amazonaws.com/");
-                ss.deleteFile(s);
-            }
-        }
-        ms.deleteArtist(artist);
+        ms.deleteArtist(artistId);
         map.put("msg","yes");
         return map;
     }
     @DeleteMapping("/deleteAlbum")
-    public HashMap<String, Object> deleteAlbum(@RequestBody Album album) {
+    public HashMap<String, Object> deleteAlbum(@RequestParam("albumId")int albumId) {
         HashMap<String, Object> map = new HashMap<>();
-        List<Music> musicList=album.getMusicList();
-        for (Music music : musicList) {
-            String s = music.getBucketPath().replace("https://d9k8tjx0yo0q5.cloudfront.net/","https://divestreaming.s3.ap-northeast-2.amazonaws.com/");
-            ss.deleteFile(s);
-        }
-        ms.deleteAlbum(album);
+        ms.deleteAlbum(albumId);
         map.put("msg","yes");
         return map;
     }
     @PostMapping("/deleteMusic")
-    public HashMap<String, Object> deleteMusic(@RequestBody Music music) {
+    public HashMap<String, Object> deleteMusic(@RequestParam("musicId")int musicId) {
         HashMap<String, Object> map = new HashMap<>();
-        String s = music.getBucketPath().replace("https://d9k8tjx0yo0q5.cloudfront.net/","https://divestreaming.s3.ap-northeast-2.amazonaws.com/");
-        ss.deleteFile(s);
-        ms.deleteMusic(music);
+
+        ms.deleteMusic(musicId);
         map.put("msg","yes");
         return map;
     }
@@ -142,10 +130,13 @@ public class MusicController {
         }
         return map;
     }
-    @DeleteMapping("/deleteImage")
-    public HashMap<String, Object> deleteImage(@RequestParam("image")String image) {
+    @DeleteMapping("/deleteFile")
+    public HashMap<String, Object> deleteFile(@RequestParam(value = "file",required = false)String image) {
+        if(image==null){
+            image="";
+        }
         HashMap<String, Object> map = new HashMap<>();
-        String s = image.replace("https://d9k8tjx0yo0q5.cloudfront.net/","https://divestreaming.s3.ap-northeast-2.amazonaws.com/");
+        String s = image.replace("https://d9k8tjx0yo0q5.cloudfront.net/","");
         ss.deleteFile(s);
         map.put("msg","yes");
         return map;
@@ -276,9 +267,52 @@ public class MusicController {
 
     @GetMapping("/getMemberPlaylist")
     public HashMap<String, Object> getMemberPlaylist(@RequestParam("memberId")String memberId) {
+        System.out.println("요청받은 memberId: " + memberId);
         HashMap<String,Object> map= ms.getMemberPlaylist(memberId);
         return map;
     }
+
+    @GetMapping("/getMemberRecentMusics")
+    public HashMap<String, Object> getMemberRecentMusics(@RequestParam("memberId")String memberId) {
+        HashMap<String,Object> map= ms.getMemberRecentMusics(memberId);
+        return map;
+
+    }
+
+
+    // 인형 2/22~2/23
+    @GetMapping("/recommend")
+    public List<MusicDto> recommendMusic(@RequestParam("mood") String mood) {
+
+        return ms.findMusicByMood(mood);
+    }
+
+    @GetMapping("/playlistDetail")
+    public HashMap<String, Object> getPlaylistDetail(@RequestParam("playlistId")int playlistId) {
+
+        System.out.println("요청받은 playlistId: " + playlistId);
+
+        HashMap<String, Object> map = new HashMap<>();
+        PlaylistDto playlist = ms.getPlaylistDetail(playlistId);
+
+        if (playlist != null) {
+            map.put("playlist", playlist);
+        } else {
+            map.put("error", "플레이리스트를 찾을 수 없습니다.");
+        }
+
+        return map;
+
+
+
+    }
+    @GetMapping("/getTop3")
+    public HashMap<String, Object> getTop3() {
+        HashMap<String,Object> map= ms.getTop3();
+        return map;
+    }
+
+
 
 
 

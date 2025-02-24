@@ -1,9 +1,6 @@
 package com.himedia.projectteamdive.service;
 
-import com.himedia.projectteamdive.dto.AlbumDto;
-import com.himedia.projectteamdive.dto.ArtistDto;
-import com.himedia.projectteamdive.dto.MusicDto;
-import com.himedia.projectteamdive.dto.PlaylistDto;
+import com.himedia.projectteamdive.dto.*;
 import com.himedia.projectteamdive.entity.*;
 import com.himedia.projectteamdive.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @EnableScheduling
@@ -104,7 +98,7 @@ public class MusicService {
 
                 MemberRecentMusics recentMusic=MemberRecentMusics.builder()
                         .member(memr.findByMemberId(memberId))
-                        .musicId(musicId).build();
+                        .music(music).build();
                 mrmr.save(recentMusic);
                 List<MemberRecentMusics> recentMusics=mrmr.findByMember_MemberIdOrderByIdAsc(memberId);
                 if(recentMusics.size()>30){
@@ -133,7 +127,7 @@ public class MusicService {
 
     @Scheduled(cron = "0 0 0 * * ?")  // 매일 자정에 실행
     public void deleteOldPages() {
-        LocalDate thirtyDaysAgo = LocalDate.now().minusDays(30);
+        LocalDateTime thirtyDaysAgo = LocalDateTime.now().minusDays(30);
         List<Playcountlist> oldPages = pcr.findAllByIndateBefore(thirtyDaysAgo);
         pcr.deleteAll(oldPages);
     }
@@ -200,41 +194,67 @@ public class MusicService {
 
     public void updateAlbum(Album album) {
         Album a=ar.findByAlbumId(album.getAlbumId());
-        a.setArtist(album.getArtist());
+        a.setArtist(arr.findByArtistId(album.getArtist().getArtistId()));
         a.setImage(album.getImage());
         a.setTitle(album.getTitle());
         a.setIndate(album.getIndate());
+        a.setContent(album.getContent());
     }
 
 
     public void updateMusic(Music music) {
         Music m=mr.findByMusicId(music.getMusicId());
-        m.setAlbum(music.getAlbum());
+        m.setArtist(arr.findByArtistId(music.getArtist().getArtistId()));
+        m.setAlbum(ar.findByAlbumId(music.getAlbum().getAlbumId()));
         m.setTitle(music.getTitle());
         m.setGenre(music.getGenre());
         m.setLyrics(music.getLyrics());
         m.setTitleMusic(music.isTitleMusic());
+        m.setContent(music.getContent());
     }
-
-    public void deleteArtist(Artist artist) {
-        allr.deleteById(artist.getArtistId());
+    @Autowired
+    S3Service ss;
+    public void deleteArtist(int artistId) {
+        Artist artist=arr.findByArtistId(artistId);
+        List<Album>albumList=artist.getAlbums();
+        for(Album album:albumList){
+            List<Music>musicList=album.getMusicList();
+            for(Music music:musicList){
+                String s = music.getBucketPath().replace("https://d9k8tjx0yo0q5.cloudfront.net/","https://divestreaming.s3.ap-northeast-2.amazonaws.com/");
+                ss.deleteFile(s);
+            }
+        }
+        Allpage allpage=allr.findByEntityIdAndPagetype(artistId,Pagetype.ARTIST);
+        allr.delete(allpage);
         arr.delete(artist);
 
     }
 
-    public void deleteAlbum(Album album) {
-        allr.deleteById(album.getAlbumId());
+    public void deleteAlbum(int albumId) {
+        Album album=ar.findByAlbumId(albumId);
+        List<Music> musicList=album.getMusicList();
+        for (Music music : musicList) {
+            String s = music.getBucketPath().replace("https://d9k8tjx0yo0q5.cloudfront.net/","https://divestreaming.s3.ap-northeast-2.amazonaws.com/");
+            ss.deleteFile(s);
+        }
+        Allpage allpage= allr.findByEntityIdAndPagetype(albumId,Pagetype.ALBUM);
+        allr.delete(allpage);
         ar.delete(album);
     }
 
-    public void deleteMusic(Music music) {
-        allr.deleteById(music.getMusicId());
+    public void deleteMusic(int musicId) {
+        Music music=mr.findByMusicId(musicId);
+        String s = music.getBucketPath().replace("https://d9k8tjx0yo0q5.cloudfront.net/","https://divestreaming.s3.ap-northeast-2.amazonaws.com/");
+        ss.deleteFile(s);
+        Allpage allpage= allr.findByEntityIdAndPagetype(musicId,Pagetype.MUSIC);
+        allr.delete(allpage);
         mr.delete(music);
     }
 
     public void deletePlaylist(int playlistId) {
         Playlist playlist=pr.findByPlaylistId(playlistId);
-        allr.deleteById(playlist.getPlaylistId());
+        Allpage allpage=allr.findByEntityIdAndPagetype(playlistId,Pagetype.PLAYLIST);
+        allr.delete(allpage);
         pr.delete(playlist);
     }
 
@@ -304,7 +324,7 @@ public class MusicService {
             Music music=mr.findByMusicId((int) playlistMap.get("musicId"));
             playlistMap.put("src",music.getBucketPath());
             playlistMap.put("title",music.getTitle());
-            playlistMap.put("artist",music.getArtist());
+            playlistMap.put("artist",music.getArtist().getArtistName());
         }
         result.put("playlist",playlist);
         return result;
@@ -316,5 +336,64 @@ public class MusicService {
         result.put("playlist",list);
         return result;
 
+    }
+
+    public HashMap<String, Object> getMemberRecentMusics(String memberId) {
+        HashMap<String, Object> result=new HashMap<>();
+        List<MemberRecentMusicsDto> musics=mrmr.findByMember_MemberId(memberId);
+        result.put("musics",musics);
+        return result;
+    }
+
+    public List<MusicDto> findMusicByMood(String mood) {
+
+        List<Music> musicList = mr.findByMoodContaining(mood);
+
+        // 엔티티 → DTO 변환
+        return musicList.stream()
+                .map(MusicDto::new)
+                .collect(Collectors.toList());
+    }
+
+    public PlaylistDto getPlaylistDetail(int playlistId) {
+        Optional<Playlist> playlist = pr.findById(playlistId);
+
+        return playlist.map(PlaylistDto::new).orElse(null);
+    }
+    @Autowired
+    LikesRepository lr;
+    public HashMap<String, Object> getTop3() {
+        HashMap<String, Object> result=new HashMap<>();
+        List<Object[]>artists= lr.findLikesRanking(Pagetype.ARTIST);
+        List<Object[]>albums= lr.findLikesRanking(Pagetype.ALBUM);
+        List<Object[]>musics= lr.findLikesRanking(Pagetype.MUSIC);
+
+        List<ArtistDto> artistList = new ArrayList<>();
+        for (Object[] a : artists) {
+            if (a[0] != null) {
+                Integer id = ((Number) a[0]).intValue(); // 안전한 변환
+                artistList.add(new ArtistDto(arr.findByArtistId(id)));
+            }
+        }
+
+        List<AlbumDto> albumList = new ArrayList<>();
+        for (Object[] a : albums) {
+            if (a[0] != null) {
+                Integer id = ((Number) a[0]).intValue();
+                albumList.add(new AlbumDto(ar.findByAlbumId(id)));
+            }
+        }
+
+        List<MusicDto> musicList = new ArrayList<>();
+        for (Object[] a : musics) {
+            if (a[0] != null) {
+                Integer id = ((Number) a[0]).intValue();
+                musicList.add(new MusicDto(mr.findByMusicId(id)));
+            }
+        }
+        result.put("artist",artistList);
+        result.put("album",albumList);
+        result.put("music",musicList);
+        return result;
     }
 }

@@ -15,7 +15,7 @@ const beforeReq= async (config)=>{
     user.accessToken = result.data.accessToken;
     user.refreshToken = result.data.refreshToken;
     // 이를 다시 쿠키에 저장
-    cookies.set( 'user', JSON.stringify(user) );
+    cookies.set( 'user', JSON.stringify(user),{ path:"/"});
     // accessToken만 따로 다시 헤더에 조립시켜 config 를 완성하고
     config.headers.Authorization = `Bearer ${user.accessToken}`;
     // config 를 리턴합니다
@@ -25,9 +25,15 @@ const beforeReq= async (config)=>{
 const beforeRes= (res)=>{
     return res;
 }
-const requestFail=(err)=>{}
-const responseFail=(err)=>{}
+const requestFail = (error) => {
+    console.error("요청 실패:", error);
+    return Promise.reject(error);
+};
 
+const responseFail = (error) => {
+    console.error("응답 실패:", error);
+    return Promise.reject(error);
+};
 
 jaxios.interceptors.request.use(beforeReq,requestFail);
 jaxios.interceptors.response.use(beforeRes,responseFail);

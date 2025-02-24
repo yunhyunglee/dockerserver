@@ -1,78 +1,72 @@
-import React, { useEffect, useState } from 'react';
-import styles from '../../../css/mainPage/mainPage.module.css';
-import { Link } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
+import styles from '../../../css/mainPage/top100Section.module.css';
+import { PlayerContext } from '../../../PlayerContext';
 
 const Top100Section = () => {
-  
-  const [monthlyCharts,setMonthlyCharts]=useState([]);
+  const navigate = useNavigate();
+  const [monthlyCharts, setMonthlyCharts] = useState([]);
 
-  const displayItems = monthlyCharts.slice(0, 10);
-  useEffect(
-    ()=>{
-      axios.get('/api/music/getMusicChart')
-    .then((result)=>{
-      console.log(result.data);
-      setMonthlyCharts(result.data.Top100Month);
-    }).catch((err)=>{ console.error(err);})
-    },[]
-  );
+
+  const displayItems = monthlyCharts.slice(0, 15);
+
+  useEffect(() => {
+    axios.get('/api/music/getMusicChart')
+      .then((result) => {
+        console.log(result.data);
+        setMonthlyCharts(result.data.Top100Month);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
+
+  const {setAddPlaylist}=useContext(PlayerContext);
+  const handlePlay = (musicTitle) => {
+    alert(`재생: ${musicTitle}`);
+    setAddPlaylist(musicTitle);
+  };
+
 
 
   return (
     <div className={styles.top100Section}>
-      <header className={styles.top100Header}>
-        <h2 className={styles.top100Title}>🎉 오늘의 TOP 100 🎉</h2>
-        <Link to={"/top100"}>
-        <button className={styles.moreButtonTop100}>전체보기</button>
+      <div className={styles.top100Header}>
+        <h2 className={styles.top100Title}>오늘 Top 100</h2>
+        <Link to="/top100">
+          <button className={styles.moreButtonTop100}>전체보기</button>
         </Link>
-      </header>
-      <table className={styles.listTrackList}>
-        <thead>
-          <tr>
-            <th>순위</th>
-            <th>곡</th>
-            <th>아티스트</th>
-            <th>듣기</th>
-            <th>재생목록</th>
-            <th>옵션</th>
-          </tr>
-        </thead>
-        <tbody>
-          {displayItems.map((item,index) => (
-            <tr key={item.music.musicId}>
-              <td>{index+1}</td>
+      </div>
 
-              <td>{item.music.title}</td>
-              <td>{item.music.artistName}</td>
-              <td>
-                <button
-                  className={styles.actionButton}
-                  onClick={() => alert(`듣기: ${item.title}`)}
+      <div className={styles.top100Grid}>
+        {displayItems.map((item, index) => (
+          <div key={item.music.musicId} className={styles.top100Card}>
+            <div className={styles.rowLayout}>
+
+              <img
+                src={item.music.image}
+                // alt={item.music.title}
+                className={styles.top100Image}
+                onClick={() => handlePlay(item.music.musicId)}
+              />
+              <p className={styles.top100Rank}>{index + 1}</p>
+              <div className={styles.titleArea}>
+                <p
+                  className={styles.top100SongTitle}
+                  onClick={() => navigate(`/music/${item.music.musicId}`)}
                 >
-                  듣기
-                </button>
-              </td>
-              <td>
-                <button
-                  className={styles.actionButton}
-                  onClick={() => alert(`재생목록에 추가: ${item.title}`)}
-                >
-                  추가
-                </button>
-              </td>
-              <td>
-                <button
-                  className={styles.actionButton}
-                  onClick={() => alert(`옵션: ${item.title}`)}
-                >
-                  옵션
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                  {item.music.title}
+                </p>
+                <p 
+                  className={styles.top100Artist} style={{cursor: 'pointer'}}
+                  onClick={()=> navigate(`/artist/${item.music.artistId}`)}  
+                >{item.music.artistName}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
