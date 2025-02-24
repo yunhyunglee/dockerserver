@@ -2,6 +2,7 @@ package com.himedia.projectteamdive.controller;
 
 import com.himedia.projectteamdive.dto.CartRequestDto;
 import com.himedia.projectteamdive.dto.OrderMusicRequestDto;
+import com.himedia.projectteamdive.dto.PurchasedMusicResponseDto;
 import com.himedia.projectteamdive.entity.Cart;
 import com.himedia.projectteamdive.service.Mp3Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +18,18 @@ public class Mp3Controller {
     Mp3Service ms;
 
     /* 이미 구매한 곡이 있는지 확인 */
-    @GetMapping("/checkPurchasedMusic")
+    @PostMapping("/checkPurchasedMusic")
     public HashMap<String, Object> getPurchasedMusic(
-            @RequestBody List<Cart> cartList,
+            @RequestBody List<Integer> cartIdList,
             @RequestParam("giftToId") String giftToId) {
         HashMap<String, Object> result = new HashMap<>();
-        result.put("purchasedMusicList", ms.checkPurchasedMusic(cartList, giftToId));
+        List<PurchasedMusicResponseDto> purchasedMusicList = ms.checkPurchasedMusic(cartIdList, giftToId);
+        if(!purchasedMusicList.isEmpty()) {
+            result.put("message", "yes");
+            result.put("purchasedMusicList", purchasedMusicList);
+        }else{
+            result.put("message", "no");
+        }
         return result;
     }
 

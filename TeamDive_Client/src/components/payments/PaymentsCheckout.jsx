@@ -8,7 +8,7 @@ import paymentsStyle from '../../css/membership/payments.module.css';
 
 const clientKey = "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
 
-const PaymentsCheckout = ({ membership, musicIdList, giftToId, payCount, membershipCount }) => {
+const PaymentsCheckout = ({ membership, cartIdList, giftToId, payCount, membershipCount, membershipUserId }) => {
     const loginUser = useSelector(state => state.user);
     const navigate = useNavigate();
 
@@ -19,7 +19,7 @@ const PaymentsCheckout = ({ membership, musicIdList, giftToId, payCount, members
             (membership) ? (
                 (membership.price) * (1 - (membership?.discount / 100))
             ) : (
-                musicIdList.length * 770
+                cartIdList.length * 770
             )
         )
     });
@@ -31,7 +31,7 @@ const PaymentsCheckout = ({ membership, musicIdList, giftToId, payCount, members
         )
     );
     const [orderName, setOrderName] = useState(
-        (membership) ? (membership.name) : (`mp3 ${musicIdList.length}곡`)
+        (membership) ? (membership.name) : (`mp3 ${cartIdList.length}곡`)
     )
     const [ready, setReady] = useState(false);
     const [widgets, setWidgets] = useState(null);
@@ -102,7 +102,7 @@ const PaymentsCheckout = ({ membership, musicIdList, giftToId, payCount, members
                 amount: amount.value,
                 orderName,
                 giftToId,
-                musicIdList
+                cartIdList
             }, {params: {memberId: loginUser.memberId}});
 
             if (response.status === 200) {

@@ -55,7 +55,6 @@ const PendingMp3 = () => {
             const response = await jaxios.get('/api/membership/getDownloadMembership', {
                 params: { memberId: loginUser.memberId } });
             if(response.data.message === 'yes'){
-                console.log('다운로드 멤버십', response.data.downloadMembership);
                 setDownloadMembership(response.data.downloadMembership);
             }
         }catch(error){
@@ -144,11 +143,22 @@ const PendingMp3 = () => {
     }
 
     /* 결제 유형 판단 */
-    function checkValid(){
-        if(downloadMembership && payCount === 0 && membershipCount !== 0){
-            payOnlyMembership();
-        }else{
-            openModal('payment');
+    async function checkValid(){
+        try{
+            const response = await jaxios.post('/api/mp3/checkPurchasedMusic', selectedCart, {
+                params: { giftToId: loginUser.memberId }
+            });
+            if(response.data.message === 'no'){
+                if(downloadMembership && payCount === 0 && membershipCount !== 0){
+                    payOnlyMembership();
+                }else{
+                    openModal('payment');
+                }
+            }else{
+                alert('이미 구매한 곡이 있습니다');
+            }
+        }catch(error){
+            console.error('결제한 곡 조회 실패', error);
         }
     }
 
@@ -315,14 +325,16 @@ const PendingMp3 = () => {
                                 setGiftToId={setGiftToId}
                                 payCount={payCount}
                                 membershipCount={membershipCount}
+                                downloadMembership={downloadMembership}
                                 onProceedToPayment={() => setModalStep("payment")}
                             />
                         ) : (
                             <PaymentsCheckout
-                                cartList={selectedCart}
+                                cartIdList={selectedCart}
                                 giftToId={loginUser.memberId}
                                 payCount={payCount}
                                 membershipCount={membershipCount}
+                                downloadMembership={downloadMembership}
                             />
                         )
                     )

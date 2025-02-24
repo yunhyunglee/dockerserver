@@ -30,7 +30,7 @@ public class Mp3Service {
 
     /* 이미 구매한 곡이 있는지 확인 */
     public List<PurchasedMusicResponseDto> checkPurchasedMusic(
-            List<Cart> cartList, String giftToId) {
+            List<Integer> cartIdList, String giftToId) {
         // 선물 받을 회원 조회
         Member member = memberRepo.findByMemberId(giftToId);
         // 해당 회원이 구매한 곡 리스트 조회
@@ -39,7 +39,8 @@ public class Mp3Service {
         List<PurchasedMusicResponseDto> matchedMusicList = new ArrayList<>();
 
         // cartList에서 각각의 곡을 순회하면서 구매한 곡과 비교
-        cartList.forEach(cart -> {
+        cartIdList.forEach(cartId -> {
+            Cart cart = cartRepo.findByCartId(cartId);
             int cartMusicId = cart.getMusic().getMusicId();
             // purchasedMusicList에서 해당 음악이 이미 구매된 곡인지 확인
             purchasedMusicList.forEach(purchasedMusic -> {
