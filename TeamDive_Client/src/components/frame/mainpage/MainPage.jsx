@@ -1,5 +1,5 @@
 // src/components/MainPage.jsx
-import React, { useEffect, useState } from 'react';
+import React, { useContext,useEffect, useState } from 'react';
 import Top100Section from './Top100Section';
 import MyRecentMusicSection from './MyRecentMusicSection.jsx';
 import LatestMusic from './LatestMusic.jsx';
@@ -12,17 +12,19 @@ import LikeRankingSection from './LikeRankingSection.jsx';
 import RandomMusic from './RandomMusic.jsx';
 import axios from 'axios';
 import jaxios from '../../../util/JWTUtil.jsx';
+import { setRecommendedListToCookie, getRecommendedListFromCookie, setRecommendedListToStorage, getRecommendedListFromStorage } from '../../../util/CookieUtil.jsx';
+import { PlayerContext } from '../../../PlayerContext';
+
 
 
 const MainPage = ({mood}) => {
     const loginUser = useSelector(state => state.user);
     
-
     const [showAdModal, setShowAdModal] = useState(false); 
-
 
     const [recommendedSongs, setRecommendedSongs] = useState([]);
     const [recommendList, setRecommendList] = useState([]);
+    
     // useEffect(() => {
     //     if (!mood) return;
     
@@ -35,19 +37,43 @@ const MainPage = ({mood}) => {
     //       });
     //   }, [mood]);
     useEffect(() => {
-    if (!mood) return;
+    if (!mood || !loginUser.memberId) return;
     console.log('select mood', mood);
     
     jaxios.get('/api/AI/recommendList', {params:{mood: mood, memberId:loginUser.memberId}})
         .then((result) => {
-            console.log('데이터', result.data);
-            console.log('개수', result.data.recommendList.length)
-            setRecommendList(result.data.recommendList);
+            // console.log('데이터', result.data);
+            // console.log('개수', result.data.recommendList.length)
+
+            const data = result.data?.recommendList;
+            if (Array.isArray(data)) {
+                setRecommendList(data);
+                setRecommendedListToStorage(data);
+
+                // 쿠키 저장 후 데이터를 다시 가져오기 위해 딜레이 추가
+                setTimeout(() => {
+                    const recommendedListToStorage = getRecommendedListFromStorage();
+                    
+                    setRecommendList(recommendedListToStorage);
+                }, 1000); // 100ms 지연
+            } else {
+                console.warn('추천 목록이 없거나 잘못된 형식입니다.');
+                setRecommendList([]);
+            }
+
+
+            const recommendedListToStorage = getRecommendedListFromStorage();
+            recommendedListToStorage
+            if (recommendedListToStorage) {
+                console.log('localStorage에서 불러온 추천 목록:', recommendedListToStorage);
+                setRecommendList(recommendedListToStorage);
+            }
         })
         .catch((err) => {
         console.error(err);
         });
-    }, [mood]);
+    }, [mood, loginUser.memberId]);
+
     
 
     useEffect(() => {
@@ -100,6 +126,24 @@ const MainPage = ({mood}) => {
         );
     }
     
+    const {setAddPlaylist}=useContext(PlayerContext);
+    const handlePlay = (musicTitle) => {
+    alert(`재생: ${musicTitle}`);
+    setAddPlaylist(musicTitle);
+    };
+
+    const handlePlayAll = () => {
+        alert("모든 곡을 재생합니다.");
+    
+        setAddPlaylist((prevPlaylist = []) => [
+            //...prevPlaylist,
+            ...recommendList.map((recommendMusic)=>{
+                console.log(recommendMusic);
+                return recommendMusic.musicId}
+            )
+            
+        ]);
+    };
 
 
     return (
@@ -112,19 +156,33 @@ const MainPage = ({mood}) => {
                 : styles.recommendHidden
             }>
             <h3>추천 노래 목록</h3>
-            {recommendList.map((music, idx) => (
-                <div key={music.idx} className={styles.songCard}>
-                    <p className={styles.songTitle}>
-                        <img src='{music.image}' />
-                    </p>
-                    <p className={styles.songTitle}>
-                        {music.title}
-                    </p>
-                    <p className={styles.songArtist}>
-                        {music.artistName}
-                    </p>
-                </div>
-            ))}
+            {
+                (recommendList) ? (
+                    <div>
+                        <button onClick={() => handlePlayAll()}>
+                            모두 듣기
+                        </button>
+                        {recommendList.map((recommendMusic, idx) => (
+                            <Link to={`/music/${recommendMusic.musicId}`} key={recommendMusic.id || idx}>
+                            <div className={styles.songCard}>
+                                <p className={styles.songTitle}>
+                                <img src={recommendMusic.image} alt="곡 이미지" />
+                                </p>
+                                <p className={styles.songTitle}>
+                                {recommendMusic.title}
+                                </p>
+                                <p className={styles.songArtist}>
+                                {recommendMusic.artistName}
+                                </p>
+                            </div>
+                            </Link>
+                        ))}
+                    </div>
+                ) : (
+                    <div>추천곡이 없습니다.</div>
+                )
+                }
+
             </div>
 
 
@@ -135,7 +193,7 @@ const MainPage = ({mood}) => {
                 <div className={styles.topRow}>
                     <div className={styles.topLeft}><LikeRankingSection /></div>
 
-                  
+            
                     <section className={styles.conditionalSection1}>
                     { !loginUser.memberId ? 
                             <RandomMusic/>

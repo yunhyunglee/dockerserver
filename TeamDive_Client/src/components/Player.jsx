@@ -126,18 +126,50 @@ export default function Player() {
     return () => clearInterval(interval);
   }, [playCounts]);
 
-  const prevPlaylist = useRef([]);
+
+  // const prevPlaylist=useRef([]);
+  // useEffect(
+  //   ()=>{
+  //     const fetchPlaylist = async () => {
+  //       if(playlist.length>prevPlaylist.current.length){
+  //         const result=await axios.post('/api/music/getCurrentPlaylist',playlist)
+  //         setPlaylist(result.data.playlist);
+  //       }
+  //       prevPlaylist.current=playlist;
+  //       console.log(playlist);
+  //     }
+  //     fetchPlaylist();
+  //   },[playlist]
+  // );
+
+  //const [playlist, setPlaylist] = useState([]); // 현재 playlist 상태
+  const prevPlaylistRef = useRef([]); // 이전 playlist를 useRef로 저장 (렌더링 방지)
+
   useEffect(() => {
-    const fetchPlaylist = async () => {
-      if (playlist.length > prevPlaylist.current.length) {
-        const result = await axios.post('/api/music/getCurrentPlaylist', playlist);
-        setPlaylist(result.data.playlist);
-      }
-      prevPlaylist.current = playlist;
-      console.log(playlist);
-    }
-    fetchPlaylist();
-  }, [playlist]);
+      const fetchPlaylist = async () => {
+          if (!playlist.length) return; // 빈 배열이면 요청하지 않음
+
+          const prevPlaylist = prevPlaylistRef.current; // 이전 상태 참조
+
+          // 상태가 변경된 경우에만 요청
+          if (JSON.stringify(playlist) !== JSON.stringify(prevPlaylist)) {
+              try {
+                  const result = await axios.post('/api/music/getCurrentPlaylist', playlist);
+
+                  if (JSON.stringify(result.data.playlist) !== JSON.stringify(playlist)) {
+                      setPlaylist(result.data.playlist);
+                  }
+
+                  prevPlaylistRef.current = result.data.playlist; // 최신 playlist 상태 업데이트
+              } catch (error) {
+                  console.error("플레이리스트 가져오기 실패:", error);
+              }
+          }
+      };
+
+      fetchPlaylist();
+  }, [playlist]); // playlist가 변경될 때만 실행
+
 
   const play30second = () => {
     const audio = audioRef.current;
