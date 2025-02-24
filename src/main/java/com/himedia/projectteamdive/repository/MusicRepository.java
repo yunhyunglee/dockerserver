@@ -1,5 +1,6 @@
 package com.himedia.projectteamdive.repository;
 
+import com.himedia.projectteamdive.dto.MemberRecentMusicsDto;
 import com.himedia.projectteamdive.dto.MusicDto;
 import com.himedia.projectteamdive.entity.Music;
 import org.springframework.data.jpa.repository.JpaRepository;
