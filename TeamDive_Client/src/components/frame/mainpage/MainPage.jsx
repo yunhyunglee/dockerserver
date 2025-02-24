@@ -13,11 +13,11 @@ import RandomMusic from './RandomMusic.jsx';
 import axios from 'axios';
 import jaxios from '../../../util/JWTUtil.jsx';
 import { setRecommendedListToCookie, getRecommendedListFromCookie, setRecommendedListToStorage, getRecommendedListFromStorage } from '../../../util/CookieUtil.jsx';
-import { PlayerContext } from '../../../PlayerContext';
+import { PlayerContext } from '../../../context/PlayerContext.jsx';
 
 
 
-const MainPage = ({mood}) => {
+const MainPage = ({mood, setMood}) => {
     const loginUser = useSelector(state => state.user);
     
     const [showAdModal, setShowAdModal] = useState(false); 
@@ -40,41 +40,31 @@ const MainPage = ({mood}) => {
     if (!mood || !loginUser.memberId) return;
     console.log('select mood', mood);
     
-    jaxios.get('/api/AI/recommendList', {params:{mood: mood, memberId:loginUser.memberId}})
-        .then((result) => {
-            // console.log('데이터', result.data);
-            // console.log('개수', result.data.recommendList.length)
+    jaxios.get('/api/AI/recommendList', { params: { mood, memberId: loginUser.memberId } })
+    .then((result) => {
+        const data = result.data?.recommendList;
+        if (Array.isArray(data)) {
+            setRecommendList(data);
+            setRecommendedListToStorage(data);
 
-            const data = result.data?.recommendList;
-            if (Array.isArray(data)) {
-                setRecommendList(data);
-                setRecommendedListToStorage(data);
+            console.log('추천 목록을 저장함:', data);
+        } else {
+            console.warn('추천 목록이 없거나 잘못된 형식입니다.');
+            setRecommendList([]);
+        }
 
-                // 쿠키 저장 후 데이터를 다시 가져오기 위해 딜레이 추가
-                setTimeout(() => {
-                    const recommendedListToStorage = getRecommendedListFromStorage();
-                    
-                    setRecommendList(recommendedListToStorage);
-                }, 1000); // 100ms 지연
-            } else {
-                console.warn('추천 목록이 없거나 잘못된 형식입니다.');
-                setRecommendList([]);
-            }
-
-
-            const recommendedListToStorage = getRecommendedListFromStorage();
-            recommendedListToStorage
-            if (recommendedListToStorage) {
-                console.log('localStorage에서 불러온 추천 목록:', recommendedListToStorage);
-                setRecommendList(recommendedListToStorage);
-            }
-        })
-        .catch((err) => {
-        console.error(err);
-        });
+        // localStorage에서 가져오기 (이전에 저장한 데이터 활용)
+        const storedList = getRecommendedListFromStorage();
+        if (storedList && storedList.length > 0) {
+            console.log('localStorage에서 불러온 추천 목록:', storedList);
+            setRecommendList(storedList);
+        }
+    })
+    .catch((err) => {
+        console.error('추천 리스트 가져오기 실패:', err);
+    });
     }, [mood, loginUser.memberId]);
 
-    
 
     useEffect(() => {
         
@@ -141,15 +131,18 @@ const MainPage = ({mood}) => {
                 console.log(recommendMusic);
                 return recommendMusic.musicId}
             )
-            
         ]);
     };
 
+    function closeRecommendArea() {
+        console.log("mainPage에서의 무드",mood); // setMood가 undefined인지 확인
+        setMood(""); // 정상적으로 실행되는지 확인
+        console.log("setMood통과이후",mood)
+    }
 
     return (
         <div className={styles.mainPageContainer}>
 
-            
             <div className={
             mood && mood !== ''
                 ? styles.recommendActive
@@ -159,24 +152,31 @@ const MainPage = ({mood}) => {
             {
                 (recommendList) ? (
                     <div>
-                        <button onClick={() => handlePlayAll()}>
+                        <button className={styles.moreButtonRecommend}onClick={() => handlePlayAll()}>
                             모두 듣기
                         </button>
-                        {recommendList.map((recommendMusic, idx) => (
-                            <Link to={`/music/${recommendMusic.musicId}`} key={recommendMusic.id || idx}>
-                            <div className={styles.songCard}>
-                                <p className={styles.songTitle}>
-                                <img src={recommendMusic.image} alt="곡 이미지" />
-                                </p>
-                                <p className={styles.songTitle}>
-                                {recommendMusic.title}
-                                </p>
-                                <p className={styles.songArtist}>
-                                {recommendMusic.artistName}
-                                </p>
-                            </div>
-                            </Link>
-                        ))}
+                        <button className={styles.moreButtonRecommend} onClick={() => {
+                            closeRecommendArea();
+                        }}>닫기</button>   
+                        <div className={styles.songObject}>
+                            {recommendList.slice(0, 15).map((recommendMusic, idx) => (
+                                <Link to={`/music/${recommendMusic.musicId}`} key={recommendMusic.id || idx}>
+                                    <div className={styles.songCard}>
+                                        <div className={styles.songTitle}>
+                                            <img src={recommendMusic.image} alt="곡 이미지" />
+                                        </div>
+                                        <div className={styles.titleArea}>
+                                            <p className={styles.songTitle}>
+                                                {recommendMusic.title}
+                                            </p>
+                                            <p className={styles.songArtist}>
+                                                {recommendMusic.artistName}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
                     </div>
                 ) : (
                     <div>추천곡이 없습니다.</div>

@@ -1,9 +1,6 @@
 package com.himedia.projectteamdive.repository;
 
-import com.himedia.projectteamdive.entity.Allpage;
-import com.himedia.projectteamdive.entity.Likes;
-import com.himedia.projectteamdive.entity.Member;
-import com.himedia.projectteamdive.entity.Pagetype;
+import com.himedia.projectteamdive.entity.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -28,4 +25,12 @@ public interface LikesRepository extends JpaRepository<Likes, Integer> {
             ") ranked " +
             "WHERE ranked.ranking <= 3", nativeQuery = true)
     List<Object[]> findLikesRanking(@Param("pagetype") Pagetype pagetype);
+
+    @Query("SELECT l FROM Likes l " +
+            "WHERE l.member.memberId = :memberId " +
+            "AND :pagetype MEMBER OF l.allpage.pagetype")
+    List<Likes> findByMemberIdAndPagetype(@Param("memberId")String memberId, @Param("pagetype")Pagetype pagetype);
+
+
+
 }

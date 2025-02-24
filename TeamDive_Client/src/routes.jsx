@@ -28,10 +28,10 @@ import SearchResults from "./components/frame/mainpage/SearchResult";
 import SearchMore from "./components/frame/mainpage/SearchMore";
 
 
-function AppRoutes({mood}) {
+function AppRoutes({mood, setMood}) {
     return (
         <Routes>
-            <Route path="/" element={<MainPage mood={mood}/>} />
+            <Route path="/" element={<MainPage mood={mood} setMood={setMood}/>} />
             <Route path="/charts" element={<PopularChart />} />
             <Route path="/playList" element={<PlaylistPage />} />
             <Route path="/membership/:category" element={<Membership />} />
