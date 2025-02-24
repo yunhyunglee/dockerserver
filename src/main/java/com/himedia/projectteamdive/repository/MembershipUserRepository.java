@@ -28,4 +28,6 @@ public interface MembershipUserRepository extends JpaRepository<Membership_user,
             "AND (mu.endDate IS NULL OR mu.endDate > CURRENT_TIMESTAMP) " + // 활성화 기간 검토
             "ORDER BY mu.startDate DESC") // 마지막으로 추가된 멤버십
     List<Membership_user> getActiveMembership(String memberId);
+
+    Membership_user findByMembershipUserId(int membershipId);
 }

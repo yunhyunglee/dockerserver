@@ -8,7 +8,7 @@ import paymentsStyle from '../../css/membership/payments.module.css';
 
 const clientKey = "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
 
-const PaymentsCheckout = ({ membership, musicIdList, giftToId }) => {
+const PaymentsCheckout = ({ membership, musicIdList, giftToId, payCount, membershipCount }) => {
     const loginUser = useSelector(state => state.user);
     const navigate = useNavigate();
 
