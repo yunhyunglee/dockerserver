@@ -25,6 +25,14 @@ public class MembershipController {
         return result;
     }
 
+    /* download 멤버십 조회 */
+    @GetMapping("getDownloadMembership")
+    public HashMap<String, Object> getDownloadMembership(@RequestParam("memberId") String memberId) {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("downloadMembership", mss.getDownloadMembership(memberId));
+        return result;
+    }
+
     /* 카테고리 기준으로 활성화된 멤버십이 있는지 확인 */
     @GetMapping("/checkActiveMembership")
     public HashMap<String, Object> checkActiveMembership(
@@ -74,4 +82,5 @@ public class MembershipController {
         }
         return result;
     }
+
 }
