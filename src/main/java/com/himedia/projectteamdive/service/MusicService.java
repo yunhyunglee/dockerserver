@@ -318,17 +318,54 @@ public class MusicService {
         return result;
     }
 
+//    public HashMap<String, Object> getCurrentPlaylist(List<HashMap<String, Object>> playlist) {
+//        HashMap<String, Object> result=new HashMap<>();
+//        for (HashMap<String, Object> playlistMap : playlist) {
+//            Music music=mr.findByMusicId((int) playlistMap.get("musicId"));
+//            playlistMap.put("src",music.getBucketPath());
+//            playlistMap.put("title",music.getTitle());
+//            playlistMap.put("artist",music.getArtist().getArtistName());
+//        }
+//        result.put("playlist",playlist);
+//        return result;
+//    }
+
     public HashMap<String, Object> getCurrentPlaylist(List<HashMap<String, Object>> playlist) {
-        HashMap<String, Object> result=new HashMap<>();
+        HashMap<String, Object> result = new HashMap<>();
+
         for (HashMap<String, Object> playlistMap : playlist) {
-            Music music=mr.findByMusicId((int) playlistMap.get("musicId"));
-            playlistMap.put("src",music.getBucketPath());
-            playlistMap.put("title",music.getTitle());
-            playlistMap.put("artist",music.getArtist().getArtistName());
+            Object musicIdObj = playlistMap.get("musicId");
+            int musicId;
+
+            if (musicIdObj instanceof Integer) {
+                musicId = (Integer) musicIdObj;
+            } else if (musicIdObj instanceof String) {
+                musicId = Integer.parseInt((String) musicIdObj);
+            } else if (musicIdObj instanceof List) {
+                // List 형태로 들어오는 경우 처리 (ex. [123] 또는 ["123"])
+                List<?> musicIdList = (List<?>) musicIdObj;
+                if (!musicIdList.isEmpty() && musicIdList.get(0) instanceof Integer) {
+                    musicId = (Integer) musicIdList.get(0);
+                } else if (!musicIdList.isEmpty() && musicIdList.get(0) instanceof String) {
+                    musicId = Integer.parseInt((String) musicIdList.get(0));
+                } else {
+                    throw new IllegalArgumentException("Invalid musicId type in list: " + musicIdList);
+                }
+            } else {
+                throw new IllegalArgumentException("Invalid musicId type: " + musicIdObj);
+            }
+
+            // Music 객체 조회
+            Music music = mr.findByMusicId(musicId);
+            playlistMap.put("src", music.getBucketPath());
+            playlistMap.put("title", music.getTitle());
+            playlistMap.put("artist", music.getArtist().getArtistName());
         }
-        result.put("playlist",playlist);
+
+        result.put("playlist", playlist);
         return result;
     }
+
 
     public HashMap<String, Object> getMemberPlaylist(String memberId) {
         HashMap<String, Object> result=new HashMap<>();
