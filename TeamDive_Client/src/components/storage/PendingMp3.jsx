@@ -4,6 +4,10 @@ import { useNavigate, Link } from 'react-router-dom';
 
 import jaxios from '../../util/JwtUtil';
 
+import Modal from '../frame/Modal'; // 모달 컴포넌트
+import GiftMusic from '../gift/GiftMusic'; // 음악 선물 컴포넌트
+import PaymentsCheckout from "../payments/PaymentsCheckout";
+
 import storageStyle from "../../css/storage/storage.module.css";
 import pendingStyle from "../../css/storage/pendingMp3.module.css";
 import musicStyle from "../../css/storage/likedMusic.module.css";
@@ -19,6 +23,11 @@ const PendingMp3 = () => {
     const [payCount, setPayCount] = useState(0);
     const [totalPrice, setTotalPrice] = useState(0);
 
+    /* 구매/선물 모달 관련 */
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalStep, setModalStep] = useState('');
+    const [giftToId, setGiftToId] = useState('');
+
     /* 장바구니 정보와 멤버십 정보 가져오기 */
     useEffect(() => {
         const fetchCartList = async () => {
@@ -30,19 +39,29 @@ const PendingMp3 = () => {
                     let response = await jaxios.get('/api/cart/getCartList', { params: { memberId: loginUser.memberId } });
                     setCartList([...response.data.cartList]);
                     console.log('장바구니', response.data.cartList);
-                    
-                    response = await jaxios.get('/api/membership/getDownloadMembership', {
-                        params: { memberId: loginUser.memberId } });
-                    setDownloadMembership(response.data.downloadMembership);
-                    console.log('다운로드 멤버십', response.data.downloadMembership);
                 } catch (error) {
                     console.error('장바구니 초기 데이터 불러오기', error);
                 }
             }
         };
-    
+
         fetchCartList();
+        fetchMembership();
     }, [loginUser, navigate]);
+
+    /* 다운로드 멤버십 정보 가져오기 */
+    const fetchMembership = async () => {
+        try{
+            const response = await jaxios.get('/api/membership/getDownloadMembership', {
+                params: { memberId: loginUser.memberId } });
+            if(response.data.message === 'yes'){
+                console.log('다운로드 멤버십', response.data.downloadMembership);
+                setDownloadMembership(response.data.downloadMembership);
+            }
+        }catch(error){
+            console.error('다운로드 멤버십 불러오기 실패', error);
+        }
+    }
 
     /* 유료결제 곡 수 체크 */
     useEffect(() => {
@@ -124,6 +143,48 @@ const PendingMp3 = () => {
         }
     }
 
+    /* 결제 유형 판단 */
+    function checkValid(){
+        if(downloadMembership && payCount === 0 && membershipCount !== 0){
+            payOnlyMembership();
+        }else{
+            openModal('payment');
+        }
+    }
+
+    /* 멤버십 결제 */
+    async function payOnlyMembership(){
+        const confirm = window.confirm(`${membershipCount}곡을 멤버십으로 결제하시겠습니까?`);
+        if(confirm){
+            try{
+                const response = await jaxios.post('/api/mp3/payOnlyMembership', {
+                    memberId: loginUser.memberId,
+                    cartIdList: selectedCart,
+                    membershipCount,
+                    membershipUserId: downloadMembership.membershipUserId
+                });
+                if(response.data.message === 'yes'){
+                    alert('구매가 완료되었습니다');
+                    navigate('/storage/myMP3/purchased');
+                }
+            }catch(error){
+                console.error('멤버십으로 개별곡 구매 실패', error);
+            }
+            
+        }
+    }
+
+    /* 모달 열기 */
+    const openModal = async (category) => {
+        setModalStep(category === 'gift' ? 'gift' : 'payment');
+        setIsModalOpen(true); // 모달 열기
+    };
+
+    /* 모달 닫기 */
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
+
     return (
         <div className={pendingStyle.mp3Container}>
             <h2 className={musicStyle.sectionTitle}>장바구니</h2>
@@ -172,7 +233,7 @@ const PendingMp3 = () => {
                                     {/* 제목 */}
                                     <div className={musicStyle.title}>
                                         <Link to={`/music/${cart.musicId}`} className={musicStyle.titleLink}>
-                                        {cart.title}
+                                            {cart.title}
                                         </Link>
                                     </div>
 
@@ -224,14 +285,50 @@ const PendingMp3 = () => {
                         <label htmlFor="terms">Dive 이용약관에 동의합니다.</label>
                         <button className={pendingStyle.termsButton}>약관보기</button>
                     </div> */}
-                    <button
-                        className={pendingStyle.paymentButton}
-                        disabled={selectedCart.length === 0}
-                    >
-                        결제하기
-                    </button>
+                    <div className={pendingStyle.section}>
+                        <button
+                            className={pendingStyle.paymentButton}
+                            disabled={selectedCart.length === 0}
+                            onClick={ () => openModal('gift') }
+                        >
+                            선물하기
+                        </button>
+                        <button
+                            className={pendingStyle.paymentButton}
+                            disabled={selectedCart.length === 0}
+                            onClick={ () => checkValid('payment') }
+                        >
+                            결제하기
+                        </button>
+                    </div>
                 </div>
             </div>
+
+            {/* 결제 모달 */}
+            <Modal isOpen={isModalOpen} closeModal={closeModal}>
+                {
+                    selectedCart && (
+                        (modalStep === "gift") ? (
+                            <GiftMusic
+                                cartList={selectedCart}
+                                giftToId={giftToId}
+                                setGiftToId={setGiftToId}
+                                payCount={payCount}
+                                membershipCount={membershipCount}
+                                onProceedToPayment={() => setModalStep("payment")}
+                            />
+                        ) : (
+                            <PaymentsCheckout
+                                cartList={selectedCart}
+                                giftToId={loginUser.memberId}
+                                payCount={payCount}
+                                membershipCount={membershipCount}
+                            />
+                        )
+                    )
+                }
+            </Modal>
+
         </div>
     )
 }

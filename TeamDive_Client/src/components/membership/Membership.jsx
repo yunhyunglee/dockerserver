@@ -122,24 +122,24 @@ const Membership = () => {
                 }
             </div>
 
-            {/* 모달 */}
+            {/* 결제 모달 */}
             <Modal isOpen={isModalOpen} closeModal={closeModal}>
-            {selectedMembership && (
-                modalStep === "gift" && selectedMembership.category === "gift" ? (
-                    <GiftMembership
-                        membership={selectedMembership}
-                        giftToId={giftToId}
-                        setGiftToId={setGiftToId}
-                        onProceedToPayment={() => setModalStep("payment")}
-                    />
-                ) : (
-                    <PaymentsCheckout
-                        membership={selectedMembership}
-                        giftToId={giftToId}
-                    />
-                )
-            )}
-        </Modal>
+                {selectedMembership && (
+                    modalStep === "gift" && selectedMembership.category === "gift" ? (
+                        <GiftMembership
+                            membership={selectedMembership}
+                            giftToId={giftToId}
+                            setGiftToId={setGiftToId}
+                            onProceedToPayment={() => setModalStep("payment")}
+                        />
+                    ) : (
+                        <PaymentsCheckout
+                            membership={selectedMembership}
+                            giftToId={giftToId}
+                        />
+                    )
+                )}
+            </Modal>
         
         </div>
     )

@@ -61,7 +61,6 @@ public class MembershipService {
     public Boolean membershipActive(int giftId, String membershipCategory) {
         Gift gift = gr.findByGiftId(giftId);
         Optional<Membership_user> currentActiveMembership = Optional.ofNullable(msur.getLatestActiveMembershipByCategory(gift.getGiftTo(), membershipCategory));
-        System.out.println(currentActiveMembership.isPresent());
         if(currentActiveMembership.isEmpty()) {
             Member member = mr.findByMemberId(gift.getGiftTo());
             msur.save(new Membership_user(member, gift)); // 멤버십 활성화

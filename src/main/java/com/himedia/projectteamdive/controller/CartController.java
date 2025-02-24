@@ -37,7 +37,6 @@ public class CartController {
     @DeleteMapping("/deleteByCartId")
     public HashMap<String, Object> deleteByCartId(@RequestParam("cartId") int cartId) {
         HashMap<String, Object> result = new HashMap<>();
-        System.out.println("------------- 카트삭제 ------------" + cartId);
         cs.deleteByCartId(cartId);
         result.put("message", "yes");
         return result;
@@ -47,7 +46,6 @@ public class CartController {
     @DeleteMapping("/deleteByCartIdList")
     public HashMap<String, Object> deleteByCartIdList(@RequestBody List<Integer> cartIdList) {
         HashMap<String, Object> result = new HashMap<>();
-        System.out.println("뭐가전달됐을까여" + cartIdList);
         cs.deleteByCartIdList(cartIdList);
         result.put("message", "yes");
         return result;
