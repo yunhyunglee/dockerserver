@@ -2,8 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import styles from '../../../css/mainPage/top100Section.module.css';
-import { PlayerContext } from '../../../PlayerContext';
-
+import { PlayerContext } from '../../../context/PlayerContext';
 const Top100Section = () => {
   const navigate = useNavigate();
   const [monthlyCharts, setMonthlyCharts] = useState([]);
@@ -23,11 +22,12 @@ const Top100Section = () => {
   }, []);
 
   const {setAddPlaylist}=useContext(PlayerContext);
+  const {addAndPlay,setAddAndPlay} = useContext(PlayerContext);
   const handlePlay = (musicTitle) => {
     alert(`재생: ${musicTitle}`);
     setAddPlaylist(musicTitle);
+    // setAddAndPlay(musicTitle);
   };
-
 
 
   return (
