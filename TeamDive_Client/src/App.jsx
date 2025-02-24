@@ -53,7 +53,7 @@ function App() {
                     {chatOpen && <ChatModal onClose={closeChat} />}
 
                     <ScrollToTop />
-                    <Home menubar={menubar} mood={mood}></Home>
+                    <Home menubar={menubar} mood={mood} setMood={setMood} />
                     <Footer />
                     <FooterPlayer />
                 </PlayerProvider>

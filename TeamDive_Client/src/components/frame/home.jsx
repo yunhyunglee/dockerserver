@@ -6,7 +6,7 @@ import { Cookies } from 'react-cookie';
 import { useEffect } from 'react';
 import { logoutAction } from '../../store/UserSlice';
 
-function Home({ menubar, mood}) {
+function Home({ menubar, mood, setMood}) {
 
     const loginUser = useSelector( state => state.user );
     const dispatch = useDispatch(); 
@@ -63,7 +63,7 @@ function Home({ menubar, mood}) {
             </div>
 
             <div className={`${styles.main} ${menubar ? styles.move : ""}`}>
-                <AppRoutes mood={mood}/>  
+                <AppRoutes mood={mood} setMood={setMood}/>  
             </div>
         </div>
     );

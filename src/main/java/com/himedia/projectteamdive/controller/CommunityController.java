@@ -48,10 +48,12 @@ public class CommunityController {
     }
 
     @GetMapping("/getLikes")
-    public HashMap<String,Object> getLikes(@RequestParam("memberId")String memberId
+    public HashMap<String,Object> getLikes(
+            @RequestParam("pagetype")String type,
+            @RequestParam("memberId")String memberId
     ) {
         HashMap<String,Object> map = new HashMap<>();
-        map.put("LikesList",cs.getLikes(memberId));
+        map.put("LikesList",cs.getLikes(type,memberId));
         return map;
     }
 
