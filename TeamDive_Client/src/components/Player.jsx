@@ -189,7 +189,7 @@ export default function Player() {
 
   const { addPlaylist, setAddPlaylist } = useContext(PlayerContext);
   const {addAndPlay,setAddAndPlay} = useContext(PlayerContext);
-  
+
   useEffect(() => {
     if (addPlaylist) {
       setPlaylist(prevPlaylist => [...prevPlaylist, { musicId: addPlaylist }]);
@@ -202,15 +202,15 @@ export default function Player() {
     //     return updatelist;
     //   });
     //   if (!isPlaying&&audioRef.current) {
-    //     audioRef.current.load(); 
+    //     audioRef.current.load();
     //     setTimeout(() => {
     //       if (!isPlaying) {
-    //         togglePlay(); 
+    //         togglePlay();
     //       }
     //     }, 100);
     //   }
     //   setAddAndPlay(null)
-     
+
     // }
   }, [addPlaylist,addAndPlay]);
 
@@ -241,6 +241,7 @@ export default function Player() {
     };
   }, [isShuffle, shuffleQueue, shufflePos, index, isRepeat]);
 
+  // 재생/일시정지
   const togglePlay = () => {
     if (!isPlaying) {
       audioRef.current.play();
@@ -251,6 +252,7 @@ export default function Player() {
     }
   };
 
+  // 특정 곡으로 재생
   const handleAudioChange = (songIndex, autoPlay = true) => {
     const src = playlist[songIndex].src;
     audioRef.current.src = src;
@@ -268,7 +270,7 @@ export default function Player() {
     };
   };
 
-  // ===== 이전 곡 =====
+  // 이전 곡
   const toggleSkipBackward = () => {
     if (isShuffle) {
       setShufflePos(prevPos => {
@@ -286,6 +288,7 @@ export default function Player() {
     }
   };
 
+  // 다음 곡
   const toggleSkipForward = (skipType = 'manual') => {
     if (isRepeat && skipType === 'auto') {
       audioRef.current.currentTime = 0;
@@ -320,10 +323,10 @@ export default function Player() {
     });
   };
 
+  // 반복/셔플
   const toggleRepeat = () => {
     setIsRepeat(prev => !prev);
   };
-
   const toggleShuffle = () => {
     if (!isShuffle) {
       const newQueue = shuffleArray([...playlist.keys()]);
@@ -336,6 +339,7 @@ export default function Player() {
     setIsShuffle(prev => !prev);
   };
 
+  // 시간 포맷
   const formatTime = (time) => {
     if (time && !isNaN(time)) {
       const minutes = Math.floor(time / 60) < 10 ? `0${Math.floor(time / 60)}` : Math.floor(time / 60);
@@ -345,7 +349,7 @@ export default function Player() {
     return '00:00';
   };
 
-  // ===== 볼륨 아이콘 =====
+  // 볼륨 아이콘
   const VolumeBtns = () => {
     if (mute)
       return (

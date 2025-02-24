@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "../../css/storage/myPlaylist.module.css";
-import jaxios from "../../util/JwtUtil";
+import jaxios from "../../util/JWTUtil";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -126,7 +126,7 @@ const MyPlaylist = () => {
 
       } else {
 
-        setPlaylists([]);  // 빈 배열로 설정
+        setPlaylists([]);  
       }
     } catch (error) {
       console.error(" 플레이리스트 못 가져옴:", error);

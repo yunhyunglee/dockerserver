@@ -24,6 +24,8 @@ import Domestic from "./components/chartmore/Domestic";
 import Foreign from "./components/chartmore/Foreign";
 import ArtistDetail from "./components/detail/ArtistDetail";
 import PlaylistDetail from "./components/detail/PlaylistDetail";
+import SearchResults from "./components/frame/mainpage/SearchResult";
+import SearchMore from "./components/frame/mainpage/SearchMore";
 
 
 function AppRoutes({mood}) {
@@ -62,6 +64,10 @@ function AppRoutes({mood}) {
             <Route path="/charts/monthly" element={<Monthly />}/>
             <Route path="/charts/domestic" element={<Domestic />}/>
             <Route path="/charts/foreign" element={<Foreign />}/>
+
+            {/* 검색 */}
+            <Route path="/search" element={<SearchResults />}/>
+            <Route path="/searchMore" element={<SearchMore />} /> 
 
 
 

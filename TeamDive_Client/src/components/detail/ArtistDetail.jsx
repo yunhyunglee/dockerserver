@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import jaxios from "../../util/JwtUtil"; 
+import jaxios from "../../util/JWTUtil";
 import { useSelector } from "react-redux"; 
 import styles from "../../css/detail/artistDetail.module.css";
 
