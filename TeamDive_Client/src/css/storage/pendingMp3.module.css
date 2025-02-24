@@ -121,7 +121,7 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    margin-top: 10px;
+    margin: 10px 0 20px 0;
     padding: 20px 0 10px 0;
     font-size: 18px;
     font-weight: bold;
@@ -187,7 +187,7 @@
 .paymentButton {
     width: 100%;
     padding: 12px;
-    background-color: #3a3a3a;
+    background-color: #ff4081;
     color: #ffffff;
     border: none;
     border-radius: 12px;
@@ -202,7 +202,7 @@
 }
   
 .paymentButton:not(:disabled):hover {
-    background-color: #ff0050;
+    background-color: #e73370;
     transition: background-color 0.3s ease;
 }
   
