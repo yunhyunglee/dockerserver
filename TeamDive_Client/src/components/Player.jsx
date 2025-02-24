@@ -129,17 +129,51 @@ export default function Player() {
   }, [playCounts]);
 
 
-  // const prevPlaylist=useRef([]);
-  // useEffect(
-  //   ()=>{
+  const prevPlaylist=useRef([]);
+  useEffect(
+    ()=>{
+      const fetchPlaylist = async () => {
+        if(playlist.length>prevPlaylist.current.length){
+          const result=await axios.post('/api/music/getCurrentPlaylist',playlist)
+          setPlaylist(result.data.playlist);
+          if(result.data.playlist[result.data.playlist.length-1].src){
+            // console.log('현재곡 재생!', result.data.playlist[result.data.playlist.length-1].src);
+            setIndex(result.data.playlist.length-1);
+            // handleAudioChange(result.data.playlist.length-1, true);
+          }
+        }
+        prevPlaylist.current=playlist;
+        console.log(playlist);
+      }
+      fetchPlaylist();
+    },[playlist]
+  );
+
+  //const [playlist, setPlaylist] = useState([]); // 현재 playlist 상태
+  // const prevPlaylistRef = useRef([]); // 이전 playlist를 useRef로 저장 (렌더링 방지)
+
+  // useEffect(() => {
   //     const fetchPlaylist = async () => {
-  //       if(playlist.length>prevPlaylist.current.length){
-  //         const result=await axios.post('/api/music/getCurrentPlaylist',playlist)
-  //         setPlaylist(result.data.playlist);
-  //       }
-  //       prevPlaylist.current=playlist;
-  //       console.log(playlist);
-  //     }
+  //         if (!playlist.length) return; // 빈 배열이면 요청하지 않음
+
+  //         const prevPlaylist = prevPlaylistRef.current; // 이전 상태 참조
+
+  //         // 상태가 변경된 경우에만 요청
+  //         if (JSON.stringify(playlist) !== JSON.stringify(prevPlaylist)) {
+  //             try {
+  //                 const result = await axios.post('/api/music/getCurrentPlaylist', playlist);
+
+  //                 if (JSON.stringify(result.data.playlist) !== JSON.stringify(playlist)) {
+  //                     setPlaylist(result.data.playlist);
+  //                 }
+
+  //                 prevPlaylistRef.current = result.data.playlist; // 최신 playlist 상태 업데이트
+  //             } catch (error) {
+  //                 console.error("플레이리스트 가져오기 실패:", error);
+  //             }
+  //         }
+  //     };
+
   //     fetchPlaylist();
   //   },[playlist]
   // );
@@ -210,9 +244,13 @@ export default function Player() {
     //     }, 100);
     //   }
     //   setAddAndPlay(null)
-
+     
     // }
   }, [addPlaylist,addAndPlay]);
+
+
+
+
 
   useEffect(() => {
     if (audioRef.current) {
@@ -258,6 +296,10 @@ export default function Player() {
     audioRef.current.src = src;
     audioRef.current.load();
     audioRef.current.onloadedmetadata = () => {
+      const _duration = Math.floor(audioRef.current?.duration);
+      const _elapsed = Math.floor(audioRef.current?.currentTime);
+      setDuration(_duration);
+      setElapsed(_elapsed);
       if (autoPlay) {
         audioRef.current
           .play()
@@ -339,7 +381,6 @@ export default function Player() {
     setIsShuffle(prev => !prev);
   };
 
-  // 시간 포맷
   const formatTime = (time) => {
     if (time && !isNaN(time)) {
       const minutes = Math.floor(time / 60) < 10 ? `0${Math.floor(time / 60)}` : Math.floor(time / 60);
@@ -349,7 +390,7 @@ export default function Player() {
     return '00:00';
   };
 
-  // 볼륨 아이콘
+  // ===== 볼륨 아이콘 =====
   const VolumeBtns = () => {
     if (mute)
       return (

@@ -13,7 +13,7 @@ import RandomMusic from './RandomMusic.jsx';
 import axios from 'axios';
 import jaxios from '../../../util/JWTUtil.jsx';
 import { setRecommendedListToCookie, getRecommendedListFromCookie, setRecommendedListToStorage, getRecommendedListFromStorage } from '../../../util/CookieUtil.jsx';
-import { PlayerContext } from '../../../PlayerContext';
+import { PlayerContext } from '../../../context/PlayerContext.jsx';
 
 
 
