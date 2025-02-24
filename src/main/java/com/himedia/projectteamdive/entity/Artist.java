@@ -32,6 +32,7 @@ public class Artist {
     private Timestamp debut;
     private String country;
     private String image;
+    @Column(length = 1000)
     private String content;
 
     @OneToMany(mappedBy = "artist",  cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)

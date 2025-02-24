@@ -29,7 +29,7 @@ import PlaylistPlayIcon from '@mui/icons-material/PlaylistPlay';
 
 import axios from 'axios';
 import { useSelector } from 'react-redux';
-import { PlayerContext } from '../PlayerContext';
+import { PlayerContext } from '../context/PlayerContext';
 
 // Custom Paper 스타일
 const CustomPaper = styled(Paper)(({ theme }) => ({
@@ -99,10 +99,12 @@ export default function Player() {
 
   // 현재 재생할 곡 결정
   let currentSong;
-  if (isShuffle && shuffleQueue.length > 0) {
-    currentSong = playlist[shuffleQueue[shufflePos]];
-  } else {
-    currentSong = playlist[index];
+  if (playlist.length > 0) {
+    if (isShuffle && shuffleQueue.length > 0) {
+      currentSong=playlist[shuffleQueue[shufflePos]];
+    } else {
+      currentSong=playlist[index];
+    }
   }
 
   const loginUser = useSelector(state => state.user);
@@ -186,12 +188,31 @@ export default function Player() {
   }, [currentSong]);
 
   const { addPlaylist, setAddPlaylist } = useContext(PlayerContext);
+  const {addAndPlay,setAddAndPlay} = useContext(PlayerContext);
+  
   useEffect(() => {
     if (addPlaylist) {
       setPlaylist(prevPlaylist => [...prevPlaylist, { musicId: addPlaylist }]);
       setAddPlaylist(null);
     }
-  }, [addPlaylist]);
+    // if(addAndPlay){
+    //   setPlaylist(prevPlaylist => {
+    //     const updatelist=[...prevPlaylist, { musicId: addAndPlay }]
+    //     setCurrentSong(updatelist[updatelist.length-1]);
+    //     return updatelist;
+    //   });
+    //   if (!isPlaying&&audioRef.current) {
+    //     audioRef.current.load(); 
+    //     setTimeout(() => {
+    //       if (!isPlaying) {
+    //         togglePlay(); 
+    //       }
+    //     }, 100);
+    //   }
+    //   setAddAndPlay(null)
+     
+    // }
+  }, [addPlaylist,addAndPlay]);
 
   useEffect(() => {
     if (audioRef.current) {
