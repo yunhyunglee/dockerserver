@@ -42,6 +42,11 @@ public class MembershipService {
         return msur.getLatestActiveMembershipByCategory(memberId, membershipCategory);
     }
 
+    /* download 멤버십이 있는지 확인 */
+    public Membership_user getDownloadMembership(String memberId) {
+        return msur.getLatestActiveMembershipByCategory(memberId, "download");
+    }
+
     /* 현재 로그인 유저에게 활성화된 멤버십이 있는지 확인 */
     public List<Membership_user> getActiveMembership(String memberId) {
         return msur.getActiveMembership(memberId);
@@ -66,4 +71,5 @@ public class MembershipService {
             return false;
         }
     }
+
 }

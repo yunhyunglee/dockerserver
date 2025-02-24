@@ -32,4 +32,24 @@ public class CartController {
         result.put("cartList", cs.getCartList(memberId));
         return result;
     }
+
+    /* 장바구니 개별 삭제 */
+    @DeleteMapping("/deleteByCartId")
+    public HashMap<String, Object> deleteByCartId(@RequestParam("cartId") int cartId) {
+        HashMap<String, Object> result = new HashMap<>();
+        System.out.println("------------- 카트삭제 ------------" + cartId);
+        cs.deleteByCartId(cartId);
+        result.put("message", "yes");
+        return result;
+    }
+
+    /* 장바구니 선택 삭제 */
+    @DeleteMapping("/deleteByCartIdList")
+    public HashMap<String, Object> deleteByCartIdList(@RequestBody List<Integer> cartIdList) {
+        HashMap<String, Object> result = new HashMap<>();
+        System.out.println("뭐가전달됐을까여" + cartIdList);
+        cs.deleteByCartIdList(cartIdList);
+        result.put("message", "yes");
+        return result;
+    }
 }
