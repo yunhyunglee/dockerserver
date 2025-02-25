@@ -3,6 +3,8 @@ package com.himedia.projectteamdive.repository;
 import com.himedia.projectteamdive.dto.MemberRecentMusicsDto;
 import com.himedia.projectteamdive.dto.MusicDto;
 import com.himedia.projectteamdive.entity.Music;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -35,6 +37,12 @@ public interface MusicRepository extends JpaRepository<Music, Integer> {
 
     @Query("SELECT m FROM Music m WHERE m.musicId IN :musicId")
     List<MusicDto> getMusicByIds(@Param("musicId") List<Integer> musicId);
+
+
+    @Query("SELECT m.musicId FROM Music m " +
+            "WHERE m.album IN (SELECT a FROM Album a ORDER BY a.indate DESC) ")
+    List<Integer> getLatestMusicIds(Pageable pageable);
+
 
 //    @Query("SELECT m FROM Music m WHERE m.musicId IN :ids ORDER BY m.tracknumber ASC")
 //    List<Music> findAllByMusicId(@Param("ids") List<Integer> ids);
