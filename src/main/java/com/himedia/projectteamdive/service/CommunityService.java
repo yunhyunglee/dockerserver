@@ -55,8 +55,9 @@ public class CommunityService {
         return replyList;
     }
 
-    public List<Likes> getLikes(String memberId) {
-        return lr.findByMember(mr.findByMemberId(memberId));
+    public List<Likes> getLikes(String type, String memberId) {
+        Pagetype pagetype = Pagetype.valueOf(type.toUpperCase());
+        return lr.findByMemberIdAndPagetype(memberId, pagetype);
     }
 
     public List<Reply> getReplyList(String type, String memberId) {

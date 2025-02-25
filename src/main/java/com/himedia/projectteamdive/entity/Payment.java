@@ -25,7 +25,7 @@ public class Payment {
     private String orderName; // 구매 상품 이름
     @Column(nullable = false)
     private Integer amount; // 결제 금액
-    @Column(columnDefinition="DATETIME default now()", name = "created_at")
+    @Column(name = "created_at")
     private Timestamp createdAt; // 생성 시간
     @PrePersist
     public void prePersist() {
@@ -58,4 +58,7 @@ public class Payment {
     )
     @Column(name = "music_id") // 컬렉션 테이블의 컬럼 이름
     private List<Integer> musicIdList; // 음악 ID 저장
+
+    private int payCount; // 돈주고 구매한 곡 수
+    private int membershipCount; // 멤버십에서 차감된 곡 수
 }

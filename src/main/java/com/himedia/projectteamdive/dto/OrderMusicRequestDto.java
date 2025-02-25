@@ -1,6 +1,8 @@
 package com.himedia.projectteamdive.dto;
 
 import com.himedia.projectteamdive.entity.Cart;
+import com.himedia.projectteamdive.entity.Member;
+import com.himedia.projectteamdive.entity.Payment;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,20 +14,51 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class OrderMusicRequestDto {
-    private String memberId;
-    private int membershipUserId;
-    private int membershipCount;
-    private int payCount;
+    private String orderId;
+    private int amount;
+    private String orderName;
     private String giftToId;
+    private String memberId;
+    private int payCount;
+    private int membershipCount;
+    private int membershipUserId;
     private List<Integer> cartIdList;
+    private List<Integer> musicIdList;
 
     public OrderMusicRequestDto(
-            String memberId, int membershipUserId, int membershipCount, int payCount, String giftToId, List<Integer> cartIdList) {
-        this.memberId = memberId;
-        this.membershipUserId = membershipUserId;
-        this.membershipCount = membershipCount;
-        this.payCount = payCount;
+            String orderId,
+            int amount,
+            String orderName,
+            String giftToId,
+            String memberId,
+            int payCount,
+            int membershipCount,
+            int membershipUserId,
+            List<Integer> cartIdList,
+            List<Integer> musicIdList) {
+        this.orderId = orderId;
+        this.amount = amount;
+        this.orderName = orderName;
         this.giftToId = giftToId;
+        this.memberId = memberId;
+        this.payCount = payCount;
+        this.membershipCount = membershipCount;
+        this.membershipUserId = membershipUserId;
         this.cartIdList = cartIdList;
+        this.musicIdList = musicIdList;
+    }
+
+    public Payment toEntity(Member member) {
+        return Payment.builder()
+                .orderId(orderId)
+                .amount(amount)
+                .orderName(orderName)
+                .giftToId(giftToId)
+                .member(member)
+                .musicIdList(musicIdList)
+                .isPaid(true)
+                .payCount(payCount)
+                .membershipCount(membershipCount)
+                .build();
     }
 }
