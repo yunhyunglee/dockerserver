@@ -30,8 +30,7 @@ import PlaylistPlayIcon from '@mui/icons-material/PlaylistPlay';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { PlayerContext } from '../context/PlayerContext';
-import jaxios from '../util/JWTUtil';
-
+import jaxios from '../util/JwtUtil';
 // Custom Paper 스타일
 const CustomPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: 'black',
@@ -134,9 +133,10 @@ export default function Player() {
   useEffect(
     ()=>{
       const fetchPlaylist = async () => {
-        if(playlist.length>prevPlaylist.current.length){
+        if(playlist.length != prevPlaylist.current.length){
           const result=await axios.post('/api/music/getCurrentPlaylist',playlist)
           setPlaylist(result.data.playlist);
+          localStorage.setItem("playlist",JSON.stringify(result.data.playlist))
         }
         prevPlaylist.current=playlist;
         console.log(playlist);
@@ -173,6 +173,7 @@ export default function Player() {
 
   useEffect(
     ()=>{
+
       if(playlist.length> 0 && playlist[playlist.length-1].src && addAndPlay){
         setIndex(playlist.length-1);
         handleAudioChange(playlist.length-1,true);
@@ -181,9 +182,12 @@ export default function Player() {
     },[playlist]
   );
   const [membership,setMembership]=useState(false);
-  //멤버십 조회
+  //멤버십 조회, 처음 렌더링시 플레이리스트 스토리지에서 가져옴
   useEffect(
     ()=>{
+      const storedPlaylist = JSON.parse(localStorage.getItem("playlist"));
+      setPlaylist(storedPlaylist);
+      console.log('storedUser',storedPlaylist);
       axios.get('/api/membership/checkActiveMembership',{params:{memberId:loginUser.memberId, category: 'streaming'}})
       .then((result)=>{
         if(result.data.message=='yes'){
@@ -200,6 +204,9 @@ export default function Player() {
       }
     },[elapsed]
   );
+  const removePlaylist=(i)=>{
+    setPlaylist(prev => prev.filter((_,index)=> index!==i) )
+  }
 
 
 
@@ -583,21 +590,24 @@ export default function Player() {
             </Box>
             {currentSongs.map((song, i) => (
               <Box
-                key={`${song.musicId}-${i}`}
-                sx={{
-                  paddingY: 1,
-                  paddingX: 1,
-                  borderRadius: '6px',
-                  mb: 1,
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease-in-out',
-                  '&:hover': {
-                    backgroundColor: 'rgba(255,255,255,0.1)',
-                    transform: 'scale(1.02)',
-                  },
-                }}
-                onClick={() => handleSelectSong(playlist.indexOf(song))}
-              >
+              key={`${song.musicId}-${i}`}
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                paddingY: 1,
+                paddingX: 1,
+                borderRadius: '6px',
+                mb: 1,
+                cursor: 'pointer',
+                transition: 'all 0.2s ease-in-out',
+                '&:hover': {
+                  backgroundColor: 'rgba(255,255,255,0.1)',
+                  transform: 'scale(1.02)',
+                },
+              }}
+            >
+              <Box onClick={() => handleSelectSong(playlist.indexOf(song))}>
                 <Typography variant="subtitle1" sx={{ color: 'silver' }}>
                   {song.title}
                 </Typography>
@@ -605,6 +615,10 @@ export default function Player() {
                   {song.artist}
                 </Typography>
               </Box>
+              <IconButton size="small" sx={{ color: 'silver' }} onClick={()=>removePlaylist(i)}>
+                <CloseIcon />
+              </IconButton>
+            </Box>
             ))}
             {filteredPlaylist.length > songsPerPage && (
               <Box sx={{ display: 'flex', justifyContent: 'center', mt: 1 }}>
