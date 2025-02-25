@@ -21,13 +21,23 @@ const Top100Section = () => {
       });
   }, []);
 
-  const {setAddPlaylist}=useContext(PlayerContext);
-  const {addAndPlay,setAddAndPlay} = useContext(PlayerContext);
-  const handlePlay = (musicTitle) => {
-    alert(`재생: ${musicTitle}`);
-    setAddPlaylist(musicTitle);
-    // setAddAndPlay(musicTitle);
+  const {setAddPlaylist,setAddAndPlay}=useContext(PlayerContext);
+  //재생목록에 추가후 즉시재생 
+  //musicId 또는 musicId 배열
+  const handlePlay = (musicId) => {
+    const musicArray = Array.isArray(musicId) 
+  ? musicId.map(num => ({ musicId: num })) 
+  : [{ musicId: musicId }];
+    setAddAndPlay(musicArray);
   };
+  //재생목록에 추가만
+  const handlePlay2 = (musicId) => {
+    const musicArray = Array.isArray(musicId) 
+  ? musicId.map(num => ({ musicId: num })) 
+  : [{ musicId: musicId }];
+    setAddPlaylist(musicArray);
+  };
+
 
 
   return (
