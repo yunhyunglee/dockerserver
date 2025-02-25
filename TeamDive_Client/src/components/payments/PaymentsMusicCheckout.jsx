@@ -8,29 +8,27 @@ import paymentsStyle from '../../css/membership/payments.module.css';
 
 const clientKey = "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
 
-const PaymentsCheckout = ({ membership, giftToId }) => {
+const PaymentsMusicCheckout = ({ cartIdList, giftToId, payCount, membershipCount, membershipUserId }) => {
     const loginUser = useSelector(state => state.user);
     const navigate = useNavigate();
 
     const customerKey = loginUser.memberKey;
     const [amount, setAmount] = useState({
         currency: "KRW",
-        value: (membership.price) * (1 - (membership?.discount / 100))
+        value: cartIdList.length * 770
     });
-    const [orderId, setOrderId] = useState(
-        `${membership.membershipId}-${Date.now()}`
-    );
-    const [orderName, setOrderName] = useState(membership.name);
+    const [orderId, setOrderId] = useState(`m${payCount}-${Date.now()}`);
+    const [orderName, setOrderName] = useState(`mp3 ${cartIdList.length}곡`);
     const [ready, setReady] = useState(false);
     const [widgets, setWidgets] = useState(null);
 
     /* state 값이 없다면 홈으로 이동 */
     useEffect(() => {
-        if (!membership || !loginUser) {
+        if (!cartIdList || !loginUser) {
             alert("잘못된 접근입니다.");
             navigate("/"); // 홈으로 리다이렉트
         }
-    }, [membership, loginUser, navigate]);
+    }, [cartIdList, loginUser, navigate]);
 
 
     /* 결제위젯 초기화 */
@@ -85,11 +83,15 @@ const PaymentsCheckout = ({ membership, giftToId }) => {
             console.log('결제데이터전달', loginUser);
 
             // 결제 정보를 백엔드에 저장
-            const response = await jaxios.post("/api/payments/orderRequest", {
+            const response = await jaxios.post("/api/payments/orderMusicRequest", {
                 orderId,
                 amount: amount.value,
                 orderName,
-                giftToId
+                giftToId,
+                cartIdList,
+                payCount,
+                membershipCount,
+                membershipUserId
             }, {params: {memberId: loginUser.memberId}});
 
             if (response.status === 200) {
@@ -125,4 +127,4 @@ const PaymentsCheckout = ({ membership, giftToId }) => {
     );
 }
 
-export default PaymentsCheckout;
+export default PaymentsMusicCheckout;

@@ -6,7 +6,7 @@ import jaxios from '../../util/JwtUtil';
 
 import Modal from '../frame/Modal'; // 모달 컴포넌트
 import GiftMusic from '../gift/GiftMusic'; // 음악 선물 컴포넌트
-import PaymentsCheckout from "../payments/PaymentsCheckout";
+import PaymentsMusicCheckout from "../payments/PaymentsMusicCheckout";
 
 import storageStyle from "../../css/storage/storage.module.css";
 import pendingStyle from "../../css/storage/pendingMp3.module.css";
@@ -18,6 +18,7 @@ const PendingMp3 = () => {
 
     const [cartList, setCartList] = useState([]);
     const [selectedCart, setSelectedCart] = useState([]);
+    const [selectedMusic, setSelectedMusic] = useState([]);
     const [downloadMembership, setDownloadMembership] = useState(null);
     const [membershipCount, setMembershipCount] = useState(0);
     const [payCount, setPayCount] = useState(0);
@@ -95,8 +96,10 @@ const PendingMp3 = () => {
     const toggleSelectAll = (checked) => {
         if (checked) {
             setSelectedCart(cartList.map((cart) => cart.cartId));
+            setSelectedMusic(cartList.map((cart) => cart.musicId));
         } else {
             setSelectedCart([]);
+            setSelectedMusic([]);
         }
     };
 
@@ -104,14 +107,21 @@ const PendingMp3 = () => {
         cartList.length > 0 && selectedCart.length === cartList.length;
 
     /* 개별 곡 체크박스 토글 */
-    const toggleSelectCart = (id) => {
+    const toggleSelectCart = (cartId, musicId) => {
         setSelectedCart((prev) =>
-            prev.includes(id) ? prev.filter((cartId) => cartId !== id) : [...prev, id]
+            prev.includes(cartId) ? prev.filter((id) => id !== cartId) : [...prev, cartId]
+        );
+        setSelectedMusic((prev) =>
+            prev.includes(musicId) ? prev.filter((id) => id !== musicId) : [...prev, musicId]
         );
     };
 
+    useEffect(()=>{
+        console.log('음악 선택 확인', selectedMusic);
+    }, [selectedMusic, setSelectedMusic])
+
     /* 장바구니 개별 삭제 */
-    async function deleteByCartId(cartId){
+    async function deleteByCartId(cartId, musicId){
         try{
             let response = await jaxios.delete('/api/cart/deleteByCartId', {
                 params: { cartId }
@@ -119,7 +129,7 @@ const PendingMp3 = () => {
             if(response.data.message === 'yes'){
                 response = await jaxios.get('/api/cart/getCartList', { params: { memberId: loginUser.memberId } });
                     setCartList([...response.data.cartList]);
-                    toggleSelectMusic(cartId);
+                    toggleSelectCart(cartId, musicId);
             }
         }catch(error){
             console.error('장바구니 삭제 오류', error);
@@ -136,6 +146,7 @@ const PendingMp3 = () => {
                 response = await jaxios.get('/api/cart/getCartList', { params: { memberId: loginUser.memberId } });
                     setCartList([...response.data.cartList]);
                     setSelectedCart([]);
+                    setSelectedMusic([]);
             }
         }catch(error){
             console.error('장바구니 삭제 오류', error);
@@ -145,7 +156,7 @@ const PendingMp3 = () => {
     /* 결제 유형 판단 */
     async function checkValid(){
         try{
-            const response = await jaxios.post('/api/mp3/checkPurchasedMusic', selectedCart, {
+            const response = await jaxios.post('/api/mp3/checkPurchasedMusic', selectedMusic, {
                 params: { giftToId: loginUser.memberId }
             });
             if(response.data.message === 'no'){
@@ -168,10 +179,15 @@ const PendingMp3 = () => {
         if(confirm){
             try{
                 const response = await jaxios.post('/api/mp3/payOnlyMembership', {
+                    orderId: `m${membershipCount}-${Date.now()}`,
+                    amount: (payCount * 770),
+                    orderName: `mp3 ${membershipCount}곡`,
                     memberId: loginUser.memberId,
-                    cartIdList: selectedCart,
+                    payCount,
                     membershipCount,
-                    membershipUserId: downloadMembership.membershipUserId
+                    membershipUserId: downloadMembership.membershipUserId,
+                    cartIdList: selectedCart,
+                    musicIdList: selectedMusic
                 });
                 if(response.data.message === 'yes'){
                     alert('구매가 완료되었습니다');
@@ -228,7 +244,7 @@ const PendingMp3 = () => {
                                         type="checkbox"
                                         className={musicStyle.rowCheckbox}
                                         checked={selectedCart.includes(cart.cartId)}
-                                        onChange={ () => toggleSelectCart(cart.cartId) }
+                                        onChange={ () => toggleSelectCart(cart.cartId, cart.musicId) }
                                     />
 
                                     {/* 앨범 커버 */}
@@ -256,7 +272,7 @@ const PendingMp3 = () => {
                                     {/* 장바구니 삭제 */}
                                     <button
                                         className={musicStyle.heartBtn}
-                                        onClick={ async () => await deleteByCartId(cart.cartId) }
+                                        onClick={ async () => await deleteByCartId(cart.cartId, cart.musicId) }
                                     >
                                         X
                                     </button>
@@ -320,7 +336,8 @@ const PendingMp3 = () => {
                     selectedCart && (
                         (modalStep === "gift") ? (
                             <GiftMusic
-                                cartList={selectedCart}
+                                cartIdList={selectedCart}
+                                musicIdList={selectedMusic}
                                 giftToId={giftToId}
                                 setGiftToId={setGiftToId}
                                 payCount={payCount}
@@ -329,8 +346,9 @@ const PendingMp3 = () => {
                                 onProceedToPayment={() => setModalStep("payment")}
                             />
                         ) : (
-                            <PaymentsCheckout
+                            <PaymentsMusicCheckout
                                 cartIdList={selectedCart}
+                                musicIdList={selectedMusic}
                                 giftToId={loginUser.memberId}
                                 payCount={payCount}
                                 membershipCount={membershipCount}

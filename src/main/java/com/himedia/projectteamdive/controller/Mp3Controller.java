@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @RestController
-@RequestMapping("mp3")
+@RequestMapping("/mp3")
 public class Mp3Controller {
     @Autowired
     Mp3Service ms;
@@ -20,10 +20,10 @@ public class Mp3Controller {
     /* 이미 구매한 곡이 있는지 확인 */
     @PostMapping("/checkPurchasedMusic")
     public HashMap<String, Object> getPurchasedMusic(
-            @RequestBody List<Integer> cartIdList,
+            @RequestBody List<Integer> musicIdList,
             @RequestParam("giftToId") String giftToId) {
         HashMap<String, Object> result = new HashMap<>();
-        List<PurchasedMusicResponseDto> purchasedMusicList = ms.checkPurchasedMusic(cartIdList, giftToId);
+        List<PurchasedMusicResponseDto> purchasedMusicList = ms.checkPurchasedMusic(musicIdList, giftToId);
         if(!purchasedMusicList.isEmpty()) {
             result.put("message", "yes");
             result.put("purchasedMusicList", purchasedMusicList);
