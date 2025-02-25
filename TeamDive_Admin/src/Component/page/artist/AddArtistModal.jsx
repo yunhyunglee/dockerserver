@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from "react";
 import "../../../style/artistModal.scss";
 import jaxios from '../../../util/JwtUtil';
 
@@ -13,6 +12,8 @@ const AddArtistModal = ({ onClose, addArtistToList }) => {
         artistContent:""
     });
 
+ 
+
 
 
     const onChange = (e) => {
@@ -25,7 +26,7 @@ const AddArtistModal = ({ onClose, addArtistToList }) => {
         const formData = new FormData();
         formData.append("image", file);
         try {
-            const response = await axios.post("/api/music/imageUpload", formData, {
+            const response = await jaxios.post("/api/music/imageUpload", formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
             setNewArtist({ ...newArtist, image: response.data.image }); // ✅ 업로드된 이미지 URL 적용
@@ -45,7 +46,7 @@ const AddArtistModal = ({ onClose, addArtistToList }) => {
         if (!newArtist.image) {return alert("가수 이미지를 선택해주세요"); }
 
         try{
-            const response = await axios.post("/api/music/insertArtist" , newArtist);  
+            const response = await jaxios.post("/api/music/insertArtist" , newArtist);  
             console.log("백엔드 응답:", response.data);        
             if(response.data.msg ==="yes"  && response.data.artist ){
                 alert("가수 등록 완료!");

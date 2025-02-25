@@ -26,7 +26,7 @@ const LoginPage =() => {
         
         try{
             const result = await axios.post('/api/member/login', null, {params:{username: memberId, password: password}});
-                   
+
             if(result.data.error === 'ERROR_LOGIN'){
                 alert('아이디와 비밀번호를 확인하세요.');
                 setMemberId('');

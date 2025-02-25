@@ -9,7 +9,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1002;
+    z-index: 1050;
 }
 
 .modalContent {
@@ -21,6 +21,7 @@
     height: 570px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     position: relative;
+    z-index: 1051;
 }
 
 h2 {
@@ -116,4 +117,8 @@ button[type="submit"] {
 button.cancel {
     background: #d9534f;
     color: white;
+}
+
+body.modal-open {
+    overflow: hidden;
 }

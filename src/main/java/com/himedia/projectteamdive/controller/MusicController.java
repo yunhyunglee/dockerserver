@@ -95,7 +95,7 @@ public class MusicController {
         map.put("msg","yes");
         return map;
     }
-    @PostMapping("/deleteMusic")
+    @DeleteMapping("/deleteMusic")
     public HashMap<String, Object> deleteMusic(@RequestParam("musicId")int musicId) {
         HashMap<String, Object> map = new HashMap<>();
 
