@@ -117,21 +117,8 @@ const MainPage = ({mood, setMood}) => {
     }
     
     const {setAddPlaylist}=useContext(PlayerContext);
-    const handlePlay = (musicTitle) => {
-    alert(`재생: ${musicTitle}`);
-    setAddPlaylist(musicTitle);
-    };
-
     const handlePlayAll = () => {
-        alert("모든 곡을 재생합니다.");
-    
-        setAddPlaylist((prevPlaylist = []) => [
-            //...prevPlaylist,
-            ...recommendList.map((recommendMusic)=>{
-                console.log(recommendMusic);
-                return recommendMusic.musicId}
-            )
-        ]);
+        setAddPlaylist(recommendList);
     };
 
     function closeRecommendArea() {
