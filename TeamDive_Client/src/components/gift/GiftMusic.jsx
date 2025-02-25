@@ -53,7 +53,7 @@ const GiftMusic = ( cartList, giftToId, setGiftToId, payCount, membershipCount, 
                         <img className={giftStyle.productImage} alt="곡 이미지" src={music.image}/>
                         <div className={giftStyle.productDetails}>
                             <div className={giftStyle.productName}>{music.title}</div>
-                            <div className={giftStyle.price}>770원 (VAT 포함)</div>
+                            <div className={giftStyle.price}>{payCount * 770}원 (VAT 포함)</div>
                         </div>
                     </div> 
                 })
