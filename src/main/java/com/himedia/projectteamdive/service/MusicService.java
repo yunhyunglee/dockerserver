@@ -261,6 +261,8 @@ public class MusicService {
     public void updatePlaylist(Playlist playlist) {
         Playlist p=pr.findByPlaylistId(playlist.getPlaylistId());
         p.setTitle(playlist.getTitle());
+        p.setContent(playlist.getContent());
+        p.setCoverImage(playlist.getCoverImage());
         p.setShayringyn(playlist.isShayringyn());
     }
 
@@ -274,10 +276,12 @@ public class MusicService {
 
     }
 
-    public void updatePlaylistDeleteMusic(int playlistId, int musicId) {
+    public void updatePlaylistDeleteMusic(int playlistId, List<Integer> musicIds) {
         Playlist playlist=pr.findByPlaylistId(playlistId);
-        Music music=mr.findByMusicId(musicId);
-        playlist.removeMusic(music);
+        for (int musicId : musicIds) {
+            Music music=mr.findByMusicId(musicId);
+            playlist.removeMusic(music);
+        }
     }
 
     public void updateAlbumReorder(List<Integer> musicIds, int albumId) {

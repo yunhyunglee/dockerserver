@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "../../css/storage/myPlaylist.module.css";
-import jaxios from "../../util/JWTUtil";
+import jaxios from "../../util/JwtUtil";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -74,6 +74,12 @@ const MyPlaylist = () => {
 
  
   const handleAdd = async () => {
+
+    if (!playlistTitle.trim()) {
+      alert('제목을 입력해주세요.');
+      return ;
+    }
+
     try {
       
       const response = await jaxios.post("/api/music/insertPlaylist", {
