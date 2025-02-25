@@ -480,4 +480,9 @@ public class MusicService {
         }
         return result;
     }
+
+    public List<Member> getSearchMember(String memberId) {
+        List<Member> list = memr.findByMemberIdContainingIgnoreCase(memberId);
+        return list;
+    }
 }

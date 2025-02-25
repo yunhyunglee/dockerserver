@@ -331,6 +331,13 @@ public class MusicController {
         return map;
     }
 
+    @GetMapping("/searchMember")
+    public HashMap<String, Object> getSearchMember(@RequestParam("memberId")String memberId) {
+        HashMap<String,Object> map=new HashMap<>();
+        List<Member> members=ms.getSearchMember(memberId);
+        map.put("member",members);
+        return map;
+    }
 
 
 }
