@@ -186,7 +186,7 @@ export default function Player() {
   useEffect(
     ()=>{
       const storedPlaylist = JSON.parse(localStorage.getItem("playlist"));
-      setPlaylist(storedPlaylist);
+      setPlaylist(storedPlaylist||[]);
       console.log('storedUser',storedPlaylist);
       axios.get('/api/membership/checkActiveMembership',{params:{memberId:loginUser.memberId, category: 'streaming'}})
       .then((result)=>{
