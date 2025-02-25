@@ -30,6 +30,7 @@ import PlaylistPlayIcon from '@mui/icons-material/PlaylistPlay';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { PlayerContext } from '../context/PlayerContext';
+import jaxios from '../util/JWTUtil';
 
 // Custom Paper 스타일
 const CustomPaper = styled(Paper)(({ theme }) => ({
@@ -143,9 +144,7 @@ export default function Player() {
       fetchPlaylist();
     },[playlist]
   );
-
-
-
+  //30초동안 재생하면 재생수 증가함수 
   const play30second = () => {
     const audio = audioRef.current;
     const interval = setInterval(() => {
@@ -159,10 +158,9 @@ export default function Player() {
   useEffect(() => {
     setIsplayed(false);
   }, [currentSong]);
-
+  //다른 컴포넌트에서 재생할 음악데이터 받음  
   const { addPlaylist, setAddPlaylist } = useContext(PlayerContext);
   const {addAndPlay,setAddAndPlay} = useContext(PlayerContext);
-
   useEffect(() => {
     if (addPlaylist) {
       setPlaylist(prevPlaylist => [...prevPlaylist, ...addPlaylist]);
@@ -170,9 +168,9 @@ export default function Player() {
     }
     if(addAndPlay){
       setPlaylist(prevPlaylist => [...prevPlaylist, ...addAndPlay]);
-      // setAddAndPlay(null)
     }
   }, [addPlaylist,addAndPlay]);
+
   useEffect(
     ()=>{
       if(playlist.length> 0 && playlist[playlist.length-1].src && addAndPlay){
@@ -182,6 +180,27 @@ export default function Player() {
       }
     },[playlist]
   );
+  const [membership,setMembership]=useState(false);
+  //멤버십 조회
+  useEffect(
+    ()=>{
+      axios.get('/api/membership/checkActiveMembership',{params:{memberId:loginUser.memberId, category: 'streaming'}})
+      .then((result)=>{
+        if(result.data.message=='yes'){
+          setMembership(true)
+        }
+      }).catch((err)=>{console.error(err);})
+    },[]
+  );
+  //멤버십없으면 60초 제한
+  useEffect(
+    ()=>{
+      if(!membership && elapsed>=60){
+        toggleSkipForward('auto');
+      }
+    },[elapsed]
+  );
+
 
 
 

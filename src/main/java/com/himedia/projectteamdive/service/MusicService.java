@@ -274,10 +274,12 @@ public class MusicService {
 
     }
 
-    public void updatePlaylistDeleteMusic(int playlistId, int musicId) {
+    public void updatePlaylistDeleteMusic(int playlistId, List<Integer> musicIds) {
         Playlist playlist=pr.findByPlaylistId(playlistId);
-        Music music=mr.findByMusicId(musicId);
-        playlist.removeMusic(music);
+        for (int musicId : musicIds) {
+            Music music=mr.findByMusicId(musicId);
+            playlist.removeMusic(music);
+        }
     }
 
     public void updateAlbumReorder(List<Integer> musicIds, int albumId) {

@@ -175,7 +175,7 @@ public class MusicController {
     }
 
     @PostMapping("/updatePlaylistDeleteMusic")
-    public HashMap<String,Object> updatePlaylistDeleteMusic(@RequestParam("playlistId")int playlistId, @RequestParam("musicId")int musicId) {
+    public HashMap<String,Object> updatePlaylistDeleteMusic(@RequestParam("playlistId")int playlistId, @RequestBody List<Integer> musicId) {
         HashMap<String, Object> map = new HashMap<>();
         ms.updatePlaylistDeleteMusic(playlistId,musicId);
         map.put("msg","yes");

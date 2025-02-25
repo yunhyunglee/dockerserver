@@ -43,6 +43,7 @@ public class CommunityService {
         Likes likes=lr.findByMemberAndAllpage(member,allpage);
         if(likes==null){
             likes=new Likes(member,allpage);
+            lr.save(likes);
         }else{
             lr.delete(likes);
         }
