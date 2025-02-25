@@ -28,22 +28,34 @@ const AlbumDetail = () => {
   
   
 
-    const handleAddToPlaylist = (musicId) => {
-      setSelectedMusicId(musicId);
-      setShowPlaylistModal(true);
-    };
+  const handleAddToPlaylist = (musicId) => {
+    setSelectedMusicId(musicId);
+    setShowPlaylistModal(true);
+  };
     
 
 
   
   const handleLike = () => {
-    setIsLiked((prev) => !prev);
-  };
+    jaxios.post('/api/community/insertLikes',null,{params:{entityId: albumId, pagetype: 'ALBUM', memberId: loginUser.memberId}})
+    .then((result)=>{
+        console.log(result.data.msg)
+        setIsLiked(prevLike => !prevLike);
+    }).catch((err)=>{console.error(err);})
+  }
 
 
 
   
   useEffect(() => {
+    jaxios.get('/api/community/getLikes',{params:{pagetype: 'ALBUM',memberId: loginUser.memberId}})
+    .then((result)=>{
+        if(result.data.LikesList.some(likes => likes.allpage.entityId == albumId)){
+            setIsLiked(true);
+        }
+    }).catch((err)=>{console.error(err);})
+
+
     jaxios
       .get('/api/music/getAlbum', { params: { albumId } })
       .then((res) => {
