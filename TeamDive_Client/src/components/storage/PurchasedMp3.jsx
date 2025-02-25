@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import jaxios from '../../util/JwtUtil';
 
 import styles from "../../css/storage/storage.module.css";
 

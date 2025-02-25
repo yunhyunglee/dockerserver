@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import jaxios from '../../util/JwtUtil';
 import styles from '../../css/detail/albumDetail.module.css';
+import PlaylistSelectModal from './PlaylistSectionModal';
 
 const AlbumDetail = () => {
   const { albumId } = useParams();
@@ -18,6 +19,21 @@ const AlbumDetail = () => {
   const [nickname, setNickname] = useState('');
 
   const [isLiked, setIsLiked] = useState(false);
+
+
+
+  const [selectedMusicId, setSelectedMusicId] = useState(null);
+  const [showPlaylistModal, setShowPlaylistModal] = useState(false);
+  const [musicIdList, setMusicIdList] = useState([selectedMusicId]);
+  
+  
+
+    const handleAddToPlaylist = (musicId) => {
+      setSelectedMusicId(musicId);
+      setShowPlaylistModal(true);
+    };
+    
+
 
   
   const handleLike = () => {
@@ -90,6 +106,28 @@ const AlbumDetail = () => {
         console.error(err);
       });
   };
+
+
+  async function insertCart(mId) {
+    if (!loginUser) {
+      alert("로그인이 필요한 서비스입니다");
+      navigate("/login");
+    } else {
+      try {
+        const response = await jaxios.post("/api/cart/insertCart", {
+          memberId: loginUser.memberId,
+          musicIdList: [mId], // ★ 클릭된 곡의 ID만 전송
+        });
+        navigate("/storage/myMP3/pending");
+      } catch (error) {
+        console.error("장바구니 담기 실패", error);
+      }
+    }
+  }
+
+
+
+
 
  
   const handleTrackClick = (musicId) => {
@@ -180,13 +218,13 @@ const AlbumDetail = () => {
                   </button>
                   <button
                     className={styles.iconButton}
-                    onClick={() => alert(`플레이리스트 추가: ${track.title}`)}
+                    onClick={()=>{handleAddToPlaylist(track.musicId)}}
                   >
                     플리+
                   </button>
                   <button
                     className={styles.iconButton}
-                    onClick={() => alert(`MP3 구매: ${track.title}`)}
+                    onClick={() => insertCart(track.musicId)} 
                   >
                     MP3
                   </button>
@@ -227,6 +265,18 @@ const AlbumDetail = () => {
           )}
         </div>
       </div>
+
+
+            {/* 플레이리스트 선택 모달 */}
+            {showPlaylistModal && (
+                <PlaylistSelectModal
+                    musicIdList={[selectedMusicId]}
+                    onClose={() => setShowPlaylistModal(false)}
+                />
+                )}
+
+
+
     </div>
   );
 };
