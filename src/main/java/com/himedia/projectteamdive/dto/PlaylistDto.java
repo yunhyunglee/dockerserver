@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,6 +26,7 @@ public class PlaylistDto {
     private String memberId;
     private List<MusicDto> musicList;
     private boolean shayringyn;
+    private Timestamp indate;
 
     public PlaylistDto(Playlist playlist) {
         this.playlistId = playlist.getPlaylistId();
@@ -34,6 +36,7 @@ public class PlaylistDto {
         this.memberId = playlist.getMember().getMemberId();
         this.musicList = playlist.getMusicList().stream().map(MusicDto::new).collect(Collectors.toList());
         this.shayringyn = playlist.isShayringyn();
+        this.indate = playlist.getIndate();
     }
 
 }

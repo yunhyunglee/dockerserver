@@ -18,6 +18,6 @@ public class RecommendationScore {
     }
 
     public int getTotalLimit() {
-        return 20;
+        return 50;
     }
 }

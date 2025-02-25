@@ -261,6 +261,8 @@ public class MusicService {
     public void updatePlaylist(Playlist playlist) {
         Playlist p=pr.findByPlaylistId(playlist.getPlaylistId());
         p.setTitle(playlist.getTitle());
+        p.setContent(playlist.getContent());
+        p.setCoverImage(playlist.getCoverImage());
         p.setShayringyn(playlist.isShayringyn());
     }
 
@@ -433,6 +435,49 @@ public class MusicService {
         result.put("artist",artistList);
         result.put("album",albumList);
         result.put("music",musicList);
+        return result;
+    }
+
+
+    public HashMap<String, Object> getLatestMusicList() {
+        HashMap<String, Object> result = new HashMap<>();
+
+        List<Integer> latestMusicIds = mr.getLatestMusicIds(PageRequest.of(0, 6));
+
+        if (latestMusicIds == null || latestMusicIds.isEmpty()) {
+            result.put("latestMusicList", new ArrayList<>()); // 빈 리스트 반환
+            return result;
+        }else {
+            List<MusicDto> latestMusicList = mr.getMusicByIds(latestMusicIds);
+            result.put("latestMusicList", latestMusicList);
+        }
+        return result;
+    }
+
+    public HashMap<String, Object> getLatestAlbumList() {
+        HashMap<String, Object> result = new HashMap<>();
+        List <Integer> latestAlbumIds = ar.getLatestAlbumIds(PageRequest.of(0,6));
+        if(latestAlbumIds == null || latestAlbumIds.isEmpty()) {
+            result.put("latestAlbumList", new ArrayList<>());
+            return result;
+        }else{
+            List<AlbumDto> latestAlbumList = ar.getAlbumByIds(latestAlbumIds);
+            result.put("latestAlbumList", latestAlbumList);
+        }
+        return result;
+
+    }
+
+    public HashMap<String, Object> getLatestPlayList() {
+        HashMap<String, Object> result = new HashMap<>();
+        List <Integer> latestPlayListIds = pr.getLatestPlayListIds(PageRequest.of(0,6));
+        if(latestPlayListIds == null || latestPlayListIds.isEmpty()) {
+            result.put("latestPlayListList", new ArrayList<>());
+            return result;
+        }else{
+            List<PlaylistDto> latestPlayListofList = pr.getPlaylistByIds(latestPlayListIds);
+            result.put("latestPlayListList", latestPlayListofList);
+        }
         return result;
     }
 }

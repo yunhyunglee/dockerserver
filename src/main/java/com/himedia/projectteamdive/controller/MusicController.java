@@ -308,10 +308,28 @@ public class MusicController {
         HashMap<String,Object> map= ms.getTop3();
         return map;
     }
+    
+    // mainpage에서 최근 등록한 음악에 대한 정보 추출
+    @GetMapping("/latestMusicList")
+    public HashMap<String, Object> getLatestMusicList() {
+        HashMap<String, Object> map = ms.getLatestMusicList();
 
+        return map;
+    }
 
+    // mainpage에서 최근 등록된 앨범에 대한 정보 추출
+    @GetMapping("/latestAlbumList")
+    public HashMap<String, Object> getLatestAlbumList() {
+        HashMap<String, Object> map = ms.getLatestAlbumList();
+        return map;
+    }
 
-
+    // mainpage에서 최근 등록된 플레이 리스트에 대한 정보 추출
+    @GetMapping("/latestPlayList")
+    public HashMap<String, Object> getLatestPlayList() {
+        HashMap<String, Object> map = ms.getLatestPlayList();
+        return map;
+    }
 
 
 

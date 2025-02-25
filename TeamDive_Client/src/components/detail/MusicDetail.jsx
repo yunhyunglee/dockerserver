@@ -43,21 +43,6 @@ const MusicDetail = () => {
 
     useEffect(() => {
 
-        const sample = {
-            musicId: musicId,
-            title: "테스트제목",
-            artistName: "테스트가수",
-            image: "/public/image/album/album1.jpg",
-            playCount: 1234,
-            genre: "Pop",
-            lyrics:
-                " \n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. \n\nUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. \n\nExcepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-
-            albumId: 201,
-            albumtitle: "테스트앨범이름",
-            albumIndate: "2024-12-12"
-        };
-        setMusicDetail(sample);
 
         axios.get('/api/music/getMusic',{params:{musicId}})
         .then((result)=>{
@@ -120,7 +105,7 @@ const MusicDetail = () => {
         if (!content.trim()) {alert('댓글을 입력해주세요'); return; }
 
         setNickname(loginUser.nickname);
-       
+        fetchReply();
         jaxios.post('/api/community/insertReply', {nickname, content},{params:{pagetype:'MUSIC', entityId: musicId, memberId: loginUser.memberId}})
         .then((result)=>{
             if(result.data.msg === 'yes'){
