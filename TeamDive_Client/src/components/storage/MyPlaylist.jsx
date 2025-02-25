@@ -74,6 +74,12 @@ const MyPlaylist = () => {
 
  
   const handleAdd = async () => {
+
+    if (!playlistTitle.trim()) {
+      alert('제목을 입력해주세요.');
+      return ;
+    }
+
     try {
       
       const response = await jaxios.post("/api/music/insertPlaylist", {
@@ -126,7 +132,7 @@ const MyPlaylist = () => {
 
       } else {
 
-        setPlaylists([]);  // 빈 배열로 설정
+        setPlaylists([]);  
       }
     } catch (error) {
       console.error(" 플레이리스트 못 가져옴:", error);

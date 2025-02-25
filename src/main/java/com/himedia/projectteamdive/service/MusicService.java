@@ -261,6 +261,8 @@ public class MusicService {
     public void updatePlaylist(Playlist playlist) {
         Playlist p=pr.findByPlaylistId(playlist.getPlaylistId());
         p.setTitle(playlist.getTitle());
+        p.setContent(playlist.getContent());
+        p.setCoverImage(playlist.getCoverImage());
         p.setShayringyn(playlist.isShayringyn());
     }
 
@@ -274,10 +276,12 @@ public class MusicService {
 
     }
 
-    public void updatePlaylistDeleteMusic(int playlistId, int musicId) {
+    public void updatePlaylistDeleteMusic(int playlistId, List<Integer> musicIds) {
         Playlist playlist=pr.findByPlaylistId(playlistId);
-        Music music=mr.findByMusicId(musicId);
-        playlist.removeMusic(music);
+        for (int musicId : musicIds) {
+            Music music=mr.findByMusicId(musicId);
+            playlist.removeMusic(music);
+        }
     }
 
     public void updateAlbumReorder(List<Integer> musicIds, int albumId) {
@@ -318,17 +322,54 @@ public class MusicService {
         return result;
     }
 
+//    public HashMap<String, Object> getCurrentPlaylist(List<HashMap<String, Object>> playlist) {
+//        HashMap<String, Object> result=new HashMap<>();
+//        for (HashMap<String, Object> playlistMap : playlist) {
+//            Music music=mr.findByMusicId((int) playlistMap.get("musicId"));
+//            playlistMap.put("src",music.getBucketPath());
+//            playlistMap.put("title",music.getTitle());
+//            playlistMap.put("artist",music.getArtist().getArtistName());
+//        }
+//        result.put("playlist",playlist);
+//        return result;
+//    }
+
     public HashMap<String, Object> getCurrentPlaylist(List<HashMap<String, Object>> playlist) {
-        HashMap<String, Object> result=new HashMap<>();
+        HashMap<String, Object> result = new HashMap<>();
+
         for (HashMap<String, Object> playlistMap : playlist) {
-            Music music=mr.findByMusicId((int) playlistMap.get("musicId"));
-            playlistMap.put("src",music.getBucketPath());
-            playlistMap.put("title",music.getTitle());
-            playlistMap.put("artist",music.getArtist().getArtistName());
+            Object musicIdObj = playlistMap.get("musicId");
+            int musicId;
+
+            if (musicIdObj instanceof Integer) {
+                musicId = (Integer) musicIdObj;
+            } else if (musicIdObj instanceof String) {
+                musicId = Integer.parseInt((String) musicIdObj);
+            } else if (musicIdObj instanceof List) {
+                // List 형태로 들어오는 경우 처리 (ex. [123] 또는 ["123"])
+                List<?> musicIdList = (List<?>) musicIdObj;
+                if (!musicIdList.isEmpty() && musicIdList.get(0) instanceof Integer) {
+                    musicId = (Integer) musicIdList.get(0);
+                } else if (!musicIdList.isEmpty() && musicIdList.get(0) instanceof String) {
+                    musicId = Integer.parseInt((String) musicIdList.get(0));
+                } else {
+                    throw new IllegalArgumentException("Invalid musicId type in list: " + musicIdList);
+                }
+            } else {
+                throw new IllegalArgumentException("Invalid musicId type: " + musicIdObj);
+            }
+
+            // Music 객체 조회
+            Music music = mr.findByMusicId(musicId);
+            playlistMap.put("src", music.getBucketPath());
+            playlistMap.put("title", music.getTitle());
+            playlistMap.put("artist", music.getArtist().getArtistName());
         }
-        result.put("playlist",playlist);
+
+        result.put("playlist", playlist);
         return result;
     }
+
 
     public HashMap<String, Object> getMemberPlaylist(String memberId) {
         HashMap<String, Object> result=new HashMap<>();
@@ -395,5 +436,53 @@ public class MusicService {
         result.put("album",albumList);
         result.put("music",musicList);
         return result;
+    }
+
+
+    public HashMap<String, Object> getLatestMusicList() {
+        HashMap<String, Object> result = new HashMap<>();
+
+        List<Integer> latestMusicIds = mr.getLatestMusicIds(PageRequest.of(0, 6));
+
+        if (latestMusicIds == null || latestMusicIds.isEmpty()) {
+            result.put("latestMusicList", new ArrayList<>()); // 빈 리스트 반환
+            return result;
+        }else {
+            List<MusicDto> latestMusicList = mr.getMusicByIds(latestMusicIds);
+            result.put("latestMusicList", latestMusicList);
+        }
+        return result;
+    }
+
+    public HashMap<String, Object> getLatestAlbumList() {
+        HashMap<String, Object> result = new HashMap<>();
+        List <Integer> latestAlbumIds = ar.getLatestAlbumIds(PageRequest.of(0,6));
+        if(latestAlbumIds == null || latestAlbumIds.isEmpty()) {
+            result.put("latestAlbumList", new ArrayList<>());
+            return result;
+        }else{
+            List<AlbumDto> latestAlbumList = ar.getAlbumByIds(latestAlbumIds);
+            result.put("latestAlbumList", latestAlbumList);
+        }
+        return result;
+
+    }
+
+    public HashMap<String, Object> getLatestPlayList() {
+        HashMap<String, Object> result = new HashMap<>();
+        List <Integer> latestPlayListIds = pr.getLatestPlayListIds(PageRequest.of(0,6));
+        if(latestPlayListIds == null || latestPlayListIds.isEmpty()) {
+            result.put("latestPlayListList", new ArrayList<>());
+            return result;
+        }else{
+            List<PlaylistDto> latestPlayListofList = pr.getPlaylistByIds(latestPlayListIds);
+            result.put("latestPlayListList", latestPlayListofList);
+        }
+        return result;
+    }
+
+    public List<Member> getSearchMember(String memberId) {
+        List<Member> list = memr.findByMemberIdContainingIgnoreCase(memberId);
+        return list;
     }
 }

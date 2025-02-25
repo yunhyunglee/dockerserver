@@ -1,19 +1,31 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styles from '../../css/header.module.css';
 import React, { useContext, useState } from 'react';
 import Notice from './mainpage/Notice';
 import MoodDropdown from './MoodDropdown';
 import { useSelector } from 'react-redux';
+import axios from 'axios';
 
 function MainHeader({ toggleMenu,onMoodSelect  }) {
-  // 검색어 상태
+  
   const [searchQuery, setSearchQuery] = useState('');
   const loginUser = useSelector(state=>state.user);
-  // 검색 제출
+  const navigate = useNavigate();
+
+  
   const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    console.log('검색어:', searchQuery);
     
+    e.preventDefault();
+    
+    if(searchQuery === "") {
+      alert('검색어를 입력해주세요');
+      return ;
+    }
+
+    navigate(`/search?query=${encodeURIComponent(searchQuery)}`);
+    setSearchQuery('');
+
+
   };
   const [menuOpen, setMenuOpen] = useState(false);
 

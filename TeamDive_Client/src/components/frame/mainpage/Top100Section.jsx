@@ -2,8 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import styles from '../../../css/mainPage/top100Section.module.css';
-import { PlayerContext } from '../../../PlayerContext';
-
+import { PlayerContext } from '../../../context/PlayerContext';
 const Top100Section = () => {
   const navigate = useNavigate();
   const [monthlyCharts, setMonthlyCharts] = useState([]);
@@ -22,10 +21,21 @@ const Top100Section = () => {
       });
   }, []);
 
-  const {setAddPlaylist}=useContext(PlayerContext);
-  const handlePlay = (musicTitle) => {
-    alert(`재생: ${musicTitle}`);
-    setAddPlaylist(musicTitle);
+  const {setAddPlaylist,setAddAndPlay}=useContext(PlayerContext);
+  //재생목록에 추가후 즉시재생 
+  //musicId 또는 musicId 배열
+  const handlePlay = (musicId) => {
+    const musicArray = Array.isArray(musicId) 
+  ? musicId.map(num => ({ musicId: num })) 
+  : [{ musicId: musicId }];
+    setAddAndPlay(musicArray);
+  };
+  //재생목록에 추가만
+  const handlePlay2 = (musicId) => {
+    const musicArray = Array.isArray(musicId) 
+  ? musicId.map(num => ({ musicId: num })) 
+  : [{ musicId: musicId }];
+    setAddPlaylist(musicArray);
   };
 
 

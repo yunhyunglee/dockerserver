@@ -245,6 +245,21 @@
   margin-top: 15px;
 }
 
+.addButton {
+  background-color: #333;
+  color: #fff;
+  font-size: 13px;
+  height: 33px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 23px;
+  width: 76px;
+}
+.addButton:hover {
+  background-color: #444;
+}
 
 .playButton {
   background-color: #e00808;
@@ -272,7 +287,7 @@
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  margin-top: 16px;
+  margin-top: 23px;
   width: 58px;
 }
 .purchaseButton:hover {

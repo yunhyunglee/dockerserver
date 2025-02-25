@@ -108,6 +108,7 @@
   color: #ccc;
 }
 
+.moreButtonRecommend,
 .moreButtonTop100,
 .moreButtonRecentMusic {
   background-color: transparent;
@@ -127,10 +128,11 @@
 }
 
 .section h2 {
-  font-size: 1.5rem;
+  font-family: 'Ownglyph_ParkDaHyun';
+  font-size: 28px;
   margin-bottom: 10px;
-  color: #ff4081;
-  border-bottom: 2px solid #ff4081;
+  color: whitesmoke;
+  border-bottom: 2px solid #333;
   padding-bottom: 5px;
 }
 
@@ -201,23 +203,80 @@
 .songCard {
   background-color: #333;
   margin-bottom: 8px;
-  padding: 10px;
-  border-radius: 4px;
+  padding: 12px;
+  border-radius: 8px;
   color: #fff;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, transform 0.2s;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px; /* 요소 간 간격 */
+  text-align: left;
+  width: 200px; /* 카드 크기 고정 */
 }
+
+/* 호버 효과 */
 .songCard:hover {
   background-color: #444;
+  transform: scale(1.05);
+}
+
+/* 전체 목록 */
+.songObject {
+  display: grid;
+  grid-template-rows: repeat(5, auto); /*세로*/
+  grid-template-columns: repeat(3, 2fr); /*가로*/
+}
+
+/* Link 스타일 */
+.songObject a {
+  text-decoration: none; /* 링크 밑줄 제거 */
+  color: inherit;
+  display: flex;
+}
+
+/* 이미지 스타일 */
+.songTitle img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+/* 텍스트 정보 정렬 */
+.titleArea {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .songTitle {
-  font-weight: bold;
-  margin: 0;
+  font-size: 0.9rem;
+    font-weight: bold;
+    margin: 0;
+    cursor: pointer;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
+
 .songArtist {
-  margin: 4px 0 0;
-  color: #ccc;
+  font-size: 0.8rem;
+    color: #ccc;
+    margin: 0;
 }
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .songObject {
+    grid-template-columns: repeat(1, 1fr);
+      grid-template-rows: repeat(15, auto);
+      grid-auto-flow: row;
+  }
+}
+
 
 
 

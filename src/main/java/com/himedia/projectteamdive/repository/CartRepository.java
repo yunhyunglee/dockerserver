@@ -11,4 +11,6 @@ import java.util.Optional;
 public interface CartRepository extends JpaRepository<Cart, Integer> {
     List<Cart> findByMember(Member member);
     Optional<Cart> findByMemberAndMusic(Member member, Music music);
+    void deleteByCartId(int cartId);
+    Cart findByCartId(Integer cartId);
 }

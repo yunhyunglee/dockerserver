@@ -24,11 +24,11 @@ public class Likes {
     @Column(name = "like_id")
     private int likeId;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "member_id")
     Member member;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "allpage_id")
     Allpage allpage;
 

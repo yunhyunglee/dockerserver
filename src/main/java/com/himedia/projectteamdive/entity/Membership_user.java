@@ -27,6 +27,7 @@ public class Membership_user {
     private int downloadCount;
     private Timestamp startDate;
     private Timestamp endDate;
+    private Boolean active = true;
 
     @Column(name = "membership_name")
     private String membershipName; // Membership 이름 저장
@@ -43,6 +44,7 @@ public class Membership_user {
         this.downloadCount = membership.getDownloadCount();
         this.startDate = Timestamp.valueOf(LocalDateTime.now());
         this.endDate = Timestamp.valueOf(LocalDateTime.now().plusMonths(membership.getPeriod()));
+        this.active = true;
     }
 
     public Membership_user(Member member, Gift gift) {
@@ -53,6 +55,7 @@ public class Membership_user {
         this.downloadCount = gift.getMembershipDownloadCount();
         this.startDate = Timestamp.valueOf(LocalDateTime.now());
         this.endDate = Timestamp.valueOf(LocalDateTime.now().plusMonths(gift.getMembershipPeriod()));
+        this.active = true;
     }
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})

@@ -20,7 +20,7 @@ public interface MemberRecentMusicsRepository extends JpaRepository<MemberRecent
     List<MemberRecentMusicsDto> findByMember_MemberId(String memberId);
 
     // 유저의 최근 플레이 리스트에서 음원 추천해주는 쿼리
-    @Query("SELECT mr.music FROM MemberRecentMusics mr " +
+    @Query("SELECT mr.music.musicId FROM MemberRecentMusics mr " +
             "WHERE mr.member.memberId = :memberId " +
             "ORDER BY mr.id DESC LIMIT :limit")
     List<Integer> getRecentMusicIdsByMemberId(@Param("memberId") String memberId,

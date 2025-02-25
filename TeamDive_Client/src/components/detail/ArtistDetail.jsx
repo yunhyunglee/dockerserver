@@ -1,27 +1,55 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import jaxios from "../../util/JwtUtil"; 
+import jaxios from "../../util/JwtUtil";
 import { useSelector } from "react-redux"; 
 import styles from "../../css/detail/artistDetail.module.css";
+
+import PlaylistSelectModal from "./PlaylistSectionModal";
 
 const ArtistDetail = () => {
   const { artistId } = useParams();
   const navigate = useNavigate();
 
   const [isLiked, setIsLiked] = useState(false);
-  const handleLike = () => {setIsLiked((prev) => !prev)};
+  
 
   const loginUser = useSelector((state) => state.user);
 
   const [artistDetail, setArtistDetail] = useState(null);
 
-  
+
   const [artistReplyList, setArtistReplyList] = useState([]);
   const [content, setContent] = useState("");
   const [nickname, setNickname] = useState("");
 
+  const [selectedMusicId, setSelectedMusicId] = useState(null);
+  const [showPlaylistModal, setShowPlaylistModal] = useState(false);
+  const [musicIdList, setMusicIdList] = useState([selectedMusicId]);
+  
+    const handleAddToPlaylist = (musicId) => {
+      setSelectedMusicId(musicId);
+      setShowPlaylistModal(true);
+    };
+    
+    const handleLike = () => {
+      jaxios.post('/api/community/insertLikes',null,{params:{entityId: artistId, pagetype: 'ARTIST', memberId: loginUser.memberId}})
+      .then((result)=>{
+          console.log(result.data.msg)
+          setIsLiked(prevLike => !prevLike);
+      }).catch((err)=>{console.error(err);})
+  }
+
+
+
+
   useEffect(() => {
+    jaxios.get('/api/community/getLikes',{params:{pagetype: 'ARTIST',memberId: loginUser.memberId}})
+        .then((result)=>{
+            if(result.data.LikesList.some(likes => likes.allpage.entityId == artistId)){
+                setIsLiked(true);
+            }
+        }).catch((err)=>{console.error(err);})
     
     axios
       .get("/api/music/getArtist", { params: { artistId } })
@@ -34,6 +62,26 @@ const ArtistDetail = () => {
     
     fetchReply();
   }, [artistId]);
+
+  async function insertCart(mId) {
+    if (!loginUser) {
+      alert("로그인이 필요한 서비스입니다");
+      navigate("/login");
+    } else {
+      try {
+        const response = await jaxios.post("/api/cart/insertCart", {
+          memberId: loginUser.memberId,
+          musicIdList: [mId], // ★ 클릭된 곡의 ID만 전송
+        });
+        navigate("/storage/myMP3/pending");
+      } catch (error) {
+        console.error("장바구니 담기 실패", error);
+      }
+    }
+  }
+  
+
+
 
  
   const fetchReply = () => {
@@ -159,13 +207,14 @@ const ArtistDetail = () => {
                     </button>
                     <button
                       className={styles.iconButton}
-                      onClick={() => alert(`플레이리스트 추가: ${music.title}`)}
+                      onClick={() => handleAddToPlaylist(music.musicId)}
                     >
                       플리+
                     </button>
                     <button
                       className={styles.iconButton}
-                      onClick={() => alert(`MP3 구매: ${music.title}`)}
+                      onClick={() => insertCart(music.musicId)} 
+
                     >
                       MP3
                     </button>
@@ -241,6 +290,14 @@ const ArtistDetail = () => {
           )}
         </div>
       </div>
+
+{showPlaylistModal && (
+  <PlaylistSelectModal
+    musicIdList={[selectedMusicId]}  
+    onClose={() => setShowPlaylistModal(false)}
+  />
+)}
+
     </div>
   );
 };

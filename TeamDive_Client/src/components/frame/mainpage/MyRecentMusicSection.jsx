@@ -45,7 +45,7 @@ const MyRecentMusicSection = () => {
         <h2><span style={{fontSize: '30px'}}>{loginUser.nickname}</span> 님의 자주 듣는 노래</h2>
         <div className={styles.recentMusicGrid}>
           {displayItems.map((item, index) => (
-            <div key={item.musicId} className={styles.recentMusicCard} style={{backgroundImage: `url(${item.image})`}}
+            <div key={index} className={styles.recentMusicCard} style={{backgroundImage: `url(${item.image})`}}
             onClick={()=>{navigate(`/music/${item.musicId}`)}}
             >
               <div className={styles.recentMusicInfo}>

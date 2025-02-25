@@ -20,8 +20,9 @@ import org.hibernate.annotations.OnDeleteAction;
 @Table(name = "purchased_music")
 public class PurchasedMusic {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "purchased_music_id")
-    private String PurchasedMusicId;
+    private int PurchasedMusicId;
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "member_id")

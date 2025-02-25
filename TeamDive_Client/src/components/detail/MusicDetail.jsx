@@ -3,6 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import styles from '../../css/detail/musicDetail.module.css';
 
+import PlaylistSelectModal from './PlaylistSectionModal';
+
 import axios from 'axios';
 import jaxios from '../../util/JwtUtil';
 
@@ -25,11 +27,32 @@ const MusicDetail = () => {
 
 
     const handleLike = () => {
-        setLike(prevLike => !prevLike);
+        jaxios.post('/api/community/insertLikes',null,{params:{entityId: musicId, pagetype: 'MUSIC', memberId: loginUser.memberId}})
+        .then((result)=>{
+            console.log(result.data.msg)
+            setLike(prevLike => !prevLike);
+        }).catch((err)=>{console.error(err);})
     }
+
+    // 플리 추가 모달
+    const [showPlaylistModal, setShowPlaylistModal] = useState(false);
+
+    const handleAddToPlaylist = () => {
+      
+      setShowPlaylistModal(true);
+    };
+    
+    
 
 
     useEffect(() => {
+
+        jaxios.get('/api/community/getLikes',{params:{pagetype: 'MUSIC',memberId: loginUser.memberId}})
+        .then((result)=>{
+            if(result.data.LikesList.some(likes => likes.allpage.entityId == musicId)){
+                setLike(true);
+            }
+        }).catch((err)=>{console.error(err);})
 
         const sample = {
             musicId: musicId,
@@ -108,7 +131,7 @@ const MusicDetail = () => {
         if (!content.trim()) {alert('댓글을 입력해주세요'); return; }
 
         setNickname(loginUser.nickname);
-       
+        fetchReply();
         jaxios.post('/api/community/insertReply', {nickname, content},{params:{pagetype:'MUSIC', entityId: musicId, memberId: loginUser.memberId}})
         .then((result)=>{
             if(result.data.msg === 'yes'){
@@ -148,8 +171,8 @@ const MusicDetail = () => {
           
                     <div className={styles.buttonGroup}>
                         <button className={styles.playButton}>▶ 재생</button>
+                        <button className={styles.addButton} onClick={handleAddToPlaylist}>플리 추가</button>
                         <button className={styles.purchaseButton} onClick={insertCart}>구매</button>
-
                     </div>
                 </div>
             </div>
@@ -218,6 +241,18 @@ const MusicDetail = () => {
                     }
                 </div>
             </div>
+
+            {/* 플레이리스트 선택 모달 */}
+            {showPlaylistModal && (
+                <PlaylistSelectModal
+                    musicIdList={[musicId]}
+                    onClose={() => setShowPlaylistModal(false)}
+                />
+                )}
+
+
+
+
         </div>
     );
 };

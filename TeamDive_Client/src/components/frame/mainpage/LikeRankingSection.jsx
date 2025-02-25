@@ -13,65 +13,7 @@ const LikeRankingSection = () => {
 
   useEffect(() => {
 
-    // const dummyArtists = [
-    //   {
-    //     id: 1,
-    //     name: "아이유 (IU)",
-    //     image: "/public/image/artist/iu.jpg",
-    //   },
-    //   {
-    //     id: 2,
-    //     name: "BTS (방탄소년단)",
-    //     image: "/public/image/artist/bts.jpg",
-    //   },
-    //   {
-    //     id: 3,
-    //     name: "NewJeans",
-    //     image: "/public/image/artist/newjeans.jpg",
-    //   },
-    // ];
-    // setArtistRanking(dummyArtists);
-
-    // const dummyAlbums = [
-    //   {
-    //     id: 1,
-    //     title: "Love Poem",
-    //     image: "/public/image/album/lovepoem.jpg",
-    //   },
-    //   {
-    //     id: 2,
-    //     title: "MAP OF THE SOUL : 7",
-    //     image: "/public/image/album/mots7.jpg",
-    //   },
-    //   {
-    //     id: 3,
-    //     title: "OMG",
-    //     image: "/public/image/album/omg.jpg",
-    //   },
-    // ];
-    // setAlbumRanking(dummyAlbums);
-
-    // const dummyMusic = [
-    //   {
-    //     id: 1,
-    //     title: "Blueming",
-    //     artistName: "아이유 (IU)",
-    //     image: "/public/image/music/blueming.jpg",
-    //   },
-    //   {
-    //     id: 2,
-    //     title: "Dynamite",
-    //     artistName: "BTS",
-    //     image: "/public/image/music/dynamite.jpg",
-    //   },
-    //   {
-    //     id: 3,
-    //     title: "Hype Boy",
-    //     artistName: "NewJeans",
-    //     image: "/public/image/music/hypeboy.jpg",
-    //   },
-    // ];
-    // setMusicRanking(dummyMusic);
+   
 
     axios.get('/api/music/getTop3')
     .then((result)=>{
@@ -82,19 +24,7 @@ const LikeRankingSection = () => {
     }).catch((err)=>{console.error(err)})    
 
 
-    /*
-    axios.get('/api/community/getLikes')
-      .then(res => setArtistRanking(res.data.slice(0, 3)))
-      .catch(err => console.error(err));
-
-    axios.get('/api/community/getLikes')
-      .then(res => setAlbumRanking(res.data.slice(0, 3)))
-      .catch(err => console.error(err));
-
-    axios.get('/api/community/getLikes')
-      .then(res => setMusicRanking(res.data.slice(0, 3)))
-      .catch(err => console.error(err));
-    */
+  
   }, []);
 
   const getActiveData = () => {
@@ -106,14 +36,14 @@ const LikeRankingSection = () => {
     }
   };
 
-  // 클릭 시 페이지 이동
+
   const handleItemClick = (item) => {
     if (activeTab === 'artist') {
-      window.location.href = `/artist/${item.id}`;
+      window.location.href = `/artist/${item.artistId}`;
     } else if (activeTab === 'album') {
-      window.location.href = `/album/${item.id}`;
+      window.location.href = `/album/${item.albumId}`;
     } else if (activeTab === 'music') {
-      window.location.href = `/music/${item.id}`;
+      window.location.href = `/music/${item.musicId}`;
     }
   };
 

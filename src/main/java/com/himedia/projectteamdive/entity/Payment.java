@@ -25,7 +25,7 @@ public class Payment {
     private String orderName; // 구매 상품 이름
     @Column(nullable = false)
     private Integer amount; // 결제 금액
-    @Column(columnDefinition="DATETIME default now()", name = "created_at")
+    @Column(name = "created_at")
     private Timestamp createdAt; // 생성 시간
     @PrePersist
     public void prePersist() {
@@ -45,8 +45,14 @@ public class Payment {
     private String cancelReason; // 취소 이유
     @Column(name = "gift_to_id")
     private String giftToId; // 선물 받는 유저
+    @Column(name = "pay_count")
+    private int payCount; // 돈주고 구매한 곡 수
+    @Column(name = "membership_count")
+    private int membershipCount; // 멤버십에서 차감된 곡 수
+    @Column(name = "membership_user_id")
+    private int membershipUserId; // 사용한 멤버십 id
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "member_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member; // 결제 유저 정보

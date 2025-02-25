@@ -1,5 +1,5 @@
 
-import { use, useState } from 'react';
+import { useState } from 'react';
 import './App.css'
 import { MainHeader } from './components/frame/Header';
 import { Home } from './components/frame/Home';
@@ -10,7 +10,7 @@ import Footer from './components/frame/Footer';
 import ScrollToTop from './components/ScrollToTop';
 
 import { ThemeContext } from './context/ThemeContext';
-import { PlayerProvider } from './PlayerContext';
+import { PlayerProvider } from './context/PlayerContext';
 
 function App() {
 
@@ -53,7 +53,7 @@ function App() {
                     {chatOpen && <ChatModal onClose={closeChat} />}
 
                     <ScrollToTop />
-                    <Home menubar={menubar} mood={mood}></Home>
+                    <Home menubar={menubar} mood={mood} setMood={setMood} />
                     <Footer />
                     <FooterPlayer />
                 </PlayerProvider>

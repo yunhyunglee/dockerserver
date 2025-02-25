@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import jaxios from '../../util/JwtUtil';
 
@@ -9,9 +9,9 @@ const GiftMembership = ({ membership, giftToId, setGiftToId, onProceedToPayment 
 
     async function checkValid(){
         if(!giftToId){
-            alert('받는 사람의 ID를 입력해주세요')
+            alert('받는 사람의 ID를 입력해주세요');
         }else if(giftToId === loginUser.memberId){
-            alert('자기 자신에게 선물할 수 없습니다')
+            alert('자기 자신에게 선물할 수 없습니다');
         }else{
             try{
                 let respone = await jaxios.get('/api/member/getMember', { params: {giftToId} })
@@ -22,10 +22,10 @@ const GiftMembership = ({ membership, giftToId, setGiftToId, onProceedToPayment 
                         setGiftToId(giftToId);
                         onProceedToPayment();
                     }else{
-                        alert('멤버십을 이용중인 사용자에게는 선물할 수 없습니다')
+                        alert('멤버십을 이용중인 사용자에게는 선물할 수 없습니다');
                     }
                 }else{
-                    alert('받는 사람의 ID 가 존재하지 않습니다')
+                    alert('받는 사람의 ID 가 존재하지 않습니다');
                 }
             }catch(error){ console.error('선물하기 오류', error); }
         }
@@ -56,7 +56,7 @@ const GiftMembership = ({ membership, giftToId, setGiftToId, onProceedToPayment 
                     <div className={giftStyle.price}>{membership.price}원 (VAT 포함)</div>
                     <div className={giftStyle.period}>이용기한 : {membership.period}개월</div>
                 </div>
-            </div>
+            </div> 
 
             <button
                 className={giftStyle.paymentButton}

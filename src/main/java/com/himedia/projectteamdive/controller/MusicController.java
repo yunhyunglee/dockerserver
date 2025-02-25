@@ -7,15 +7,12 @@ import com.himedia.projectteamdive.entity.*;
 import com.himedia.projectteamdive.service.MusicService;
 import com.himedia.projectteamdive.service.S3Service;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/music")
@@ -178,7 +175,7 @@ public class MusicController {
     }
 
     @PostMapping("/updatePlaylistDeleteMusic")
-    public HashMap<String,Object> updatePlaylistDeleteMusic(@RequestParam("playlistId")int playlistId, @RequestParam("musicId")int musicId) {
+    public HashMap<String,Object> updatePlaylistDeleteMusic(@RequestParam("playlistId")int playlistId, @RequestBody List<Integer> musicId) {
         HashMap<String, Object> map = new HashMap<>();
         ms.updatePlaylistDeleteMusic(playlistId,musicId);
         map.put("msg","yes");
@@ -311,11 +308,36 @@ public class MusicController {
         HashMap<String,Object> map= ms.getTop3();
         return map;
     }
+    
+    // mainpage에서 최근 등록한 음악에 대한 정보 추출
+    @GetMapping("/latestMusicList")
+    public HashMap<String, Object> getLatestMusicList() {
+        HashMap<String, Object> map = ms.getLatestMusicList();
 
+        return map;
+    }
 
+    // mainpage에서 최근 등록된 앨범에 대한 정보 추출
+    @GetMapping("/latestAlbumList")
+    public HashMap<String, Object> getLatestAlbumList() {
+        HashMap<String, Object> map = ms.getLatestAlbumList();
+        return map;
+    }
 
+    // mainpage에서 최근 등록된 플레이 리스트에 대한 정보 추출
+    @GetMapping("/latestPlayList")
+    public HashMap<String, Object> getLatestPlayList() {
+        HashMap<String, Object> map = ms.getLatestPlayList();
+        return map;
+    }
 
-
+    @GetMapping("/searchMember")
+    public HashMap<String, Object> getSearchMember(@RequestParam("memberId")String memberId) {
+        HashMap<String,Object> map=new HashMap<>();
+        List<Member> members=ms.getSearchMember(memberId);
+        map.put("member",members);
+        return map;
+    }
 
 
 }
