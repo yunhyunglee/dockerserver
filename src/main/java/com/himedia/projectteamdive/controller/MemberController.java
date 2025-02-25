@@ -239,7 +239,7 @@ public class MemberController {
         if( member == null ){
             member = new Member();
             member.setMemberId( kakaoProfile.getId() );
-            member.setName( pf.getNickname() );
+            member.setNickname( pf.getNickname() );
             member.setPassword( "kakao" );
             member.setProvider( "kakao" );
             ms.insertMember(member);
