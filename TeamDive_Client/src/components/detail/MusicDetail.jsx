@@ -120,7 +120,7 @@ const MusicDetail = () => {
         if (!content.trim()) {alert('댓글을 입력해주세요'); return; }
 
         setNickname(loginUser.nickname);
-       
+        fetchReply();
         jaxios.post('/api/community/insertReply', {nickname, content},{params:{pagetype:'MUSIC', entityId: musicId, memberId: loginUser.memberId}})
         .then((result)=>{
             if(result.data.msg === 'yes'){

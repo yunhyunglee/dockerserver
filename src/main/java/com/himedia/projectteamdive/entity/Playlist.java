@@ -6,6 +6,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +42,9 @@ public class Playlist {
     @ColumnDefault("false")
     private boolean shayringyn;
 
+    @Column(columnDefinition="DATETIME default now()")
+    private Timestamp indate;
+
     public void addMusic(Music music) {
         if (!this.musicList.contains(music)) {
             this.musicList.add(music);
@@ -52,7 +56,7 @@ public class Playlist {
             this.musicList.remove(music);
             music.getPlaylists().remove(this);
         }
-
     }
+
 
 }
