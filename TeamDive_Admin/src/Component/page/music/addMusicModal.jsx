@@ -30,7 +30,7 @@ const AddMusicModal = ({ onClose, onAddMusic, albumId, artistId }) => {
         const formData = new FormData();
         formData.append("music", file);
         try {
-            const response = await axios.post("/api/music/musicUpload", formData, {
+            const response = await jaxios.post("/api/music/musicUpload", formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
             if (response.data.music) {

@@ -55,7 +55,7 @@ const UpdateArtistModal = ({ onClose, artist, getArtistList }) => {
         if (!updateArtist.image) {return alert("가수 이미지를 선택해주세요"); }
 
         try{
-            const response = await axios.post("/api/music/updateArtist" , {
+            const response = await jaxios.post("/api/music/updateArtist" , {
                 artistId: artist.artistId,
                 artistName: updateArtist.artistName,
                 country: updateArtist.country,
@@ -99,7 +99,7 @@ const UpdateArtistModal = ({ onClose, artist, getArtistList }) => {
                         <div className='inputdiv'>
                             <input type="text" name="artistName" value={updateArtist.artistName} onChange={onChange} placeholder="가수 이름" required />
                             <input type="text" name="country" value={updateArtist.country} onChange={onChange} placeholder="국적" required />
-                            <input type="date" name="debut" value={updateArtist.debut} onChange={onChange} required />                  
+                            <input type="date" name="debut" value={updateArtist.debut || ""} onChange={onChange} required />                  
                         </div>        
                     </div>
 

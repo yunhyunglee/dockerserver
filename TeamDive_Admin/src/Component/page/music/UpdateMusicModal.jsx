@@ -36,7 +36,7 @@ const UpdateMusicModal = ({ onClose, music, updateMusicList }) => {
         const formData = new FormData();
         formData.append("music", file);
         try {
-            const response = await axios.post("/api/music/musicUpload", formData, {
+            const response = await jaxios.post("/api/music/musicUpload", formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
             if (response.data.music) {
@@ -54,7 +54,7 @@ const UpdateMusicModal = ({ onClose, music, updateMusicList }) => {
         if (!updatedSong.bucketPath) return alert("음원 파일을 업로드해주세요.");
 
         try {
-            const response = await axios.post("/api/music/updateMusic", {
+            const response = await jaxios.post("/api/music/updateMusic", {
                 musicId: music.musicId,
                 title: updatedSong.title,
                 genre: updatedSong.genre,

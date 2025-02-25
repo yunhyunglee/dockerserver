@@ -6,7 +6,7 @@ import { format } from "date-fns";
 import "../../../style/addAlbum.scss";
 import jaxios from '../../../util/JwtUtil';
 
-const UpdateAlbum = ( {getAlbumList}) => {
+const UpdateAlbum = ( ) => {
     const navigate = useNavigate();
     const [showModal, setShowModal] = useState(false);
     const [artist, setArtist] = useState([]);
@@ -41,7 +41,7 @@ const UpdateAlbum = ( {getAlbumList}) => {
     
         const getAlbum = async () => {
             try {
-                const response = await axios.get(`/api/music/getAlbum?albumId=${albumId}`);
+                const response = await jaxios.get(`/api/music/getAlbum?albumId=${albumId}`);
                 const albumData = response.data.album;
                 if (albumData) {
                     setUpdateAlbum({
@@ -51,7 +51,7 @@ const UpdateAlbum = ( {getAlbumList}) => {
                         artistId: albumData.artistId ? String(albumData.artistId) : "",
                         artistName: albumData.artistName || "",
                         musicList: albumData.musicList || [],
-                        indate: albumData.indate || format(new Date(), "yyyy-MM-dd"),
+                        indate: albumData.indate ? albumData.indate.split("T")[0] : format(new Date(), "yyyy-MM-dd"),
                         trackNumber: albumData.trackNumber || 0,
                     });
                     setSearchArtist(albumData.artistName || ""); // 가수 이름 초기 설정
@@ -76,7 +76,7 @@ const UpdateAlbum = ( {getAlbumList}) => {
     useEffect(()=> {
         const getArtistList = async () => {
             try{
-                const response = await axios.get("/api/music/getAllArtist");
+                const response = await jaxios.get("/api/music/getAllArtist");
                 setArtist(response.data.artist || response.data.artists || []);
             }catch(error){
                 console.error("아티스트 목록을 불러오는 중 애러");
@@ -122,7 +122,10 @@ const UpdateAlbum = ( {getAlbumList}) => {
 
     /**입력값 변경 시 updateAlbum 업데이트 */
     const onChange = (e) => {
-        setUpdateAlbum({ ...updateAlbum, [e.target.name]: e.target.value });
+        setUpdateAlbum((prev) => ({
+            ...prev,
+            [e.target.name]: e.target.value || "", // ✅ undefined 방지
+        }));
     };
 
 
@@ -133,7 +136,7 @@ const UpdateAlbum = ( {getAlbumList}) => {
         const formData = new FormData();
         formData.append("image", file);
         try {
-            const response = await axios.post("/api/music/imageUpload", formData, {
+            const response = await jaxios.post("/api/music/imageUpload", formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
             setUpdateAlbum((prev) => ({ ...prev, image: response.data.image }));
@@ -179,34 +182,55 @@ const UpdateAlbum = ( {getAlbumList}) => {
 
     /** 앨범 정보 업데이트 */
     const onSubmit = async () => {
+        if (!updateAlbum.albumId) return alert("잘못된 접근입니다.");
         if (!updateAlbum.title) return alert("앨범 제목을 입력하세요");
         if (!updateAlbum.artistId) return alert("가수를 선택하세요");
         if (updateAlbum.musicList.length === 0) return alert("노래를 추가하세요");
 
+        if (!updateAlbum.musicList.some(music => music.titleMusic)) {
+            setUpdateAlbum(prev => {
+                const updatedMusicList = prev.musicList.map((music, index) => ({
+                    ...music,
+                    titleMusic: index === 0, // 첫 번째 곡을 타이틀 곡으로 설정
+                }));
+                return { ...prev, musicList: updatedMusicList };
+            });
+        }
+
+
+
         try {
-            let albumId = updateAlbum.albumId;
-            if (!albumId) {
-                const albumResponse = await axios.post("/api/music/updateAlbum", {
-                    title: updateAlbum.title,
-                    artist: { artistId: Number(updateAlbum.artistId) }, // artistId 변환
-                    image: updateAlbum.image,
+            // 기존 앨범 정보 수정
+            await jaxios.post("/api/music/updateAlbum", {
+                ...updateAlbum,
+                artist: { artistId: Number(updateAlbum.artistId) },
+            });
+
+            for (const deletedMusicId of updateAlbum.deletedMusicList || []) {
+                await jaxios.delete(`/api/music/deleteMusic`, {
+                    params: { musicId: deletedMusicId },
                 });
-                if(albumResponse.data.album ==="yes") {
-                    albumId = albumResponse.data.album.albumId;
-                    setUpdateAlbum((prev) => ({ ...prev, albumId }));
-                } else{
-                    return alert("앨범 등록 실패");
-                }
             }
 
             for (const music of updateAlbum.musicList) {
-                await axios.post("/api/music/insertMusic", {
-                    ...music,
-                    album: { albumId },
-                    artist: { artistId: Number(updateAlbum.artistId) }, // artistId 변환
-                });
+                if (music.musicId) {
+                    // 기존 음악 수정
+                    await jaxios.post("/api/music/updateMusic", {
+                        ...music,
+                        album: { albumId: updateAlbum.albumId }, // 기존 앨범 ID 유지
+                        artist: { artistId: Number(updateAlbum.artistId) },
+                    });
+                } else {
+                    // 신규 음악 추가
+                    await jaxios.post("/api/music/insertMusic", {
+                        ...music,
+                        album: { albumId: updateAlbum.albumId },
+                        artist: { artistId: Number(updateAlbum.artistId) },
+                    });
+                }
             }
-            alert("음원이 등록되었습니다!");
+    
+            alert("앨범이 수정되었습니다!");
             navigate("/musicController/album");
         } catch (error) {
             console.error("음원 등록 실패:", error);
@@ -214,57 +238,17 @@ const UpdateAlbum = ( {getAlbumList}) => {
         }
     };
 
-
-
-
-    const deleteMusic = async (music) => {
+    const deleteMusic = (musicId) => {
         if (!window.confirm("정말로 삭제하시겠습니까?")) return;
-
-        try{
-            const response = await axios.post("/api/music/deleteMusic", music);
-
-            if (response.data.msg === "yes") {
-                alert("음악이 삭제되었습니다!");
-
-                setUpdateAlbum((prev) => {
-                    // 1️⃣ 삭제된 곡을 제외한 리스트 필터링
-                    const filteredMusicList = prev.musicList.filter((m) => m.musicId !== music.musicId);
     
-                    // 2️⃣ 트랙 번호를 1부터 다시 부여
-                    const reindexedMusicList = filteredMusicList.map((m, index) => ({
-                        ...m,
-                        trackNumber: index + 1,
-                    }));
-    
-                    // 3️⃣ 첫 번째 곡을 타이틀 곡으로 설정 (리스트가 비어있지 않을 경우)
-                    if (reindexedMusicList.length > 0) {
-                        reindexedMusicList[0].titleMusic = true;
-                    }
-                    console.log("🛠 삭제 후 갱신된 musicList:", reindexedMusicList);
-    
-                    // ✅ 최종적으로 한 번만 상태 업데이트
-                    return {
-                        ...prev,
-                        musicList: reindexedMusicList,
-                    };
-               
-            });
-            
-            setTimeout(() => {
-                getAlbum();
-            }, 300);
-
-            } else {
-                alert("음악 삭제 실패!");
-            }
-
-        }catch(error){
-            console.error("음악 삭제 실패:", error);
-            alert("음악 삭제중 오류 발생");
-        }
-
-        
+        setUpdateAlbum((prev) => ({
+            ...prev,
+            musicList: prev.musicList.filter((m) => m.musicId !== musicId), // UI에서 삭제
+            deletedMusicList: [...(prev.deletedMusicList || []), musicId], // 삭제 목록에 추가
+        }));
     };
+    
+
 
 
     return (
@@ -338,7 +322,7 @@ const UpdateAlbum = ( {getAlbumList}) => {
                                         )}
                                     </td>
                                     <td>
-                                        <button className="deleteBtn" onClick={() => deleteMusic(music)}>🗑</button>  
+                                        <button className="deleteBtn" onClick={() => deleteMusic(music.musicId)}>🗑</button>  
                                     </td>                                  
                                 </tr>
                             ))
