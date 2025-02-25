@@ -56,9 +56,10 @@ public class OrderMusicRequestDto {
                 .giftToId(giftToId)
                 .member(member)
                 .musicIdList(musicIdList)
-                .isPaid(true)
+                .isPaid(false)
                 .payCount(payCount)
                 .membershipCount(membershipCount)
+                .membershipUserId(membershipUserId)
                 .build();
     }
 }

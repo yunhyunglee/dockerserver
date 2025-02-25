@@ -57,8 +57,7 @@
     padding: 12px;
     border-radius: 8px;
     background: #f8f8f8;
-    margin-bottom: 16px;
-    margin-top: 16px;
+    margin-top: 10px;
 }
 
 .productImage {
@@ -102,6 +101,7 @@
     border-radius: 8px;
     cursor: pointer;
     transition: background 0.3s ease-in-out;
+    margin-top: 16px;
 }
 
 .paymentButton:hover {

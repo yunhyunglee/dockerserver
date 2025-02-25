@@ -8,14 +8,21 @@ import paymentsStyle from '../../css/membership/payments.module.css';
 
 const clientKey = "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
 
-const PaymentsMusicCheckout = ({ cartIdList, giftToId, payCount, membershipCount, membershipUserId }) => {
+const PaymentsMusicCheckout = ({
+    cartIdList, 
+    musicIdList,
+    giftToId,
+    payCount,
+    membershipCount,
+    membershipUserId
+}) => {
     const loginUser = useSelector(state => state.user);
     const navigate = useNavigate();
 
     const customerKey = loginUser.memberKey;
     const [amount, setAmount] = useState({
         currency: "KRW",
-        value: cartIdList.length * 770
+        value: payCount * 770
     });
     const [orderId, setOrderId] = useState(`m${payCount}-${Date.now()}`);
     const [orderName, setOrderName] = useState(`mp3 ${cartIdList.length}곡`);
@@ -79,37 +86,42 @@ const PaymentsMusicCheckout = ({ cartIdList, giftToId, payCount, membershipCount
 
     /* 서버에 결제 요청 정보 저장 */
     const handlePaymentRequest = async () => {
-        try {
-            console.log('결제데이터전달', loginUser);
-
-            // 결제 정보를 백엔드에 저장
-            const response = await jaxios.post("/api/payments/orderMusicRequest", {
-                orderId,
-                amount: amount.value,
-                orderName,
-                giftToId,
-                cartIdList,
-                payCount,
-                membershipCount,
-                membershipUserId
-            }, {params: {memberId: loginUser.memberId}});
-
-            if (response.status === 200) {
-                const { orderId } = response.data; // 백엔드에서 반환된 orderId
-
-                // 토스 결제창 실행
-                await widgets.requestPayment({
-                    orderId: orderId,
+        const confirm = window.confirm('선택한 곡이 장바구니에서 삭제됩니다. 계속하시겠습니까?');
+        if(confirm){
+            try {
+                console.log('결제데이터전달', loginUser);
+    
+                // 결제 정보를 백엔드에 저장
+                const response = await jaxios.post("/api/payments/orderMusicRequest", {
+                    orderId,
+                    amount: amount.value,
                     orderName,
-                    successUrl: `${window.location.origin}/success`,
-                    failUrl: `${window.location.origin}/fail`,
-                    customerEmail: loginUser.email,
-                    customerName: loginUser.name,
+                    giftToId,
+                    memberId: loginUser.memberId,
+                    payCount,
+                    membershipCount,
+                    membershipUserId,
+                    cartIdList,
+                    musicIdList
                 });
+    
+                if (response.status === 200) {
+                    const { orderId } = response.data; // 백엔드에서 반환된 orderId
+    
+                    // 토스 결제창 실행
+                    await widgets.requestPayment({
+                        orderId: orderId,
+                        orderName,
+                        successUrl: `${window.location.origin}/success`,
+                        failUrl: `${window.location.origin}/fail`,
+                        customerEmail: loginUser.email,
+                        customerName: loginUser.name,
+                    });
+                }
+            } catch (error) {
+                console.error("결제 요청 중 오류 발생:", error);
+                alert("결제 요청에 실패했습니다.");
             }
-        } catch (error) {
-            console.error("결제 요청 중 오류 발생:", error);
-            alert("결제 요청에 실패했습니다.");
         }
     };
 
