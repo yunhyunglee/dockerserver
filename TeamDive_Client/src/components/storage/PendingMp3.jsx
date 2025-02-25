@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 
-import jaxios from "../../util/JWTUtil";
+import jaxios from "../../util/JwtUtil";
 
 import Modal from '../frame/Modal'; // 모달 컴포넌트
 import GiftMusic from '../gift/GiftMusic'; // 음악 선물 컴포넌트
