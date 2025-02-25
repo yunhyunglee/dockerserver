@@ -23,15 +23,28 @@ const PlaylistDetail = () => {
   const [editedCoverImage, setEditedCoverImage] = useState(""); 
   const [coverFile, setCoverFile] = useState(null);       
   const [preview, setPreview] = useState("");         
+
+
+  const [isLiked, setIsLiked] = useState(false);
   
-  
+  const handleLike = () => {
+    jaxios.post('/api/community/insertLikes',null,{params:{entityId: playlistId, pagetype: 'PLAYLIST', memberId: loginUser.memberId}})
+    .then((result)=>{
+        setIsLiked(prevLike => !prevLike);
+    }).catch((err)=>{console.error(err);})
+  }
  
-
-
-
-
   // 플레이리스트 불러오기
   useEffect(() => {
+    jaxios.get('/api/community/getLikes',{params:{pagetype: 'PLAYLIST',memberId: loginUser.memberId}})
+    .then((result)=>{
+        if(result.data.LikesList.some(likes => likes.allpage.entityId == playlistId)){
+            setIsLiked(true);
+        }
+    }).catch((err)=>{console.error(err);})
+
+
+
     if (!playlistId) return;
     jaxios
       .get("/api/music/playlistDetail", { params: { playlistId } })
@@ -339,6 +352,12 @@ const handleDeleteMusic = () => {
                     ✏️
                   </span>
                 </h2>
+                <button
+                  className={`${styles.likeButton} ${isLiked ? styles.liked : ""}`}
+                  onClick={handleLike}
+                >
+                  {isLiked ? "♥ 좋아요" : "♡ 좋아요"}
+                </button>
                 <p className={styles.content}>{playlist.content}</p>
                 <p className={styles.trackCount}>
                   곡 : {playlist.musicList.length}곡

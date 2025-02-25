@@ -12,7 +12,7 @@ const ArtistDetail = () => {
   const navigate = useNavigate();
 
   const [isLiked, setIsLiked] = useState(false);
-  const handleLike = () => {setIsLiked((prev) => !prev)};
+  
 
   const loginUser = useSelector((state) => state.user);
 
@@ -32,11 +32,24 @@ const ArtistDetail = () => {
       setShowPlaylistModal(true);
     };
     
+    const handleLike = () => {
+      jaxios.post('/api/community/insertLikes',null,{params:{entityId: artistId, pagetype: 'ARTIST', memberId: loginUser.memberId}})
+      .then((result)=>{
+          console.log(result.data.msg)
+          setIsLiked(prevLike => !prevLike);
+      }).catch((err)=>{console.error(err);})
+  }
 
 
 
 
   useEffect(() => {
+    jaxios.get('/api/community/getLikes',{params:{pagetype: 'ARTIST',memberId: loginUser.memberId}})
+        .then((result)=>{
+            if(result.data.LikesList.some(likes => likes.allpage.entityId == artistId)){
+                setIsLiked(true);
+            }
+        }).catch((err)=>{console.error(err);})
     
     axios
       .get("/api/music/getArtist", { params: { artistId } })
