@@ -39,7 +39,6 @@ const PendingMp3 = () => {
                 try {
                     let response = await jaxios.get('/api/cart/getCartList', { params: { memberId: loginUser.memberId } });
                     setCartList([...response.data.cartList]);
-                    console.log('장바구니', response.data.cartList);
                 } catch (error) {
                     console.error('장바구니 초기 데이터 불러오기', error);
                 }
@@ -77,7 +76,7 @@ const PendingMp3 = () => {
                     setMembershipCount(selectedCart.length);
                 } else {
                     setPayCount(selectedCart.length - downloadMembership.downloadCount);
-                    setMembershipCount(selectedCart.length);
+                    setMembershipCount(selectedCart.length - payCount);
                 }
             } else {
                 setPayCount(selectedCart.length);
@@ -178,10 +177,11 @@ const PendingMp3 = () => {
         const confirm = window.confirm(`${membershipCount}곡을 멤버십으로 결제하시겠습니까?`);
         if(confirm){
             try{
-                const response = await jaxios.post('/api/mp3/payOnlyMembership', {
+                const response = await jaxios.post('/api/payments/payOnlyMembership', {
                     orderId: `m${membershipCount}-${Date.now()}`,
                     amount: (payCount * 770),
                     orderName: `mp3 ${membershipCount}곡`,
+                    giftToId,
                     memberId: loginUser.memberId,
                     payCount,
                     membershipCount,
@@ -322,6 +322,7 @@ const PendingMp3 = () => {
                         <button
                             className={pendingStyle.paymentButton}
                             disabled={selectedCart.length === 0}
+                            onChange={ () => setGiftToId('') }
                             onClick={ () => checkValid('payment') }
                         >
                             결제하기
@@ -336,23 +337,22 @@ const PendingMp3 = () => {
                     selectedCart && (
                         (modalStep === "gift") ? (
                             <GiftMusic
-                                cartIdList={selectedCart}
                                 musicIdList={selectedMusic}
                                 giftToId={giftToId}
                                 setGiftToId={setGiftToId}
                                 payCount={payCount}
                                 membershipCount={membershipCount}
-                                downloadMembership={downloadMembership}
                                 onProceedToPayment={() => setModalStep("payment")}
+                                payOnlyMembership={payOnlyMembership}
                             />
                         ) : (
                             <PaymentsMusicCheckout
                                 cartIdList={selectedCart}
                                 musicIdList={selectedMusic}
-                                giftToId={loginUser.memberId}
+                                giftToId={giftToId}
                                 payCount={payCount}
                                 membershipCount={membershipCount}
-                                downloadMembership={downloadMembership}
+                                membershipUserId={downloadMembership?.membershipUserId || 0}
                             />
                         )
                     )

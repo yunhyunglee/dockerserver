@@ -29,7 +29,7 @@ public class MembershipController {
     @GetMapping("/getDownloadMembership")
     public HashMap<String, Object> getDownloadMembership(@RequestParam("memberId") String memberId) {
         HashMap<String, Object> result = new HashMap<>();
-        Membership_user downloadMembership = mss.getDownloadMembership(memberId);
+        Membership_user downloadMembership = mss.checkActiveMembership(memberId, "download");
         if(downloadMembership != null) {
             result.put("downloadMembership", downloadMembership);
             result.put("message", "yes");

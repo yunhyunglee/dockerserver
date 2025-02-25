@@ -1,9 +1,11 @@
 package com.himedia.projectteamdive.controller;
 
 import com.himedia.projectteamdive.dto.CartRequestDto;
+import com.himedia.projectteamdive.dto.MusicDto;
 import com.himedia.projectteamdive.dto.OrderMusicRequestDto;
 import com.himedia.projectteamdive.dto.PurchasedMusicResponseDto;
 import com.himedia.projectteamdive.entity.Cart;
+import com.himedia.projectteamdive.entity.Music;
 import com.himedia.projectteamdive.service.Mp3Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -33,12 +35,17 @@ public class Mp3Controller {
         return result;
     }
 
-    /* 멤버십으로 개별곡 결제 */
-    @PostMapping("/payOnlyMembership")
-    public HashMap<String, Object> payOnlyMembership(@RequestBody OrderMusicRequestDto requestDto){
+    /* 구매할 곡에 대한 정보 추출 */
+    @PostMapping("/getPurchaseMusicList")
+    public HashMap<String, Object> getPurchaseMusicList(@RequestBody List<Integer> musicIdList){
         HashMap<String, Object> result = new HashMap<>();
-        ms.payOnlyMembership(requestDto);
-        result.put("message", "yes");
+        List<MusicDto> purchaseMuisicList = ms.getPurchaseMusicList(musicIdList);
+        if(!purchaseMuisicList.isEmpty()) {
+            result.put("message", "yes");
+            result.put("purchaseMusicList", purchaseMuisicList);
+        }else{
+            result.put("message", "no");
+        }
         return result;
     }
 }
