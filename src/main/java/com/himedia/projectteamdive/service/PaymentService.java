@@ -1,10 +1,7 @@
 package com.himedia.projectteamdive.service;
 
 import com.himedia.projectteamdive.configuration.PaymentConfig;
-import com.himedia.projectteamdive.dto.GiftRequestDto;
-import com.himedia.projectteamdive.dto.OrderMusicRequestDto;
-import com.himedia.projectteamdive.dto.PaymentRequestDto;
-import com.himedia.projectteamdive.dto.PaymentResponseDto;
+import com.himedia.projectteamdive.dto.*;
 import com.himedia.projectteamdive.entity.*;
 import com.himedia.projectteamdive.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +38,8 @@ public class PaymentService {
     PurchasedMusicRepository purchasedMusicRepo;
     @Autowired
     CartService cs;
+    @Autowired
+    Mp3Service ms;
 
     /* 멤버십 결제 정보 저장 */
     public PaymentResponseDto savePaymentInfo(PaymentRequestDto requestDto, String memberId) {
@@ -156,16 +155,6 @@ public class PaymentService {
         return restTemplate.exchange(url, HttpMethod.POST, entity, String.class); // 요청 보내고 응답 받기
     }
 
-    /* 구매한 개별곡 등록 */
-//    private void insertPurchasedMusic(List<Integer> musicIdList, String purchaseMemberId) {
-//        PurchasedMusic purchasedMusic = new PurchasedMusic();
-//        purchasedMusic.setMember(memberRepo.findByMemberId(purchaseMemberId));
-//        for (Integer musicId : musicIdList) {
-//            purchasedMusic.setMusic(musicRepo.findByMusicId(musicId));
-//            purchasedMusicRepo.save(purchasedMusic);
-//        }
-//    }
-
     /* 멤버십 선물 */
     private void giftMembership(Membership membership, Payment payment) {
         GiftRequestDto giftRequestDto = new GiftRequestDto();
@@ -196,9 +185,21 @@ public class PaymentService {
         Member member = memberRepo.findByMemberId(memberId);
         List<Payment> paymentList = paymentRepo.findByMember(member);
 
-        return paymentList.stream()
-                .map(PaymentResponseDto::new) // Payment -> PaymentResponseDto 변환
+        List<PaymentResponseDto> paymentResponseList = paymentList.stream()
+                .map(payment -> {
+                    PaymentResponseDto responseDto = new PaymentResponseDto(payment);
+                    List<Integer> musicIdList = payment.getMusicIdList(); // Payment에서 musicIdList 가져오기
+                    List<MusicDto> musicDtoList = null;
+                    if (musicIdList != null && !musicIdList.isEmpty()) {
+                        musicDtoList = ms.getPurchaseMusicList(musicIdList);
+                    }
+
+                    responseDto.setMusicList(musicDtoList); // MusicDto 설정
+                    return responseDto;
+                })
                 .collect(Collectors.toList());
+
+        return paymentResponseList;
     }
 
     /* 멤버십으로 개별곡 결제 */
