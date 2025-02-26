@@ -65,6 +65,44 @@ const PurchasedMp3 = () => {
 
     const isSomeSelected = selectedIds.length > 0;
 
+
+    //다운로드
+    const [isDownloading, setIsDownloading] = useState(false);
+
+    const downloadFile = async () => {
+      setIsDownloading(true);
+      // const filePath = currentSong.src; // 서버에 요청할 파일 경로
+    
+      try {
+        const response = await axios.get('/api/music/download', {
+          params: { musicId: currentSong.musicId },
+          responseType: 'arraybuffer' // 파일 데이터를 binary 형식으로 받기 위한 설정
+        });
+    
+        if (response && response.data) {
+          const fileData = response.data; // 서버에서 전달된 파일 데이터
+    
+          const blob = new Blob([fileData], { type: 'audio/mp3' });
+    
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `${currentSong.artist}-${currentSong.title}.mp3`; // 원하는 파일 이름
+          link.click();
+          window.URL.revokeObjectURL(url); // 다운로드 후 URL 해제
+        } else {
+          alert('파일 다운로드 실패');
+        }
+      } catch (error) {
+        console.error('파일 다운로드 중 오류:', error);
+        alert('파일 다운로드 중 오류가 발생했습니다.');
+      }
+    
+      setIsDownloading(false);
+    };
+  
+
+
     return (
         <div className={pendingStyle.mp3Container}>
             <h2 className={styles.sectionTitle}>구매한 음악</h2>
@@ -127,9 +165,10 @@ const PurchasedMp3 = () => {
                                     {/* MP3 다운로드 버튼 */}
                                     <button
                                         className={styles.buyBtn}
-                                        onClick={() => {}}
+                                        onClick={()=>downloadFile()} 
+                                        disabled={isDownloading}
                                     >
-                                        다운로드
+                                         {isDownloading ? '다운로드 중...' : '다운로드'}
                                     </button>
                                 </div>
                             ))}
