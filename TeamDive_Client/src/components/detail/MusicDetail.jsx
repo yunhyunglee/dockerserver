@@ -88,14 +88,14 @@ const MusicDetail = () => {
 
     /* 개별곡 구매를 위한 장바구니 담기 */
     async function insertCart(){
-        if(!loginUser){
+        if(!loginUser.memberId){
             alert('로그인이 필요한 서비스입니다');
             navigate('/login');
         }else{
              try{
                 const response = await jaxios.post('/api/cart/insertCart', {
                     memberId: loginUser.memberId,
-                    musicIdList
+                    musicIdList: [musicId]
                 });
                 navigate('/storage/myMP3/pending');
             }catch(error){

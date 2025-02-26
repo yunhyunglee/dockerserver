@@ -151,9 +151,7 @@ const handleDeleteMusic = () => {
     }
   };
 
-
   const handleSave = () => {
-
     if(!editedTitle.trim()) {
       alert('제목을 입력해주세요!');
       return;
@@ -167,12 +165,8 @@ const handleDeleteMusic = () => {
         content: editedContent,
       })
       .then((res) => {
-
-
         if (res.data.msg === "yes") {
           alert("플레이리스트가 수정되었습니다.");
-
-      
           setPlaylist({
             ...playlist,
             title: editedTitle,
@@ -190,7 +184,6 @@ const handleDeleteMusic = () => {
   // 수정 취소
   const handleCancelEdit = () => {
     setIsEditing(false);
-
     
     if (playlist) {
       setEditedTitle(playlist.title || "");
@@ -225,6 +218,7 @@ const handleDeleteMusic = () => {
       setSelectedItems((prev) => prev.filter((id) => id !== musicId));
     }
   };
+
   const handleSelectAll = (checked) => {
     if (checked) {
       const allIds = playlist.musicList.map((m) => m.musicId);
@@ -233,47 +227,54 @@ const handleDeleteMusic = () => {
       setSelectedItems([]);
     }
   };
+
   const handleSelectedPlay = () => {
     alert("선택된 곡 재생: " + selectedItems.join(", "));
   };
+
   const handleSelectedBuy = async () => {
     if (!loginUser?.memberId) {
-      alert("로그인이 필요한 서비스입니다.");
-      navigate("/login");
+      alert('로그인이 필요한 서비스입니다.');
+      navigate('/login');
       return;
     }
+
     if (selectedItems.length === 0) {
-      alert("구매할 곡을 선택하세요.");
+      alert('구매할 곡을 선택하세요.');
       return;
     }
+
     try {
-      await jaxios.post("/api/cart/insertCart", {
+      await jaxios.post('/api/cart/insertCart', {
         memberId: loginUser.memberId,
         musicIdList: selectedItems,
       });
-      alert("선택된 곡들이 장바구니에 담겼습니다.");
-      navigate("/storage/myMP3/pending");
+      alert('선택된 곡들이 장바구니에 담겼습니다.');
+      navigate('/storage/myMP3/pending');
     } catch (err) {
-      console.error("장바구니 담기 실패:", err);
+      console.error('장바구니 담기 실패', err);
     }
   };
+
   const handlePlay = (music) => {
     alert(`재생: ${music.title}`);
   };
+  
   const handleBuy = async (music) => {
     if (!loginUser?.memberId) {
-      alert("로그인이 필요한 서비스입니다.");
-      navigate("/login");
+      alert('로그인이 필요한 서비스입니다.');
+      navigate('/login');
       return;
     }
+    
     try {
-      await jaxios.post("/api/cart/insertCart", {
+      await jaxios.post('/api/cart/insertCart', {
         memberId: loginUser.memberId,
         musicIdList: [music.musicId],
       });
-      navigate("/storage/myMP3/pending");
+      navigate('/storage/myMP3/pending');
     } catch (err) {
-      console.error("장바구니 담기 실패:", err);
+      console.error('장바구니 담기 실패', err);
     }
   };
 
