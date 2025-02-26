@@ -24,10 +24,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/member")
@@ -268,12 +265,23 @@ public class MemberController {
         return result;
     }
 
+
+
     @DeleteMapping("/deleteMember/{memberId}")
     public HashMap<String, Object> deleteMember(@PathVariable("memberId") String memberId){
         HashMap<String, Object> result = new HashMap<>();
         ms.deleteMember(memberId);
         result.put("msg", "yes");
         return result;
+    }
+
+
+    @GetMapping("/searchMember")
+    public HashMap<String, Object> getSearchMember(@RequestParam("memberId")String memberId) {
+        HashMap<String,Object> map=new HashMap<>();
+        List<Member> members=ms.getSearchMember(memberId);
+        map.put("member",members);
+        return map;
     }
 }
 
