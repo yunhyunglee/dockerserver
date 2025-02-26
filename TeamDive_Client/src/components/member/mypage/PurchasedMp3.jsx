@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { useSelector } from 'react-redux';
+import { Link } from "react-router-dom";
 
 import jaxios from "../../../util/JwtUtil";
 
-import styles from "../../../css/storage/storage.module.css";
+import styles from "../../../css/storage/likedMusic.module.css";
+import pendingStyle from "../../../css/storage/pendingMp3.module.css";
 
 const PurchasedMp3 = () => {
     const loginUser = useSelector(state => state.user);
@@ -14,18 +16,27 @@ const PurchasedMp3 = () => {
     /* 구매한 곡 불러오기 */
     useEffect(
         () => {
-            // try{
-            //     const response = jaxios.get('/api/mp3/getPurchasedMusic', {
-            //         params: { memberId: loginUser.memberId }
-            //     });
-            //     if(response.data.message === 'yes'){
-            //         setPurchasedMusicList(response.data.purchasedMusicList);
-            //     }else{
-            //         setPurchasedMusicList([]);
-            //     }
-            // }catch(error){
-            //     console.log('구매한 곡 불러오기 실패', error);
-            // }
+            const fetchPurchasedMusicList = async () => {
+                if (!loginUser) {
+                    alert('로그인 후 이용 가능한 서비스입니다');
+                    navigate('/login');
+                } else {
+                    try{
+                        const response = await jaxios.get('/api/mp3/getPurchasedMusicList', {
+                            params: { memberId: loginUser.memberId }
+                        });
+                        if(response.data.message === 'yes'){
+                            setPurchasedMusicList(response.data.purchasedMusicList);
+                            console.log('구매한 곡들', response.data.purchasedMusicList);
+                        }else{
+                            setPurchasedMusicList([]);
+                        }
+                    }catch(error){
+                        console.error('구매한 곡 불러오기 실패', error);
+                    }
+                }
+            }
+            fetchPurchasedMusicList();
     }, [])
     
     // "전체선택" 체크박스 토글
@@ -46,18 +57,21 @@ const PurchasedMp3 = () => {
             prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
         );
     };
+    
+    // "전체 재생" 버튼 클릭
+    const handleSelectedPlay = () => {
+        alert(`전체 재생: 선택된 곡 ${selectedIds.length}개`);
+    };
+
+    const isSomeSelected = selectedIds.length > 0;
 
     return (
-        <div>
+        <div className={pendingStyle.mp3Container}>
+            <h2 className={styles.sectionTitle}>구매한 음악</h2>
             {
-                (purchasedMusicList && purchasedMusicList.length === 0) ? (
-                    <div className={styles.emptyMessage}>
-                        <h2>구매한 MP3</h2>
-                        <p>구매한 MP3가 없습니다.</p>
-                    </div>
-                ) : (   
+                (purchasedMusicList && purchasedMusicList.length !== 0) ? (
                     <>
-                        {/* 상단: 전체선택, 전체재생 */}
+                        {/* 상단: 전체선택, 선택재생 */}
                         <div className={styles.topBar}>
                             <label className={styles.checkAllLabel}>
                                 <input
@@ -70,10 +84,10 @@ const PurchasedMp3 = () => {
 
                             <button
                                 className={styles.topBtn}
-                                onClick={handlePlayAll}
+                                onClick={handleSelectedPlay}
                                 disabled={!isSomeSelected}
                             >
-                                전체 재생
+                                선택재생 {selectedIds.length}곡
                             </button>
                         </div>
 
@@ -117,18 +131,15 @@ const PurchasedMp3 = () => {
                                     >
                                         다운로드
                                     </button>
-
-                                    {/* 좋아요(하트) 버튼 */}
-                                    <button
-                                        className={styles.heartBtn}
-                                        onClick={() => handleUnlike(music.musicId)}
-                                    >
-                                        ♥
-                                    </button>
                                 </div>
                             ))}
                         </div>
                     </>
+                ) : (
+                    <div className={styles.emptyMessage}>
+                        <h2>구매한 MP3</h2>
+                        <p>구매한 MP3가 없습니다.</p>
+                    </div>
                 )}
         </div>
     );
