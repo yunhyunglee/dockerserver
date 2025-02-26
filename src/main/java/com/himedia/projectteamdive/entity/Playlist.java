@@ -40,6 +40,7 @@ public class Playlist {
     private List<Music> musicList = new ArrayList<>();
 
     @ColumnDefault("false")
+    @Column(columnDefinition = "TINYINT")
     private boolean shayringyn;
 
     @Column(columnDefinition="DATETIME default now()")

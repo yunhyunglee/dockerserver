@@ -34,9 +34,31 @@ public class PlaylistDto {
         this.coverImage = playlist.getCoverImage();
         this.content = playlist.getContent();
         this.memberId = playlist.getMember().getMemberId();
-        this.musicList = playlist.getMusicList().stream().map(MusicDto::new).collect(Collectors.toList());
+        this.musicList = playlist.getMusicList().stream()
+                .filter(music -> music != null) // ✅ null 제거
+                .map(MusicDto::new)
+                .collect(Collectors.toList());
         this.shayringyn = playlist.isShayringyn();
         this.indate = playlist.getIndate();
+    }
+
+    public static PlaylistDto fromEntity(Playlist playlist) {
+        if (playlist == null) {
+            throw new IllegalArgumentException("Playlist entity cannot be null");
+        }
+
+        return new PlaylistDto(
+                playlist.getPlaylistId(),
+                playlist.getTitle(),
+                playlist.getCoverImage(),
+                playlist.getContent(),
+                playlist.getMember().getMemberId(),
+                playlist.getMusicList().stream()
+                        .map(MusicDto::new)
+                        .collect(Collectors.toList()),
+                playlist.isShayringyn(),
+                playlist.getIndate()
+        );
     }
 
 }

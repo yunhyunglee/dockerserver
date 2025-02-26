@@ -23,6 +23,9 @@ public interface PlaylistRepository extends JpaRepository<Playlist, Integer> {
     List<Integer> getLatestPlayListIds(Pageable pageable);
 
     @Query("SELECT p FROM Playlist p WHERE p.playlistId IN :latestPlayListIds")
-    List<PlaylistDto> getPlaylistByIds(List<Integer> latestPlayListIds);
+    List<Playlist> getPlaylistByIds(List<Integer> latestPlayListIds);
 
+
+//    @Query("SELECT p FROM Playlist p WHERE p.playlistId = :")
+//    PlaylistDto findByPlaylistId2(int playlistId);
 }
