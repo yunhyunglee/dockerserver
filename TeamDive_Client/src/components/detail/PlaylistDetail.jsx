@@ -38,8 +38,8 @@ const PlaylistDetail = () => {
   useEffect(() => {
     jaxios.get('/api/community/getLikes',{params:{pagetype: 'PLAYLIST',memberId: loginUser.memberId}})
     .then((result)=>{
-        if(result.data.LikesList.some(likes => likes.allpage.entityId == playlistId)){
-            setIsLiked(true);
+        if(result.data.likesList.some(likes => likes.allpage.entityId == playlistId)){
+          setIsLiked(true);
         }
     }).catch((err)=>{console.error(err);})
 
@@ -58,47 +58,38 @@ const PlaylistDetail = () => {
   }, [playlistId]);
 
 
+  // 선택된 곡 삭제
+  const handleDeleteMusic = () => {
 
-// 선택된 곡 삭제
-const handleDeleteMusic = () => {
-
-
-  
-  jaxios
-    .post(
-      "/api/music/updatePlaylistDeleteMusic",selectedItems,
-      
-      { params: { playlistId  } }  
-    )
-    .then((res) => {
-      if (res.data.msg === "yes") {
-
-        if(confirm("선택한 곡을 삭제하시겠습니까?")) {
-            alert("선택된 곡이 플레이리스트에서 삭제되었습니다.");
-        } else {
-          return;
-        }
-
-
+    jaxios
+      .post(
+        "/api/music/updatePlaylistDeleteMusic",selectedItems,
         
+        { params: { playlistId  } }  
+      )
+      .then((res) => {
+        if (res.data.msg === "yes") {
 
-  
-        setPlaylist((prev) => {
-          const filtered = prev.musicList.filter(
-            (music) => !selectedItems.includes(music.musicId)
-          );
-          return { ...prev, musicList: filtered };
-        });
+          if(confirm("선택한 곡을 삭제하시겠습니까?")) {
+              alert("선택된 곡이 플레이리스트에서 삭제되었습니다.");
+          } else {
+            return;
+          }
 
-        setSelectedItems([]);
-      }
-    })
-    .catch((err) => {
-      console.error("선택곡 삭제 실패:", err);
-    });
-};
+          setPlaylist((prev) => {
+            const filtered = prev.musicList.filter(
+              (music) => !selectedItems.includes(music.musicId)
+            );
+            return { ...prev, musicList: filtered };
+          });
 
-
+          setSelectedItems([]);
+        }
+      })
+      .catch((err) => {
+        console.error("선택곡 삭제 실패:", err);
+      });
+  };
 
 
   useEffect(() => {

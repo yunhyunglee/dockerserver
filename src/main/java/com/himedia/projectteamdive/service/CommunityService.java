@@ -3,6 +3,7 @@ package com.himedia.projectteamdive.service;
 import com.himedia.projectteamdive.dto.AlbumDto;
 import com.himedia.projectteamdive.dto.ArtistDto;
 import com.himedia.projectteamdive.dto.MusicDto;
+import com.himedia.projectteamdive.dto.PlaylistDto;
 import com.himedia.projectteamdive.entity.*;
 import com.himedia.projectteamdive.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,10 +64,11 @@ public class CommunityService {
     AlbumRepository albumRepository;
     @Autowired
     ArtistRepository artistRepository;
+    @Autowired
+    PlaylistRepository playlistRepository;
     public List<Object> getLikes(String type, String memberId) {
         Pagetype pagetype = Pagetype.valueOf(type.toUpperCase());
         List<Likes>Likelist =lr.findByMemberIdAndPagetype(memberId, pagetype);
-        System.out.println("============================================Likelist:"+Likelist);
         List<Object>list=new ArrayList<>();
 
         for (Likes likes:Likelist) {
@@ -86,7 +88,10 @@ public class CommunityService {
                     Artist artist = artistRepository.findByArtistId(allpage.getEntityId());
                     yield (artist != null) ? new ArtistDto(artist) : null;
                 }
-                case PLAYLIST -> null;
+                case PLAYLIST ->  {
+                    Playlist playlist = playlistRepository.findByPlaylistId(allpage.getEntityId());
+                    yield (playlist != null) ? new PlaylistDto(playlist) : null;
+                }
             };
 
             if (dto != null) {

@@ -92,22 +92,15 @@ const MyPlaylist = () => {
       console.log("플레이리스트 생성 성공:", response.data);
 
       
-      const newPlaylist = {
-        id: Date.now(),
-         
-        coverImage: coverImageName ? `/playlistImage/${coverImageName}` : "",
-        title: playlistTitle,
-        trackCount: 0,
-      };
-      setPlaylists([...playlists, newPlaylist]);
-
-      
       setPlaylistTitle("");
       setPlaylistContent("");
       setIsPublic(false);
       setPreview("");
       setCoverImageName("");
       setShowModal(false);
+      setPlaylists([]);
+      await Promise.all([playlistView(),likelistView()]);
+      setPlaylists(prev=>Array.from(new Set(prev.map(JSON.stringify))).map(JSON.parse));
     } catch (err) {
       console.error("플레이리스트 생성 에러:", err);
       alert("플레이리스트 생성 실패");
@@ -116,30 +109,49 @@ const MyPlaylist = () => {
 
 
   useEffect(()=>{
+    const totalView = async()=>{
+      try {
+        // 플레이리스트와 좋아요 리스트를 비동기적으로 가져오기
+        const [playlistData, likeData] = await Promise.all([playlistView(), likelistView()]);
   
-    playlistView();
+        // 기존 데이터를 합친 후, 중복 제거
+        setPlaylists(prev => 
+          Array.from(new Set([...prev, ...playlistData, ...likeData].map(JSON.stringify)))
+          .map(JSON.parse)
+        );
+      } catch (err) {
+        console.error("데이터 로드 실패:", err);
+      }
+    };
+    
+    totalView();
   },[]);
-
   const playlistView = async () => {
     try {
       const result = await jaxios.get("/api/music/getMemberPlaylist", {
         params: { memberId: loginUser.memberId },
       });
   
-  
-      if (result.data && result.data.playlist) { 
-        setPlaylists(result.data.playlist);
-
-      } else {
-
-        setPlaylists([]);  
-      }
+      return result.data && result.data.playlist ? result.data.playlist : [];
     } catch (error) {
-      console.error(" 플레이리스트 못 가져옴:", error);
-      setPlaylists([]);  
+      console.error("플레이리스트 못 가져옴:", error);
+      return [];
     }
   };
   
+  const likelistView = async () => {
+    try {
+      const result = await jaxios.get('/api/community/getLikes', { 
+        params: { pagetype: 'PLAYLIST', memberId: loginUser.memberId }
+      });
+  
+      return result.data && result.data.likesList ? result.data.likesList : [];
+    } catch (err) {
+      console.error("좋아요 리스트 못 가져옴:", err);
+      return [];
+    }
+  };
+
 
 
 
@@ -161,7 +173,7 @@ const MyPlaylist = () => {
               style={{ backgroundImage: `url(${pl.coverImage})` }}
             />
             <p className={styles.tileTitle}>{pl.title}</p>
-            <p className={styles.tileTrackCount}>{pl.trackCount}곡</p>
+            <p className={styles.tileTrackCount}>{pl.musicList.length||0}곡</p>
           </div>
         ))}
       </div>
