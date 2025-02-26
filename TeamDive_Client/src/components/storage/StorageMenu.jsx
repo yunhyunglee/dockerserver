@@ -43,14 +43,6 @@ const StorageMenu = () => {
         플레이리스트
       </Link>
 
-      <Link
-        to="/storage/myMP3"
-        className={`${styles.tabButton} ${
-          location.pathname.includes("myMP3") ? styles.active : ""
-        }`}
-      >
-        MP3
-      </Link>
     </div>
   );
 };

@@ -2,15 +2,15 @@ import { useState, useEffect } from "react";
 import { useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 
-import jaxios from "../../util/JwtUtil";
+import jaxios from "../../../util/JwtUtil";
 
-import Modal from '../frame/Modal'; // 모달 컴포넌트
-import GiftMusic from '../gift/GiftMusic'; // 음악 선물 컴포넌트
-import PaymentsMusicCheckout from "../payments/PaymentsMusicCheckout";
+import Modal from '../../frame/Modal'; // 모달 컴포넌트
+import GiftMusic from '../../gift/GiftMusic'; // 음악 선물 컴포넌트
+import PaymentsMusicCheckout from "../../payments/PaymentsMusicCheckout";
 
-import storageStyle from "../../css/storage/storage.module.css";
-import pendingStyle from "../../css/storage/pendingMp3.module.css";
-import musicStyle from "../../css/storage/likedMusic.module.css";
+import storageStyle from "../../../css/storage/storage.module.css";
+import pendingStyle from "../../../css/storage/pendingMp3.module.css";
+import musicStyle from "../../../css/storage/likedMusic.module.css";
 
 const PendingMp3 = () => {
     const loginUser = useSelector(state => state.user);
