@@ -50,36 +50,57 @@ const SignUpStep2 = ({ setStep, step1Data }) => {
         setIsOpen(false);
     }
 
-    // 파일 업로드 및 미리보기 핸들러
-    const fileUp = async (e) => {
+    // // 파일 업로드 및 미리보기 핸들러
+    // const fileUp = async (e) => {
+    //     const file = e.target.files[0];
+    //     if (!file) return;
+
+    //     // 파일 객체 상태 저장
+    //     setImage(file);
+
+    //     // FileReader를 사용하여 미리보기 URL 생성
+    //     const reader = new FileReader();
+    //     reader.onloadend = () => {
+    //     setPreview(reader.result);
+    //     };
+    //     reader.readAsDataURL(file);
+
+    //     // 서버 업로드 처리
+    //     const formData = new FormData();
+    //     formData.append("image", file);
+
+    //     try {
+    //     const result = await axios.post("/api/member/fileUp", formData);
+    //     // 서버에서 반환된 이미지 URL 저장
+    //     setProfileImage(`http://localhost:8070/profileImage/${result.data.image}`);
+    //     setImage(result.data.image);
+    //     console.log("image", image);
+    //     } catch (error) {
+    //     console.error("파일 업로드 실패:", error);
+    //     alert("파일 업로드에 실패했습니다.");
+    //     }
+    // };
+
+    
+    const onImageUpload = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
-
-        // 파일 객체 상태 저장
-        setImage(file);
-
-        // FileReader를 사용하여 미리보기 URL 생성
-        const reader = new FileReader();
-        reader.onloadend = () => {
-        setPreview(reader.result);
-        };
-        reader.readAsDataURL(file);
-
-        // 서버 업로드 처리
         const formData = new FormData();
         formData.append("image", file);
-
         try {
-        const result = await axios.post("/api/member/fileUp", formData);
-        // 서버에서 반환된 이미지 URL 저장
-        setProfileImage(`http://localhost:8070/profileImage/${result.data.image}`);
-        setImage(result.data.image);
-        console.log("image", image);
+            if(image){
+                const response=await axios.delete('/api/music/deleteFile',{params:{file:image}});
+            }
+            let response = await axios.post("/api/music/imageUpload", formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+            });
+           setImage(response.data.image);
         } catch (error) {
-        console.error("파일 업로드 실패:", error);
-        alert("파일 업로드에 실패했습니다.");
+            console.error("이미지 업로드 실패:", error);
+            alert("이미지 업로드 실패");
         }
     };
+
 
     const getFullEmail = (step1Data) => {
         if (!step1Data) return ""; // step1Data가 없으면 빈 문자열 반환
@@ -143,21 +164,13 @@ const SignUpStep2 = ({ setStep, step1Data }) => {
             {/* 프로필 이미지 업로드 */}
             <div className={joinStyles.formGroup}>
                 <label htmlFor="image">프로필 이미지 (선택)</label>
-                <input type="file" id="image" onChange={(fileUp)} />
-                {preview ? (
-                    <img
-                    src={preview}
-                    alt="Preview"
-                    style={{
-                        width: "150px",
-                        height: "150px",
-                        objectFit: "cover",
-                        borderRadius: "10px",
-                    }}
-                    />
-                ) : (
-                    <>이미지 미리보기가 없습니다.</>
-                )}
+                <input type="file" id="imageUpload" accept="image/*" onChange={onImageUpload} style={{ display: "none" }} />
+                <img
+                    src={ image || "/images/kakao_lion.png"} 
+                    alt="아티스트 이미지"
+                    className="artistImage"
+                    onClick={() => document.getElementById("imageUpload").click()}
+                />
             </div>
 
             {/* 주소 입력 */}

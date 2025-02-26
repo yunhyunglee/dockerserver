@@ -53,7 +53,7 @@ public class CommunityController {
             @RequestParam("memberId")String memberId
     ) {
         HashMap<String,Object> map = new HashMap<>();
-        map.put("LikesList",cs.getLikes(type,memberId));
+        map.put("likesList",cs.getLikes(type,memberId));
         return map;
     }
 

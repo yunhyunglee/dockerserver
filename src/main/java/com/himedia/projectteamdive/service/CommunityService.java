@@ -1,14 +1,16 @@
 package com.himedia.projectteamdive.service;
 
+import com.himedia.projectteamdive.dto.AlbumDto;
+import com.himedia.projectteamdive.dto.ArtistDto;
+import com.himedia.projectteamdive.dto.MusicDto;
 import com.himedia.projectteamdive.entity.*;
-import com.himedia.projectteamdive.repository.AllpageRepository;
-import com.himedia.projectteamdive.repository.LikesRepository;
-import com.himedia.projectteamdive.repository.MemberRepository;
-import com.himedia.projectteamdive.repository.ReplyRepository;
+import com.himedia.projectteamdive.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -55,10 +57,43 @@ public class CommunityService {
         List<Reply>replyList=rr.findByAllpage(allpage);
         return replyList;
     }
-
-    public List<Likes> getLikes(String type, String memberId) {
+    @Autowired
+    MusicRepository musicRepository;
+    @Autowired
+    AlbumRepository albumRepository;
+    @Autowired
+    ArtistRepository artistRepository;
+    public List<Object> getLikes(String type, String memberId) {
         Pagetype pagetype = Pagetype.valueOf(type.toUpperCase());
-        return lr.findByMemberIdAndPagetype(memberId, pagetype);
+        List<Likes>Likelist =lr.findByMemberIdAndPagetype(memberId, pagetype);
+        System.out.println("============================================Likelist:"+Likelist);
+        List<Object>list=new ArrayList<>();
+
+        for (Likes likes:Likelist) {
+            Allpage allpage = likes.getAllpage();
+            if (allpage == null) continue; // Null 방지
+
+            Object dto = switch (pagetype) {
+                case MUSIC -> {
+                    Music music = musicRepository.findByMusicId(allpage.getEntityId());
+                    yield (music != null) ? new MusicDto(music) : null;
+                }
+                case ALBUM -> {
+                    Album album = albumRepository.findByAlbumId(allpage.getEntityId());
+                    yield (album != null) ? new AlbumDto(album) : null;
+                }
+                case ARTIST -> {
+                    Artist artist = artistRepository.findByArtistId(allpage.getEntityId());
+                    yield (artist != null) ? new ArtistDto(artist) : null;
+                }
+                case PLAYLIST -> null;
+            };
+
+            if (dto != null) {
+                list.add(dto);
+            }
+        }
+        return list;
     }
 
     public List<Reply> getReplyList(String type, String memberId) {

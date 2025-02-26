@@ -28,7 +28,7 @@ const MypageMain = () => {
         <div className={mypageStyle.mypageProfile}>
           <img
             className={mypageStyle.mypageProfileImage}
-            src={`http://localhost:8070/profileImage/${loginUser.image}`}
+            src={loginUser.image}
           />
           <div className={mypageStyle.mypageProfileDetails}>
             <div className={mypageStyle.mypageField}>

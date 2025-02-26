@@ -45,7 +45,8 @@ const LikedAlbum = () => {
   useEffect(()=>{
     jaxios.get('/api/community/getLikes', {params:{pagetype:'ALBUM', memberId: loginUser.memberId}})
     .then((result)=>{
-      setLikeAlbumList(result.data.LikesList||[]);
+      setLikeAlbumList(result.data.likesList||[]);
+      console.log('result.data.LikesList',result.data.likesList);
     })
     .catch((err)=>{
       console.error(err);
@@ -56,6 +57,10 @@ const LikedAlbum = () => {
   // 좋아요 취소
   const handleUnlike = (albumId) => {
     if (window.confirm("앨범 좋아요를 취소할까요?")) {
+      jaxios.post('/api/community/insertLikes', null, {
+        params: { entityId: albumId, pagetype: 'ALBUM', memberId: loginUser.memberId } 
+      }).then((result)=>{
+      }).catch((err)=>{console.error(err);});
       setLikeAlbumList((prev) => prev.filter((album) => album.albumId !== albumId));
     }
   };
@@ -72,7 +77,7 @@ const LikedAlbum = () => {
   return (
     <div className={styles.albumContainer}>
       <div className={styles.albumGrid}>
-        {likedAlbumList.map((likeAlbum, idx) => (
+        {likeAlbumList.map((likeAlbum, idx) => (
           <div className={styles.flipCard} key={likeAlbum.albumId}>
             <div className={styles.flipCardInner}>
 
@@ -86,7 +91,7 @@ const LikedAlbum = () => {
               </div>
 
               {/* 뒷면: 앨범 타이틀 + 가수 이름 + 좋아요 + 상세보기 */}
-              <div className={styles.flipCardBack} style={{ backgroundImage: `url(${album.coverImage})` }}>
+              <div className={styles.flipCardBack} style={{ backgroundImage: `url(${likeAlbum.coverImage})` }}>
                 <div className={styles.flipCardContent}>
                   <h3 className={styles.albumTitle}>{likeAlbum.albumName}</h3>
 
