@@ -115,10 +115,6 @@ const PendingMp3 = () => {
         );
     };
 
-    useEffect(()=>{
-        console.log('음악 선택 확인', selectedMusic);
-    }, [selectedMusic, setSelectedMusic])
-
     /* 장바구니 개별 삭제 */
     async function deleteByCartId(cartId, musicId){
         try{
@@ -191,7 +187,7 @@ const PendingMp3 = () => {
                 });
                 if(response.data.message === 'yes'){
                     alert('구매가 완료되었습니다');
-                    navigate('/storage/myMP3/purchased');
+                    navigate('/mypage/mp3/purchased');
                 }
             }catch(error){
                 console.error('멤버십으로 개별곡 구매 실패', error);
