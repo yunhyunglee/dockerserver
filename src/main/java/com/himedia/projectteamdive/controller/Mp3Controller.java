@@ -39,13 +39,28 @@ public class Mp3Controller {
     @PostMapping("/getPurchaseMusicList")
     public HashMap<String, Object> getPurchaseMusicList(@RequestBody List<Integer> musicIdList){
         HashMap<String, Object> result = new HashMap<>();
-        List<MusicDto> purchaseMuisicList = ms.getPurchaseMusicList(musicIdList);
-        if(!purchaseMuisicList.isEmpty()) {
+        List<MusicDto> purchaseMusicList = ms.getPurchaseMusicList(musicIdList);
+        if(!purchaseMusicList.isEmpty()) {
             result.put("message", "yes");
-            result.put("purchaseMusicList", purchaseMuisicList);
+            result.put("purchaseMusicList", purchaseMusicList);
         }else{
             result.put("message", "no");
         }
         return result;
     }
+
+    /* 구매한 곡에 대한 정보 추출 */
+    @GetMapping("/getPurchasedMusicList")
+    public HashMap<String, Object> getPurchasedMusicList(@RequestParam("memberId") String memberId){
+        HashMap<String, Object> result = new HashMap<>();
+        List<PurchasedMusicResponseDto> purchasedMusicList = ms.getPurchasedMusicList(memberId);
+        if(!purchasedMusicList.isEmpty()) {
+            result.put("message", "yes");
+            result.put("purchasedMusicList", purchasedMusicList);
+        }else{
+            result.put("message", "no");
+        }
+        return result;
+    }
+
 }

@@ -102,6 +102,7 @@ const PendingMp3 = () => {
         }
     };
 
+    /* 전체 선택 상태인지 확인 */
     const isAllSelected =
         cartList.length > 0 && selectedCart.length === cartList.length;
 
@@ -227,7 +228,7 @@ const PendingMp3 = () => {
                                 onClick={ async () => await deleteByCartIdList() }
                                 disabled={selectedCart.length === 0}
                                 >
-                                선택 삭제 {selectedCart.length}곡
+                                선택삭제 {selectedCart.length}곡
                             </button>
                         </div>
           

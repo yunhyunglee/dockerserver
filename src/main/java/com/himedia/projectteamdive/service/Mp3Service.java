@@ -54,4 +54,12 @@ public class Mp3Service {
         }
         return musicList;
     }
+
+    /* 구매한 곡에 대한 정보 추출 */
+    public List<PurchasedMusicResponseDto> getPurchasedMusicList(String memberId) {
+        // 로그인 회원 조회
+        Member member = memberRepo.findByMemberId(memberId);
+        // 해당 회원이 구매한 곡 리스트 조회
+        return purchasedMusicRepo.findByMember(member);
+    }
 }
