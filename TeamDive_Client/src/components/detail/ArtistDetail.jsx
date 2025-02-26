@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import jaxios from "../../util/JwtUtil";
@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import styles from "../../css/detail/artistDetail.module.css";
 
 import PlaylistSelectModal from "./PlaylistSectionModal";
+import { PlayerContext } from "../../context/PlayerContext";
 
 const ArtistDetail = () => {
   const { artistId } = useParams();
@@ -73,14 +74,29 @@ const ArtistDetail = () => {
           memberId: loginUser.memberId,
           musicIdList: [mId], // ★ 클릭된 곡의 ID만 전송
         });
-        navigate("/storage/myMP3/pending");
+        navigate('/mypage/mp3/pending');
       } catch (error) {
         console.error("장바구니 담기 실패", error);
       }
     }
   }
   
-
+  const {setAddPlaylist,setAddAndPlay}=useContext(PlayerContext);
+      //재생목록에 추가후 즉시재생 
+      //musicId 또는 musicId 배열
+      const handlePlay = (musicId) => {
+        const musicArray = Array.isArray(musicId) 
+      ? musicId.map(num => ({ musicId: num })) 
+      : [{ musicId: musicId }];
+        setAddAndPlay(musicArray);
+      };
+      //재생목록에 추가만
+      const handlePlay2 = (musicId) => {
+        const musicArray = Array.isArray(musicId) 
+      ? musicId.map(num => ({ musicId: num })) 
+      : [{ musicId: musicId }];
+        setAddPlaylist(musicArray);
+  };
 
 
  
@@ -199,11 +215,17 @@ const ArtistDetail = () => {
                     onClick={()=>{navigate(`/album/${music.albumId}`)}}>
                         <span  style={{cursor:"pointer"}}>{music.albumTitle || ""}</span></td>
                   <td className={styles.thActions}>
-                    <button
+                  <button
                       className={styles.iconButton}
-                      onClick={() => alert(`듣기: ${music.title}`)}
+                      onClick={()=>{handlePlay(music.musicId)}}
                     >
                       듣기
+                    </button>
+                    <button
+                      className={styles.iconButton}
+                      onClick={()=>{handlePlay2(music.musicId)}}
+                    >
+                      재생목록+
                     </button>
                     <button
                       className={styles.iconButton}
