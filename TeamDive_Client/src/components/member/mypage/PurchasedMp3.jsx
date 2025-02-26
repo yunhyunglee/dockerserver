@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useSelector } from 'react-redux';
 
-import jaxios from "../../util/JwtUtil";
+import jaxios from "../../../util/JwtUtil";
 
-import styles from "../../css/storage/storage.module.css";
+import styles from "../../../css/storage/storage.module.css";
 
 const PurchasedMp3 = () => {
     const loginUser = useSelector(state => state.user);

@@ -7,6 +7,7 @@ import MypageMain from './MypageMain';
 import UpdateMemberForm from './UpdateMemberForm';
 import ReplyListForm from './ReplyListForm';
 import Gift from './Gift';
+import MyMP3 from './MyMP3';
 
 import mypageStyle from '../../../css/mypage/mypage.module.css'
 
@@ -33,6 +34,7 @@ const Mypage = () => {
                         {mypageCategory === "myPageMain" && <MypageMain />}
                         {mypageCategory === "updateMemberForm" && <UpdateMemberForm />}
                         {mypageCategory === "likeListForm" && <LikeListForm />}
+                        {mypageCategory === "mp3" && <MyMP3 />}
                         {mypageCategory === "replyListForm" && <ReplyListForm />}
                         {mypageCategory === "gift" && <Gift />}
                     </div>
