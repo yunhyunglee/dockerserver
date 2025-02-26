@@ -43,7 +43,8 @@ const LikedMusic = () => {
     useEffect(()=>{
       jaxios.get('/api/community/getLikes', {params:{pagetype:'MUSIC', memberId: loginUser.memberId}})
       .then((result)=>{
-        setLikeArtistList(result.data.likeArtistList);
+        setLikeMusicList(result.data.likesList||[]);
+        console.log('result.data.likesList',result.data.likesList);
       })
       .catch((err)=>{
         console.error(err);
@@ -73,6 +74,11 @@ const LikedMusic = () => {
     // 좋아요 취소 -> confirm 후 제거
     const handleUnlike = (id) => {
       if (window.confirm("좋아요를 취소할까요?")) {
+        jaxios.post('/api/community/insertLikes', null, {
+          params: { entityId: id, pagetype: 'MUSIC', memberId: loginUser.memberId } 
+        }).then((result)=>{
+        }).catch((err)=>{console.error(err);});
+
         setLikeMusicList((prev) => prev.filter((music) => music.musicId !== id));
         // 혹시 선택 목록에도 있으면 제거
         setSelectedIds((prev) => prev.filter((x) => x !== id));
@@ -96,6 +102,7 @@ const LikedMusic = () => {
 
     const isAllSelected =
     likeMusicList.length > 0 && selectedIds.length === likeMusicList.length;
+    
     const isSomeSelected = selectedIds.length > 0;
 
     return (
@@ -159,7 +166,7 @@ const LikedMusic = () => {
                   {/* 제목 */}
                   <div className={styles.title}>
                     <Link to={`/music/${likeMusic.musicId}`} className={styles.titleLink}>
-                      {music.title}
+                      {likeMusic.title}
                     </Link>
                   </div>
 

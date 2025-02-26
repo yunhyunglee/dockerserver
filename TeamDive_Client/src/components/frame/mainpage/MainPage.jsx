@@ -11,7 +11,7 @@ import { Link } from 'react-router-dom';
 import LikeRankingSection from './LikeRankingSection.jsx';
 import RandomMusic from './RandomMusic.jsx';
 import axios from 'axios';
-import jaxios from '../../../util/JWTUtil.jsx';
+import jaxios from '../../../util/JwtUtil.jsx';
 import { setRecommendedListToCookie, getRecommendedListFromCookie, setRecommendedListToStorage, getRecommendedListFromStorage } from '../../../util/CookieUtil.jsx';
 import { PlayerContext } from '../../../context/PlayerContext.jsx';
 
@@ -117,21 +117,8 @@ const MainPage = ({mood, setMood}) => {
     }
     
     const {setAddPlaylist}=useContext(PlayerContext);
-    const handlePlay = (musicTitle) => {
-    alert(`재생: ${musicTitle}`);
-    setAddPlaylist(musicTitle);
-    };
-
     const handlePlayAll = () => {
-        alert("모든 곡을 재생합니다.");
-    
-        setAddPlaylist((prevPlaylist = []) => [
-            //...prevPlaylist,
-            ...recommendList.map((recommendMusic)=>{
-                console.log(recommendMusic);
-                return recommendMusic.musicId}
-            )
-        ]);
+        setAddPlaylist(recommendList);
     };
 
     function closeRecommendArea() {

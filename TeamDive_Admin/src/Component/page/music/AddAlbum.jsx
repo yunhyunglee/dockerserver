@@ -65,7 +65,7 @@ const AddAlbum = () => {
     useEffect(() => {
         const getArtistList = async () => {
             try {
-                const response = await axios.get("api/music/getAllArtist");
+                const response = await jaxios.get("api/music/getAllArtist");
                 setArtist(response.data.artist);
             } catch (error) {
                 console.error("아티스트 목록 불러오기 실패", error);
@@ -81,7 +81,7 @@ const AddAlbum = () => {
         const formData = new FormData();
         formData.append("image", file);
         try {
-            const response = await axios.post("/api/music/imageUpload", formData, {
+            const response = await jaxios.post("/api/music/imageUpload", formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
             setNewAlbum((prev) => ({ ...prev, image: response.data.image }));
@@ -131,7 +131,7 @@ const AddAlbum = () => {
         try {
             let albumId = newAlbum.albumId;
             if (!albumId) {
-                const albumResponse = await axios.post("/api/music/insertAlbum", {
+                const albumResponse = await jaxios.post("/api/music/insertAlbum", {
                     title: newAlbum.title,
                     artist: { artistId: Number(newAlbum.artistId) }, // artistId 변환
                     image: newAlbum.image,
@@ -145,7 +145,7 @@ const AddAlbum = () => {
             }
 
             for (const music of newAlbum.musicList) {
-                await axios.post("/api/music/insertMusic", {
+                await jaxios.post("/api/music/insertMusic", {
                     ...music,
                     album: { albumId },
                     artist: { artistId: Number(newAlbum.artistId) }, // artistId 변환

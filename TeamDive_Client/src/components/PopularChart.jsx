@@ -1,8 +1,9 @@
 // src/components/PopularChartsPage.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styles from '../css/popularChart.module.css';
 import axios from 'axios';
+
+import styles from '../css/popularChart.module.css';
 
 const PopularChartsPage = () => {
   const navigate = useNavigate();
@@ -14,8 +15,6 @@ const PopularChartsPage = () => {
   const [foreignCharts, setForeignCharts] = useState([]);
 
   useEffect(() => {
-    
- 
     axios.get('/api/music/getMusicChart')
     .then((result)=>{
       console.log(result.data);
@@ -24,17 +23,13 @@ const PopularChartsPage = () => {
       setDomesticCharts(result.data.Top100MonthKor);
       setForeignCharts(result.data.Top100MonthnoKor);
     }).catch((err)=>{ console.error(err);})
-
-
   }, []);
 
   const navigateToCategory = (category) => {
     navigate(`/charts/${category}`);
   };
 
-    
   const renderCards = (items) => {
-    
       const displayItems = items.slice(0, 5);
 
       return (
@@ -62,7 +57,6 @@ const PopularChartsPage = () => {
       );
   };
 
-
   return (
     <div className={styles.container}>
       <h1 className={styles.pageTitle}>인기 차트</h1>
@@ -73,9 +67,9 @@ const PopularChartsPage = () => {
           <h2 className={styles.sectionTitle}>주간 인기 차트</h2>
           {weeklyCharts.length > 5 && (
             <button className={styles.moreButton} onClick={() => navigateToCategory('weekly')}>
-                    <div className={styles.dot}></div>
-                    <div className={styles.dot}></div>
-                    <div className={styles.dot}></div>
+              <div className={styles.dot}></div>
+              <div className={styles.dot}></div>
+              <div className={styles.dot}></div>
             </button>
           )}
         </div>

@@ -1,138 +1,154 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import styles from '../../css/detail/musicDetail.module.css';
-
-import PlaylistSelectModal from './PlaylistSectionModal';
 
 import axios from 'axios';
 import jaxios from '../../util/JwtUtil';
+
+import { PlayerContext } from '../../context/PlayerContext';
+import PlaylistSelectModal from './PlaylistSectionModal';
+
+import styles from '../../css/detail/musicDetail.module.css';
+
+/* 아이콘 */
+import { MdLibraryMusic } from "react-icons/md";
+import { BsFileEarmarkMusicFill } from "react-icons/bs";
+import { FaPlay } from "react-icons/fa";
+import { MdQueueMusic } from "react-icons/md";
+import { HiOutlineHeart } from "react-icons/hi";
+import { HiHeart } from "react-icons/hi";
 
 const MusicDetail = () => {
     const { musicId } = useParams();
     const [musicDetail, setMusicDetail] = useState(null);
     const [expandedLyrics, setExpandedLyrics] = useState(false);
 
-    //const [commentText, setCommentText] = useState('');
-    //const [comments, setComments] = useState([]);
     const [nickname, setNickname] = useState('');
     const [content, setContent] = useState('');
     const [replyMusicList, setReplyMusicList] = useState([]);
-    const [reply, setReply] = useState({});
-    const [like, setLike] = useState(null);
-    const [musicIdList, setMusicIdList] = useState([musicId]);
+    const [like, setLike] = useState(false);
 
     const loginUser = useSelector((state) => state.user);
     const navigate = useNavigate();
 
-
-    const handleLike = () => {
-        setLike(prevLike => !prevLike);
-    }
-
     // 플리 추가 모달
     const [showPlaylistModal, setShowPlaylistModal] = useState(false);
+    const {setAddPlaylist,setAddAndPlay}= useContext(PlayerContext);
 
-    const handleAddToPlaylist = () => {
-      
-      setShowPlaylistModal(true);
+    // 재생목록에 추가 후 즉시 재생 (musicId 또는 musicId 배열)
+    const handlePlay = (musicId) => {
+        const musicArray = Array.isArray(musicId) ?
+            musicId.map(num => ({ musicId: num })) : [{ musicId: musicId }];
+        setAddAndPlay(musicArray);
+    };
+
+    // 재생목록에 추가만
+    const handlePlay2 = (musicId) => {
+        const musicArray = Array.isArray(musicId) ?
+            musicId.map(num => ({ musicId: num })) : [{ musicId: musicId }];
+        setAddPlaylist(musicArray);
     };
     
-    
-
-
+    // 음악 정보 초기 데이터
     useEffect(() => {
+        // 음악 정보 불러오기
+        const fetchMusicDetail = async() => {
+            await axios.get('/api/music/getMusic', {
+                params: { musicId }
+            }).then((result)=>{
+                setMusicDetail(result.data.music);
+            }).catch((err)=>{ console.error(err); })
+        }
+        fetchMusicDetail();
+        fetchReply(); // 댓글 정보 불러오기
 
-        const sample = {
-            musicId: musicId,
-            title: "테스트제목",
-            artistName: "테스트가수",
-            image: "/public/image/album/album1.jpg",
-            playCount: 1234,
-            genre: "Pop",
-            lyrics:
-                " \n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. \n\nUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. \n\nExcepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-
-            albumId: 201,
-            albumtitle: "테스트앨범이름",
-            albumIndate: "2024-12-12"
-        };
-        setMusicDetail(sample);
-
-        axios.get('/api/music/getMusic',{params:{musicId}})
-        .then((result)=>{
-            console.log(result.data.music);
-            setMusicDetail(result.data.music);
-        }).catch((err)=>{console.error(err);})
-
-
-        axios.get('/api/community/getReplyList', {params:{pagetype:'MUSIC', entityId: musicId,}})
-        .then((result)=>{
-                setReplyMusicList(result.data.replyList);
-        })
-        .catch((err)=>{
-                console.error(err);
-        })
+        // 좋아요 상태 설정
+        if(loginUser.memberId){
+            jaxios.get('/api/community/getLikes', {
+                params: { pagetype: 'MUSIC', memberId: loginUser.memberId }
+            }).then((result)=>{
+                if(result.data.likesList.some(likes => likes.musicId == musicId)){
+                    setLike(true);
+                }
+            }).catch((err)=>{ console.error(err); })
+        }
     }, [musicId]);
 
-    /* 개별곡 구매를 위한 장바구니 담기 */
+    // 좋아요 추가, 취소
+    const handleLike = () => {
+        if(!loginUser.memberId){
+            alert('로그인이 필요한 서비스입니다');
+        }else{
+            jaxios.post('/api/community/insertLikes', null, {
+                params: {entityId: musicId, pagetype: 'MUSIC', memberId: loginUser.memberId} })
+            .then((result)=>{
+                console.log(result.data.msg)
+                setLike(prevLike => !prevLike);
+            }).catch((err)=>{console.error(err);})
+        }
+    }
+
+    // 플리 추가 모달 열기
+    const handleAddToPlaylist = () => {
+        setShowPlaylistModal(true);
+    };
+
+    // 장바구니 담기
     async function insertCart(){
-        if(!loginUser){
+        if(!loginUser.memberId){
             alert('로그인이 필요한 서비스입니다');
             navigate('/login');
         }else{
              try{
                 const response = await jaxios.post('/api/cart/insertCart', {
                     memberId: loginUser.memberId,
-                    musicIdList
+                    musicIdList: [musicId]
                 });
-                navigate('/storage/myMP3/pending');
+                navigate('/mypage/mp3/pending');
             }catch(error){
                 console.error('장바구니 담기 실패', error)
             }
         }
     }
 
+    // 가사 더보기
     const toggleLyrics = () => {
         setExpandedLyrics((prev) => !prev);
     };
 
-    // ========Reply UI를 재조회하여 댓글추가후 재 조회하는 함수
+    // Reply UI를 재조회하여 댓글추가후 재 조회하는 함수
 
-    const fetchReply = () => {
-        axios.get('/api/community/getReplyList', {params:{pagetype:'MUSIC', entityId: musicId,}})
-        .then((result) => {
-        // 서버로부터 받은 댓글 데이터로 상태 업데이트
-        setReplyMusicList(result.data.replyList);
+    const fetchReply = async () => {
+        await axios.get('/api/community/getReplyList', {
+            params: { pagetype:'MUSIC', entityId: musicId }
         })
-        .catch((err) => {
-        console.error(err);
-        });
+        .then((result) => {
+            // 서버로부터 받은 댓글 데이터로 상태 업데이트
+            setReplyMusicList([...result.data.replyList]);
+        })
+        .catch((err) => { console.error(err); });
     };
-
 
     const handleCommentSubmit = (e) => {
         e.preventDefault();
         // 로그인 여부 확인
-        if (!loginUser.memberId) {alert("로그인하세요"); return; }
+        if (!loginUser.memberId){ alert("로그인하세요"); return; }
 
         // 빈칸 return
-        if (!content.trim()) {alert('댓글을 입력해주세요'); return; }
+        if (!content.trim()){ alert('내용을 입력해주세요'); return; }
 
         setNickname(loginUser.nickname);
-       
-        jaxios.post('/api/community/insertReply', {nickname, content},{params:{pagetype:'MUSIC', entityId: musicId, memberId: loginUser.memberId}})
-        .then((result)=>{
+
+        jaxios.post('/api/community/insertReply', {nickname, content}, {
+            params: { pagetype:'MUSIC', entityId: musicId, memberId: loginUser.memberId}
+        }).then((result)=>{
             if(result.data.msg === 'yes'){
                 alert('댓글이 추가되었습니다.');
                 setContent('');
                 fetchReply();
                 navigate(`/music/${musicId}`);
             }
-        })
-        .catch((err)=>{
-            console.error(err);
-        })
+        }).catch((err)=>{ console.error(err); })
     };
 
     if (!musicDetail) {
@@ -145,23 +161,47 @@ const MusicDetail = () => {
             <div className={styles.detailHeader}>
                 <img src={musicDetail.image} alt={musicDetail.title} className={styles.image} />
                 <div className={styles.info}>
-                <div className={styles.titleContainer}>
-                    <h1 className={styles.title}>{musicDetail.title}</h1>
-                    <button className={styles.likeButton} onClick={handleLike}>
-                    {like ? "❤️" : "♡"}
-                    </button>
-                </div>
+                    <div className={styles.titleContainer}>
+                        <h1 className={styles.title}>{musicDetail.title}</h1>
+                        <button
+                            className={styles.likeButton}
+                            onClick={handleLike}>
+                            { like ? <HiHeart size={20}/> : <HiOutlineHeart size={20}/> }
+                        </button>
+                    </div>
                     <p className={styles.artist} 
-                        onClick={()=>{navigate(`/artist/${musicDetail.artistId}`)}}>
-                            By <span style={{cursor: "pointer"}}>{musicDetail.artistName}</span></p>
+                        onClick={
+                            ()=>{ navigate(`/artist/${musicDetail.artistId}`) }
+                        }>By
+                        <span style={{cursor: "pointer"}}>
+                            {musicDetail.artistName}
+                        </span>
+                    </p>
                     <p className={styles.genre}>장르: {musicDetail.genre}</p>
                     <p className={styles.like}>Likes: 미구현</p>
 
           
                     <div className={styles.buttonGroup}>
-                        <button className={styles.playButton}>▶ 재생</button>
-                        <button className={styles.addButton} onClick={handleAddToPlaylist}>플리 추가</button>
-                        <button className={styles.purchaseButton} onClick={insertCart}>구매</button>
+                        <button
+                            className={styles.playButton}
+                            onClick={()=>{handlePlay(musicDetail.musicId)}}>
+                                <FaPlay size={16}/>&nbsp;재생
+                        </button>
+                        <button
+                            className={styles.addButton}
+                            onClick={()=>{handlePlay2(musicDetail.musicId)}}>
+                                <MdQueueMusic size={22}/>&nbsp;추가
+                        </button>
+                        <button
+                            className={styles.addButton}
+                            onClick={handleAddToPlaylist}>
+                                <MdLibraryMusic size={20}/>&nbsp;플리추가
+                        </button>
+                        <button
+                            className={styles.purchaseButton}
+                            onClick={insertCart}>
+                                <BsFileEarmarkMusicFill size={16}/>&nbsp;구매
+                        </button>
                     </div>
                 </div>
             </div>
@@ -181,8 +221,6 @@ const MusicDetail = () => {
                 )}
             </div>
 
-
-
             <div className={styles.albumSection}>
                 <h3>수록 앨범</h3>
                 <div className={styles.album}>
@@ -194,12 +232,8 @@ const MusicDetail = () => {
                     <div className={styles.albumArtist}
                         onClick={()=>{navigate(`/artist/${musicDetail.artistId}`)}} style={{cursor:'pointer'}}
                     >{musicDetail.artistName}</div>
-                    <div className={styles.albumIndate}>{musicDetail.albumIndate}</div>
                 </div>
             </div>
-
-
-
 
             {/* 댓글 영역 */}
             <div className={styles.commentsSection}>
@@ -216,13 +250,13 @@ const MusicDetail = () => {
                 </form>
                 <div className={styles.commentsList}>
                     {                    
-                        (replyMusicList && replyMusicList.length>0)?(
+                        (replyMusicList && replyMusicList.length > 0) ? (
                             replyMusicList.map((replyMusic, idx)=>{
                                 return(
                                     <div className={styles.commentItem} key={idx}>
                                         <p className={styles.commentAuthor}>{replyMusic.member.memberId}</p>
                                         <p className={styles.commentContent}>{replyMusic.content}</p>
-                                        <small className={styles.commentDate}>{replyMusic.indate.substring(0.10)}</small>
+                                        <small className={styles.commentDate}>{replyMusic.indate.substring(0, 10)}</small>
                                     </div>
                                 )
                             })
@@ -237,11 +271,7 @@ const MusicDetail = () => {
                     musicIdList={[musicId]}
                     onClose={() => setShowPlaylistModal(false)}
                 />
-                )}
-
-
-
-
+            )}
         </div>
     );
 };

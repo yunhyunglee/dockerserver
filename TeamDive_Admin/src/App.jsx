@@ -1,16 +1,17 @@
 import { Routes, Route } from "react-router-dom";
 import { motion } from "framer-motion";
-import Dashboard from "./component/page/DashBoard";
-import SideBar from "./component/SideBar";
+import Dashboard from "./Component/page/DashBoard";
+import SideBar from "./Component/SideBar";
 import NavigationBar from "./component/NavigationBar";
-import User from "./component/page/User";
-import Music from "./component/page/music/Music";
-import Album from "./component/page/music/Album";
-import AddAlbum from "./component/page/music/AddAlbum";
-import UpdateAlbum from "./component/page/music/UpdateAlbum";
-import Login from "./component/Login";
-import MusicController from "./component/page/MusicController";
-import Artist from "./component/page/artist/Artist";
+import User from "./Component/page/user/User";
+import UserDetail from "./Component/page/user/UserDetail";
+import Music from "./Component/page/music/Music";
+import Album from "./Component/page/music/Album";
+import AddAlbum from "./Component/page/music/AddAlbum";
+import UpdateAlbum from "./Component/page/music/UpdateAlbum";
+import Login from "./Component/Login";
+import MusicController from "./Component/page/MusicController";
+import Artist from "./Component/page/artist/Artist";
 import "./style/global.scss";
 import { useSelector } from "react-redux";
 import { useState } from "react";
@@ -37,6 +38,7 @@ const App = () => {
                                 <Route path="/addAlbum" element={<AddAlbum />} />
                                 <Route path="/updateAlbum/:albumId" element={<UpdateAlbum />} />
                                 <Route path="/artist" element={<Artist />} />
+                                <Route path="/UserDetail/:memberId" element={<UserDetail />} />
                                 
                                 <Route path="/musicController" element={<MusicController />}>
                                     <Route path="music" element={<Music />} />

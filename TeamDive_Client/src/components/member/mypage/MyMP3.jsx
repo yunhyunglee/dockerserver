@@ -4,7 +4,7 @@ import { useParams, useLocation, useNavigate, Link } from "react-router-dom";
 import PurchasedMp3 from "./PurchasedMp3";
 import PendingMp3 from "./PendingMp3";
 
-import styles from "../../css/storage/storage.module.css";
+import styles from "../../../css/storage/storage.module.css";
 
 const MyMP3 = () => {
   const { mp3Category } = useParams(); // purchased or pending
@@ -14,7 +14,7 @@ const MyMP3 = () => {
   
   useEffect(() => {
     if (!mp3Category) {
-      navigate("/storage/myMP3/purchased");
+      navigate("/mypage/mp3/purchased");
     }
   }, [mp3Category, navigate]);
 
@@ -22,7 +22,7 @@ const MyMP3 = () => {
     <div>
       <nav className={styles.subTabMenu}>
         <Link
-          to="/storage/myMP3/purchased"
+          to="/mypage/mp3/purchased"
           className={`${styles.tabButton} ${
             location.pathname.includes("purchased") ? styles.active : ""
           }`}
@@ -30,7 +30,7 @@ const MyMP3 = () => {
           구매한 MP3
         </Link>
         <Link
-          to="/storage/myMP3/pending"
+          to="/mypage/mp3/pending"
           className={`${styles.tabButton} ${
             location.pathname.includes("pending") ? styles.active : ""
           }`}

@@ -8,13 +8,17 @@ $button-back: #eeebeb;
 $font-color: #4e5968;
 
 .music-layout {
+    position: fixed;
+    left: 40px;
+    margin-left: 60px;
 
+    position: relative;
     height: 80vh;
     max-width: 600px;
+    z-index: 1000;
 
-    // 📌 상단 Header 스타일
     .header {
-
+        
         position: sticky;
         top: 0;
         left: 0; 
@@ -23,8 +27,6 @@ $font-color: #4e5968;
         border-bottom: 1px solid $font-color ;
         align-items: center;
         padding: 1rem 2rem;
-
-        z-index: 1000;
 
         h2 {
             font-size: 1.8rem;

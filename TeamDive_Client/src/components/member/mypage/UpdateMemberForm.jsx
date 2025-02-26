@@ -7,6 +7,7 @@ import Modal from 'react-modal'
 import DaumPostcode from 'react-daum-postcode'
 import { Cookies } from 'react-cookie'
 import { loginAction, logoutAction } from '../../../store/UserSlice'
+import lion from '../../../../public/image/kakao_lion.png'
 
 import updateStyles from '../../../css/mypage/mypageUpdate.module.css'
 
@@ -16,8 +17,8 @@ const UpdateMemberForm = () => {
   const dispatch = useDispatch()
   const cookies = new Cookies()
 
-  const [preview, setPreview] = useState(`http://localhost:8070/profileImage/${loginUser.image}`)
-  const [image, setImage] = useState(`http://localhost:8070/profileImage/${loginUser.image}`)
+  const [preview, setPreview] = useState(lion)
+  const [image, setImage] = useState('');
 
   const [memberId, setMemberId] = useState('')
   const [password, setPassword] = useState('')
@@ -77,29 +78,24 @@ const UpdateMemberForm = () => {
   }
 
   // 이미지 업로드
-  const fileUp = async (e) => {
-    const file = e.target.files[0]
-    if (!file) return
-
-    // 미리보기
-    const reader = new FileReader()
-    reader.onloadend = () => {
-      setPreview(reader.result)
-    }
-    reader.readAsDataURL(file)
-
-    // 서버 업로드
-    const formData = new FormData()
-    formData.append('image', file)
-
-    try {
-      const result = await axios.post('/api/member/fileUp', formData)
-      setImage(result.data.image)
-    } catch (error) {
-      console.error('파일 업로드 실패:', error)
-      alert('파일 업로드에 실패했습니다.')
-    }
-  }
+    const onImageUpload = async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const formData = new FormData();
+      formData.append("image", file);
+      try {
+          if(image){
+              const response=await axios.delete('/api/music/deleteFile',{params:{file:image}});
+          }
+          let response = await axios.post("/api/music/imageUpload", formData, {
+              headers: { "Content-Type": "multipart/form-data" },
+          });
+         setImage(response.data.image);
+      } catch (error) {
+          console.error("이미지 업로드 실패:", error);
+          alert("이미지 업로드 실패");
+      }
+  };
 
   // 회원정보 수정
   async function onSubmit() {
@@ -169,12 +165,14 @@ const UpdateMemberForm = () => {
 
      
       <div className={updateStyles.imageSection}>
-        {preview ? (
-          <img src={preview} alt="미리보기" className={updateStyles.profilePreview} />
-        ) : (
-          <h3>이미지 미리보기가 없습니다.</h3>
-        )}
-        <input type="file" onChange={fileUp} />
+          <label htmlFor="image">프로필 이미지 (선택)</label>
+          <input type="file" id="imageUpload" accept="image/*" onChange={onImageUpload} style={{ display: "none" }} />
+          <img
+              src={ image || "/images/kakao_lion.png"} 
+              alt="아티스트 이미지"
+              className="artistImage"
+              onClick={() => document.getElementById("imageUpload").click()}
+          />
       </div>
 
 

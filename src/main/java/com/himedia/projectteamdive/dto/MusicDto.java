@@ -29,6 +29,9 @@ public class MusicDto {
 
     // Music -> MusicDTO 변환
     public MusicDto(Music music) {
+        if (music == null) {
+            throw new IllegalArgumentException("Music entity cannot be null");
+        }
         this.musicId = music.getMusicId();
         this.title = music.getTitle();
         this.playCount = music.getPlayCount();

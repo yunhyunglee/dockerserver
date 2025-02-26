@@ -1,27 +1,56 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import jaxios from "../../util/JWTUtil";
+import jaxios from "../../util/JwtUtil";
 import { useSelector } from "react-redux"; 
 import styles from "../../css/detail/artistDetail.module.css";
+
+import PlaylistSelectModal from "./PlaylistSectionModal";
+import { PlayerContext } from "../../context/PlayerContext";
 
 const ArtistDetail = () => {
   const { artistId } = useParams();
   const navigate = useNavigate();
 
   const [isLiked, setIsLiked] = useState(false);
-  const handleLike = () => {setIsLiked((prev) => !prev)};
+  
 
   const loginUser = useSelector((state) => state.user);
 
   const [artistDetail, setArtistDetail] = useState(null);
 
-  
+
   const [artistReplyList, setArtistReplyList] = useState([]);
   const [content, setContent] = useState("");
   const [nickname, setNickname] = useState("");
 
+  const [selectedMusicId, setSelectedMusicId] = useState(null);
+  const [showPlaylistModal, setShowPlaylistModal] = useState(false);
+  const [musicIdList, setMusicIdList] = useState([selectedMusicId]);
+  
+    const handleAddToPlaylist = (musicId) => {
+      setSelectedMusicId(musicId);
+      setShowPlaylistModal(true);
+    };
+    
+    const handleLike = () => {
+      jaxios.post('/api/community/insertLikes',null,{params:{entityId: artistId, pagetype: 'ARTIST', memberId: loginUser.memberId}})
+      .then((result)=>{
+          console.log(result.data.msg)
+          setIsLiked(prevLike => !prevLike);
+      }).catch((err)=>{console.error(err);})
+  }
+
+
+
+
   useEffect(() => {
+    jaxios.get('/api/community/getLikes',{params:{pagetype: 'ARTIST',memberId: loginUser.memberId}})
+        .then((result)=>{
+            if(result.data.likesList.some(likes => likes.artistId == artistId)){
+                setIsLiked(true);
+            }
+        }).catch((err)=>{console.error(err);})
     
     axios
       .get("/api/music/getArtist", { params: { artistId } })
@@ -34,6 +63,41 @@ const ArtistDetail = () => {
     
     fetchReply();
   }, [artistId]);
+
+  async function insertCart(mId) {
+    if (!loginUser) {
+      alert("로그인이 필요한 서비스입니다");
+      navigate("/login");
+    } else {
+      try {
+        const response = await jaxios.post("/api/cart/insertCart", {
+          memberId: loginUser.memberId,
+          musicIdList: [mId], // ★ 클릭된 곡의 ID만 전송
+        });
+        navigate('/mypage/mp3/pending');
+      } catch (error) {
+        console.error("장바구니 담기 실패", error);
+      }
+    }
+  }
+  
+  const {setAddPlaylist,setAddAndPlay}=useContext(PlayerContext);
+      //재생목록에 추가후 즉시재생 
+      //musicId 또는 musicId 배열
+      const handlePlay = (musicId) => {
+        const musicArray = Array.isArray(musicId) 
+      ? musicId.map(num => ({ musicId: num })) 
+      : [{ musicId: musicId }];
+        setAddAndPlay(musicArray);
+      };
+      //재생목록에 추가만
+      const handlePlay2 = (musicId) => {
+        const musicArray = Array.isArray(musicId) 
+      ? musicId.map(num => ({ musicId: num })) 
+      : [{ musicId: musicId }];
+        setAddPlaylist(musicArray);
+  };
+
 
  
   const fetchReply = () => {
@@ -151,21 +215,28 @@ const ArtistDetail = () => {
                     onClick={()=>{navigate(`/album/${music.albumId}`)}}>
                         <span  style={{cursor:"pointer"}}>{music.albumTitle || ""}</span></td>
                   <td className={styles.thActions}>
-                    <button
+                  <button
                       className={styles.iconButton}
-                      onClick={() => alert(`듣기: ${music.title}`)}
+                      onClick={()=>{handlePlay(music.musicId)}}
                     >
                       듣기
                     </button>
                     <button
                       className={styles.iconButton}
-                      onClick={() => alert(`플레이리스트 추가: ${music.title}`)}
+                      onClick={()=>{handlePlay2(music.musicId)}}
+                    >
+                      재생목록+
+                    </button>
+                    <button
+                      className={styles.iconButton}
+                      onClick={() => handleAddToPlaylist(music.musicId)}
                     >
                       플리+
                     </button>
                     <button
                       className={styles.iconButton}
-                      onClick={() => alert(`MP3 구매: ${music.title}`)}
+                      onClick={() => insertCart(music.musicId)} 
+
                     >
                       MP3
                     </button>
@@ -241,6 +312,14 @@ const ArtistDetail = () => {
           )}
         </div>
       </div>
+
+{showPlaylistModal && (
+  <PlaylistSelectModal
+    musicIdList={[selectedMusicId]}  
+    onClose={() => setShowPlaylistModal(false)}
+  />
+)}
+
     </div>
   );
 };

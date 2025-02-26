@@ -1,51 +1,44 @@
 package com.himedia.projectteamdive.controller;
 
-import org.springframework.http.*;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
+import com.himedia.projectteamdive.service.ChatService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/chat")
+
 public class ChatController {
 
-    private static final String HF_CHAT_URL = "https://huggingface.co/chat/conversation";
+    @Autowired
+    private ChatService chatService;
 
-    @PostMapping("/chat")
-    public ResponseEntity<Map<String, Object>> chat(@RequestBody Map<String, String> payload) {
-        String message = payload.get("message");
-
-        // 요청 JSON 데이터 구성
-        Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("inputs", message);
-
-        // HTTP 요청 헤더 설정 (Authorization 헤더 제거)
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        // 요청 객체 생성
-        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
-
-        // HTTP 요청 전송 및 응답 받기
-        RestTemplate restTemplate = new RestTemplate();
+    @PostMapping("/ask")
+    public ResponseEntity<?> chat(@RequestBody Map<String, Object> request) {
         try {
-            ResponseEntity<Map> response = restTemplate.exchange(HF_CHAT_URL, HttpMethod.POST, entity, Map.class);
+            String userMessage = (String) request.get("text");
+            List<Map<String, String>> messages = (List<Map<String, String>>) request.get("messages");
 
-            // 응답 확인
-            System.out.println("📩 Hugging Face 응답: " + response.getBody());
+            if (messages == null) {
+                messages = new ArrayList<>();
+            }
 
-            return ResponseEntity.ok(response.getBody());
+            if (userMessage == null || userMessage.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of("error", "메시지가 비어 있습니다."));
+            }
+
+            String response = chatService.chatWithGPT(userMessage, messages);
+            return ResponseEntity.ok(Map.of("reply", response));
+
         } catch (Exception e) {
-            e.printStackTrace(); // 서버 로그 출력
-
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Hugging Face API 호출 실패: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(Map.of("error", "서버 오류 발생"));
         }
     }
 }
+
+

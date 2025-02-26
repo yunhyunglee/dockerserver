@@ -3,6 +3,8 @@ package com.himedia.projectteamdive.repository;
 import com.himedia.projectteamdive.dto.MemberRecentMusicsDto;
 import com.himedia.projectteamdive.dto.MusicDto;
 import com.himedia.projectteamdive.entity.Music;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -21,20 +23,26 @@ public interface MusicRepository extends JpaRepository<Music, Integer> {
 
     List<Music> findByMoodContaining(String mood);
 
-    @Query("Select m From Music m Where m.mood = :mood And m.genre In :genres ORDER BY RAND() Limit :limit")
-    List<MusicDto> getMusicByMoodAndGenre(@Param("mood") String mood, @Param("genres") List<String> genres, @Param("limit") int limit);
+    @Query("SELECT m FROM Music m WHERE m.mood = :mood AND m.genre IN :genres")
+    List<MusicDto> getMusicByMoodAndGenre(@Param("mood") String mood, @Param("genres") List<String> genres, Pageable pageable);
 
-    @Query("Select m From Music m Where m.mood In :mood And m.genre In :genres ORDER BY RAND() LIMIT :limit")
-    List<MusicDto> getMusicBySimilarMoodsAndGenre(@Param("mood") List<String> mood, @Param("genres") List<String> genres, @Param("limit") int limit);
+    @Query("SELECT m FROM Music m WHERE m.mood IN :moods AND m.genre IN :genres")
+    List<MusicDto> getMusicBySimilarMoodsAndGenre(@Param("moods") List<String> moods, @Param("genres") List<String> genres, Pageable pageable);
 
-    @Query("Select m From Music m JOIN Playcountlist p ON m.musicId = p.music.musicId GROUP BY m.musicId ORDER BY SUM(p.playCount) DESC LIMIT :limit")
-    List<MusicDto> getPopularMusic(@Param("limit") int limit);
+    @Query("SELECT m FROM Music m JOIN Playcountlist p ON m.musicId = p.music.musicId GROUP BY m.musicId ORDER BY SUM(p.playCount) DESC")
+    List<MusicDto> getPopularMusic(Pageable pageable);
 
-    @Query("Select m From Music m ORDER BY RAND() LIMIT :limit")
-    List<MusicDto> getRandomMusic(@Param("limit") int limit);
+    @Query("SELECT m FROM Music m ORDER BY function('RAND')")
+    List<MusicDto> getRandomMusic(Pageable pageable);
 
     @Query("SELECT m FROM Music m WHERE m.musicId IN :musicId")
     List<MusicDto> getMusicByIds(@Param("musicId") List<Integer> musicId);
+
+
+    @Query("SELECT m.musicId FROM Music m " +
+            "WHERE m.album IN (SELECT a FROM Album a ORDER BY a.indate DESC) ")
+    List<Integer> getLatestMusicIds(Pageable pageable);
+
 
 //    @Query("SELECT m FROM Music m WHERE m.musicId IN :ids ORDER BY m.tracknumber ASC")
 //    List<Music> findAllByMusicId(@Param("ids") List<Integer> ids);

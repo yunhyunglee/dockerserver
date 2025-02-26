@@ -21,6 +21,8 @@ import java.util.UUID;
 @Transactional
 public class MemberService {
 
+
+
     @Autowired
     MemberRepository mr;
 
@@ -69,9 +71,19 @@ public class MemberService {
 
     }
 
+
+
+
+
+
     public void deleteMember(String memberId) {
         Member member = mr.findByMemberId(memberId);
         mr.delete(member);
+    }
+
+    public List<Member> getSearchMember(String memberId) {
+        List<Member> list = mr.findByMemberIdContainingIgnoreCase(memberId);
+        return list;
     }
 
 

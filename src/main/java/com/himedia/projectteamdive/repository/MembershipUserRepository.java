@@ -16,16 +16,17 @@ public interface MembershipUserRepository extends JpaRepository<Membership_user,
             "JOIN mu.member m " +
             "WHERE m.memberId = :memberId " + // 구매하려는 유저
             "AND mu.membershipCategory = :membershipCategory " + // 복사 저장된 멤버십 카테고리 비교
-            "AND (mu.endDate IS NULL OR mu.endDate > CURRENT_TIMESTAMP) " + // 활성화 기간 검토
+            "AND mu.active = TRUE " + // active가 TRUE인 멤버십만 조회
             "ORDER BY mu.startDate DESC") // 마지막으로 추가된 멤버십
     Membership_user getLatestActiveMembershipByCategory(@Param("memberId") String memberId, @Param("membershipCategory") String membershipCategory);
+
 
     List<Membership_user> member(Member member);
 
     @Query("SELECT mu FROM Membership_user mu " +
             "JOIN mu.member m " +
             "WHERE m.memberId = :memberId " + // 구매하려는 유저
-            "AND (mu.endDate IS NULL OR mu.endDate > CURRENT_TIMESTAMP) " + // 활성화 기간 검토
+            "AND mu.active = TRUE " + // active가 TRUE인 멤버십만 조회
             "ORDER BY mu.startDate DESC") // 마지막으로 추가된 멤버십
     List<Membership_user> getActiveMembership(String memberId);
 

@@ -8,7 +8,7 @@ import LikedMusic from "./LikedMusic";
 import LikedArtist from "./LikedArtist";
 import LikedAlbum from "./LikedAlbum";
 import MyPlaylist from "./MyPlaylist";
-import MyMP3 from "./MyMP3";
+
 
 import styles from "../../css/storage/storage.module.css";
 
@@ -46,7 +46,7 @@ const Storage = () => {
           {storageCategory === "likedArtist" && <LikedArtist />}
           {storageCategory === "likedAlbum" && <LikedAlbum />}
           {storageCategory === "myPlaylist" && <MyPlaylist />}
-          {storageCategory === "myMP3" && <MyMP3 />}
+
         </div>
       )}
     </div>

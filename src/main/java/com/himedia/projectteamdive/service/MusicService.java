@@ -220,7 +220,7 @@ public class MusicService {
         for(Album album:albumList){
             List<Music>musicList=album.getMusicList();
             for(Music music:musicList){
-                String s = music.getBucketPath().replace("https://d9k8tjx0yo0q5.cloudfront.net/","https://divestreaming.s3.ap-northeast-2.amazonaws.com/");
+                String s = music.getBucketPath().replace("https://d9k8tjx0yo0q5.cloudfront.net/","");
                 ss.deleteFile(s);
             }
         }
@@ -234,7 +234,7 @@ public class MusicService {
         Album album=ar.findByAlbumId(albumId);
         List<Music> musicList=album.getMusicList();
         for (Music music : musicList) {
-            String s = music.getBucketPath().replace("https://d9k8tjx0yo0q5.cloudfront.net/","https://divestreaming.s3.ap-northeast-2.amazonaws.com/");
+            String s = music.getBucketPath().replace("https://d9k8tjx0yo0q5.cloudfront.net/","");
             ss.deleteFile(s);
         }
         Allpage allpage= allr.findByEntityIdAndPagetype(albumId,Pagetype.ALBUM);
@@ -244,7 +244,7 @@ public class MusicService {
 
     public void deleteMusic(int musicId) {
         Music music=mr.findByMusicId(musicId);
-        String s = music.getBucketPath().replace("https://d9k8tjx0yo0q5.cloudfront.net/","https://divestreaming.s3.ap-northeast-2.amazonaws.com/");
+        String s = music.getBucketPath().replace("https://d9k8tjx0yo0q5.cloudfront.net/","");
         ss.deleteFile(s);
         Allpage allpage= allr.findByEntityIdAndPagetype(musicId,Pagetype.MUSIC);
         allr.delete(allpage);
@@ -261,6 +261,8 @@ public class MusicService {
     public void updatePlaylist(Playlist playlist) {
         Playlist p=pr.findByPlaylistId(playlist.getPlaylistId());
         p.setTitle(playlist.getTitle());
+        p.setContent(playlist.getContent());
+        p.setCoverImage(playlist.getCoverImage());
         p.setShayringyn(playlist.isShayringyn());
     }
 
@@ -274,10 +276,12 @@ public class MusicService {
 
     }
 
-    public void updatePlaylistDeleteMusic(int playlistId, int musicId) {
+    public void updatePlaylistDeleteMusic(int playlistId, List<Integer> musicIds) {
         Playlist playlist=pr.findByPlaylistId(playlistId);
-        Music music=mr.findByMusicId(musicId);
-        playlist.removeMusic(music);
+        for (int musicId : musicIds) {
+            Music music=mr.findByMusicId(musicId);
+            playlist.removeMusic(music);
+        }
     }
 
     public void updateAlbumReorder(List<Integer> musicIds, int albumId) {
@@ -433,4 +437,52 @@ public class MusicService {
         result.put("music",musicList);
         return result;
     }
+
+
+    public HashMap<String, Object> getLatestMusicList() {
+        HashMap<String, Object> result = new HashMap<>();
+
+        List<Integer> latestMusicIds = mr.getLatestMusicIds(PageRequest.of(0, 6));
+
+        if (latestMusicIds == null || latestMusicIds.isEmpty()) {
+            result.put("latestMusicList", new ArrayList<>()); // 빈 리스트 반환
+            return result;
+        }else {
+            List<MusicDto> latestMusicList = mr.getMusicByIds(latestMusicIds);
+            result.put("latestMusicList", latestMusicList);
+        }
+        return result;
+    }
+
+    public HashMap<String, Object> getLatestAlbumList() {
+        HashMap<String, Object> result = new HashMap<>();
+        List <Integer> latestAlbumIds = ar.getLatestAlbumIds(PageRequest.of(0,6));
+        if(latestAlbumIds == null || latestAlbumIds.isEmpty()) {
+            result.put("latestAlbumList", new ArrayList<>());
+            return result;
+        }else{
+            List<AlbumDto> latestAlbumList = ar.getAlbumByIds(latestAlbumIds);
+            result.put("latestAlbumList", latestAlbumList);
+        }
+        return result;
+
+    }
+
+    public HashMap<String, Object> getLatestPlayList() {
+        HashMap<String, Object> result = new HashMap<>();
+        List <Integer> latestPlayListIds = pr.getLatestPlayListIds(PageRequest.of(0,6));
+        if(latestPlayListIds == null || latestPlayListIds.isEmpty()) {
+            result.put("latestPlayListList", new ArrayList<>());
+            return result;
+        }else{
+            List<PlaylistDto> latestPlayListofList = pr.getPlaylistByIds(latestPlayListIds)
+                    .stream()
+                    .map(PlaylistDto::new)
+                    .collect(Collectors.toList());
+            result.put("latestPlayListList", latestPlayListofList);
+        }
+        return result;
+    }
+
+
 }

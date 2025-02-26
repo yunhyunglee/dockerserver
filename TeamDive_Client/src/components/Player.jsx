@@ -30,7 +30,7 @@ import PlaylistPlayIcon from '@mui/icons-material/PlaylistPlay';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { PlayerContext } from '../context/PlayerContext';
-
+import jaxios from '../util/JwtUtil';
 // Custom Paper 스타일
 const CustomPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: 'black',
@@ -133,14 +133,10 @@ export default function Player() {
   useEffect(
     ()=>{
       const fetchPlaylist = async () => {
-        if(playlist.length>prevPlaylist.current.length){
+        if(playlist.length != prevPlaylist.current.length){
           const result=await axios.post('/api/music/getCurrentPlaylist',playlist)
           setPlaylist(result.data.playlist);
-          if(result.data.playlist[result.data.playlist.length-1].src){
-            // console.log('현재곡 재생!', result.data.playlist[result.data.playlist.length-1].src);
-            setIndex(result.data.playlist.length-1);
-            // handleAudioChange(result.data.playlist.length-1, true);
-          }
+          localStorage.setItem("playlist",JSON.stringify(result.data.playlist))
         }
         prevPlaylist.current=playlist;
         console.log(playlist);
@@ -148,65 +144,7 @@ export default function Player() {
       fetchPlaylist();
     },[playlist]
   );
-
-  //const [playlist, setPlaylist] = useState([]); // 현재 playlist 상태
-  // const prevPlaylistRef = useRef([]); // 이전 playlist를 useRef로 저장 (렌더링 방지)
-
-  // useEffect(() => {
-  //     const fetchPlaylist = async () => {
-  //         if (!playlist.length) return; // 빈 배열이면 요청하지 않음
-
-  //         const prevPlaylist = prevPlaylistRef.current; // 이전 상태 참조
-
-  //         // 상태가 변경된 경우에만 요청
-  //         if (JSON.stringify(playlist) !== JSON.stringify(prevPlaylist)) {
-  //             try {
-  //                 const result = await axios.post('/api/music/getCurrentPlaylist', playlist);
-
-  //                 if (JSON.stringify(result.data.playlist) !== JSON.stringify(playlist)) {
-  //                     setPlaylist(result.data.playlist);
-  //                 }
-
-  //                 prevPlaylistRef.current = result.data.playlist; // 최신 playlist 상태 업데이트
-  //             } catch (error) {
-  //                 console.error("플레이리스트 가져오기 실패:", error);
-  //             }
-  //         }
-  //     };
-
-  //     fetchPlaylist();
-  //   },[playlist]
-  // );
-
-  //const [playlist, setPlaylist] = useState([]); // 현재 playlist 상태
-  const prevPlaylistRef = useRef([]); // 이전 playlist를 useRef로 저장 (렌더링 방지)
-
-  useEffect(() => {
-      const fetchPlaylist = async () => {
-          if (!playlist.length) return; // 빈 배열이면 요청하지 않음
-
-          const prevPlaylist = prevPlaylistRef.current; // 이전 상태 참조
-
-          // 상태가 변경된 경우에만 요청
-          if (JSON.stringify(playlist) !== JSON.stringify(prevPlaylist)) {
-              try {
-                  const result = await axios.post('/api/music/getCurrentPlaylist', playlist);
-
-                  if (JSON.stringify(result.data.playlist) !== JSON.stringify(playlist)) {
-                      setPlaylist(result.data.playlist);
-                  }
-
-                  prevPlaylistRef.current = result.data.playlist; // 최신 playlist 상태 업데이트
-              } catch (error) {
-                  console.error("플레이리스트 가져오기 실패:", error);
-              }
-          }
-      };
-
-      fetchPlaylist();
-  }, [playlist]); // playlist가 변경될 때만 실행
-
-
+  //30초동안 재생하면 재생수 증가함수 
   const play30second = () => {
     const audio = audioRef.current;
     const interval = setInterval(() => {
@@ -220,33 +158,56 @@ export default function Player() {
   useEffect(() => {
     setIsplayed(false);
   }, [currentSong]);
-
+  //다른 컴포넌트에서 재생할 음악데이터 받음  
   const { addPlaylist, setAddPlaylist } = useContext(PlayerContext);
   const {addAndPlay,setAddAndPlay} = useContext(PlayerContext);
-
   useEffect(() => {
     if (addPlaylist) {
-      setPlaylist(prevPlaylist => [...prevPlaylist, { musicId: addPlaylist }]);
+      setPlaylist(prevPlaylist => [...prevPlaylist, ...addPlaylist]);
       setAddPlaylist(null);
     }
-    // if(addAndPlay){
-    //   setPlaylist(prevPlaylist => {
-    //     const updatelist=[...prevPlaylist, { musicId: addAndPlay }]
-    //     setCurrentSong(updatelist[updatelist.length-1]);
-    //     return updatelist;
-    //   });
-    //   if (!isPlaying&&audioRef.current) {
-    //     audioRef.current.load();
-    //     setTimeout(() => {
-    //       if (!isPlaying) {
-    //         togglePlay();
-    //       }
-    //     }, 100);
-    //   }
-    //   setAddAndPlay(null)
-     
-    // }
+    if(addAndPlay){
+      setPlaylist(prevPlaylist => [...prevPlaylist, ...addAndPlay]);
+    }
   }, [addPlaylist,addAndPlay]);
+
+  useEffect(
+    ()=>{
+
+      if(playlist.length> 0 && playlist[playlist.length-1].src && addAndPlay){
+        setIndex(playlist.length-1);
+        handleAudioChange(playlist.length-1,true);
+        setAddAndPlay(null);
+      }
+    },[playlist]
+  );
+  const [membership,setMembership]=useState(false);
+  //멤버십 조회, 처음 렌더링시 플레이리스트 스토리지에서 가져옴
+  useEffect(
+    ()=>{
+    
+      const storedPlaylist = JSON.parse(localStorage.getItem("playlist"));
+      setPlaylist(storedPlaylist||[]);
+      console.log('storedUser',storedPlaylist);
+      axios.get('/api/membership/checkActiveMembership',{params:{memberId:loginUser.memberId, category: 'streaming'}})
+      .then((result)=>{
+        if(result.data.message=='yes'){
+          setMembership(true)
+        }
+      }).catch((err)=>{console.error(err);})
+    },[]
+  );
+  //멤버십없으면 60초 제한
+  useEffect(
+    ()=>{
+      if(!membership && elapsed>=60){
+        toggleSkipForward('auto');
+      }
+    },[elapsed]
+  );
+  const removePlaylist=(i)=>{
+    setPlaylist(prev => prev.filter((_,index)=> index!==i) )
+  }
 
 
 
@@ -630,21 +591,24 @@ export default function Player() {
             </Box>
             {currentSongs.map((song, i) => (
               <Box
-                key={`${song.musicId}-${i}`}
-                sx={{
-                  paddingY: 1,
-                  paddingX: 1,
-                  borderRadius: '6px',
-                  mb: 1,
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease-in-out',
-                  '&:hover': {
-                    backgroundColor: 'rgba(255,255,255,0.1)',
-                    transform: 'scale(1.02)',
-                  },
-                }}
-                onClick={() => handleSelectSong(playlist.indexOf(song))}
-              >
+              key={`${song.musicId}-${i}`}
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                paddingY: 1,
+                paddingX: 1,
+                borderRadius: '6px',
+                mb: 1,
+                cursor: 'pointer',
+                transition: 'all 0.2s ease-in-out',
+                '&:hover': {
+                  backgroundColor: 'rgba(255,255,255,0.1)',
+                  transform: 'scale(1.02)',
+                },
+              }}
+            >
+              <Box onClick={() => handleSelectSong(playlist.indexOf(song))}>
                 <Typography variant="subtitle1" sx={{ color: 'silver' }}>
                   {song.title}
                 </Typography>
@@ -652,6 +616,10 @@ export default function Player() {
                   {song.artist}
                 </Typography>
               </Box>
+              <IconButton size="small" sx={{ color: 'silver' }} onClick={()=>removePlaylist(i)}>
+                <CloseIcon />
+              </IconButton>
+            </Box>
             ))}
             {filteredPlaylist.length > songsPerPage && (
               <Box sx={{ display: 'flex', justifyContent: 'center', mt: 1 }}>
