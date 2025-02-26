@@ -97,7 +97,7 @@ const MusicDetail = () => {
                     memberId: loginUser.memberId,
                     musicIdList: [musicId]
                 });
-                navigate('/storage/myMP3/pending');
+                navigate('/mypage/mp3/pending');
             }catch(error){
                 console.error('장바구니 담기 실패', error)
             }
