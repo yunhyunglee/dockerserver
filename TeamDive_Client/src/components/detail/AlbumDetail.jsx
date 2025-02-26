@@ -10,32 +10,21 @@ const AlbumDetail = () => {
   const navigate = useNavigate();
   const loginUser = useSelector((state) => state.user);
 
-  
   const [albumDetail, setAlbumDetail] = useState(null);
-
-  
   const [albumReplyList, setAlbumReplyList] = useState([]);
   const [content, setContent] = useState('');
   const [nickname, setNickname] = useState('');
-
   const [isLiked, setIsLiked] = useState(false);
-
-
 
   const [selectedMusicId, setSelectedMusicId] = useState(null);
   const [showPlaylistModal, setShowPlaylistModal] = useState(false);
   const [musicIdList, setMusicIdList] = useState([selectedMusicId]);
-  
-  
 
   const handleAddToPlaylist = (musicId) => {
     setSelectedMusicId(musicId);
     setShowPlaylistModal(true);
   };
     
-
-
-  
   const handleLike = () => {
     jaxios.post('/api/community/insertLikes',null,{params:{entityId: albumId, pagetype: 'ALBUM', memberId: loginUser.memberId}})
     .then((result)=>{
@@ -44,9 +33,6 @@ const AlbumDetail = () => {
     }).catch((err)=>{console.error(err);})
   }
 
-
-
-  
   useEffect(() => {
     jaxios.get('/api/community/getLikes',{params:{pagetype: 'ALBUM',memberId: loginUser.memberId}})
     .then((result)=>{
@@ -54,7 +40,6 @@ const AlbumDetail = () => {
             setIsLiked(true);
         }
     }).catch((err)=>{console.error(err);})
-
 
     jaxios
       .get('/api/music/getAlbum', { params: { albumId } })
@@ -81,25 +66,20 @@ const AlbumDetail = () => {
       });
   };
 
-
   const handleCommentSubmit = (e) => {
     e.preventDefault();
-
 
     if (!loginUser?.memberId) {
       alert('로그인이 필요한 서비스입니다.');
       return;
     }
 
-
     if (!content.trim()) {
       alert('댓글을 입력해주세요.');
       return;
     }
 
-  
     setNickname(loginUser.nickname);
-
    
     jaxios
       .post(
@@ -119,28 +99,22 @@ const AlbumDetail = () => {
       });
   };
 
-
   async function insertCart(mId) {
-    if (!loginUser) {
-      alert("로그인이 필요한 서비스입니다");
-      navigate("/login");
+    if (!loginUser.memberId) {
+      alert('로그인이 필요한 서비스입니다');
+      navigate('/login');
     } else {
       try {
-        const response = await jaxios.post("/api/cart/insertCart", {
+        const response = await jaxios.post('/api/cart/insertCart', {
           memberId: loginUser.memberId,
           musicIdList: [mId], // ★ 클릭된 곡의 ID만 전송
         });
-        navigate("/storage/myMP3/pending");
+        navigate('/storage/myMP3/pending');
       } catch (error) {
-        console.error("장바구니 담기 실패", error);
+        console.error('장바구니 담기 실패', error);
       }
     }
   }
-
-
-
-
-
  
   const handleTrackClick = (musicId) => {
     navigate(`/music/${musicId}`);
