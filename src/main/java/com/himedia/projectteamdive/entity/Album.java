@@ -1,6 +1,7 @@
 package com.himedia.projectteamdive.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.himedia.projectteamdive.repository.MusicRepository;
 import jakarta.persistence.*;
@@ -27,6 +28,7 @@ public class Album {
     private int albumId;
     private String title;
     private String image;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private Timestamp indate;
     @Column(length = 1000)
     private String content;

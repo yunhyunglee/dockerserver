@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react'
-import axios from 'axios'
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import "../../../style/music.scss";
@@ -25,7 +24,7 @@ const Artist = () => {
     // 전체 가수 목록 불러오기
     const getArtistList = async () => {
         try {
-            const response = await axios.get("/api/music/getAllArtist"); 
+            const response = await jaxios.get("/api/music/getAllArtist"); 
             const artistListData = response.data.artist || []; 
             setArtistList(artistListData);
             
@@ -40,29 +39,14 @@ const Artist = () => {
     }, []);
 
     // 가수 추가 후 리스트 갱신
-    const addArtistToList = async (newArtist) => {
-        await getArtistList();
-        if (!newArtist || !newArtist.artistId) {
-            console.error("❌ 유효하지 않은 가수 데이터:", newArtist);
-            return;
-        }
-        try {
-            const response = await axios.get(`/api/music/getArtist?artistId=${newArtist.artistId}`);
-            const artistData  = response.data.artist;
-            if (artistData) {
-                setArtistList(prev => [...prev, artistData]);
-            } else {
-                console.error("❌ 응답 데이터에 가수 정보 없음:", response.data);
-            }
-        } catch (error) {
-            console.error("❌ 새로운 가수 정보 불러오기 실패:", error);
-        }
+    const addArtistToList = async () => {
+        await getArtistList(); // 전체 리스트를 새로 불러와 중복을 방지
     };
 
  //--------------------------------------------------------------------------
     const openUpdateModal = async (artistId) => {
         try{
-            const response = await axios.get(`/api/music/getArtist?artistId=${artistId}`);
+            const response = await jaxios.get(`/api/music/getArtist?artistId=${artistId}`);
             setSelectedArtist(response.data.artist);
             setUpdateModal(true);
         } catch(error) {
@@ -73,22 +57,26 @@ const Artist = () => {
     
  //--------------------------------------------------------------------------
     const deleteArtist = async (artistId) => {
-        if(!window.confirm("정말 삭제하시겠습니까?")) return;
+        if (!window.confirm("정말 삭제하시겠습니까?")) return;
 
-        try{
-            const response = await axios.delete(`/api/music/deleteArtist`,{data: {artistId}});
-            if(response.data.msg === "yes"){
+        try {
+            // 백엔드에서 DELETE 요청을 Query Parameter로 받음
+            const response = await jaxios.delete(`/api/music/deleteArtist`, {
+                params: { artistId }, // Query Parameter 방식으로 전달
+            });
+
+            if (response.data.msg === "yes") {
                 alert("삭제 완료!");
                 setArtistList(prev => prev.filter(artist => artist.artistId !== artistId));
-            }else{
+            } else {
                 alert("삭제 실패");
             }
-        }catch(error){
+        } catch (error) {
             console.error("가수 삭제 오류:", error);
             alert("삭제 중 오류 발생");
         }
+};
 
-    };
 
 
     

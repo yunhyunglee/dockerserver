@@ -185,6 +185,7 @@ export default function Player() {
   //멤버십 조회, 처음 렌더링시 플레이리스트 스토리지에서 가져옴
   useEffect(
     ()=>{
+    
       const storedPlaylist = JSON.parse(localStorage.getItem("playlist"));
       setPlaylist(storedPlaylist||[]);
       console.log('storedUser',storedPlaylist);
