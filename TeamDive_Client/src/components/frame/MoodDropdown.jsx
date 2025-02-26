@@ -12,7 +12,7 @@ const MoodDropdown = ({ onMoodSelect }) => {
   const handleSelectMood = (mood) => {
     setSelectedMood(mood);
     setIsOpen(false);
-    //console.log('선택된 기분:', mood);
+    console.log('무드드랍다운에서 선택된 기분:', mood);
 
     // 2) 부모(App)까지 전달
     if (onMoodSelect) {

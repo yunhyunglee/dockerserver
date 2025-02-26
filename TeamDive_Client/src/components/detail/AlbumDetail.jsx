@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import jaxios from '../../util/JwtUtil';
 import styles from '../../css/detail/albumDetail.module.css';
 import PlaylistSelectModal from './PlaylistSectionModal';
+import axios from 'axios';
 
 const AlbumDetail = () => {
   const { albumId } = useParams();
@@ -26,6 +27,13 @@ const AlbumDetail = () => {
   };
     
   const handleLike = () => {
+
+
+    if (!loginUser || !loginUser.memberId) {
+      alert('로그인이 필요한 서비스입니다.');
+      return;
+    }
+
     jaxios.post('/api/community/insertLikes',null,{params:{entityId: albumId, pagetype: 'ALBUM', memberId: loginUser.memberId}})
     .then((result)=>{
         console.log(result.data.msg)
@@ -34,27 +42,34 @@ const AlbumDetail = () => {
   }
 
   useEffect(() => {
+
+
+    if (loginUser.memberId) {
+
     jaxios.get('/api/community/getLikes',{params:{pagetype: 'ALBUM',memberId: loginUser.memberId}})
     .then((result)=>{
         if(result.data.LikesList.some(likes => likes.allpage.entityId == albumId)){
             setIsLiked(true);
         }
     }).catch((err)=>{console.error(err);})
+    }
 
-    jaxios
+
+    axios
       .get('/api/music/getAlbum', { params: { albumId } })
       .then((res) => {
         console.log(res.data.album);
         setAlbumDetail(res.data.album);
       })
       .catch((err) => console.error(err));
+    
 
     fetchReply();
   }, [albumId]);
 
 
   const fetchReply = () => {
-    jaxios
+    axios
       .get('/api/community/getReplyList', {
         params: { pagetype: 'ALBUM', entityId: albumId },
       })
