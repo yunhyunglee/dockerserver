@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import styles from '../../css/detail/musicDetail.module.css';
@@ -7,6 +7,7 @@ import PlaylistSelectModal from './PlaylistSectionModal';
 
 import axios from 'axios';
 import jaxios from '../../util/JwtUtil';
+import { PlayerContext } from '../../context/PlayerContext';
 
 const MusicDetail = () => {
     const { musicId } = useParams();
@@ -41,6 +42,23 @@ const MusicDetail = () => {
       
       setShowPlaylistModal(true);
     };
+
+    const {setAddPlaylist,setAddAndPlay}=useContext(PlayerContext);
+      //재생목록에 추가후 즉시재생 
+      //musicId 또는 musicId 배열
+      const handlePlay = (musicId) => {
+        const musicArray = Array.isArray(musicId) 
+      ? musicId.map(num => ({ musicId: num })) 
+      : [{ musicId: musicId }];
+        setAddAndPlay(musicArray);
+      };
+      //재생목록에 추가만
+      const handlePlay2 = (musicId) => {
+        const musicArray = Array.isArray(musicId) 
+      ? musicId.map(num => ({ musicId: num })) 
+      : [{ musicId: musicId }];
+        setAddPlaylist(musicArray);
+      };
     
     
 
@@ -170,7 +188,8 @@ const MusicDetail = () => {
 
           
                     <div className={styles.buttonGroup}>
-                        <button className={styles.playButton}>▶ 재생</button>
+                        <button className={styles.playButton} onClick={()=>{handlePlay(musicDetail.musicId)}}>▶ 재생</button>
+                        <button className={styles.addButton} onClick={()=>{handlePlay2(musicDetail.musicId)}}>Ξ 추가</button>
                         <button className={styles.addButton} onClick={handleAddToPlaylist}>플리 추가</button>
                         <button className={styles.purchaseButton} onClick={insertCart}>구매</button>
                     </div>
