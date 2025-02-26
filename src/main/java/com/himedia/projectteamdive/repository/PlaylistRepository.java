@@ -22,7 +22,7 @@ public interface PlaylistRepository extends JpaRepository<Playlist, Integer> {
     @Query("SELECT p.playlistId FROM Playlist p WHERE p.shayringyn = true ORDER BY p.indate DESC")
     List<Integer> getLatestPlayListIds(Pageable pageable);
 
-    @Query("SELECT p FROM Playlist p WHERE p.playlistId IN : playlistId")
+    @Query("SELECT p FROM Playlist p WHERE p.playlistId IN :latestPlayListIds")
     List<PlaylistDto> getPlaylistByIds(List<Integer> latestPlayListIds);
 
 }
