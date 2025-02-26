@@ -69,13 +69,13 @@ const PurchasedMp3 = () => {
     //다운로드
     const [isDownloading, setIsDownloading] = useState(false);
 
-    const downloadFile = async () => {
+    const downloadFile = async (music) => {
       setIsDownloading(true);
       // const filePath = currentSong.src; // 서버에 요청할 파일 경로
     
       try {
-        const response = await axios.get('/api/music/download', {
-          params: { musicId: currentSong.musicId },
+        const response = await jaxios.get('/api/music/download', {
+          params: { musicId : music.musicId },
           responseType: 'arraybuffer' // 파일 데이터를 binary 형식으로 받기 위한 설정
         });
     
@@ -87,7 +87,7 @@ const PurchasedMp3 = () => {
           const url = window.URL.createObjectURL(blob);
           const link = document.createElement('a');
           link.href = url;
-          link.download = `${currentSong.artist}-${currentSong.title}.mp3`; // 원하는 파일 이름
+          link.download = `${music.artist}-${music.title}.mp3`; // 원하는 파일 이름
           link.click();
           window.URL.revokeObjectURL(url); // 다운로드 후 URL 해제
         } else {
@@ -165,7 +165,7 @@ const PurchasedMp3 = () => {
                                     {/* MP3 다운로드 버튼 */}
                                     <button
                                         className={styles.buyBtn}
-                                        onClick={()=>downloadFile()} 
+                                        onClick={()=>downloadFile(music)} 
                                         disabled={isDownloading}
                                     >
                                          {isDownloading ? '다운로드 중...' : '다운로드'}
