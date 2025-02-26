@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
@@ -13,6 +13,7 @@ import styles from '../../css/detail/albumDetail.module.css';
 import { FaPlay } from "react-icons/fa";
 import { HiOutlineHeart } from "react-icons/hi";
 import { HiHeart } from "react-icons/hi";
+import { PlayerContext } from '../../context/PlayerContext';
 
 const AlbumDetail = () => {
     const { albumId } = useParams();
@@ -49,6 +50,23 @@ const AlbumDetail = () => {
 
       fetchReply();
     }, [albumId]);
+
+    const {setAddPlaylist,setAddAndPlay}=useContext(PlayerContext);
+    //재생목록에 추가후 즉시재생 
+    //musicId 또는 musicId 배열
+    const handlePlay = (musicId) => {
+        const musicArray = Array.isArray(musicId) 
+    ? musicId.map(num => ({ musicId: num })) 
+    : [{ musicId: musicId }];
+        setAddAndPlay(musicArray);
+    };
+    //재생목록에 추가만
+    const handlePlay2 = (musicId) => {
+        const musicArray = Array.isArray(musicId) 
+    ? musicId.map(num => ({ musicId: num })) 
+    : [{ musicId: musicId }];
+        setAddPlaylist(musicArray);
+    };
 
     const handleAddToPlaylist = (musicId) => {
         setSelectedMusicId(musicId);
@@ -173,7 +191,7 @@ const AlbumDetail = () => {
 
                     {/* 버튼들 */}
                     <div className={styles.buttonGroup}>
-                        <button className={styles.playButton}>
+                        <button className={styles.playButton} onClick={()=>{handlePlay(albumDetail.musicList.map(id => id.musicId))}}>
                             <FaPlay size={14}/>&nbsp;전체재생
                         </button>
                     </div>
@@ -213,9 +231,15 @@ const AlbumDetail = () => {
                                 <td className={styles.actionIcons}>
                                     <button
                                         className={styles.iconButton}
-                                        onClick={() => alert(`듣기: ${track.title}`)}
+                                        onClick={() => handlePlay(track)}
                                     >
                                       듣기
+                                    </button>
+                                    <button
+                                        className={styles.iconButton}
+                                        onClick={() => handlePlay2(track)}
+                                    >
+                                      재생목록추가
                                     </button>
                                     <button
                                         className={styles.iconButton}
