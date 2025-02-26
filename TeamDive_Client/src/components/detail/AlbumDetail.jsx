@@ -34,7 +34,7 @@ const AlbumDetail = () => {
             jaxios.get('/api/community/getLikes', {
                 params: { pagetype: 'ALBUM', memberId: loginUser.memberId }
             }).then((result)=>{
-                if(result.data.LikesList.some(likes => likes.allpage.entityId == albumId)){
+                if(result.data.likesList.some(likes => likes.albumId == albumId)){
                     setIsLiked(true);
                 }
           }).catch((err)=>{console.error(err);})

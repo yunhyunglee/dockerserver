@@ -47,7 +47,7 @@ const ArtistDetail = () => {
   useEffect(() => {
     jaxios.get('/api/community/getLikes',{params:{pagetype: 'ARTIST',memberId: loginUser.memberId}})
         .then((result)=>{
-            if(result.data.LikesList.some(likes => likes.allpage.entityId == artistId)){
+            if(result.data.likesList.some(likes => likes.artistId == artistId)){
                 setIsLiked(true);
             }
         }).catch((err)=>{console.error(err);})

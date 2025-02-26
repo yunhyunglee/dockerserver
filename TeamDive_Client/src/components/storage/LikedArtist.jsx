@@ -4,30 +4,6 @@ import jaxios from "../../util/JwtUtil";
 import { useSelector } from "react-redux";
 
 const LikedArtist = () => {
-  // 가짜 데이터 예시
-  // const [likedArtists, setLikedArtists] = useState([
-  //   {
-  //     artistId: 1,
-  //     artistName: "엔믹스",
-  //     debut: "2022-02-22",
-  //     country: "Korea",
-  //     image: "/public/image/artist/artist1.jpg",
-  //   },
-  //   {
-  //     artistId: 2,
-  //     artistName: "아이유",
-  //     debut: "2008-09-18",
-  //     country: "Korea",
-  //     image: "/public/image/artist/artist2.jpg",
-  //   },
-  //   {
-  //     artistId: 3,
-  //     artistName: "NewJeans",
-  //     debut: "2022-08-01",
-  //     country: "Korea",
-  //     image: "/public/image/artist/artist3.jpg",
-  //   },
-  // ]);
 
   const [likeArtistList, setLikeArtistList] = useState([]);
   const loginUser = useSelector(state=>state.user);
@@ -35,7 +11,8 @@ const LikedArtist = () => {
   useEffect(()=>{
     jaxios.get('/api/community/getLikes', {params:{pagetype:'ARTIST', memberId: loginUser.memberId}})
     .then((result)=>{
-      setLikeArtistList(result.data.likeArtistList||[]);
+      setLikeArtistList(result.data.likesList||[]);
+      console.log(result.data.likesList)
     })
     .catch((err)=>{
       console.error(err);
@@ -45,6 +22,10 @@ const LikedArtist = () => {
   // 좋아요 취소
   const handleUnlike = (artistId) => {
     if (window.confirm("좋아요를 취소할까요?")) {
+      jaxios.post('/api/community/insertLikes', null, {
+        params: { entityId: artistId, pagetype: 'ARTIST', memberId: loginUser.memberId } 
+      }).then((result)=>{
+      }).catch((err)=>{console.error(err);});
       setLikeArtistList((prev) =>
         prev.filter((artist) => artist.artistId !== artistId)
       );
