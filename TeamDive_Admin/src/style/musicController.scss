@@ -8,6 +8,10 @@ $button-back: #eeebeb;
 $font-color: #4e5968;
 
 .music-layout {
+    position: fixed;
+    left: 40px;
+    margin-left: 60px;
+
     position: relative;
     height: 80vh;
     max-width: 600px;

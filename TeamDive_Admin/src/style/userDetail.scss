@@ -1,0 +1,116 @@
+@use "sass:color";
+
+$user-font-color: #4e5968;
+$user-light-blue: #64b5f6;
+$user-medium-blue: #1976d2;
+$user-background: #f8f9fa;
+$user-border: #ddd;
+
+.userDetailPage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+
+    background-color: $user-background;
+
+    .userDetailContent {
+        background: white;
+        padding: 20px 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        width: 500px;
+        max-width: 90%;
+
+        h1 {
+            font-size: 24px;
+            color: $user-font-color;
+            margin-bottom: 20px;
+        }
+
+        .content {
+            width: 500px;
+            position: relative;
+            left: -20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            background: #fff;
+
+
+            border-bottom: 1px solid $user-border ;
+    
+        }
+        strong{
+            color: #1976d2;
+        }
+
+        .profileContainer {
+            text-align: center;
+
+            .image {
+                width: 120px;
+                height: 120px;
+                border-radius: 50%;
+                border: 3px solid $user-border;
+                object-fit: cover;
+            }
+        }
+
+        .infoContainer {
+            text-align: left;
+            flex-grow: 1;
+
+            p {
+                font-size: 16px;
+                color: $user-font-color;
+                margin: 5px 0;
+            }
+        }
+
+        h3 {
+            font-size: 18px;
+            margin-top: 20px;
+            color: $user-medium-blue;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+
+            li {
+                font-size: 14px;
+                padding: 5px 0;
+                color: $user-font-color;
+            }
+        }
+
+        .buttonContainer {
+            margin-top: 20px;
+            text-align: center;
+
+            .backButton {
+                background: $user-medium-blue;
+                color: white;
+                padding: 10px 15px;
+                border: none;
+                border-radius: 5px;
+                font-size: 16px;
+                cursor: pointer;
+                transition: background 0.3s;
+
+                &:hover {
+                    background: color.scale($user-medium-blue,$lightness: 10%);
+                }
+            }
+        }
+    }
+    input{
+        width: 100px;
+        border: 1px solid $user-border ;
+    }
+}

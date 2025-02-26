@@ -4,6 +4,7 @@ import Dashboard from "./Component/page/DashBoard";
 import SideBar from "./Component/SideBar";
 import NavigationBar from "./component/NavigationBar";
 import User from "./Component/page/user/User";
+import UserDetail from "./Component/page/user/UserDetail";
 import Music from "./Component/page/music/Music";
 import Album from "./Component/page/music/Album";
 import AddAlbum from "./Component/page/music/AddAlbum";
@@ -37,6 +38,7 @@ const App = () => {
                                 <Route path="/addAlbum" element={<AddAlbum />} />
                                 <Route path="/updateAlbum/:albumId" element={<UpdateAlbum />} />
                                 <Route path="/artist" element={<Artist />} />
+                                <Route path="/UserDetail/:memberId" element={<UserDetail />} />
                                 
                                 <Route path="/musicController" element={<MusicController />}>
                                     <Route path="music" element={<Music />} />

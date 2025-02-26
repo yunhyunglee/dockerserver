@@ -29,7 +29,7 @@ const SideBar = () => {
     return (
         <div className={`sidebar ${sidebarOpen ? "open" : "closed"}`}>
             <button className="toggleSidebarBtn" onClick={() => setSidebarOpen(!sidebarOpen)}>
-                {sidebarOpen ? "◀" : "▶"} 
+                {/* {sidebarOpen ? "◀" : "▶"}  */}
             </button>
             <h2 className="logo">{sidebarOpen ? "Dive Admin" : "DA"}</h2>
             <ul>
