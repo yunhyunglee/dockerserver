@@ -43,7 +43,7 @@ const LikedMusic = () => {
     useEffect(()=>{
       jaxios.get('/api/community/getLikes', {params:{pagetype:'MUSIC', memberId: loginUser.memberId}})
       .then((result)=>{
-        setLikeArtistList(result.data.likeArtistList);
+        setLikeMusicList(result.data.likeMusicList||[]);
       })
       .catch((err)=>{
         console.error(err);
@@ -96,6 +96,7 @@ const LikedMusic = () => {
 
     const isAllSelected =
     likeMusicList.length > 0 && selectedIds.length === likeMusicList.length;
+    
     const isSomeSelected = selectedIds.length > 0;
 
     return (

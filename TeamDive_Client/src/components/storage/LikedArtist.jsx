@@ -35,7 +35,7 @@ const LikedArtist = () => {
   useEffect(()=>{
     jaxios.get('/api/community/getLikes', {params:{pagetype:'ARTIST', memberId: loginUser.memberId}})
     .then((result)=>{
-      setLikeArtistList(result.data.likeArtistList);
+      setLikeArtistList(result.data.likeArtistList||[]);
     })
     .catch((err)=>{
       console.error(err);

@@ -18,7 +18,7 @@ class ProjectTeamDiveApplicationTests {
     void contextLoads() {
 
         BCryptPasswordEncoder pe = new BCryptPasswordEncoder();
-        System.out.println(pe.encode("a123456789"));
+        System.out.println(pe.encode("1234"));
 
     }
 
