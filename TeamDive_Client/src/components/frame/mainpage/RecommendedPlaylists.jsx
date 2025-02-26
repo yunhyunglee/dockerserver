@@ -13,7 +13,7 @@ const RecommendedPlaylists = ({ playList }) => {
         const fetchLatestPlayList = async () => {
             try {
                 const result = await axios.get('/api/music/latestPlayList');
-                setLatestPlayList(result.data.latestPlayList);
+                setLatestPlayList(result.data.latestPlayListList || []);
             } catch (err) {
                 console.error(err);
             }
@@ -27,8 +27,8 @@ const RecommendedPlaylists = ({ playList }) => {
             {
                 (latestPlayList)?(
                     latestPlayList.map((playList, idx) => (
-                        <div key={playList.playListId} className={styles.playlistItem}
-                            onClick={()=>{navigate(`/playList/${playList.playListId}`)}}
+                        <div key={idx} className={styles.playlistItem}
+                            onClick={()=>{navigate(`/playList/${playList.playlistId}`)}}
                         >
                             <div className={styles.playlistCover}>
                                 {/* 플레이리스트 대표 이미지가 있다면 여기에 표시 */}

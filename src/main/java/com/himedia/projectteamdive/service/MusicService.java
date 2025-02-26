@@ -475,7 +475,10 @@ public class MusicService {
             result.put("latestPlayListList", new ArrayList<>());
             return result;
         }else{
-            List<PlaylistDto> latestPlayListofList = pr.getPlaylistByIds(latestPlayListIds);
+            List<PlaylistDto> latestPlayListofList = pr.getPlaylistByIds(latestPlayListIds)
+                    .stream()
+                    .map(PlaylistDto::new)
+                    .collect(Collectors.toList());
             result.put("latestPlayListList", latestPlayListofList);
         }
         return result;
