@@ -7,10 +7,14 @@ import com.himedia.projectteamdive.entity.*;
 import com.himedia.projectteamdive.service.MusicService;
 import com.himedia.projectteamdive.service.S3Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
 
@@ -337,6 +341,29 @@ public class MusicController {
         List<Member> members=ms.getSearchMember(memberId);
         map.put("member",members);
         return map;
+    }
+    @GetMapping("/download")
+    public ResponseEntity<byte[]> downloadFile(@RequestParam("musicId")int musicId) throws IOException {
+        MusicDto m= ms.getMusic(musicId);
+        // S3에서 파일 다운로드
+        File downloadedFile = ss.downloadFile(m.getBucketPath().replace("https://d9k8tjx0yo0q5.cloudfront.net/",""));
+
+        if (downloadedFile == null) {
+            return ResponseEntity.status(500).body("파일 다운로드 실패".getBytes());
+        }
+
+        // 파일 데이터를 byte[]로 읽기
+        byte[] fileData = Files.readAllBytes(downloadedFile.toPath());
+
+        // HTTP 응답에 파일 데이터 및 헤더 설정
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + downloadedFile.getName());
+
+        downloadedFile.delete();
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(fileData);  // 실제 파일 데이터를 응답 본문에 포함
     }
 
 

@@ -220,7 +220,7 @@ public class MusicService {
         for(Album album:albumList){
             List<Music>musicList=album.getMusicList();
             for(Music music:musicList){
-                String s = music.getBucketPath().replace("https://d9k8tjx0yo0q5.cloudfront.net/","https://divestreaming.s3.ap-northeast-2.amazonaws.com/");
+                String s = music.getBucketPath().replace("https://d9k8tjx0yo0q5.cloudfront.net/","");
                 ss.deleteFile(s);
             }
         }
@@ -234,7 +234,7 @@ public class MusicService {
         Album album=ar.findByAlbumId(albumId);
         List<Music> musicList=album.getMusicList();
         for (Music music : musicList) {
-            String s = music.getBucketPath().replace("https://d9k8tjx0yo0q5.cloudfront.net/","https://divestreaming.s3.ap-northeast-2.amazonaws.com/");
+            String s = music.getBucketPath().replace("https://d9k8tjx0yo0q5.cloudfront.net/","");
             ss.deleteFile(s);
         }
         Allpage allpage= allr.findByEntityIdAndPagetype(albumId,Pagetype.ALBUM);
@@ -244,7 +244,7 @@ public class MusicService {
 
     public void deleteMusic(int musicId) {
         Music music=mr.findByMusicId(musicId);
-        String s = music.getBucketPath().replace("https://d9k8tjx0yo0q5.cloudfront.net/","https://divestreaming.s3.ap-northeast-2.amazonaws.com/");
+        String s = music.getBucketPath().replace("https://d9k8tjx0yo0q5.cloudfront.net/","");
         ss.deleteFile(s);
         Allpage allpage= allr.findByEntityIdAndPagetype(musicId,Pagetype.MUSIC);
         allr.delete(allpage);
