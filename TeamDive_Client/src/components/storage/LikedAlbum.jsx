@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styles from "../../css/storage/likedAlbum.module.css";
 import jaxios from '../../util/JwtUtil'
 import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const LikedAlbum = () => {
   // const [likedAlbums, setLikedAlbums] = useState([
@@ -41,7 +41,7 @@ const LikedAlbum = () => {
   const [likeAlbumList, setLikeAlbumList] = useState([]);
   
   const loginUser = useSelector(state=>state.user);
-
+  const navigate= useNavigate();
   useEffect(()=>{
     jaxios.get('/api/community/getLikes', {params:{pagetype:'ALBUM', memberId: loginUser.memberId}})
     .then((result)=>{
@@ -109,7 +109,7 @@ const LikedAlbum = () => {
 
                     <button
                       className={styles.detailBtn}
-                      onClick={() => console.log(`Go to album detail page: ${likeAlbum.albumId}`)}
+                      onClick={() => navigate(`/album/${likeAlbum.albumId}`)}
                     >
                       상세보기
                     </button>
