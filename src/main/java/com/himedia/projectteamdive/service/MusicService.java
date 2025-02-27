@@ -485,4 +485,13 @@ public class MusicService {
     }
 
 
+
+    public List<MusicDto> getMusicByMood(String mood) {
+        List<Music> musicList = mr.findByMood(mood);
+
+        return musicList.stream()
+                .map(MusicDto::new)
+                .collect(Collectors.toList());
+    }
+
 }

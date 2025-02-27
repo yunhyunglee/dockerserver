@@ -75,7 +75,7 @@ const LikedMusic = () => {
     const handleUnlike = (id) => {
       if (window.confirm("좋아요를 취소할까요?")) {
         jaxios.post('/api/community/insertLikes', null, {
-          params: { entityId: id, pagetype: 'MUSIC', memberId: loginUser.memberId } 
+          params: { entityId: id, pagetype: 'MUSIC', memberId: loginUser.memberId }
         }).then((result)=>{
         }).catch((err)=>{console.error(err);});
 
@@ -102,7 +102,6 @@ const LikedMusic = () => {
 
     const isAllSelected =
     likeMusicList.length > 0 && selectedIds.length === likeMusicList.length;
-    
     const isSomeSelected = selectedIds.length > 0;
 
     return (
