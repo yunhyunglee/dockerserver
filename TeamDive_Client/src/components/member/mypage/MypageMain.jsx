@@ -4,6 +4,7 @@ import axios from 'axios';
 import jaxios from '../../../util/JwtUtil';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
+import Userdefault from '../../../../public/image/user.png'
 
 const MypageMain = () => {
   const [memberShipUserList, setMemberShipUserList] = useState([]);
@@ -28,7 +29,7 @@ const MypageMain = () => {
         <div className={mypageStyle.mypageProfile}>
           <img
             className={mypageStyle.mypageProfileImage}
-            src={loginUser.image}
+            src={loginUser.image||Userdefault}
           />
           <div className={mypageStyle.mypageProfileDetails}>
             <div className={mypageStyle.mypageField}>

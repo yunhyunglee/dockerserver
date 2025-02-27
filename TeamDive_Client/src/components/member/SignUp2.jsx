@@ -4,7 +4,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Modal from "react-modal";
 import DaumPostcode from "react-daum-postcode";
-
+import Userdefault from '../../../public/image/user.png'
 const SignUpStep2 = ({ setStep, step1Data }) => {
     const [image, setImage] = useState(null); // 업로드할 파일 저장
     const [preview, setPreview] = useState(""); // 이미지 미리보기 URL
@@ -166,9 +166,9 @@ const SignUpStep2 = ({ setStep, step1Data }) => {
                 <label htmlFor="image">프로필 이미지 (선택)</label>
                 <input type="file" id="imageUpload" accept="image/*" onChange={onImageUpload} style={{ display: "none" }} />
                 <img
-                    src={ image || "/images/kakao_lion.png"} 
+                    src={ image || Userdefault} 
                     alt="아티스트 이미지"
-                    className="artistImage"
+                    className={joinStyles.profilePreview}
                     onClick={() => document.getElementById("imageUpload").click()}
                 />
             </div>

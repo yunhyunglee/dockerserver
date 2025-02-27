@@ -95,15 +95,16 @@ public class MusicService {
         playCount.forEach((musicId,playcountToday)->{
             Music music= mr.findByMusicId(musicId);
             if(music!=null) {
-
-                MemberRecentMusics recentMusic=MemberRecentMusics.builder()
-                        .member(memr.findByMemberId(memberId))
-                        .music(music).build();
-                mrmr.save(recentMusic);
-                List<MemberRecentMusics> recentMusics=mrmr.findByMember_MemberIdOrderByIdAsc(memberId);
-                if(recentMusics.size()>30){
-                    MemberRecentMusics recentMusic2=recentMusics.get(0);
-                    mrmr.delete(recentMusic2);
+                if(memberId!=null && !memberId.equals("")) {
+                    MemberRecentMusics recentMusic=MemberRecentMusics.builder()
+                            .member(memr.findByMemberId(memberId))
+                            .music(music).build();
+                    mrmr.save(recentMusic);
+                    List<MemberRecentMusics> recentMusics=mrmr.findByMember_MemberIdOrderByIdAsc(memberId);
+                    if(recentMusics.size()>30){
+                        MemberRecentMusics recentMusic2=recentMusics.get(0);
+                        mrmr.delete(recentMusic2);
+                    }
                 }
 
                 music.setPlayCount(music.getPlayCount()+ playcountToday);

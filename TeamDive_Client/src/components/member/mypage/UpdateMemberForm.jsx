@@ -7,7 +7,7 @@ import Modal from 'react-modal'
 import DaumPostcode from 'react-daum-postcode'
 import { Cookies } from 'react-cookie'
 import { loginAction, logoutAction } from '../../../store/UserSlice'
-import lion from '../../../../public/image/kakao_lion.png'
+import Userdefault from '../../../../public/image/user.png'
 
 import updateStyles from '../../../css/mypage/mypageUpdate.module.css'
 
@@ -17,7 +17,7 @@ const UpdateMemberForm = () => {
   const dispatch = useDispatch()
   const cookies = new Cookies()
 
-  const [preview, setPreview] = useState(lion)
+  const [preview, setPreview] = useState('')
   const [image, setImage] = useState('');
 
   const [memberId, setMemberId] = useState('')
@@ -61,8 +61,8 @@ const UpdateMemberForm = () => {
     setImage(loginUser.image)
 
     if (loginUser.provider === 'kakao') {
-      setPassword('kakao')
-      setPasswordCheck('kakao')
+      setPassword('kakao1234')
+      setPasswordCheck('kakao1234')
     }
   }, [loginUser])
 
@@ -168,9 +168,9 @@ const UpdateMemberForm = () => {
           <label htmlFor="image">프로필 이미지 (선택)</label>
           <input type="file" id="imageUpload" accept="image/*" onChange={onImageUpload} style={{ display: "none" }} />
           <img
-              src={ image || "/images/kakao_lion.png"} 
+              src={ image || Userdefault} 
               alt="아티스트 이미지"
-              className="artistImage"
+              className={updateStyles.profilePreview}
               onClick={() => document.getElementById("imageUpload").click()}
           />
       </div>
