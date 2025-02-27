@@ -23,6 +23,7 @@ function Home({ menubar, mood, setMood}) {
 
     function onLogout(){
         cookies.remove('user');
+        localStorage.removeItem("chatMsg");
         dispatch( logoutAction() );
         alert('로그아웃 되었습니다.');
         navigate('/')

@@ -43,6 +43,8 @@ public interface MusicRepository extends JpaRepository<Music, Integer> {
             "WHERE m.album IN (SELECT a FROM Album a ORDER BY a.indate DESC) ")
     List<Integer> getLatestMusicIds(Pageable pageable);
 
+    List<Music> findByMood(String mood);
+
 
 //    @Query("SELECT m FROM Music m WHERE m.musicId IN :ids ORDER BY m.tracknumber ASC")
 //    List<Music> findAllByMusicId(@Param("ids") List<Integer> ids);

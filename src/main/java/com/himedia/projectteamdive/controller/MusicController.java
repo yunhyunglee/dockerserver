@@ -4,10 +4,12 @@ import com.himedia.projectteamdive.dto.AlbumDto;
 import com.himedia.projectteamdive.dto.MusicDto;
 import com.himedia.projectteamdive.dto.PlaylistDto;
 import com.himedia.projectteamdive.entity.*;
+import com.himedia.projectteamdive.repository.MusicRepository;
 import com.himedia.projectteamdive.service.MusicService;
 import com.himedia.projectteamdive.service.S3Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +19,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/music")
@@ -359,6 +362,12 @@ public class MusicController {
                 .headers(headers)
                 .body(fileData);  // 실제 파일 데이터를 응답 본문에 포함
     }
+
+
+
+
+
+
 
 
 }

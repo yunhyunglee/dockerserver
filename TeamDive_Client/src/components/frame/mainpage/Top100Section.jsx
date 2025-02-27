@@ -59,7 +59,7 @@ const Top100Section = () => {
                 // alt={item.music.title}
                 className={styles.top100Image}
                 onClick={() => handlePlay(item.music.musicId)}
-              />
+              />  <div className={styles.playIcon}>▶</div>
               <p className={styles.top100Rank}>{index + 1}</p>
               <div className={styles.titleArea}>
                 <p

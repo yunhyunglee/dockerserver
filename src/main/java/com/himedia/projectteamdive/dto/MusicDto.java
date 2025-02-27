@@ -14,6 +14,7 @@ public class MusicDto {
     private int musicId;
     private String title;
     private int playCount;
+    private String mood;
     private String genre;
     private String lyrics;
     private boolean titleMusic;
@@ -35,6 +36,7 @@ public class MusicDto {
         this.musicId = music.getMusicId();
         this.title = music.getTitle();
         this.playCount = music.getPlayCount();
+        this.mood = music.getMood();
         this.genre = music.getGenre();
         this.lyrics = music.getLyrics();
         this.titleMusic = music.isTitleMusic();

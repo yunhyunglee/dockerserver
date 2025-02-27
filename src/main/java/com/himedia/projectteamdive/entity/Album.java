@@ -38,6 +38,7 @@ public class Album {
     Artist artist;
 
     @OneToMany(mappedBy = "album",cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     @OrderBy("trackNumber ASC")
     @Builder.Default
     List<Music> musicList =new ArrayList<>();

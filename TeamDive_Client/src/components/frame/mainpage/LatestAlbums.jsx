@@ -35,7 +35,7 @@ const LatestAlbums = ({ album }) => {
                             <img src={album.image} alt={album.title} className={styles.albumCover} />
                             <div className={styles.albumDetails}>
                                 <h4>{album.title}</h4>
-                                <small>{album.indate.substring(0 ,10)}</small>
+                                {/* <small>{album.indate.substring(0 ,10)}</small> */}
                             </div>
                         </div>
                     ))
