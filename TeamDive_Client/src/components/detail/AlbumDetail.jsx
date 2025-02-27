@@ -6,14 +6,17 @@ import axios from 'axios';
 import jaxios from '../../util/JwtUtil';
 
 import PlaylistSelectModal from './PlaylistSectionModal';
+import { PlayerContext } from "../../context/PlayerContext";
 
 import styles from '../../css/detail/albumDetail.module.css';
 
 /* 아이콘 */
+import { MdLibraryMusic } from "react-icons/md";
+import { BsFileEarmarkMusicFill } from "react-icons/bs";
 import { FaPlay } from "react-icons/fa";
+import { MdQueueMusic } from "react-icons/md";
 import { HiOutlineHeart } from "react-icons/hi";
 import { HiHeart } from "react-icons/hi";
-import { PlayerContext } from '../../context/PlayerContext';
 
 const AlbumDetail = () => {
     const { albumId } = useParams();
@@ -25,12 +28,24 @@ const AlbumDetail = () => {
     const [content, setContent] = useState('');
     const [nickname, setNickname] = useState('');
     const [isLiked, setIsLiked] = useState(false);
+    const [likeCount, setLikeCount] = useState(0);
 
     const [selectedMusicId, setSelectedMusicId] = useState(null);
     const [showPlaylistModal, setShowPlaylistModal] = useState(false);
-    const [musicIdList, setMusicIdList] = useState([selectedMusicId]);
 
     useEffect(() => {
+        // 앨범 상세 정보 조회
+        axios.get('/api/music/getAlbum', {
+            params: { albumId }
+        }).then((res) => {
+            console.log(res.data.album);
+            setAlbumDetail(res.data.album);
+        }).catch((err) => console.error(err));
+
+        fetchReply(); // 댓글 조회
+        fetchLikeCount(); // 좋아요 총 개수 조회
+
+        // 로그인 유저의 좋아요 여부 확인
         if (loginUser.memberId) {
             jaxios.get('/api/community/getLikes', {
                 params: { pagetype: 'ALBUM', memberId: loginUser.memberId }
@@ -38,17 +53,8 @@ const AlbumDetail = () => {
                 if(result.data.likesList.some(likes => likes.albumId == albumId)){
                     setIsLiked(true);
                 }
-          }).catch((err)=>{console.error(err);})
-      }
-
-      axios.get('/api/music/getAlbum', {
-          params: { albumId }
-        }).then((res) => {
-            console.log(res.data.album);
-            setAlbumDetail(res.data.album);
-        }).catch((err) => console.error(err));
-
-      fetchReply();
+            }).catch((err)=>{console.error(err);})
+        }
     }, [albumId]);
 
     const {setAddPlaylist,setAddAndPlay}=useContext(PlayerContext);
@@ -72,7 +78,19 @@ const AlbumDetail = () => {
         setSelectedMusicId(musicId);
         setShowPlaylistModal(true);
     };
+
+    // 좋아요 개수 불러오기
+    const fetchLikeCount = async () => {
+        await axios.get('/api/community/getLikeCount', {
+            params: { pageType: 'ALBUM', entityId: albumId }
+        }).then((result) => {
+            setLikeCount(result.data.likeCount);
+        }).catch((error) => {
+            console.error('좋아요 개수 불러오기 실패', error);
+        })
+    }
     
+    // 좋아요 추가 / 취소
     const handleLike = async () => {
         if (!loginUser || !loginUser.memberId) {
             alert('로그인이 필요한 서비스입니다.');
@@ -82,6 +100,7 @@ const AlbumDetail = () => {
             }).then((result)=>{
                 console.log(result.data.msg)
                 setIsLiked(prevLike => !prevLike);
+                fetchLikeCount();
             }).catch((err)=>{console.error(err);})
         }
     }
@@ -166,9 +185,9 @@ const AlbumDetail = () => {
                         <h1 className={styles.albumTitle}>{albumDetail.title}</h1>
                         <button
                             className={`${styles.likeButton}`}
-                            onClick={handleLike}
-                        >
+                            onClick={handleLike}>
                             { isLiked ? <HiHeart size={20}/> : <HiOutlineHeart size={20}/> }
+                            &nbsp;{likeCount}
                         </button>
                     </div>
                     
@@ -212,13 +231,16 @@ const AlbumDetail = () => {
                     <tbody>
                         {albumDetail.musicList.map((track, index) => (
                             <tr key={track.musicId} className={styles.trackRow}>
-                                <td>{index + 1}</td>
+                                <td className={styles.thNumber}>
+                                    {index + 1}
+                                </td>
                                 <td
+                                    className={styles.thTitle}
                                     style={{ cursor: 'pointer' }}
                                     onClick={() => handleTrackClick(track.musicId)}>
                                     {track.title}
                                 </td>
-                                <td>
+                                <td className={styles.thArtist}>
                                     <span
                                         onClick={() => {
                                             navigate(`/artist/${track.artistId}`);
@@ -233,26 +255,26 @@ const AlbumDetail = () => {
                                         className={styles.iconButton}
                                         onClick={()=>{handlePlay(music.musicId)}}
                                     >
-                                        듣기
+                                        <FaPlay size={16}/>
                                     </button>
                                     <button
                                         className={styles.iconButton}
                                         onClick={()=>{handlePlay2(music.musicId)}}
                                     >
-                                        재생목록+
+                                        <MdQueueMusic size={22}/>
                                     </button>
                                     <button
                                         className={styles.iconButton}
                                         onClick={() => handleAddToPlaylist(music.musicId)}
                                     >
-                                        플리+
+                                        <MdLibraryMusic size={20}/>
                                     </button>
                                     <button
                                         className={styles.iconButton}
                                         onClick={() => insertCart(music.musicId)} 
                 
                                     >
-                                        MP3
+                                        <BsFileEarmarkMusicFill size={18}/>
                                     </button>
                                 </td>
                             </tr>

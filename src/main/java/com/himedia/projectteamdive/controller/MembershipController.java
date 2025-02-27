@@ -62,7 +62,6 @@ public class MembershipController {
         HashMap<String, Object> result = new HashMap<>();
         List<Membership_user>list = mss.getActiveMembership(memberId);
         result.put("memberShipUserList", list);
-        System.out.println(result);
         return result;
     }
 
