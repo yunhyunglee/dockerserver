@@ -1,21 +1,33 @@
 // src/components/NoticeBoard.jsx
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import styles from '../../../css/mainPage/noticeBoard.module.css';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
-const NoticeBoard = ({ notice }) => {
+const NoticeBoard = () => {
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const [noticeList, setNoticeList] = useState([]);
+
+    useEffect(()=>{
+        axios.get('/api/community/getNoticeList')
+        .then((result)=>{
+            setNoticeList(result.data.noticeList);
+        })
+        .catch((err)=>{
+            console.error(err);
+        })
+    },[]);
 
     return (
         <div className={styles.noticeBoard}>
-            {notice.map(notice => (
+            {noticeList.map(notice => (
                 <div key={notice.noticeId} className={styles.noticeItem}
                     onClick={()=>{navigate(`/notice/${notice.noticeId}`)}}
                 >
                     <h3>{notice.title}</h3>
                     <p>{notice.content}</p>
-                    <small>{notice.indate}</small>
+                    <small>{notice.indate.substring(0,10)}</small>
                     
                 </div>
             ))}

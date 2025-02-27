@@ -78,4 +78,12 @@ public class CommunityController {
         return result;
     }
 
+    @GetMapping("/getNoticeList")
+    public HashMap<String, Object> getNoticeList(){
+        HashMap<String,Object> map = new HashMap<>();
+        map.put("noticeList", cs.getNoticeList());
+        return map;
+    }
+
+
 }

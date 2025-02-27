@@ -1,40 +1,48 @@
 
 import React, { useState, useEffect } from 'react';
 import styles from '../../../css/mainPage/notice.module.css';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 function NoticeRotator() {
-  const notices = [
-    '공지사항 111111111111111111111',
-    '가나다라 마바사 아자차카 타파하',
-    '공지사항 333',
-    '공지사항 444444444',
-    '공지사항 55555555555555555555555555555555555',
-    '공지사항 6',
-
-  ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [noticeList, setNoticeList] = useState([]);
+
+  useEffect(()=>{
+      axios.get('/api/community/getNoticeList')
+      .then((result)=>{
+          setNoticeList(result.data.noticeList || []);
+      })
+      .catch((err)=>{
+          console.log(err);
+      })
+  },[]);
 
   
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % notices.length);
-    }, 1500);
-    return () => clearInterval(intervalId);
-  }, [notices.length]);
+      const intervalId = setInterval(() => {
+          setCurrentIndex((prev) => (prev + 1) % noticeList.length);
+      }, 1500);
+      return () => clearInterval(intervalId);
+  }, [noticeList]);
 
   
   const TextCut = (text, maxLength) => {
-    return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
+      return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
   };
 
   return (
-    <div className={styles.noticeContainer}>
-      <span className={styles.noticeLabel}>공지사항 </span>
-      <span className={styles.noticeText} key={currentIndex}>
-        {TextCut(notices[currentIndex], 13)}
-      </span>
-    </div>
+      <div className={styles.noticeContainer}>
+          <span className={styles.noticeLabel}>
+              <Link to='/notice'>공지사항</Link> 
+          </span>
+          <span className={styles.noticeText} key={currentIndex}>
+              {noticeList.length > 0 
+                  ? TextCut(noticeList[currentIndex]?.title || "공지 없음", 13) 
+                  : "공지사항이 없습니다."}
+          </span>
+      </div>
   );
 }
 
