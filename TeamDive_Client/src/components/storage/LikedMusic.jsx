@@ -1,45 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "../../css/storage/likedMusic.module.css";
 import { useSelector } from "react-redux";
 import jaxios from "../../util/JwtUtil";
+import { PlayerContext } from "../../context/PlayerContext";
 
 const LikedMusic = () => {
-    // 더미 데이터: "liked" 곡들
-    // const [likedMusic, setLikedMusic] = useState([
-    //   {
-    //     musicId: 1,
-    //     title: "별별별",
-    //     genre: "아이돌",
-    //     artist: "엔믹스",
-    //     image: "/public/image/album/album1.jpg",
-    //   },
-    //   {
-    //     musicId: 2,
-    //     title: "고민중독",
-    //     genre: "밴드",
-    //     artist: "QWER",
-    //     image: "/public/image/album/album2.jpg",
-    //   },
-    //   {
-    //     musicId: 3,
-    //     title: "Dash",
-    //     genre: "아이돌",
-    //     artist: "엔믹스",
-    //     image: "/public/image/album/album3.jpg",
-    //   },
-    //   {
-    //     musicId: 4,
-    //     title: "Love me Like that",
-    //     genre: "아이돌",
-    //     artist: "엔믹스",
-    //     image: "/public/image/album/album8.jpg",
-    //   },
-    // ]);
+    
 
     const [likeMusicList, setLikeMusicList] = useState([]);
     const loginUser = useSelector(state=>state.user);
-
+    const navigate=useNavigate();
     useEffect(()=>{
       jaxios.get('/api/community/getLikes', {params:{pagetype:'MUSIC', memberId: loginUser.memberId}})
       .then((result)=>{
@@ -50,6 +21,39 @@ const LikedMusic = () => {
         console.error(err);
       })
     },[]);
+
+    const {setAddPlaylist,setAddAndPlay}=useContext(PlayerContext);
+    //재생목록에 추가후 즉시재생 
+    //musicId 또는 musicId 배열
+    const handlePlay = (musicId) => {
+      const musicArray = Array.isArray(musicId) 
+    ? musicId.map(num => ({ musicId: num })) 
+    : [{ musicId: musicId }];
+      setAddAndPlay(musicArray);
+    };
+    //재생목록에 추가만
+    const handlePlay2 = (musicId) => {
+      const musicArray = Array.isArray(musicId) 
+    ? musicId.map(num => ({ musicId: num })) 
+    : [{ musicId: musicId }];
+      setAddPlaylist(musicArray);
+    };
+    async function insertCart(id){
+      if(!loginUser.memberId){
+          alert('로그인이 필요한 서비스입니다');
+          navigate('/login');
+      }else{
+           try{
+              const response = await jaxios.post('/api/cart/insertCart', {
+                  memberId: loginUser.memberId,
+                  musicIdList: id? [id] : selectedIds
+              });
+              navigate('/mypage/mp3/pending');
+          }catch(error){
+              console.error('장바구니 담기 실패', error)
+          }
+      }
+    }
     
 
     // 체크박스 선택 상태 (musicId 배열)
@@ -73,7 +77,6 @@ const LikedMusic = () => {
 
     // 좋아요 취소 -> confirm 후 제거
     const handleUnlike = (id) => {
-      if (window.confirm("좋아요를 취소할까요?")) {
         jaxios.post('/api/community/insertLikes', null, {
           params: { entityId: id, pagetype: 'MUSIC', memberId: loginUser.memberId }
         }).then((result)=>{
@@ -82,22 +85,21 @@ const LikedMusic = () => {
         setLikeMusicList((prev) => prev.filter((music) => music.musicId !== id));
         // 혹시 선택 목록에도 있으면 제거
         setSelectedIds((prev) => prev.filter((x) => x !== id));
-      }
     };
 
     // "전체 재생" 버튼 클릭
     const handlePlayAll = () => {
-      alert(`전체 재생: 선택된 곡 ${selectedIds.length}개`);
+      handlePlay2(selectedIds);
     };
 
     // "전체 구매" 버튼 클릭
     const handleBuyAll = () => {
-      alert(`전체 구매: 선택된 곡 ${selectedIds.length}개`);
+      insertCart();
     };
 
     // 곡별 MP3 구매 버튼
     const handleBuyOne = (id) => {
-      alert(`곡 (ID: ${id})을(를) 구매합니다!`);
+      insertCart(id);
     };
 
     const isAllSelected =
