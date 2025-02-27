@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import jaxios from "../../util/JwtUtil";
 import styles from "../../css/detail/playlistDetail.module.css";
+import { PlayerContext } from "../../context/PlayerContext";
 
 const PlaylistDetail = () => {
   const { playlistId } = useParams();
@@ -247,9 +248,40 @@ const PlaylistDetail = () => {
     }
   };
 
-  const handlePlay = (music) => {
-    alert(`재생: ${music.title}`);
+  async function insertCart(mId) {
+    if (!loginUser) {
+      alert("로그인이 필요한 서비스입니다");
+      navigate("/login");
+    } else {
+      try {
+        const response = await jaxios.post("/api/cart/insertCart", {
+          memberId: loginUser.memberId,
+          musicIdList: [mId], // ★ 클릭된 곡의 ID만 전송
+        });
+        navigate('/mypage/mp3/pending');
+      } catch (error) {
+        console.error("장바구니 담기 실패", error);
+      }
+    }
+  }
+  
+  const {setAddPlaylist,setAddAndPlay}=useContext(PlayerContext);
+      //재생목록에 추가후 즉시재생 
+      //musicId 또는 musicId 배열
+      const handlePlay = (musicId) => {
+        const musicArray = Array.isArray(musicId) 
+      ? musicId.map(num => ({ musicId: num })) 
+      : [{ musicId: musicId }];
+        setAddAndPlay(musicArray);
+      };
+      //재생목록에 추가만
+      const handlePlay2 = (musicId) => {
+        const musicArray = Array.isArray(musicId) 
+      ? musicId.map(num => ({ musicId: num })) 
+      : [{ musicId: musicId }];
+        setAddPlaylist(musicArray);
   };
+
   
   const handleBuy = async (music) => {
     if (!loginUser?.memberId) {
@@ -426,8 +458,31 @@ const PlaylistDetail = () => {
                   </div>
 
                   <div className={styles.songActions}>
-                    <button onClick={() => handlePlay(music)}>재생</button>
-                    <button onClick={() => handleBuy(music)}>구매</button>
+                    <button
+                      className={styles.iconButton}
+                      onClick={()=>{handlePlay(music.musicId)}}
+                    >
+                      듣기
+                    </button>
+                    <button
+                      className={styles.iconButton}
+                      onClick={()=>{handlePlay2(music.musicId)}}
+                    >
+                      재생목록+
+                    </button>
+                    <button
+                      className={styles.iconButton}
+                      onClick={() => handleAddToPlaylist(music.musicId)}
+                    >
+                      플리+
+                    </button>
+                    <button
+                      className={styles.iconButton}
+                      onClick={() => insertCart(music.musicId)} 
+
+                    >
+                      MP3
+                    </button>
                   </div>
                 </div>
               );

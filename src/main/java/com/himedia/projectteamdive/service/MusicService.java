@@ -270,11 +270,16 @@ public class MusicService {
     @Transactional
     public void updatePlaylistAddMusic(int playlistId, List<Integer> musics) {
         Playlist playlist=pr.findByPlaylistId(playlistId);
-        for (int musicId : musics) {
-            Music music=mr.findByMusicId(musicId);
-            playlist.addMusic(music);
-        }
+        Set<Integer> existingMusicIds = playlist.getMusicList().stream()
+                .map(Music::getMusicId)
+                .collect(Collectors.toSet());
 
+        for (int musicId : musics) {
+            if (!existingMusicIds.contains(musicId)) {
+                Music music = mr.findByMusicId(musicId);
+                playlist.addMusic(music);
+            }
+        }
     }
 
     public void updatePlaylistDeleteMusic(int playlistId, List<Integer> musicIds) {
