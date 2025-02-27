@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import styles from '../../../css/mainPage/mainPage.module.css';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import jaxios from '../../../util/JWTUtil';
+import jaxios from '../../../util/JwtUtil';
 
 const MyRecentMusicSection = () => {
 
