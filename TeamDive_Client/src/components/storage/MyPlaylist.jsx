@@ -99,8 +99,13 @@ const MyPlaylist = () => {
       setCoverImageName("");
       setShowModal(false);
       setPlaylists([]);
-      await Promise.all([playlistView(),likelistView()]);
-      setPlaylists(prev=>Array.from(new Set(prev.map(JSON.stringify))).map(JSON.parse));
+
+      const [playlistData, likeData] = await Promise.all([playlistView(), likelistView()]);
+  
+      setPlaylists(
+        Array.from(new Set([...(playlistData || []), ...(likeData || [])].map(JSON.stringify)))
+        .map(JSON.parse)
+      );
     } catch (err) {
       console.error("플레이리스트 생성 에러:", err);
       alert("플레이리스트 생성 실패");
@@ -114,9 +119,8 @@ const MyPlaylist = () => {
         // 플레이리스트와 좋아요 리스트를 비동기적으로 가져오기
         const [playlistData, likeData] = await Promise.all([playlistView(), likelistView()]);
   
-        // 기존 데이터를 합친 후, 중복 제거
-        setPlaylists(prev => 
-          Array.from(new Set([...prev, ...playlistData, ...likeData].map(JSON.stringify)))
+        setPlaylists(
+          Array.from(new Set([...(playlistData || []), ...(likeData || [])].map(JSON.stringify)))
           .map(JSON.parse)
         );
       } catch (err) {

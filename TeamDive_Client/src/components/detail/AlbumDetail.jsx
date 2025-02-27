@@ -228,28 +228,29 @@ const AlbumDetail = () => {
                                         {albumDetail.artistName}
                                     </span>
                                 </td>
-                                <td className={styles.actionIcons}>
+                                <td className={styles.thActions}>
                                     <button
                                         className={styles.iconButton}
-                                        onClick={() => handlePlay(track)}
+                                        onClick={()=>{handlePlay(music.musicId)}}
                                     >
-                                      듣기
+                                        듣기
                                     </button>
                                     <button
                                         className={styles.iconButton}
-                                        onClick={() => handlePlay2(track)}
+                                        onClick={()=>{handlePlay2(music.musicId)}}
                                     >
-                                      재생목록추가
+                                        재생목록+
                                     </button>
                                     <button
                                         className={styles.iconButton}
-                                        onClick={()=>{handleAddToPlaylist(track.musicId)}}
+                                        onClick={() => handleAddToPlaylist(music.musicId)}
                                     >
                                         플리+
                                     </button>
                                     <button
                                         className={styles.iconButton}
-                                        onClick={() => insertCart(track.musicId)} 
+                                        onClick={() => insertCart(music.musicId)} 
+                
                                     >
                                         MP3
                                     </button>

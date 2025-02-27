@@ -215,7 +215,7 @@ const ArtistDetail = () => {
                     onClick={()=>{navigate(`/album/${music.albumId}`)}}>
                         <span  style={{cursor:"pointer"}}>{music.albumTitle || ""}</span></td>
                   <td className={styles.thActions}>
-                  <button
+                    <button
                       className={styles.iconButton}
                       onClick={()=>{handlePlay(music.musicId)}}
                     >
