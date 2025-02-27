@@ -117,4 +117,11 @@ public class CommunityService {
         // 좋아요 개수 반환
         return lr.countByAllpage(allPage);
     }
+
+    @Autowired
+    NoticeRepository nr;
+
+    public List<Notice> getNoticeList() {
+        return nr.findAll(); // 전체 공지 가져오기
+    }
 }

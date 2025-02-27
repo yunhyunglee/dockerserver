@@ -27,6 +27,8 @@ import PlaylistDetail from "./components/detail/PlaylistDetail";
 import SearchResults from "./components/frame/mainpage/SearchResult";
 import SearchMore from "./components/frame/mainpage/SearchMore";
 
+import NoticeBoard from "./components/frame/mainpage/NoticeBoard";
+
 
 function AppRoutes({mood, setMood}) {
     return (
@@ -70,7 +72,8 @@ function AppRoutes({mood, setMood}) {
             <Route path="/search" element={<SearchResults />}/>
             <Route path="/searchMore" element={<SearchMore />} /> 
 
-
+            {/* 공지 */}
+            <Route path="/notice" element={<NoticeBoard />} /> 
 
 
 
