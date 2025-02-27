@@ -27,6 +27,7 @@ const MusicDetail = () => {
     const [content, setContent] = useState('');
     const [replyMusicList, setReplyMusicList] = useState([]);
     const [like, setLike] = useState(false);
+    const [likeCount, setLikeCount] = useState(0);
 
     const loginUser = useSelector((state) => state.user);
     const navigate = useNavigate();
@@ -60,6 +61,7 @@ const MusicDetail = () => {
             }).catch((err)=>{ console.error(err); })
         }
         fetchMusicDetail();
+        fetchLikeCount(); // 좋아요 개수 불러오기
         fetchReply(); // 댓글 정보 불러오기
 
         // 좋아요 상태 설정
@@ -74,16 +76,28 @@ const MusicDetail = () => {
         }
     }, [musicId]);
 
+    // 좋아요 개수 불러오기
+    const fetchLikeCount = async () => {
+        await axios.get('/api/community/getLikeCount', {
+            params: { pageType: 'MUSIC', entityId: musicId }
+        }).then((result) => {
+            setLikeCount(result.data.likeCount);
+        }).catch((error) => {
+            console.error('좋아요 개수 불러오기 실패', error);
+        })
+    }
+
     // 좋아요 추가, 취소
-    const handleLike = () => {
+    const handleLike = async () => {
         if(!loginUser.memberId){
             alert('로그인이 필요한 서비스입니다');
         }else{
-            jaxios.post('/api/community/insertLikes', null, {
+            await jaxios.post('/api/community/insertLikes', null, {
                 params: {entityId: musicId, pagetype: 'MUSIC', memberId: loginUser.memberId} })
             .then((result)=>{
                 console.log(result.data.msg)
                 setLike(prevLike => !prevLike);
+                fetchLikeCount(); // 좋아요 총 개수 조회
             }).catch((err)=>{console.error(err);})
         }
     }
@@ -167,6 +181,7 @@ const MusicDetail = () => {
                             className={styles.likeButton}
                             onClick={handleLike}>
                             { like ? <HiHeart size={20}/> : <HiOutlineHeart size={20}/> }
+                            &nbsp;{likeCount}
                         </button>
                     </div>
                     <p className={styles.artist} 

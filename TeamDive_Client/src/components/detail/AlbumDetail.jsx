@@ -28,11 +28,24 @@ const AlbumDetail = () => {
     const [content, setContent] = useState('');
     const [nickname, setNickname] = useState('');
     const [isLiked, setIsLiked] = useState(false);
+    const [likeCount, setLikeCount] = useState(0);
 
     const [selectedMusicId, setSelectedMusicId] = useState(null);
     const [showPlaylistModal, setShowPlaylistModal] = useState(false);
 
     useEffect(() => {
+        // 앨범 상세 정보 조회
+        axios.get('/api/music/getAlbum', {
+            params: { albumId }
+        }).then((res) => {
+            console.log(res.data.album);
+            setAlbumDetail(res.data.album);
+        }).catch((err) => console.error(err));
+
+        fetchReply(); // 댓글 조회
+        fetchLikeCount(); // 좋아요 총 개수 조회
+
+        // 로그인 유저의 좋아요 여부 확인
         if (loginUser.memberId) {
             jaxios.get('/api/community/getLikes', {
                 params: { pagetype: 'ALBUM', memberId: loginUser.memberId }
@@ -40,17 +53,8 @@ const AlbumDetail = () => {
                 if(result.data.likesList.some(likes => likes.albumId == albumId)){
                     setIsLiked(true);
                 }
-          }).catch((err)=>{console.error(err);})
-      }
-
-      axios.get('/api/music/getAlbum', {
-          params: { albumId }
-        }).then((res) => {
-            console.log(res.data.album);
-            setAlbumDetail(res.data.album);
-        }).catch((err) => console.error(err));
-
-      fetchReply();
+            }).catch((err)=>{console.error(err);})
+        }
     }, [albumId]);
 
     const {setAddPlaylist,setAddAndPlay}=useContext(PlayerContext);
@@ -74,7 +78,19 @@ const AlbumDetail = () => {
         setSelectedMusicId(musicId);
         setShowPlaylistModal(true);
     };
+
+    // 좋아요 개수 불러오기
+    const fetchLikeCount = async () => {
+        await axios.get('/api/community/getLikeCount', {
+            params: { pageType: 'ALBUM', entityId: albumId }
+        }).then((result) => {
+            setLikeCount(result.data.likeCount);
+        }).catch((error) => {
+            console.error('좋아요 개수 불러오기 실패', error);
+        })
+    }
     
+    // 좋아요 추가 / 취소
     const handleLike = async () => {
         if (!loginUser || !loginUser.memberId) {
             alert('로그인이 필요한 서비스입니다.');
@@ -84,6 +100,7 @@ const AlbumDetail = () => {
             }).then((result)=>{
                 console.log(result.data.msg)
                 setIsLiked(prevLike => !prevLike);
+                fetchLikeCount();
             }).catch((err)=>{console.error(err);})
         }
     }
@@ -168,9 +185,9 @@ const AlbumDetail = () => {
                         <h1 className={styles.albumTitle}>{albumDetail.title}</h1>
                         <button
                             className={`${styles.likeButton}`}
-                            onClick={handleLike}
-                        >
+                            onClick={handleLike}>
                             { isLiked ? <HiHeart size={20}/> : <HiOutlineHeart size={20}/> }
+                            &nbsp;{likeCount}
                         </button>
                     </div>
                     

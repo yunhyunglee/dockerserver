@@ -105,4 +105,16 @@ public class CommunityService {
         Pagetype pagetype = Pagetype.valueOf(type.toUpperCase());
         return rr.findByMemberIdAndPagetype(memberId, pagetype);
     }
+
+    /* 좋아요 총 개수 조회 */
+    public int getLikeCount(String type, int entityId) {
+        // 페이지 타입 구하기
+        Pagetype pageType = Pagetype.valueOf(type.toUpperCase());
+
+        // 전체 페이지 테이블에 해당하는 콘텐츠의 정보 추출
+        Allpage allPage = apr.findByEntityIdAndPagetype(entityId, pageType);
+
+        // 좋아요 개수 반환
+        return lr.countByAllpage(allPage);
+    }
 }

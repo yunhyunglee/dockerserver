@@ -23,14 +23,16 @@ const ArtistDetail = () => {
     const navigate = useNavigate();
 
     const { artistId } = useParams();
-    const [isLiked, setIsLiked] = useState(false);
     const [artistDetail, setArtistDetail] = useState(null);
     const [artistReplyList, setArtistReplyList] = useState([]);
     const [content, setContent] = useState("");
     const [nickname, setNickname] = useState("");
+    const [isLiked, setIsLiked] = useState(false);
+    const [likeCount, setLikeCount] = useState(0);
+
     const [selectedMusicId, setSelectedMusicId] = useState(null);
     const [showPlaylistModal, setShowPlaylistModal] = useState(false);
-
+    
     useEffect(() => {
         // 아티스트 정보 불러오기
         axios.get("/api/music/getArtist", {
@@ -41,6 +43,8 @@ const ArtistDetail = () => {
 
         // 댓글 정보 불러오기
         fetchReply();
+        // 좋아요 총 개수 불러오기
+        fetchLikeCount();
 
         // 로그인한 유저의 좋아요 정보 가져오기
         if(loginUser.memberId){
@@ -57,9 +61,20 @@ const ArtistDetail = () => {
 
     // 재생목록에 추가
     const handleAddToPlaylist = (musicId) => {
-      setSelectedMusicId(musicId);
-      setShowPlaylistModal(true);
+        setSelectedMusicId(musicId);
+        setShowPlaylistModal(true);
     };
+
+    // 좋아요 개수 불러오기
+    const fetchLikeCount = async () => {
+        await axios.get('/api/community/getLikeCount', {
+            params: { pageType: 'ARTIST', entityId: artistId }
+        }).then((result) => {
+            setLikeCount(result.data.likeCount);
+        }).catch((error) => {
+            console.error('좋아요 개수 불러오기 실패', error);
+        })
+    }
 
     // 좋아요 추가 / 취소
     const handleLike = () => {
@@ -70,6 +85,7 @@ const ArtistDetail = () => {
             .then((result)=>{
                 console.log(result.data.msg)
                 setIsLiked(prevLike => !prevLike);
+                fetchLikeCount(); // 좋아요 총 개수 조회
             }).catch((err)=>{console.error(err);})
         }
     };
@@ -171,6 +187,7 @@ const ArtistDetail = () => {
                             className={styles.likeButton}
                             onClick={handleLike}>
                             { isLiked ? <HiHeart size={20}/> : <HiOutlineHeart size={20}/> }
+                            &nbsp;{likeCount}
                         </button>
                     </div>
                     

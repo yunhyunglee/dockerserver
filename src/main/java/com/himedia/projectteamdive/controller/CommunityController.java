@@ -68,4 +68,14 @@ public class CommunityController {
         return map;
     }
 
+    /* 좋아요 총 개수 조회 */
+    @GetMapping("/getLikeCount")
+    public HashMap<String,Object> getLikeCount(
+            @RequestParam("pageType") String pageType,
+            @RequestParam("entityId") int entityId){
+        HashMap<String,Object> result = new HashMap<>();
+        result.put("likeCount", cs.getLikeCount(pageType, entityId));
+        return result;
+    }
+
 }

@@ -31,6 +31,5 @@ public interface LikesRepository extends JpaRepository<Likes, Integer> {
             "AND :pagetype MEMBER OF l.allpage.pagetype")
     List<Likes> findByMemberIdAndPagetype(@Param("memberId")String memberId, @Param("pagetype")Pagetype pagetype);
 
-
-
+    int countByAllpage(Allpage allpage);
 }
