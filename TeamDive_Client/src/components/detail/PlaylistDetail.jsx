@@ -35,11 +35,30 @@ const PlaylistDetail = () => {
     }).catch((err)=>{console.error(err);})
   }
  
+
+  const {setAddPlaylist,setAddAndPlay}=useContext(PlayerContext);
+    //재생목록에 추가후 즉시재생 
+    //musicId 또는 musicId 배열
+  const handlePlay = (musicId) => {
+    const musicArray = Array.isArray(musicId) 
+  ? musicId.map(num => ({ musicId: num })) 
+  : [{ musicId: musicId }];
+    setAddAndPlay(musicArray);
+  };
+  //재생목록에 추가만
+  const handlePlay2 = (musicId) => {
+    const musicArray = Array.isArray(musicId) 
+  ? musicId.map(num => ({ musicId: num })) 
+  : [{ musicId: musicId }];
+    setAddPlaylist(musicArray);
+  };
+  
   // 플레이리스트 불러오기
   useEffect(() => {
     jaxios.get('/api/community/getLikes',{params:{pagetype: 'PLAYLIST',memberId: loginUser.memberId}})
     .then((result)=>{
-        if(result.data.likesList.some(likes => likes.allpage.entityId == playlistId)){
+        if(result.data.likesList.some(likes => likes.playlistId == playlistId)){
+          console.log('result.data.likesList',result.data.likesList)
           setIsLiked(true);
         }
     }).catch((err)=>{console.error(err);})
@@ -265,41 +284,26 @@ const PlaylistDetail = () => {
     }
   }
   
-  const {setAddPlaylist,setAddAndPlay}=useContext(PlayerContext);
-      //재생목록에 추가후 즉시재생 
-      //musicId 또는 musicId 배열
-      const handlePlay = (musicId) => {
-        const musicArray = Array.isArray(musicId) 
-      ? musicId.map(num => ({ musicId: num })) 
-      : [{ musicId: musicId }];
-        setAddAndPlay(musicArray);
-      };
-      //재생목록에 추가만
-      const handlePlay2 = (musicId) => {
-        const musicArray = Array.isArray(musicId) 
-      ? musicId.map(num => ({ musicId: num })) 
-      : [{ musicId: musicId }];
-        setAddPlaylist(musicArray);
-  };
+  
 
   
-  const handleBuy = async (music) => {
-    if (!loginUser?.memberId) {
-      alert('로그인이 필요한 서비스입니다.');
-      navigate('/login');
-      return;
-    }
+  // const handleBuy = async (music) => {
+  //   if (!loginUser?.memberId) {
+  //     alert('로그인이 필요한 서비스입니다.');
+  //     navigate('/login');
+  //     return;
+  //   }
     
-    try {
-      await jaxios.post('/api/cart/insertCart', {
-        memberId: loginUser.memberId,
-        musicIdList: [music.musicId],
-      });
-      navigate('/storage/myMP3/pending');
-    } catch (err) {
-      console.error('장바구니 담기 실패', err);
-    }
-  };
+  //   try {
+  //     await jaxios.post('/api/cart/insertCart', {
+  //       memberId: loginUser.memberId,
+  //       musicIdList: [music.musicId],
+  //     });
+  //     navigate('/storage/myMP3/pending');
+  //   } catch (err) {
+  //     console.error('장바구니 담기 실패', err);
+  //   }
+  // };
 
   const allChecked =
     playlist.musicList.length > 0 &&
@@ -469,12 +473,6 @@ const PlaylistDetail = () => {
                       onClick={()=>{handlePlay2(music.musicId)}}
                     >
                       재생목록+
-                    </button>
-                    <button
-                      className={styles.iconButton}
-                      onClick={() => handleAddToPlaylist(music.musicId)}
-                    >
-                      플리+
                     </button>
                     <button
                       className={styles.iconButton}
