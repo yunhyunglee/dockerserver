@@ -30,14 +30,13 @@ const RecommendedPlaylists = ({ playList }) => {
                         <div key={idx} className={styles.playlistItem}
                             onClick={()=>{navigate(`/playList/${playList.playlistId}`)}}
                         >
-                            <div className={styles.playlistCover}>
-                                {/* 플레이리스트 대표 이미지가 있다면 여기에 표시 */}
-                                <img src={playList.coverImage} alt={playList.title} />
-                            </div>
+                           
+                            <img src={playList.coverImage} className={styles.playlistCover}/>
                             <div className={styles.playlistDetails}>
                                 <h4>{playList.title}</h4>
                             </div>
                         </div>
+                       
                     ))
                 ):(<div>추천 플레이 리스트가 없습니다.</div>)
             

@@ -168,7 +168,7 @@ const Top100 = () => {
                         <span className={styles.checkmark}></span>
                     </label>
                 </td>
-                <td className={styles.rankColumn}>{index+1}</td>
+                <td className={styles.rankColumn}>{(currentPage - 1) * itemsPerPage + index + 1}</td>
                 <td onClick={()=>{navigate(`/music/${music.music.musicId}`)}} style={{cursor: "pointer"}}>{music.music.title}</td>
                 <td onClick={()=>{navigate(`/artist/${music.music.artistId}`)}} style={{cursor: "pointer"}}>{music.music.artistName}</td>
                 <td>

@@ -29,6 +29,7 @@ public class Playlist {
 
     @ManyToOne
     @JoinColumn(name = "member_id")
+
     Member member;
 
     @ManyToMany

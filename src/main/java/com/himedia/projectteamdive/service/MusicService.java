@@ -448,7 +448,7 @@ public class MusicService {
     public HashMap<String, Object> getLatestMusicList() {
         HashMap<String, Object> result = new HashMap<>();
 
-        List<Integer> latestMusicIds = mr.getLatestMusicIds(PageRequest.of(0, 6));
+        List<Integer> latestMusicIds = mr.getLatestMusicIds(PageRequest.of(0, 9));
 
         if (latestMusicIds == null || latestMusicIds.isEmpty()) {
             result.put("latestMusicList", new ArrayList<>()); // 빈 리스트 반환
@@ -462,7 +462,7 @@ public class MusicService {
 
     public HashMap<String, Object> getLatestAlbumList() {
         HashMap<String, Object> result = new HashMap<>();
-        List <Integer> latestAlbumIds = ar.getLatestAlbumIds(PageRequest.of(0,6));
+        List <Integer> latestAlbumIds = ar.getLatestAlbumIds(PageRequest.of(0,9));
         if(latestAlbumIds == null || latestAlbumIds.isEmpty()) {
             result.put("latestAlbumList", new ArrayList<>());
             return result;
@@ -476,7 +476,7 @@ public class MusicService {
 
     public HashMap<String, Object> getLatestPlayList() {
         HashMap<String, Object> result = new HashMap<>();
-        List <Integer> latestPlayListIds = pr.getLatestPlayListIds(PageRequest.of(0,6));
+        List <Integer> latestPlayListIds = pr.getLatestPlayListIds(PageRequest.of(0,9));
         if(latestPlayListIds == null || latestPlayListIds.isEmpty()) {
             result.put("latestPlayListList", new ArrayList<>());
             return result;

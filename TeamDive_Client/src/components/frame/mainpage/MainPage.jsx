@@ -81,25 +81,7 @@ const MainPage = ({mood, setMood}) => {
     const [album, setAlbum] = useState([]);
     const [playList, setPlayList] = useState([]);
 
-    useEffect(() => {
-        // 최신등록음악 더미 데이터
-        setLatestMusic([
-        { musicId: 1, title: '최신곡 1', artist: 'Artist A', image: '/public/image/album/album1.jpg' },
-        { musicId: 3, title: '최신곡 2', artist: 'Artist B', image: '/public/image/album/album2.jpg' },
-        ]);
 
-        // 최신등록앨범 더미 데이터
-        setAlbum([
-        { albumId: 1, title: '신규 앨범 1', image: '/public/image/album/album3.jpg' },
-        { albumId: 2, title: '신규 앨범 2', image: '/public/image/album/album4.jpg' },
-        ]);
-
-        // 추천플레이리스트 더미 데이터
-        setPlayList([
-        { playListId: 1, title: 'Chill Vibes' },
-        { playListId: 2, title: 'Workout Hits' },
-        ]);
-    }, []);
 
     function AdModal() {
         return (
@@ -178,7 +160,7 @@ const MainPage = ({mood, setMood}) => {
             <div className={styles.topSection}>
 
                 <div className={styles.topRow}>
-                    <div className={styles.topLeft}><LikeRankingSection /></div>
+                    {/* <div className={styles.topLeft}><LikeRankingSection /></div> */}
 
             
                     <section className={styles.conditionalSection1}>
