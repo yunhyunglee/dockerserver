@@ -25,6 +25,7 @@ import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
 import ShuffleIcon from '@mui/icons-material/Shuffle';
 import RepeatIcon from '@mui/icons-material/Repeat';
 import PlaylistPlayIcon from '@mui/icons-material/PlaylistPlay';
+import DeleteIcon from '@mui/icons-material/Delete';
 // ----------------------------------
 
 import axios from 'axios';
@@ -116,6 +117,23 @@ export default function Player() {
       [songId]: (prev[songId] || 0) + 1
     }));
   };
+
+
+
+  const resetPlaylist = () => {
+
+    const resetOk = confirm('현재 재생목록을 삭제하시겠습니까?');
+
+    if(resetOk) {
+      setPlaylist([]);
+    } else {
+      return;
+    }
+
+  }
+
+
+
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -585,6 +603,7 @@ export default function Player() {
               <Typography variant="h6" sx={{ color: 'silver' }}>
                 Playlist
               </Typography>
+              <DeleteIcon sx={{ position: 'relative', marginLeft: '-110px', cursor: 'pointer'}} onClick={resetPlaylist}/>
               <IconButton size="small" onClick={() => setShowPlaylist(false)} sx={{ color: 'silver' }}>
                 <CloseIcon />
               </IconButton>

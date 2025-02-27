@@ -41,15 +41,26 @@ public class ChatController {
             String response = chatService.chatWithGPT(userMessage);
 
             // 아직 더 추가해야함
-            Map<String, String> moodMap = Map.of(
-                    "슬퍼", "sad",
-                    "슬픈", "sad",
-                    "우울", "sad",
-                    "기뻐", "happy",
-                    "기쁜","happy",
-                    "행복", "happy",
-                    "신나", "happy"
-            );
+            Map<String, String> moodMap = new HashMap<>();
+            moodMap.put("슬퍼", "sad");
+            moodMap.put("슬픈", "sad");
+            moodMap.put("우울", "sad");
+            moodMap.put("기뻐", "happy");
+            moodMap.put("기쁜", "happy");
+            moodMap.put("행복", "happy");
+            moodMap.put("신나", "happy");
+            moodMap.put("짜증", "angry");
+            moodMap.put("화가", "angry");
+            moodMap.put("화나", "angry");
+            moodMap.put("나빠", "angry");
+            moodMap.put("지루", "boring");
+            moodMap.put("심심", "boring");
+            moodMap.put("루즈", "boring");
+            moodMap.put("랜덤", "normal");
+            moodMap.put("아무", "normal");
+            moodMap.put("일상", "normal");
+            moodMap.put("무난", "normal");
+
 
             // 보낸 메세지에 저거 있으면 넣고
             String detectedMood = null;
@@ -82,7 +93,7 @@ public class ChatController {
             return ResponseEntity.ok(Map.of("reply", response));
 
         } catch (Exception e) {
-            e.printStackTrace(); // 로그 출력
+            e.printStackTrace();
             return ResponseEntity.status(500).body(Map.of("error", "서버 오류 발생"));
         }
     }
