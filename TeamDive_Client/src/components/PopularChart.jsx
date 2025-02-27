@@ -38,7 +38,7 @@ const PopularChartsPage = () => {
               <div
               key={item.music.musicId}
               className={styles.card}
-              style={{ backgroundImage: `url(${item.image})` }}
+              style={{ backgroundImage: `url(${item.music.image})` }}
               onClick={() => navigate(`/music/${item.music.musicId}`)}
               >
               

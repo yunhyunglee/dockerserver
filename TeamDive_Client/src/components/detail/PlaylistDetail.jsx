@@ -52,7 +52,7 @@ const PlaylistDetail = () => {
   : [{ musicId: musicId }];
     setAddPlaylist(musicArray);
   };
-  
+
   // 플레이리스트 불러오기
   useEffect(() => {
     jaxios.get('/api/community/getLikes',{params:{pagetype: 'PLAYLIST',memberId: loginUser.memberId}})
@@ -135,11 +135,12 @@ const PlaylistDetail = () => {
     if (!file) return;
 
     try {
-  
+      if(image){
+        const response=await jaxios.delete('/api/music/deleteFile',{params:{file:playlist.coverImage}});
+      }
       const localUrl = URL.createObjectURL(file);
       setPreview(localUrl);
       setCoverFile(file);
-
      
       const formData = new FormData();
       formData.append("image", file);
@@ -240,7 +241,7 @@ const PlaylistDetail = () => {
   };
 
   const handleSelectedPlay = () => {
-    alert("선택된 곡 재생: " + selectedItems.join(", "));
+    handlePlay2(selectedItems);
   };
 
   const handleSelectedBuy = async () => {
@@ -261,7 +262,7 @@ const PlaylistDetail = () => {
         musicIdList: selectedItems,
       });
       alert('선택된 곡들이 장바구니에 담겼습니다.');
-      navigate('/storage/myMP3/pending');
+      navigate('/mypage/mp3/pending');
     } catch (err) {
       console.error('장바구니 담기 실패', err);
     }
@@ -286,25 +287,6 @@ const PlaylistDetail = () => {
   
   
 
-  
-  // const handleBuy = async (music) => {
-  //   if (!loginUser?.memberId) {
-  //     alert('로그인이 필요한 서비스입니다.');
-  //     navigate('/login');
-  //     return;
-  //   }
-    
-  //   try {
-  //     await jaxios.post('/api/cart/insertCart', {
-  //       memberId: loginUser.memberId,
-  //       musicIdList: [music.musicId],
-  //     });
-  //     navigate('/storage/myMP3/pending');
-  //   } catch (err) {
-  //     console.error('장바구니 담기 실패', err);
-  //   }
-  // };
-
   const allChecked =
     playlist.musicList.length > 0 &&
     selectedItems.length === playlist.musicList.length;
@@ -323,7 +305,7 @@ const PlaylistDetail = () => {
                 <img
                   src={preview}
                   className={styles.coverImage}
-                
+                  onClick={()=>document.getElementById("imageUpload").click()}
                 />
               ) : (
                 <div className={styles.previewPlaceholder}></div>
@@ -331,9 +313,11 @@ const PlaylistDetail = () => {
 
               <input
                 type="file"
+                id="imageUpload"
                 accept="image/*"
                 onChange={handleCoverFileChange}
                 className={styles.editInput}
+                style={{display:'none'}}
               />
             </div>
           ) : (

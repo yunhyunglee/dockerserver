@@ -6,7 +6,6 @@ import axios from 'axios';
 import jaxios from '../../util/JwtUtil';
 
 import PlaylistSelectModal from './PlaylistSectionModal';
-import { PlayerContext } from "../../context/PlayerContext";
 
 import styles from '../../css/detail/albumDetail.module.css';
 
@@ -17,6 +16,7 @@ import { FaPlay } from "react-icons/fa";
 import { MdQueueMusic } from "react-icons/md";
 import { HiOutlineHeart } from "react-icons/hi";
 import { HiHeart } from "react-icons/hi";
+import { PlayerContext } from '../../context/PlayerContext';
 
 const AlbumDetail = () => {
     const { albumId } = useParams();
@@ -30,8 +30,7 @@ const AlbumDetail = () => {
     const [isLiked, setIsLiked] = useState(false);
     const [likeCount, setLikeCount] = useState(0);
 
-    const [selectedMusicId, setSelectedMusicId] = useState(null);
-    const [showPlaylistModal, setShowPlaylistModal] = useState(false);
+
 
     useEffect(() => {
         // 앨범 상세 정보 조회
@@ -57,6 +56,7 @@ const AlbumDetail = () => {
         }
     }, [albumId]);
 
+
     const {setAddPlaylist,setAddAndPlay}=useContext(PlayerContext);
     //재생목록에 추가후 즉시재생 
     //musicId 또는 musicId 배열
@@ -73,11 +73,34 @@ const AlbumDetail = () => {
     : [{ musicId: musicId }];
         setAddPlaylist(musicArray);
     };
-
+    const [showPlaylistModal, setShowPlaylistModal] = useState(false);
+    const [selectedMusicId, setSelectedMusicId] = useState(null);
+    const [musicIdList, setMusicIdList] = useState([selectedMusicId]);
     const handleAddToPlaylist = (musicId) => {
         setSelectedMusicId(musicId);
         setShowPlaylistModal(true);
     };
+     // 장바구니 추가
+    async function insertCart(musicId) {
+        if(!loginUser.memberId){
+            alert('로그인이 필요한 서비스입니다');
+            navigate('/login');
+        }else{
+            try{
+                const response = await jaxios.post('/api/cart/insertCart', {
+                    memberId: loginUser.memberId,
+                    musicIdList: [musicId]
+                });
+                navigate('/mypage/mp3/pending');
+            }catch (error) {
+                console.error('장바구니 담기 실패', error);
+            }
+        }
+    }
+
+
+
+
 
     // 좋아요 개수 불러오기
     const fetchLikeCount = async () => {
@@ -89,7 +112,7 @@ const AlbumDetail = () => {
             console.error('좋아요 개수 불러오기 실패', error);
         })
     }
-    
+
     // 좋아요 추가 / 취소
     const handleLike = async () => {
         if (!loginUser || !loginUser.memberId) {
@@ -141,23 +164,7 @@ const AlbumDetail = () => {
         }).catch((err) => { console.error(err); });
     };
 
-    // 장바구니 추가
-    async function insertCart(musicId) {
-        if(!loginUser.memberId){
-            alert('로그인이 필요한 서비스입니다');
-            navigate('/login');
-        }else{
-            try{
-                const response = await jaxios.post('/api/cart/insertCart', {
-                    memberId: loginUser.memberId,
-                    musicIdList: [musicId]
-                });
-                navigate('/mypage/mp3/pending');
-            }catch (error) {
-                console.error('장바구니 담기 실패', error);
-            }
-        }
-    }
+
   
     // 음악 상세보기로 이동
     const handleTrackClick = (musicId) => {
