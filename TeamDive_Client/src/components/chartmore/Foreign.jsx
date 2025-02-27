@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useSelector } from 'react-redux';
 import { useNavigate } from "react-router-dom";
 
@@ -7,6 +7,8 @@ import jaxios from "../../util/JwtUtil";
 import Pagination from "../Pagination";
 
 import styles from "../../css/chartMore.module.css";
+import { PlayerContext } from "../../context/PlayerContext";
+import PlaylistSelectModal from "../detail/PlaylistSectionModal";
 
 const Foreign = () => {
   const loginUser = useSelector(state => state.user);
@@ -32,6 +34,48 @@ const Foreign = () => {
     },[]
   );
 
+  const {setAddPlaylist,setAddAndPlay}=useContext(PlayerContext);
+  //재생목록에 추가후 즉시재생 
+  //musicId 또는 musicId 배열
+  const handlePlay = (musicId) => {
+      const musicArray = Array.isArray(musicId) 
+  ? musicId.map(num => ({ musicId: num })) 
+  : [{ musicId: musicId }];
+      setAddAndPlay(musicArray);
+  };
+  //재생목록에 추가만
+  const handlePlay2 = (musicId) => {
+      const musicArray = Array.isArray(musicId) 
+  ? musicId.map(num => ({ musicId: num })) 
+  : [{ musicId: musicId }];
+      setAddPlaylist(musicArray);
+  };
+  //플레이리스트 모달
+  const [showPlaylistModal, setShowPlaylistModal] = useState(false);
+  const [selectedMusicId, setSelectedMusicId] = useState(null);
+  const handleAddToPlaylist = (musicIds) => {
+      const musicArray=Array.isArray(musicIds)? musicIds : [musicIds]
+      setSelectedMusicId(musicArray);
+      setShowPlaylistModal(true);
+  };
+   // 장바구니 추가
+  async function insertCart(musicId) {
+      if(!loginUser.memberId){
+          alert('로그인이 필요한 서비스입니다');
+          navigate('/login');
+      }else{
+          try{
+              const response = await jaxios.post('/api/cart/insertCart', {
+                  memberId: loginUser.memberId,
+                  musicIdList: [musicId]
+              });
+              navigate('/mypage/mp3/pending');
+          }catch (error) {
+              console.error('장바구니 담기 실패', error);
+          }
+      }
+  }
+
   // 체크박스 변경 처리
   const handleCheckboxChange = (musicId, checked) => {
     if (checked) {
@@ -42,17 +86,9 @@ const Foreign = () => {
   };
 
   const handleSelectedListen = () => {
-    alert(
-      "선택된 곡 듣기: " + selectedItems.map((item) => item.title).join(", ")
-    );
+    handlePlay2(selectedItems);
   };
 
-  const handleSelectedAdd = () => {
-    alert(
-      "선택된 곡 재생목록에 추가: " +
-        selectedItems.map((item) => item.title).join(", ")
-    );
-  };
 
   // 선택한 곡들 장바구니
   const handleSelectedBuy = async () => {
@@ -67,26 +103,7 @@ const Foreign = () => {
         memberId: loginUser.memberId,
         musicIdList: selectedItems,
       });
-      navigate('/storage/myMP3/pending');
-    } catch (err) {
-      console.error('장바구니 담기 실패', err);
-    }
-  };
-
-  // 개별 곡 장바구니
-  const handleBuy = async (musicId) => {
-    if (!loginUser?.memberId) {
-      alert('로그인이 필요한 서비스입니다.');
-      navigate('/login');
-      return;
-    }
-    
-    try {
-      await jaxios.post('/api/cart/insertCart', {
-        memberId: loginUser.memberId,
-        musicIdList: [musicId],
-      });
-      navigate('/storage/myMP3/pending');
+      navigate('/mypage/mp3/pending');
     } catch (err) {
       console.error('장바구니 담기 실패', err);
     }
@@ -96,24 +113,24 @@ const Foreign = () => {
     <div className={styles.container}>
       {/* 상단 영역 */}
       <div className={styles.header}>
-        <h1 className={styles.title}>해외 인기차트</h1>
+        <h1 className={styles.title}>국내 인기차트</h1>
         <div className={styles.buttonGroup}>
           {selectedItems.length === 0 ? (
             // 선택된 곡이 없으면 기존 버튼들
             <>
-              <button className={styles.actionBtn}>전체듣기</button>
-              <button className={styles.actionBtn}>플리 추가</button>
+              <button className={styles.actionBtn} onClick={()=>handlePlay2(currentData.map(item=>item.music.musicId))}>전체듣기</button>
+              <button className={styles.actionBtn} onClick={()=>handleAddToPlaylist(currentData.map(item=>item.music.musicId))}>플리 추가</button>
             </>
           ) : (
             // 하나라도 체크되면 보이는 버튼들
             <>
-              <button className={styles.actionBtn} onClick={handleSelectedListen}>
+              <button className={styles.actionBtn} onClick={()=>handleSelectedListen()}>
                 선택 듣기
               </button>
-              <button className={styles.actionBtn} onClick={handleSelectedAdd}>
+              <button className={styles.actionBtn} onClick={()=>handleAddToPlaylist(selectedItems)}>
                 선택 플리에 추가
               </button>
-              <button className={styles.actionBtn} onClick={handleSelectedBuy}>
+              <button className={styles.actionBtn} onClick={()=>handleSelectedBuy()}>
                 선택 구매
               </button>
             </>
@@ -130,6 +147,7 @@ const Foreign = () => {
             <th>아티스트</th>
             <th>듣기</th>
             <th>재생목록</th>
+            <th>플레이리스트</th>
             <th>MP3</th>
           </tr>
         </thead>
@@ -141,11 +159,11 @@ const Foreign = () => {
                 <td>
                     <label className={styles.customCheckbox}>
                         <input
-                        type="checkbox"
-                        checked={isChecked}
-                        onChange={(e) =>
-                          handleCheckboxChange(music.music.musicId, e.target.checked)
-                        }
+                          type="checkbox"
+                          checked={isChecked}
+                          onChange={(e) =>
+                            handleCheckboxChange(music.music.musicId, e.target.checked)
+                          }
                         />
                         <span className={styles.checkmark}></span>
                     </label>
@@ -156,7 +174,7 @@ const Foreign = () => {
                 <td>
                   <button
                     className={styles.optionBtn}
-                    onClick={() => alert(`듣기: ${music.music.title}`)}
+                    onClick={() => handlePlay(music.music.musicId)}
                   >
                     듣기
                   </button>
@@ -164,7 +182,7 @@ const Foreign = () => {
                 <td>
                   <button
                     className={styles.optionBtn}
-                    onClick={() => alert(`재생목록에 추가: ${music.music.title}`)}
+                    onClick={() => handlePlay2(music.music.musicId)}
                   >
                     추가
                   </button>
@@ -172,7 +190,15 @@ const Foreign = () => {
                 <td>
                   <button
                     className={styles.optionBtn}
-                    onClick={() => handleBuy(music.music.musicId)}
+                    onClick={() => handleAddToPlaylist(music.music.musicId)}
+                  >
+                    플레이리스트
+                  </button>
+                </td>
+                <td>
+                  <button
+                    className={styles.optionBtn}
+                    onClick={() => insertCart(music.music.musicId)}
                   >
                     구매
                   </button>
@@ -188,6 +214,13 @@ const Foreign = () => {
         currentPage={currentPage}
         onPageChange={setCurrentPage}
       />
+      {/* 플레이리스트 선택 모달 */}
+      {showPlaylistModal && (
+          <PlaylistSelectModal
+              musicIdList={selectedMusicId}
+              onClose={() => setShowPlaylistModal(false)}
+          />
+      )}
     </div>
   );
 };

@@ -118,23 +118,6 @@ export default function Player() {
     }));
   };
 
-
-
-  const resetPlaylist = () => {
-
-    const resetOk = confirm('현재 재생목록을 삭제하시겠습니까?');
-
-    if(resetOk) {
-      setPlaylist([]);
-    } else {
-      return;
-    }
-
-  }
-
-
-
-
   useEffect(() => {
     const interval = setInterval(() => {
       if (Object.keys(playCounts).length > 0) {
@@ -206,7 +189,6 @@ export default function Player() {
     
       const storedPlaylist = JSON.parse(localStorage.getItem("playlist"));
       setPlaylist(storedPlaylist||[]);
-      console.log('storedUser',storedPlaylist);
       axios.get('/api/membership/checkActiveMembership',{params:{memberId:loginUser.memberId, category: 'streaming'}})
       .then((result)=>{
         if(result.data.message=='yes'){
@@ -603,7 +585,7 @@ export default function Player() {
               <Typography variant="h6" sx={{ color: 'silver' }}>
                 Playlist
               </Typography>
-              <DeleteIcon sx={{ position: 'relative', marginLeft: '-110px', cursor: 'pointer'}} onClick={resetPlaylist}/>
+              <DeleteIcon sx={{ position: 'relative', marginLeft: '-110px', cursor: 'pointer'}} onClick={()=>setPlaylist([])}/>
               <IconButton size="small" onClick={() => setShowPlaylist(false)} sx={{ color: 'silver' }}>
                 <CloseIcon />
               </IconButton>
