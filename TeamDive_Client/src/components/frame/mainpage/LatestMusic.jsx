@@ -32,10 +32,10 @@ const LatestMusic = ({ music }) => {
                             <div key={music.musicId} className={styles.songItem}
                                 onClick={()=>{navigate(`/music/${music.musicId}`)}}
                             >
-                                <img src={music.image} alt={music.title} className={styles.albumCover} />
+                                <img src={music.image}  className={styles.albumCover} />
                                 <div className={styles.songDetails}>
                                     <h4>{music.title}</h4>
-                                    <p>{music.artist}</p>
+                                    <p>{music.artistName}</p>
                                 </div>
                             </div>
                         )

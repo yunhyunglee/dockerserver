@@ -183,7 +183,7 @@ const AlbumDetail = () => {
                 <div className={styles.cover}>
                     <img
                       src={albumDetail.image}
-                      alt={albumDetail.title}
+
                       className={styles.albumImage}
                     />
                 </div>

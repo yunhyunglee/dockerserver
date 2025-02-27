@@ -16,6 +16,14 @@
   border-bottom: 1px dotted #333;
 }
 
+.playIcon {
+  position: relative;
+  font-size: 48px;
+  top: -140px;
+  opacity: 0;
+}
+
+
 
 
 .topSection {
@@ -32,7 +40,7 @@
 .conditionalSection1 {
   flex: 2;
   background-color: black;
-  padding: 15px 150px 15px 15px;
+  padding: 15px 10px 15px 15px;
   border-radius: 8px;
   text-align: center;
 }
@@ -67,11 +75,34 @@
   margin-bottom: 10px;
 }
 
-.recentMusicSection .recentMusicGrid {
+.musicInfo {
+  position: relative;
+  z-index: 1;         /* 텍스트가 오버레이보다 위에 표시되도록 */
+  color: #fff;        /* 텍스트 흰색 */
+  padding: 5px 10px;  /* 텍스트 주변 여백 */
+  border-radius: 4px; /* 둥근 모서리 (선택사항) */
+  top: -140px;
+}
+
+.recentMusictitle {
+  display: inline-block;           /* 텍스트 크기에 맞춰 영역 축소 */
+  background: rgba(0, 0, 0, 0.5);     /* 옅은 검정색 배경 */
+  padding: 0 5px;                  /* 좌우에 여백 주기 */
+  border-radius: 4px;              /* 옵션: 모서리 둥글게 */
+}
+
+
+
+.recentMusicSection {
+  width: 100%;
+  height: 280px;
+}
+
+ .recentMusicGrid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(8, 1fr);
   gap: 10px;
-  margin-bottom: 10px;
+
 }
 
 
@@ -87,6 +118,21 @@
   background-size: cover; /* 100% 100%  둘중 고민중*/
   background-position: center;
   height: 200px;
+}
+
+
+.image{
+  width: 100%;
+  height: 100%;
+}
+
+.recentMusicCard:hover .image {
+  opacity: 0.8;
+  filter: blur(1.5px);
+}
+
+.recentMusicCard:hover .playIcon {
+  opacity: 1;
 }
 
 
@@ -125,6 +171,7 @@
   padding: 15px;
   border-radius: 8px;
   margin-bottom: 40px;
+  
 }
 
 .section h2 {

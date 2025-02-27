@@ -13,10 +13,14 @@ public class MemberRecentMusicsDto {
     private int musicId;
     private String title;
     private String artist;
+    private String image;
+
+
     public MemberRecentMusicsDto(MemberRecentMusics recentMusics) {
         this.id = recentMusics.getId();
         this.musicId=recentMusics.getMusic().getMusicId();
         this.title = recentMusics.getMusic().getTitle();
         this.artist=recentMusics.getMusic().getArtist().getArtistName();
+        this.image=recentMusics.getMusic().getAlbum().getImage();
     }
 }

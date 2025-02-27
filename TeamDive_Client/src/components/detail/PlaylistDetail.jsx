@@ -5,6 +5,10 @@ import jaxios from "../../util/JwtUtil";
 import styles from "../../css/detail/playlistDetail.module.css";
 import { PlayerContext } from "../../context/PlayerContext";
 
+
+import { HiOutlineHeart } from "react-icons/hi";
+import { HiHeart } from "react-icons/hi";
+
 const PlaylistDetail = () => {
   const { playlistId } = useParams();
   const navigate = useNavigate();
@@ -52,7 +56,7 @@ const PlaylistDetail = () => {
   : [{ musicId: musicId }];
     setAddPlaylist(musicArray);
   };
-
+  
   // 플레이리스트 불러오기
   useEffect(() => {
     jaxios.get('/api/community/getLikes',{params:{pagetype: 'PLAYLIST',memberId: loginUser.memberId}})
@@ -287,6 +291,25 @@ const PlaylistDetail = () => {
   
   
 
+
+  // const handleBuy = async (music) => {
+  //   if (!loginUser?.memberId) {
+  //     alert('로그인이 필요한 서비스입니다.');
+  //     navigate('/login');
+  //     return;
+  //   }
+
+  //   try {
+  //     await jaxios.post('/api/cart/insertCart', {
+  //       memberId: loginUser.memberId,
+  //       musicIdList: [music.musicId],
+  //     });
+  //     navigate('/storage/myMP3/pending');
+  //   } catch (err) {
+  //     console.error('장바구니 담기 실패', err);
+  //   }
+  // };
+
   const allChecked =
     playlist.musicList.length > 0 &&
     selectedItems.length === playlist.musicList.length;
@@ -355,30 +378,45 @@ const PlaylistDetail = () => {
               </div>
             ) : (
               <>
-                <h2 className={styles.title}>
+              <div className={styles.headerInfo}>
+                <h1 className={styles.title}>
                   {playlist.title}
+
+                  <button
+                      className={`${styles.likeButton}`}
+                          onClick={handleLike}
+                  >
+                      { isLiked ? <HiHeart size={20}/> : <HiOutlineHeart size={20}/> }
+                  </button>
+                </h1>
+
+                {
+                  (playlist.memberId === loginUser.memberId)
+                  ?
+
+                <div className={styles.editGroup}>
                   <span
                     className={styles.editIcon}
                     onClick={() => setIsEditing(true)}
                   >
                     ✏️
                   </span>
-                </h2>
-                <button
-                  className={`${styles.likeButton} ${isLiked ? styles.liked : ""}`}
-                  onClick={handleLike}
-                >
-                  {isLiked ? "♥ 좋아요" : "♡ 좋아요"}
-                </button>
+                  <button className={styles.deleteBtn} onClick={deletePlaylist}>
+                    삭제
+                  </button>
+                  </div>
+
+                  :
+                  null
+
+                }
+              </div>
+              <span className={styles.writer}>작성자 : {playlist.nickname}</span>
                 <p className={styles.content}>{playlist.content}</p>
                 <p className={styles.trackCount}>
                   곡 : {playlist.musicList.length}곡
                 </p>
-                <div className={styles.btnGroup}>
-                  <button className={styles.deleteBtn} onClick={deletePlaylist}>
-                    삭제
-                  </button>
-                </div>
+
               </>
             )}
           </div>
@@ -410,6 +448,12 @@ const PlaylistDetail = () => {
           </div>
 
           <div className={styles.songList}>
+            <div className={styles.songTable}>
+                <span className={styles.thChk}>선택</span>
+                <span className={styles.thTitle}>곡</span>
+                <span className={styles.thArtist}>아티스트</span>
+                <span className={styles.thActions}></span>
+            </div>
             {playlist.musicList.map((music) => {
               const isChecked = selectedItems.includes(music.musicId);
               return (

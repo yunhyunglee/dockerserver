@@ -24,6 +24,7 @@ public class PlaylistDto {
     private String coverImage;
     private String content;
     private String memberId;
+    private String nickname;
     private List<MusicDto> musicList;
     private boolean shayringyn;
     private Timestamp indate;
@@ -34,6 +35,7 @@ public class PlaylistDto {
         this.coverImage = playlist.getCoverImage();
         this.content = playlist.getContent();
         this.memberId = playlist.getMember().getMemberId();
+        this.nickname = playlist.getMember().getNickname();
         this.musicList = playlist.getMusicList().stream()
                 .filter(music -> music != null) // ✅ null 제거
                 .map(MusicDto::new)
@@ -42,23 +44,23 @@ public class PlaylistDto {
         this.indate = playlist.getIndate();
     }
 
-    public static PlaylistDto fromEntity(Playlist playlist) {
-        if (playlist == null) {
-            throw new IllegalArgumentException("Playlist entity cannot be null");
-        }
-
-        return new PlaylistDto(
-                playlist.getPlaylistId(),
-                playlist.getTitle(),
-                playlist.getCoverImage(),
-                playlist.getContent(),
-                playlist.getMember().getMemberId(),
-                playlist.getMusicList().stream()
-                        .map(MusicDto::new)
-                        .collect(Collectors.toList()),
-                playlist.isShayringyn(),
-                playlist.getIndate()
-        );
-    }
+//    public static PlaylistDto fromEntity(Playlist playlist) {
+//        if (playlist == null) {
+//            throw new IllegalArgumentException("Playlist entity cannot be null");
+//        }
+//
+//        return new PlaylistDto(
+//                playlist.getPlaylistId(),
+//                playlist.getTitle(),
+//                playlist.getCoverImage(),
+//                playlist.getContent(),
+//                playlist.getMember().getMemberId(),
+//                playlist.getMusicList().stream()
+//                        .map(MusicDto::new)
+//                        .collect(Collectors.toList()),
+//                playlist.isShayringyn(),
+//                playlist.getIndate()
+//        );
+//    }
 
 }
