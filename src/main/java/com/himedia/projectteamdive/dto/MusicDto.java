@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.util.Objects;
 
 @Data
 @AllArgsConstructor
@@ -50,4 +51,23 @@ public class MusicDto {
         this.image = music.getAlbum().getImage();
         this.albumIndate=music.getAlbum().getIndate();
     }
+
+    // 추천 알고리즘시 새로 곡의 중복 추천방지하기위함
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        MusicDto music = (MusicDto) obj;
+        return musicId == music.musicId;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(musicId);
+    }
+
+
+
+
+
 }

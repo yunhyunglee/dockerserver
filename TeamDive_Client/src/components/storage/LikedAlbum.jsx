@@ -78,20 +78,20 @@ const LikedAlbum = () => {
     <div className={styles.albumContainer}>
       <div className={styles.albumGrid}>
         {likeAlbumList.map((likeAlbum, idx) => (
-          <div className={styles.flipCard} key={likeAlbum.albumId}>
+          <div className={styles.flipCard} key={idx}>
             <div className={styles.flipCardInner}>
 
               {/* 앞면: 앨범 커버 */}
               <div className={styles.flipCardFront}>
                 <img
-                  src={likeAlbum.coverImage}
+                  src={likeAlbum.image}
                   alt={likeAlbum.albumName}
                   className={styles.coverImage}
                 />
               </div>
 
               {/* 뒷면: 앨범 타이틀 + 가수 이름 + 좋아요 + 상세보기 */}
-              <div className={styles.flipCardBack} style={{ backgroundImage: `url(${likeAlbum.coverImage})` }}>
+              <div className={styles.flipCardBack} style={{ backgroundImage: `url(${likeAlbum.image})` }}>
                 <div className={styles.flipCardContent}>
                   <h3 className={styles.albumTitle}>{likeAlbum.albumName}</h3>
 

@@ -8,9 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Service
 @Transactional
@@ -30,78 +28,60 @@ public class AIService {
 
         List<MusicDto> musicList = new ArrayList<>();
 
-        // 감정과 장르에 따른 추천
+        Set<MusicDto> musicSet = new LinkedHashSet<>();
+
+// 감정과 장르에 따른 추천
         try {
             List<MusicDto> moodBasedMusic = mr.getMusicByMoodAndGenre(mood, genre, PageRequest.of(0, score.getEmotionScore()));
-
-            if (moodBasedMusic == null || moodBasedMusic.isEmpty()) {
-                System.out.println("감정 기반 추천 결과 없음");
-            } else {
-                musicList.addAll(moodBasedMusic);
-                System.out.println("감정기반 추가된 개수: " + moodBasedMusic.size());
+            if (moodBasedMusic != null) {
+                musicSet.addAll(moodBasedMusic);
             }
         } catch (Exception e) {
-            System.out.println("감정 기반 추천 예외 발생: " + e.getMessage());
-            e.printStackTrace();
+            System.out.println("감정 기반 추천 예외 발생: {}"+ e.getMessage());
         }
 
-        // 유사 감정과 장르에 따른 추천
+// 유사 감정 기반 추천
         try {
-            if (musicList.size() < score.getTotalLimit()) {
+            if (musicSet.size() < score.getTotalLimit()) {
                 List<MusicDto> similarMoodMusic = mr.getMusicBySimilarMoodsAndGenre(similarMoods, genre, PageRequest.of(0, score.getSimilarScore()));
-
-                if (similarMoodMusic != null && !similarMoodMusic.isEmpty()) {
-                    musicList.addAll(similarMoodMusic);
-                    System.out.println("유사 감정 기반 추가된 개수: " + similarMoodMusic.size());
-                } else {
-                    System.out.println("유사 감정 기반 추천 결과 없음");
+                if (similarMoodMusic != null) {
+                    musicSet.addAll(similarMoodMusic);
                 }
             }
         } catch (Exception e) {
-            System.out.println("유사 감정 기반 추천 예외 발생: " + e.getMessage());
-            e.printStackTrace();
+            System.out.println("유사 감정 기반 추천 예외 발생: {}"+ e.getMessage());
         }
 
-        // 최근 음악 재생 목록에서 추천
+// 최근 음악 기반 추천
         try {
-            if (musicList.size() < score.getTotalLimit()) {
+            if (musicSet.size() < score.getTotalLimit()) {
                 List<Integer> recentMusicIds = mrmr.getRecentMusicIdsByMemberId(memberId, score.getRecentMusicScore());
-                if (recentMusicIds != null && !recentMusicIds.isEmpty()) {
+                if (recentMusicIds != null) {
                     List<MusicDto> recentMusic = mr.getMusicByIds(recentMusicIds);
-                    if (recentMusic != null && !recentMusic.isEmpty()) {
-                        musicList.addAll(recentMusic);
-                        System.out.println("최근 음악 기반 추가된 개수: " + recentMusic.size());
-                    } else {
-                        System.out.println("최근 음악 추천 결과 없음");
+                    if (recentMusic != null) {
+                        musicSet.addAll(recentMusic);
                     }
-                } else {
-                    System.out.println("최근 재생 음악 ID 없음");
                 }
             }
         } catch (Exception e) {
-            System.out.println("최근 음악 추천 예외 발생: " + e.getMessage());
-            e.printStackTrace();
+            System.out.println("최근 음악 추천 예외 발생: {}"+ e.getMessage());
         }
 
-        // 부족할 경우 랜덤으로 추천
+// 부족하면 랜덤 추천
         try {
-            if (musicList.size() < score.getTotalLimit()) {
+            if (musicSet.size() < score.getTotalLimit()) {
                 List<MusicDto> randomMusic = mr.getRandomMusic(PageRequest.of(0, score.getRandomScore()));
-
-                if (randomMusic != null && !randomMusic.isEmpty()) {
-                    musicList.addAll(randomMusic);
-                    System.out.println("랜덤 추천 기반 추가된 개수: " + randomMusic.size());
-                } else {
-                    System.out.println("랜덤 추천 결과 없음");
+                if (randomMusic != null) {
+                    musicSet.addAll(randomMusic);
                 }
             }
         } catch (Exception e) {
-            System.out.println("랜덤 음악 추천 예외 발생: " + e.getMessage());
-            e.printStackTrace();
+            System.out.println("랜덤 음악 추천 예외 발생: {}"+ e.getMessage());
         }
 
-        System.out.println("최종 추천 음악 개수: " + musicList.size());
-        return musicList.stream().limit(20).toList();
+        System.out.println("최종 추천 음악 개수: " + musicSet.size());
+        return new ArrayList<>(musicSet).subList(0, Math.min(20, musicSet.size()));
+
     }
 
     private List<String> getRecommendedGenres(String mood) {
