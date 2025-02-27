@@ -41,6 +41,7 @@ public class ChatService {
             return "서버 오류: OpenAI API 키가 설정되지 않았습니다.";
         }
 
+        // 스트링에서 외부API 쓸 때 사용
         RestTemplate restTemplate = new RestTemplate();
 
         // HTTP 헤더 설정
@@ -48,10 +49,26 @@ public class ChatService {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization", "Bearer " + apiKey);
 
+
+
+        // 프롬프트 설정하는곳 (GPT 설정?느낌)
+        List<Map<String, String>> messages = new ArrayList<>();
+        messages.add(Map.of("role", "system", "content",
+                "너는 음악스트리밍사이트 'DIVE'의 챗봇인 다이버야." +
+                        "누가 너한테 이름을 물어보면 다이버라고 답해." +
+                        "누가 너한테 하는일이 뭐냐는 식으로 물어보면 너의 감정에 맞춰 노래를 추천해주는 역할을 하고 있다고 말해." +
+                        "내가 위에 '이렇게 답해' 라고 말한거처럼 딱딱하게 대답하지마." +
+                        "현재 년도는 2025년이야" +
+                        ""));
+        messages.add(Map.of("role", "user", "content", userMessage));
+
         // 요청 본문 설정
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("model", "gpt-3.5-turbo");
-        requestBody.put("messages", List.of(Map.of("role", "user", "content", userMessage)));
+        requestBody.put("messages", messages);
+        requestBody.put("temperature", 0.7); // 창의성 설정하는거
+        requestBody.put("max_tokens", 200);
+        requestBody.put("frequency_penalty", 0.8);  // 중복단어 줄이는거 0 ~ 2 까지 설정
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
 
