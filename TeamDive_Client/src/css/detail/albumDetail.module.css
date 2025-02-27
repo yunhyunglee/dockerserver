@@ -121,6 +121,7 @@
   background-color: #444;
   color: #fff;
 }
+
 .moreButton:hover {
   background-color: #555;
 }
@@ -133,12 +134,15 @@
 .trackTable {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed; /* 열 너비를 고정 */
 }
 
 .trackTable thead {
   border-bottom: 1px solid #333;
 }
-.trackTable th {
+
+.trackTable th,
+.trackTable td {
   font-size: 14px;
   text-align: left;
   color: #888;
@@ -147,16 +151,29 @@
 
 /* 각 컬럼별 너비나 스타일 조정 */
 .thNumber {
-  width: 40px;
+  width: 5%;
+  text-align: center;
 }
 .thTitle {
-  width: 40%;
+  width: 35%;
+  text-align: left;
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+  white-space: nowrap;
 }
 .thArtist {
   width: 25%;
+  text-align: left;
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+  white-space: nowrap;
 }
 .thActions {
-  width: 25%;
+  width: 30%;
+  text-align: center;
+  display: flex;
+  justify-content: center; /* 가로 중앙 */
+  align-items: center;     /* 세로 중앙 */
 }
 
 .trackTable td {
@@ -169,7 +186,9 @@
 /* 마우스오버 효과 */
 .trackRow {
   transition: background-color 0.2s;
+  border-bottom: 1px solid #222;
 }
+
 .trackRow:hover {
   background-color: #111;
 }
@@ -188,8 +207,12 @@
   padding: 5px 10px;
   font-size: 13px;
   cursor: pointer;
+  margin-left: 5px;
   transition: background 0.3s ease;
+  width: 42px;
+  height: 35px;
 }
+
 .iconButton:hover {
   background: #222;
   color: #fff;

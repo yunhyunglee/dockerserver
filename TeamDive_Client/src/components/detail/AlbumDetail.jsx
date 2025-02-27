@@ -6,14 +6,17 @@ import axios from 'axios';
 import jaxios from '../../util/JwtUtil';
 
 import PlaylistSelectModal from './PlaylistSectionModal';
+import { PlayerContext } from "../../context/PlayerContext";
 
 import styles from '../../css/detail/albumDetail.module.css';
 
 /* 아이콘 */
+import { MdLibraryMusic } from "react-icons/md";
+import { BsFileEarmarkMusicFill } from "react-icons/bs";
 import { FaPlay } from "react-icons/fa";
+import { MdQueueMusic } from "react-icons/md";
 import { HiOutlineHeart } from "react-icons/hi";
 import { HiHeart } from "react-icons/hi";
-import { PlayerContext } from '../../context/PlayerContext';
 
 const AlbumDetail = () => {
     const { albumId } = useParams();
@@ -28,7 +31,6 @@ const AlbumDetail = () => {
 
     const [selectedMusicId, setSelectedMusicId] = useState(null);
     const [showPlaylistModal, setShowPlaylistModal] = useState(false);
-    const [musicIdList, setMusicIdList] = useState([selectedMusicId]);
 
     useEffect(() => {
         if (loginUser.memberId) {
@@ -212,13 +214,16 @@ const AlbumDetail = () => {
                     <tbody>
                         {albumDetail.musicList.map((track, index) => (
                             <tr key={track.musicId} className={styles.trackRow}>
-                                <td>{index + 1}</td>
+                                <td className={styles.thNumber}>
+                                    {index + 1}
+                                </td>
                                 <td
+                                    className={styles.thTitle}
                                     style={{ cursor: 'pointer' }}
                                     onClick={() => handleTrackClick(track.musicId)}>
                                     {track.title}
                                 </td>
-                                <td>
+                                <td className={styles.thArtist}>
                                     <span
                                         onClick={() => {
                                             navigate(`/artist/${track.artistId}`);
@@ -233,26 +238,26 @@ const AlbumDetail = () => {
                                         className={styles.iconButton}
                                         onClick={()=>{handlePlay(music.musicId)}}
                                     >
-                                        듣기
+                                        <FaPlay size={16}/>
                                     </button>
                                     <button
                                         className={styles.iconButton}
                                         onClick={()=>{handlePlay2(music.musicId)}}
                                     >
-                                        재생목록+
+                                        <MdQueueMusic size={22}/>
                                     </button>
                                     <button
                                         className={styles.iconButton}
                                         onClick={() => handleAddToPlaylist(music.musicId)}
                                     >
-                                        플리+
+                                        <MdLibraryMusic size={20}/>
                                     </button>
                                     <button
                                         className={styles.iconButton}
                                         onClick={() => insertCart(music.musicId)} 
                 
                                     >
-                                        MP3
+                                        <BsFileEarmarkMusicFill size={18}/>
                                     </button>
                                 </td>
                             </tr>

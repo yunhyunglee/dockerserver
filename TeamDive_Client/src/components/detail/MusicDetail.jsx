@@ -185,17 +185,17 @@ const MusicDetail = () => {
                         <button
                             className={styles.playButton}
                             onClick={()=>{handlePlay(musicDetail.musicId)}}>
-                                <FaPlay size={16}/>&nbsp;재생
+                                <FaPlay size={14}/>&nbsp;재생
                         </button>
                         <button
                             className={styles.addButton}
                             onClick={()=>{handlePlay2(musicDetail.musicId)}}>
-                                <MdQueueMusic size={22}/>&nbsp;추가
+                                <MdQueueMusic size={22}/>&nbsp;맨 아래 추가
                         </button>
                         <button
                             className={styles.addButton}
                             onClick={handleAddToPlaylist}>
-                                <MdLibraryMusic size={20}/>&nbsp;플리추가
+                                <MdLibraryMusic size={20}/>&nbsp;플레이리스트 추가
                         </button>
                         <button
                             className={styles.purchaseButton}
