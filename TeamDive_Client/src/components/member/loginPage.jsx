@@ -47,7 +47,6 @@ const LoginPage =() => {
     }
 
     function handleKakaoLogin() {
-        alert('카톡카톡');
         window.location.href='http://localhost:8070/member/kakaoStart'
       }
 

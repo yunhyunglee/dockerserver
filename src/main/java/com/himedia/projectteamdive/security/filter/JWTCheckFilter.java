@@ -74,9 +74,76 @@ public class JWTCheckFilter extends OncePerRequestFilter {
         if(request.getMethod().equals("OPTIONS")){
             return true;
         }
-        if(path.startsWith("/")){
-            return true;
-        }
+
+//        if(path.startsWith("/api/member/login")){
+//            return true;
+//        }
+//        if(path.startsWith("/api/membership/getMembership")){
+//            return true;
+//        }
+//        if(path.startsWith("/api/member/checkId")){
+//            return true;
+//        }
+//        if(path.startsWith("/api/member/join")){
+//            return true;
+//        }
+//        if(path.startsWith("/api/member/kakaoStart")){
+//            return true;
+//        }
+//        if(path.startsWith("/api/member/kakaoLogin")){
+//            return true;
+//        }
+//        if(path.startsWith("/api/member/sendMail")){
+//            return true;
+//        }
+//        if(path.startsWith("/api/member/emailCheck")){
+//            return true;
+//        }
+//        if(path.startsWith("/api/chat/ask")){
+//            return true;
+//        }
+//        if(path.startsWith("/api/music/addPlayCount")){
+//            return true;
+//        }
+//        if(path.startsWith("/api/music/getMusicChart")){
+//            return true;
+//        }
+//        if(path.startsWith("/api/music/getAlbumChart")){
+//            return true;
+//        }
+//        if(path.startsWith("/api/music/getAlbumChart")){
+//            return true;
+//        }
+//        if(path.startsWith("/api/music/getArtist")){
+//            return true;
+//        }
+//        if(path.startsWith("/api/music/getAlbum")){
+//            return true;
+//        }
+//        if(path.startsWith("/api/music/getMusic")){
+//            return true;
+//        }
+//        if(path.startsWith("/api/music/getSearch")){
+//            return true;
+//        }
+//        if(path.startsWith("/api/music/getCurrentPlaylist")){
+//            return true;
+//        }
+//        if(path.startsWith("/api/music/getMemberPlaylist")){
+//            return true;
+//        }
+//        if(path.startsWith("/api/music/getMemberRecentMusics")){
+//            return true;
+//        }
+//        if(path.startsWith("/api/community/getLikeCount")){
+//            return true;
+//        }
+//        if(path.startsWith("/api/community/insertReply")){
+//            return true;
+//        }
+//        if(path.startsWith("/api/membership/getMembershipByCategory")){
+//            return true;
+//        }
         if(path.startsWith("/member/login")){
             return true;
         }
@@ -86,11 +153,63 @@ public class JWTCheckFilter extends OncePerRequestFilter {
         if(path.startsWith("/member/checkId")){
             return true;
         }
+        if(path.startsWith("/member/join")){
+            return true;
+        }
+        if(path.startsWith("/member/kakaoStart")){
+            return true;
+        }
+        if(path.startsWith("/member/kakaoLogin")){
+            return true;
+        }
+        if(path.startsWith("/member/sendMail")){
+            return true;
+        }
+        if(path.startsWith("/member/emailCheck")){
+            return true;
+        }
+        if(path.startsWith("/chat/ask")){
+            return true;
+        }
         if(path.startsWith("/music/addPlayCount")){
             return true;
         }
-
-
+        if(path.startsWith("/music/getMusicChart")){
+            return true;
+        }
+        if(path.startsWith("/music/getAlbumChart")){
+            return true;
+        }
+        if(path.startsWith("/music/getArtist")){
+            return true;
+        }
+        if(path.startsWith("/music/getAlbum")){
+            return true;
+        }
+        if(path.startsWith("/music/getMusic")){
+            return true;
+        }
+        if(path.startsWith("/music/getSearch")){
+            return true;
+        }
+        if(path.startsWith("/music/getCurrentPlaylist")){
+            return true;
+        }
+        if(path.startsWith("/music/getMemberPlaylist")){
+            return true;
+        }
+        if(path.startsWith("/music/getMemberRecentMusics")){
+            return true;
+        }
+        if(path.startsWith("/community/getLikeCount")){
+            return true;
+        }
+        if(path.startsWith("/community/insertReply")){
+            return true;
+        }
+        if(path.startsWith("/membership/getMembershipByCategory")){
+            return true;
+        }
 
         return false;
     }

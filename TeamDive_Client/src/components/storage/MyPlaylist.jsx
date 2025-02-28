@@ -193,7 +193,7 @@ const MyPlaylist = () => {
 
             <div className={styles.modalContent}>
                
-              <div className={styles.coverPreview}>
+              <div className={styles.coverPreview} onClick={()=>document.getElementById('image').click()}>
                 {preview ? (
                   <img src={preview} alt="커버 미리보기" className={styles.coverImg} />
                 ) : (
@@ -210,6 +210,8 @@ const MyPlaylist = () => {
                   accept="image/*"
                   onChange={handleCoverChange}
                   className={styles.fileInput}
+                  style={{display:'none'}}
+                  id="image"
                 />
 
                 <input

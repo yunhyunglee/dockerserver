@@ -270,9 +270,8 @@ public class MusicService {
     @Transactional
     public void updatePlaylistAddMusic(int playlistId, List<Integer> musics) {
         Playlist playlist=pr.findByPlaylistId(playlistId);
-        Set<Integer> existingMusicIds = playlist.getMusicList().stream()
-                .map(Music::getMusicId)
-                .collect(Collectors.toSet());
+        Set<Integer> existingMusicIds = playlist.getMusicList().stream().filter(music -> music != null)
+                .map(music -> music.getMusicId()).collect(Collectors.toSet());
 
         for (int musicId : musics) {
             if (!existingMusicIds.contains(musicId)) {
