@@ -14,57 +14,58 @@ import axios from 'axios';
 import jaxios from '../../../util/JwtUtil.jsx';
 import { setRecommendedListToCookie, getRecommendedListFromCookie, setRecommendedListToStorage, getRecommendedListFromStorage } from '../../../util/CookieUtil.jsx';
 import { PlayerContext } from '../../../context/PlayerContext.jsx';
+import { Margin } from '@mui/icons-material';
 
 
 
-const MainPage = ({mood, setMood}) => {
+const MainPage = () => {
     const loginUser = useSelector(state => state.user);
     
     const [showAdModal, setShowAdModal] = useState(false); 
 
     const [recommendedSongs, setRecommendedSongs] = useState([]);
     const [recommendList, setRecommendList] = useState([]);
-    
-    // useEffect(() => {
-    //     if (!mood) return;
-    
-    //     axios.get(`/api/music/recommend?mood=${mood}`)
-    //       .then((res) => {
-    //         setRecommendedSongs(res.data);
-    //       })
-    //       .catch((err) => {
-    //         console.error(err);
-    //       });
-    //   }, [mood]);
-    useEffect(() => {
-    if (!mood || !loginUser.memberId) return;
-    console.log('select mood', mood);
-    
-    jaxios.get('/api/AI/recommendList', { params: { mood, memberId: loginUser.memberId } })
-    .then((result) => {
-        const data = result.data?.recommendList;
-        if (Array.isArray(data)) {
-            setRecommendList(data);
-            setRecommendedListToStorage(data);
 
-            console.log('추천 목록을 저장함:', data);
-        } else {
-            console.warn('추천 목록이 없거나 잘못된 형식입니다.');
-            setRecommendList([]);
-        }
+    
 
-        // localStorage에서 가져오기 (이전에 저장한 데이터 활용)
-        const storedList = getRecommendedListFromStorage();
-        if (storedList && storedList.length > 0) {
-            console.log('localStorage에서 불러온 추천 목록:', storedList);
-            setRecommendList(storedList);
-        }
-    })
-    .catch((err) => {
-        console.error('추천 리스트 가져오기 실패:', err);
-    });
-    }, [mood, loginUser.memberId]);
 
+
+    const [moodMusic, setMoodMusic] = useState([]);
+    const [selectMood, setSelectMood] = useState();
+    const moodDisplayNames = {
+        happy: "행복한 하루",
+        sad: "슬픈 하루",
+        angry: "짜증났던 하루",
+        boring: "지루했던 하루",
+        normal: "평범한 하루"
+      };
+
+
+    const handleMood = (mood) => {
+        setSelectMood(mood);
+        axios.get('/api/music/musicForMood', { params: { mood } })
+          .then((result) => {
+            
+            if (result.data ) {
+              setMoodMusic(result.data.music);
+            } else {
+              setMoodMusic([]);
+            }
+          })
+          .catch((err) => {
+            console.error("음악 조회 실패:", err);
+            setMoodMusic([]);
+          });
+      };
+
+
+
+    const closeMood = () => {
+        setMoodMusic([]);
+    }
+
+    
+  
 
     useEffect(() => {
         
@@ -103,16 +104,49 @@ const MainPage = ({mood, setMood}) => {
         setAddPlaylist(recommendList);
     };
 
-    function closeRecommendArea() {
-        console.log("mainPage에서의 무드",mood); // setMood가 undefined인지 확인
-        setMood(""); // 정상적으로 실행되는지 확인
-        console.log("setMood통과이후",mood)
-    }
+  
 
     return (
         <div className={styles.mainPageContainer}>
 
-            <div className={
+        {loginUser.memberId ? ( <>
+            <div className={styles.moodContainer}>
+               <span className={styles.moodTitle}>
+                    {loginUser.nickname}님 오늘 하루는 어떠셨나요 ?
+                    <span onClick={()=> handleMood('happy')} className={styles.happy}><img className={styles.moodImg} src='public/icon/happy.gif'  /></span>
+                    <span onClick={()=> handleMood('sad')} className={styles.sad}><img className={styles.moodImg} src='public/icon/happy.gif'  /></span>
+                    <span onClick={()=> handleMood('angry')} className={styles.angry}><img className={styles.moodImg} src='public/icon/angry.gif'  /></span>
+                    <span onClick={()=> handleMood('boring')} className={styles.boring}><img className={styles.moodImg} src='public/icon/happy.gif'  /></span>
+                    <span onClick={()=> handleMood('normal')} className={styles.normal}><img className={styles.moodImg} src='public/icon/happy.gif'  /></span>
+                </span>
+            </div>
+            {selectMood && moodMusic.length > 0 && (
+                <div className={styles.moodSongList}>
+                    <p onClick={closeMood} className={styles.closeButton}>닫기</p>
+                    <h3 className={styles.moodSongTitle}>
+                    {moodDisplayNames[selectMood]}에 어울리는 추천곡
+                    </h3>
+                    <div className={styles.songGrid}>
+                    {moodMusic.slice(0, 5).map(music => (
+                        <div key={music.musicId} className={styles.songCard}>
+                        <Link to={`/music/${music.musicId}`}>
+                            <img src={music.image} alt={music.title} className={styles.songImg} />
+                            <div className={styles.songInfo}>
+                            <p className={styles.songTitle}>{music.title}</p>
+                            <p className={styles.songArtist}>{music.artist}</p>
+                            </div>
+                        </Link>
+                        </div>
+                    ))}
+                    </div>
+                </div>
+                )}
+           </> )
+                :
+                ''
+        }
+
+            {/* <div className={
             mood && mood !== ''
                 ? styles.recommendActive
                 : styles.recommendHidden
@@ -152,7 +186,7 @@ const MainPage = ({mood, setMood}) => {
                 )
                 }
 
-            </div>
+            </div> */}
 
 
             {!loginUser.memberId ? (showAdModal && (<AdModal/>)) : ''}
@@ -160,12 +194,16 @@ const MainPage = ({mood, setMood}) => {
             <div className={styles.topSection}>
 
                 <div className={styles.topRow}>
-                    {/* <div className={styles.topLeft}><LikeRankingSection /></div> */}
-
+                   
             
                     <section className={styles.conditionalSection1}>
                     { !loginUser.memberId ? 
+                    <div className={styles.top}>
+               
+                    
+
                             <RandomMusic/>
+                    </div>
                         :
                             <MyRecentMusicSection />  
                     }

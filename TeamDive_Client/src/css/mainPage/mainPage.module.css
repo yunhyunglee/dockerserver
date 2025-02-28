@@ -5,7 +5,212 @@
   background-color: black;
   color: #fff;
   min-height: 100vh;
+  
 }
+
+
+
+.moodContainer {
+  display: flex;
+  width: 100%;
+  
+}
+
+.moodTitle {
+  width: 100%;
+  text-align: center;
+  font-size: 32px;
+  font-weight: 100;
+  background-color: #000000;
+  border-radius: 51px;
+  font-family: 'Ownglyph_ParkDaHyun', sans-serif;
+}
+
+
+.moodImg {
+  width: 40px;
+  height: 40px;
+  position: relative;
+  top: 8px;
+  left: 15px;
+  margin-right: 15px;
+}
+
+
+
+.happy,
+.sad,
+.angry,
+.boring,
+.normal {
+  position: relative; 
+  cursor: pointer;
+}
+
+/* 행복 툴팁 */
+.happy:hover::after {
+  content: "행복함"; 
+  position: absolute;
+  bottom: 120%; 
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(66, 34, 34, 0.75);   /* 이건 말풍선 배경 나중에 설정 */
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  font-size: 18px;
+  z-index: 10;
+  font-weight: 10;
+}
+
+/* 슬픔 툴팁 */
+.sad:hover::after {
+  content: "슬픔";
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(66, 34, 34, 0.75);
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  font-size: 18px;
+  z-index: 10;
+  font-weight: 10;
+}
+
+/* 분노 툴팁 */
+.angry:hover::after {
+  content: "짜증";
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(66, 34, 34, 0.75);
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  font-size: 18px;
+  z-index: 10;
+  font-weight: 10;
+}
+
+/* 지루함 툴팁 */
+.boring:hover::after {
+  content: "지루함";
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(66, 34, 34, 0.75);
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  font-size: 18px;
+  z-index: 10;
+  font-weight: 10;
+}
+
+/* 보통 툴팁 */
+.normal:hover::after {
+  content: "평범";
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(66, 34, 34, 0.75);
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  font-size: 18px;
+  z-index: 10;
+  font-weight: 10;
+}
+
+
+
+
+.moodSongList {
+  position: relative;  /* 닫기 버튼의 절대 위치 기준 */
+  padding: 20px;
+
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+/* 닫기 버튼 스타일 */
+.closeButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 14px;
+  color: #555;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+.moodSongTitle {
+  font-size: 20px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+/* 그리드 형태로 노래 카드 배치 */
+.songGrid {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.songCard {
+  background-color: #fff;
+  border: 1px solid #eaeaea;
+  border-radius: 8px;
+  width: 18%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+  text-align: center;
+}
+
+.songCard:hover {
+  transform: translateY(-5px);
+}
+
+.songImg {
+  width: 100%;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.songInfo {
+  padding: 8px;
+}
+
+.songTitle {
+  font-size: 16px;
+  margin: 5px 0 0 0;
+}
+
+.songArtist {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+
+
+
+
+
+
 
 .topRow{
   display: flex;
@@ -21,9 +226,14 @@
   font-size: 48px;
   top: -140px;
   opacity: 0;
+  pointer-events: none;
 }
 
-
+.top {
+  display: flex;
+  justify-content: space-around;
+  
+}
 
 
 .topSection {
@@ -33,9 +243,7 @@
   margin-bottom: 40px;
 }
 
-.topLeft{
-  flex: 1;
-}
+
 
 .conditionalSection1 {
   flex: 2;
@@ -81,8 +289,18 @@
   color: #fff;        /* 텍스트 흰색 */
   padding: 5px 10px;  /* 텍스트 주변 여백 */
   border-radius: 4px; /* 둥근 모서리 (선택사항) */
-  top: -140px;
+  top: -110px;
+
 }
+
+.musicInfo p {
+  white-space: nowrap;       /* 한 줄로 표시 */
+  overflow: hidden;          /* 넘치는 텍스트 숨기기 */
+  text-overflow: ellipsis;   /* 넘친 부분 ... 표시 */
+  text-align: center;
+  width: 80%;
+}
+
 
 .recentMusictitle {
   display: inline-block;           /* 텍스트 크기에 맞춰 영역 축소 */
@@ -100,7 +318,7 @@
 
  .recentMusicGrid {
   display: grid;
-  grid-template-columns: repeat(8, 1fr);
+  grid-template-columns: repeat(8, 12%);
   gap: 10px;
 
 }

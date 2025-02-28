@@ -499,4 +499,21 @@ public class MusicService {
                 .collect(Collectors.toList());
     }
 
+    public HashMap<String, Object> getMusicForMood(String mood) {
+
+        List<Music> musicList = mr.findByMood(mood);
+
+        // Music 엔티티를 MusicDto로 변환
+        List<MusicDto> dtoList = musicList.stream()
+                .map(MusicDto::new)
+                .collect(Collectors.toList());
+
+        // 응답 데이터 구성
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("music", dtoList);
+        return map;
+
+
+
+    }
 }

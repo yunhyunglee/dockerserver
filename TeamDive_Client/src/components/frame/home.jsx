@@ -6,6 +6,7 @@ import { Cookies } from 'react-cookie';
 import { useEffect } from 'react';
 import { logoutAction } from '../../store/UserSlice';
 
+
 function Home({ menubar, mood, setMood}) {
 
     const loginUser = useSelector( state => state.user );
@@ -34,13 +35,31 @@ function Home({ menubar, mood, setMood}) {
           
           
             <div className={`${styles.sidebar} ${menubar ? styles.open : ''}`}>
-                <Link to='/' className={styles.link}>🏠</Link> <br />
-                <Link to='/charts' className={styles.link}>오늘의 인기차트</Link><br />
-                <Link to='/playList' className={styles.link}>플레이리스트 모음</Link><br />
-                <Link to='/storage' className={styles.link}>보관함</Link><br />
-                <Link to='/membership/all' className={styles.link}>멤버십</Link><br />
-                
-                <Link to='/mypage/myPageMain' className={styles.link}>마이페이지</Link><br />
+                <Link to='/' className={styles.link}>
+                <img src='public/icon/home1.gif' className={styles.menuImg} alt="메인아이콘"/>
+                <span className={styles.linkText}>홈</span>
+                </Link>< br/>
+                <Link to='/charts' className={styles.link}>
+                <img src='public/icon/chart.gif' className={styles.menuImg} alt="인기차트 아이콘"/>
+                <span className={styles.linkText}>인기차트</span>
+                </Link>< br/>
+                <Link to='/playList' className={styles.link}>
+                <img src='public/icon/playlist.gif' className={styles.menuImg} alt="플레이리스트 아이콘"/>
+                <span className={styles.linkText}>플레이리스트</span>
+                </Link>< br/>
+                <Link to='/storage' className={styles.link}>
+                <img src='public/icon/storage.gif' className={styles.menuImg} alt="보관함 아이콘"/>
+                <span className={styles.linkText}>보관함</span>
+                </Link>< br/>
+                <Link to='/membership/all' className={styles.link}>
+                <img src='public/icon/membership2.gif' className={styles.menuImg} alt="멤버십 아이콘"/>
+                <span className={styles.linkText}>멤버십</span>
+                </Link>< br/>
+                <Link to='/mypage/myPageMain' className={styles.link}>
+                <img src='public/icon/mypage.gif' className={styles.menuImg} alt="마이페이지 아이콘"/>
+                <span className={styles.linkText}>마이페이지</span>
+                </Link>
+
                 <div className={styles.sidebarEnd}>
                     {
                         (loginUser.memberId)?(

@@ -54,17 +54,14 @@ const MyRecentMusicSection = () => {
         <h2><span style={{fontSize: '30px'}}>{loginUser.nickname}</span> 님의 자주 듣는 노래</h2>
         <div className={styles.recentMusicGrid}>
           {displayItems.map((item, index) => (
-            <div key={index} className={styles.recentMusicCard} 
-            onClick={()=>{navigate(`/music/${item.musicId}`)}}
-            >
+            <div key={index} className={styles.recentMusicCard}>
 
               <div className={styles.recentMusicInfo} onClick={()=>handlePlay2(item.musicId)}>
-                  <img src={item.image} className={styles.image}/>
+                  <img src={item.image} className={styles.image} style={{cursor: 'pointer'}}/>
                   <div className={styles.playIcon} >▶</div>
               </div>
               <div className={styles.musicInfo}>
-                  <p className={styles.recentMusictitle}>{item.title}</p>
-                  <p className={styles.recentMusictitle}>{item.artist}</p>
+                  <p style={{cursor:'pointer'}} className={styles.recentMusictitle}onClick={()=>{navigate(`/music/${item.musicId}`)}}>{item.title}</p>
               </div>
             </div>
           ))}

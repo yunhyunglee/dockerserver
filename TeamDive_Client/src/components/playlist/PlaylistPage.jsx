@@ -3,6 +3,9 @@ import styles from "../../css/playlistPage.module.css";
 
 const PlaylistPage = () => {
     
+
+
+  
   // rotate.gif 이미지를 반환하는 간단한 함수
   function rotateGif() {
     return (
@@ -44,31 +47,11 @@ const PlaylistPage = () => {
 
   return (
     <div className={styles.container}>
-      {/* 랜덤 플레이리스트 */}
-      <div className={styles.randomPlaylist}>
-        <div className={styles.sectionHeader}>
-          <span className={styles.spanTitle}>랜덤 플레이리스트</span>
-          <span onClick={getRandomPlaylist} className={styles.rotateBtn}>
-            {rotateGif()}
-          </span>
-        </div>
-        <div className={styles.randomSection}>
-          {shufflePlaylist.map((item, idx) => (
-            <div
-              key={idx}
-              className={styles.randomCard}
-              style={{ backgroundImage: `url(${item.image})` }}
-            >
-              <p className={styles.pTitle}>{item.title}</p>
-            </div>
-          ))}
-        </div>
-      </div>
 
       {/* 추천 플레이리스트 */}
       <div className={styles.recommendPlaylist}>
         <div className={styles.sectionHeader}>
-          <span className={styles.spanTitle}>추천 플레이리스트</span>
+          <span className={styles.spanTitle}>Dive PICK</span>
         </div>
         <div className={styles.recommendSection}>
           {playlist.slice(0, 5).map((item, idx) => (
@@ -86,8 +69,7 @@ const PlaylistPage = () => {
       {/* 장르별 플레이리스트 */}
       <div className={styles.genrePlaylist}>
         <div className={styles.sectionHeader}>
-          <span className={styles.spanTitle}>My 기분 맞춤 플레이리스트</span>
-          <div className={styles.genreMenu}>적적한 기분 / 신날 때 / ??? </div>
+          <span className={styles.spanTitle}>HOT<span style={{color: 'white'}}>🔥</span> 플리</span>
         </div>
         <div className={styles.genreSection}>
           {playlist.slice(0, 5).map((item, idx) => (
@@ -101,6 +83,32 @@ const PlaylistPage = () => {
           ))}
         </div>
       </div>
+
+
+      {/* 랜덤 플레이리스트 */}
+      <div className={styles.randomPlaylist}>
+        <div className={styles.sectionHeader}>
+          <span className={styles.spanTitle}>이런 플리는 어떨까요?</span>
+          <span onClick={getRandomPlaylist} className={styles.rotateBtn}>
+            {rotateGif()}
+          </span>
+        </div>
+        <div className={styles.randomSection}>
+          {shufflePlaylist.map((item, idx) => (
+            <div
+              key={idx}
+              className={styles.randomCard}
+              style={{ backgroundImage: `url(${item.image})` }}
+            >
+              <p className={styles.pTitle}>{item.title}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+
+
+
     </div>
   );
 };
