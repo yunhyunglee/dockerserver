@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import jaxios from "../../../util/JwtUtil";
+import { useNavigate } from "react-router-dom";
 import "../../../style/membership.scss";
 
 const MembershipAdmin = () => {
     const [membershipList, setMembershipList] = useState([]);
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
 
     const getMemberships = async () => {
@@ -22,26 +24,11 @@ const MembershipAdmin = () => {
         }
     };
 
-    const updateMembership = async (membership) => {
-        try {
-            const response = await jaxios.post("/api/membership/updateMembership", membership);
-    
-            if (response.data?.msg === "yes") {
-                alert("멤버십 정보가 수정되었습니다.");
-                getMemberships(); // UI 업데이트
-            } else {
-                alert("수정 실패!");
-            }
-        } catch (error) {
-            console.error("Error:", error);
-            alert("요청 실패!");
-        }
-    };
 
     const toggleMembershipActive = async (membershipId) => {
         try {
             const response = await jaxios.put("/api/membership/toggleMembershipActive", {
-                membershipId: membershipId  // ✅ JSON body로 전달
+                membershipId: membershipId  
             });
     
             if (response.data?.msg === "yes") {
@@ -54,11 +41,6 @@ const MembershipAdmin = () => {
             alert("요청 실패!");
         }
     };
-
-
-
-
-
 
 
 
@@ -77,12 +59,15 @@ const MembershipAdmin = () => {
             <table className="membershipTable">
                 <thead>
                     <tr>
+
                         <th>이름</th>
+                        <th>분류</th>
                         <th>가격</th>
+                        <th>할인가격</th>
                         <th>기간</th>
-                        <th>사용자 수</th>
                         <th>상태</th>
-                        <th>변경</th>
+
+
                     </tr>
                 </thead>
                 <tbody>
@@ -91,10 +76,16 @@ const MembershipAdmin = () => {
                     ) : (
                         membershipList.map((membership, index) => (
                             <tr key={index}>
+                                <td>
+                                    <span className="clickable" onClick={() =>  navigate(`/UpdateMemberShip/${""}`)}>
+                                        {membership.name || "이름"}
+                                    </span>
+                                </td>                        
                                 <td>{membership.category || "정보 없음"}</td>
-                                <td>{membership.price?.toLocaleString() || "0"}원</td>
-                                <td>{membership.duration}일</td>
-                                <td>{membership.userCount || 0}명</td>
+                                <td>{membership.price?.toLocaleString() || "0"}원</td>  
+                                <td>{membership.discount.toLocaleString() || "0"}원</td>                   
+                                <td>{membership.period || "0"}개월</td>
+
                                 <td>
                                     <div
                                         className={`toggle-switch ${membership.active ? "active" : "inactive"}`}

@@ -6,6 +6,7 @@ import NavigationBar from "./component/NavigationBar";
 import User from "./Component/page/user/User";
 import UserDetail from "./Component/page/user/UserDetail";
 import MemberShip from "./Component/page/memberShip/MemberShip";
+import UpdateMemberShip from "./Component/page/memberShip/UpdateMemberShip";
 import Music from "./Component/page/music/Music";
 import Album from "./Component/page/music/Album";
 import AddAlbum from "./Component/page/music/AddAlbum";
@@ -41,7 +42,8 @@ const App = () => {
                                 <Route path="/artist" element={<Artist />} />
                                 <Route path="/UserDetail/:memberId" element={<UserDetail />} />
                                 <Route path="/memberShip" element={<MemberShip />} />
-
+                                <Route path="/updateMemberShip" element={<UpdateMemberShip />} />
+                                
                                 <Route path="/musicController" element={<MusicController />}>
                                     <Route path="music" element={<Music />} />
                                     <Route path="artist" element={<Artist />} />

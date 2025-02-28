@@ -134,7 +134,7 @@ const Music = () => {
                                                     <img src={album.image} alt={album.title} width="50" />
                                                 </td>
                                                 <td>
-                                                    <button className="deleteBtn" onClick={() => deleteAlbum(album.albumId)}>🗑 삭제</button>
+                                                    <button className="deleteBtn" onClick={() => deleteAlbum(album.albumId)}>🗑</button>
                                                 </td>
                                             </tr>
                                         ))
