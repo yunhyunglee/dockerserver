@@ -52,10 +52,10 @@ const PendingMp3 = () => {
     /* 다운로드 멤버십 정보 가져오기 */
     const fetchMembership = async () => {
         try{
-            const response = await jaxios.get('/api/membership/getDownloadMembership', {
-                params: { memberId: loginUser.memberId } });
+            const response = await jaxios.get('/api/membership/checkActiveMembership', {
+                params: { memberId: loginUser.memberId, category: 'download' }});
             if(response.data.message === 'yes'){
-                setDownloadMembership(response.data.downloadMembership);
+                setDownloadMembership(response.data.activeMembership);
             }
         }catch(error){
             console.error('다운로드 멤버십 불러오기 실패', error);

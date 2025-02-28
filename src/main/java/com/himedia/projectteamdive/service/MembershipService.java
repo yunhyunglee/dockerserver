@@ -32,8 +32,13 @@ public class MembershipService {
     @Autowired
     GiftRepository gr;
 
+    /* 멤버십 정보 전부 가져오기 */
+    public List<Membership> getMembership() {
+        return msr.findAll();
+    }
+
     /* 카테고리에 해당하는 멤버십 정보 가져오기 */
-    public List<Membership> getMembership(String category) {
+    public List<Membership> getMembershipByCategory(String category) {
         if(category.equals("all"))
             return msr.findByCategoryNotAndActiveTrue("gift");
         else
@@ -136,6 +141,7 @@ public class MembershipService {
         }
         return false;
     }
+
 }
 
 

@@ -18,25 +18,20 @@ public class MembershipController {
     @Autowired
     MembershipService mss;
 
-    /* 카테고리에 해당하는 멤버십 정보 가져오기 */
+    /* 멤버십 정보 전부 가져오기 */
     @GetMapping("/getMembership")
-    public HashMap<String, Object> getMembership(@RequestParam("category") String category) {
+    public HashMap<String, Object> getMembership() {
         HashMap<String, Object> result = new HashMap<>();
-        result.put("membershipList", mss.getMembership(category));
+        result.put("membershipList", mss.getMembership());
         return result;
     }
 
-    /* download 멤버십 조회 */
-    @GetMapping("/getDownloadMembership")
-    public HashMap<String, Object> getDownloadMembership(@RequestParam("memberId") String memberId) {
+    /* 카테고리에 해당하는 멤버십 정보 가져오기 */
+    @GetMapping("/getMembershipByCategory")
+    public HashMap<String, Object> getMembershipByCategory(
+            @RequestParam("category") String category) {
         HashMap<String, Object> result = new HashMap<>();
-        Membership_user downloadMembership = mss.checkActiveMembership(memberId, "download");
-        if(downloadMembership != null) {
-            result.put("downloadMembership", downloadMembership);
-            result.put("message", "yes");
-        }else{
-            result.put("message", "no");
-        }
+        result.put("membershipList", mss.getMembershipByCategory(category));
         return result;
     }
 
