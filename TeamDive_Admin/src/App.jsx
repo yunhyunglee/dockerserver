@@ -14,6 +14,7 @@ import UpdateAlbum from "./Component/page/music/UpdateAlbum";
 import Login from "./Component/Login";
 import MusicController from "./Component/page/MusicController";
 import Artist from "./Component/page/artist/Artist";
+import AddMemberShip from "./Component/page/memberShip/AddMemberShip";
 import "./style/global.scss";
 import { useSelector } from "react-redux";
 import { useState } from "react";
@@ -42,13 +43,15 @@ const App = () => {
                                 <Route path="/artist" element={<Artist />} />
                                 <Route path="/UserDetail/:memberId" element={<UserDetail />} />
                                 <Route path="/memberShip" element={<MemberShip />} />
-                                <Route path="/updateMemberShip" element={<UpdateMemberShip />} />
-                                
+                                <Route path="/updateMemberShip/:membershipId" element={<UpdateMemberShip />} />
+                                <Route path="/addMemberShip" element={<AddMemberShip />}/>
+                                                                
                                 <Route path="/musicController" element={<MusicController />}>
                                     <Route path="music" element={<Music />} />
                                     <Route path="artist" element={<Artist />} />
                                     <Route path="album" element={<Album />} />
                                 </Route>
+
                             </>
                             ) : (
                                 <Route path="*" element={<Login />} />
