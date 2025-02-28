@@ -11,15 +11,17 @@ const UserDetail = () => {
     const [membership, setMembership] = useState(null);
     const [paymentList, setPaymentList] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [newNickname, setNewNickname] = useState("");
+    const [newNickname, setNewNickname] = useState(user.nickname);
     const [editing, setEditing] = useState(false);
     const navigate = useNavigate(); 
+    const [selectedPayment, setSelectedPayment] = useState(null);
+    const [showModal, setShowModal] = useState(false);
+    const [paymentDetail, setPaymentDetail] = useState(null);
+
 
 
     // ✅ 회원 상세 정보, 멤버십, 결제 내역 불러오기
-    useEffect(() => {
-        getUserDetails (memberId);
-    }, [memberId]); 
+
 
         const getUserDetails  = async (memberId) => {
             setLoading(true);
@@ -55,114 +57,172 @@ const UserDetail = () => {
         };
 
     const Age = (birthDate) => {
-        if (!birthDate) return "정보 없음"; // 생년월일이 없는 경우 예외 처리
+        if (!birthDate) return "정보 없음"; 
     
-        const birthYear = new Date(birthDate).getFullYear(); // 출생 연도 추출
-        const currentYear = new Date().getFullYear(); // 현재 연도
+        const birthYear = new Date(birthDate).getFullYear(); 
+        const currentYear = new Date().getFullYear(); 
     
-        return currentYear - birthYear; // 나이 계산
+        return currentYear - birthYear; 
     };
 
-    const updateNickname = async () => {
-        if(!newNickname.trim()){
-            alert("닉네임을 입력하세요");
-            return;
-        }
+    // const updateNickname = async () => {
+    //     if (!user.memberId || !newNickname.trim()) return;
 
-        try{
-            const response = await jaxios.post("/api/member/updateMember", {
-                ...user,
-                nickname: newNickname,  // 변경된 닉네임
+    //     try{
+    //         const response = await jaxios.post("/api/member/updateMember", {
+    //             ...user,
+    //             nickname: newNickname, 
                 
-            });
-            if(response.data.msg === "yes"){
-                alert("닉네임이 성공적으로 변경되었습니다.");
-                setUser(prev => ({ ...prev, nickname: newNickname }));
-                setEditing(false);
-            }else{
-                alert("닉네임 변경 실패");
-            }
-        }catch(error){
-            console.error("닉네임 변경 실패:", error);
-            alert("닉네임 변경 중 오류 발생");
-        }
+    //         });
+    //         if(response.data.msg === "yes"){
+    //             alert("닉네임이 성공적으로 변경되었습니다.");
+    //             setUser(prev => ({ ...prev, nickname: newNickname }));
+    //             setEditing(false);
+    //         }else{
+    //             alert("닉네임 변경 실패");
+    //         }
+    //     }catch(error){
+    //         console.error("닉네임 변경 실패:", error);
+    //         alert("닉네임 변경 중 오류 발생");
+    //     }
+    // };
+
+    // const onPaymentDetail = (payment) => {
+    //     setPaymentDetail(payment);
+    //     alert(`
+    //         결제 상세 정보:
+    //         주문명: ${payment.orderName}
+    //         결제 금액: ${payment.amount}원
+    //         결제 상태: ${payment.paid ? "성공" : "실패"}
+    //         결제일: ${payment.createAt?.substring(0, 10) || "날짜 없음"}
+    //         결제 ID: ${payment.paymentId}
+
+    //     `);
+
+    // };
+    const openPaymentDetail = (payment) => {
+        setPaymentDetail(payment);
+        setShowModal(true);
     };
+    const closeModal = () => {
+        setShowModal(false);
+    };
+    
+    
 
 
-
-
-
-
-
-
+    useEffect(() => {
+        getUserDetails(memberId);
+    }, [memberId]); 
 
 
     return (
         <div className="userDetailPage">
-            <div className="userDetailContent">
-                <h1>회원 상세 정보</h1>
+                <div className="userDetailContent">
+                    <h1>회원 상세 정보</h1>
 
-                <div className="content">
-                    <div className="profileContainer">
-                        <img src={user.image || "/images/default_image.jpg"} alt="프로필" className="image" />
+                    {/* 📌 사용자 정보 */}
+                    <div className="content">
+                        <div className="profileContainer">
+                            <img src={user.image || "/images/default_image.jpg"} alt="프로필" className="image" />
+                        </div>
+
+                        <div className="infoContainer">
+                            <p><strong>아이디:</strong> {user.memberId || "정보 없음"}</p>
+                            <p><strong>이름:</strong> {user.name || "정보 없음"}</p>
+                            <p><strong>이메일:</strong> {user.email || "정보 없음"}</p>
+                            <p><strong>전화번호:</strong> {user.phone || "정보 없음"}</p>
+                            <p><strong>나이:</strong> {user.birth ? Age(user.birth) + "세" : "정보 없음"}</p>
+
+                            {/* ✅ 닉네임 수정 가능 */}
+                            <p>
+                                <strong>닉네임: </strong>
+                                {/* {editing ? (
+                                    <input
+                                        type="text"
+                                        value={newNickname}
+                                        onChange={(e) => setNewNickname(e.target.value)}
+                                        onKeyDown={(e) => e.key === "Enter" && updateNickname()} 
+                                        autoFocus
+                                    />
+                                ) : ( */}
+                                    <span className="clickable" onClick={() => setEditing(true)}>
+                                        {user.nickname || "정보 없음"}
+                                    </span>
+                                {/* )} */}
+                            </p>
+                        </div>
                     </div>
 
-                    <div className="infoContainer">
-                        <p><strong>아이디:</strong> {user.memberId || "정보 없음"}</p>
-                        <p><strong>이름:</strong> {user.name || "정보 없음"}</p>
-                        <p><strong>이메일:</strong> {user.email || "정보 없음"}</p>
-                        <p><strong>전화번호:</strong> {user.phone || "정보 없음"}</p>
-                        <p><strong>나이:</strong> {user.birth ? Age(user.birth) + "세" : "정보 없음"}</p>
-                        <p>
-                            <strong>닉네임: </strong>
-                            {editing ? (
-                                <input
-                                    type="text"
-                                    value={newNickname}
-                                    onChange={(e) => setNewNickname(e.target.value)}
-                                    // onBlur={updateNickname} 
-                                    onKeyDown={(e) => e.key === "Enter" && updateNickname()} 
-                                    autoFocus
-                                />
-                            ) : (
-                                <span
-                                    className="clickable"
-                                    onClick={() => setEditing(true)}
-                                >
-                                    {user.nickname || "정보 없음"}
-                                </span>
+                    {/* 📌 멤버십 정보 */}
+                    <h3>멤버십 정보</h3>
+                    <div className="membershipContainer">
+                        {membership?.length > 0 ? (
+                            membership.map((m, index) => (
+                                <div key={index} className="membershipCard">
+                                    <p><strong>맴버쉽 이름:</strong> {m.membershipCategory || "카테고리 없음"}</p>
+                                    <p><strong>종료일:</strong> {m.endDate?.substring(0, 10) || "날짜 없음"}</p>
+                                </div>
+                            ))
+                        ) : (
+                            <p className="noMembership">활성화된 멤버십 없음</p>
+                        )}
+                    </div>
+
+                    {/* 📌 결제 내역 */}
+                    <h3>결제 내역</h3>
+                    {paymentList?.length > 0 ? (
+                        <div className="paymentContainer">
+                            <table className="paymentTable">
+                                <thead>
+                                    <tr>
+                                        <th>주문명</th>
+                                        <th>금액</th>
+                                        <th>결제 상태</th>
+                                        <th>결제일</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {paymentList.map((p, index) => (
+                                        <tr 
+                                            key={index} 
+                                            className={`paymentRow ${p.paid ? "success" : "fail"}`} 
+                                            onClick={() => openPaymentDetail(p)}
+                                        >
+                                            <td>{p.orderName || "ID 없음"}</td>
+                                            <td>{p.amount?.toLocaleString() || 0}원</td>
+                                            <td>{p.paid ? "성공" : "실패"}</td>
+                                            <td>{p.createAt?.substring(0, 10) || "날짜 없음"}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    ) : (
+                        <p className="noData">결제 내역 없음</p>
+                    )}
+
+                {showModal && (
+                    <div className="modalOverlay active" onClick={closeModal}>
+                        <div className="modalContent" onClick={(e) => e.stopPropagation()}>
+                            <button className="closeButton" onClick={closeModal}>x</button>
+                            <h2>결제 상세 정보</h2>
+                            {paymentDetail && (
+                                <div className="paymentDetails">
+                                    <p><strong>주문명:</strong> {paymentDetail.orderName}</p>
+                                    <p><strong>결제 금액:</strong> {paymentDetail.amount}원</p>
+                                    <p><strong>결제 상태:</strong> {paymentDetail.paid ? "성공" : "실패"}</p>
+                                    {!paymentDetail.paid &&(
+                                        <p><strong>실패 사유:</strong> {paymentDetail.failReason?.trim()? paymentDetail.failReason : "결제 중 취소"}</p>
+                                    )}
+                                    
+                                    <p><strong>결제일:</strong> {paymentDetail.createAt?.substring(0, 10) || "날짜 없음"}</p>
+                                </div>
                             )}
-                        </p>
-
-
+                        </div>
                     </div>
-                </div>
-
-                <h3>멤버십 정보</h3>
-                {membership?.length > 0 ? (
-                    <ul>
-                        {membership.map((m, index) => (
-                            <li key={index}>
-                                {m.membershipCategory || "카테고리 없음"} - {m.endDate?.substring(0, 10) || "날짜 없음"}
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p>활성화된 멤버십 없음</p>
                 )}
 
-                <h3>결제 내역</h3>
-                {paymentList?.length > 0 ? (
-                    <ul>
-                        {paymentList.map((p, index) => (
-                            <li key={index}>
-                                {p.orderName || "ID 없음"} - {p.createAt?.substring(0, 10) || "날짜 없음"} {p.amount || 0}원 ({p.paid ? "성공" : "실패"})
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p>결제 내역 없음</p>
-                )}
 
                 <div className="buttonContainer">
                     <button className="backButton" onClick={() => navigate("/user")}>뒤로 가기</button>

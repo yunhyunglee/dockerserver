@@ -110,4 +110,49 @@ public class MembershipService {
         }
     }
 
+    public Membership updateMembership(Membership membership) {
+        Membership updatemembership = msr.findById(membership.getMembershipId()).orElse(null);
+
+
+        updatemembership.setActive(!membership.isActive());
+        updatemembership.setName(membership.getName());
+        updatemembership.setContent(membership.getContent());
+        updatemembership.setPrice(membership.getPrice());
+        updatemembership.setDiscount(membership.getDiscount());
+        updatemembership.setPeriod(membership.getPeriod());
+        updatemembership.setCategory(membership.getCategory());
+        updatemembership.setDownloadCount(membership.getDownloadCount());
+        // updatemembership.setActive(membership.isActive()); // 🔥 active 상태 업데이트
+
+        return updatemembership;
+
+    }
+
+
+    public boolean toggleMembershipActive(int membershipId) {
+        Optional<Membership> membershipOpt = msr.findById(membershipId);
+
+        if (membershipOpt.isPresent()) {
+            Membership membership = membershipOpt.get();
+            membership.setActive(!membership.isActive()); // 🔥 현재 상태 반전
+
+            return true;
+        }
+        return false;
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -132,7 +132,7 @@ const Artist = () => {
                                     <td>{formatDate(artist.debut)}</td>
                                     <td><img src={artist.image} alt="가수 이미지" width="50" /></td>
                                     <td>
-                                    <button className="deleteBtn" onClick={() => deleteArtist(artist.artistId)}>🗑 삭제</button>
+                                    <button className="deleteBtn" onClick={() => deleteArtist(artist.artistId)}>🗑</button>
                                     </td>
                                 </tr>
                             ))

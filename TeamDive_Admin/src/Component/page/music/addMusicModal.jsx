@@ -5,12 +5,15 @@ import jaxios from '../../../util/JwtUtil';
 
 const AddMusicModal = ({ onClose, onAddMusic, albumId, artistId }) => {
     // const [uploadedBucketPath, setUploadedBucketPath] = useState(""); // ✅ S3 업로드 URL 저장
-    const GENRES = ["록", "팝", "힙합&랩", "재즈", "클래식", "전자음악", "기타"];
+    const Genrs = ["록", "팝", "힙합&랩", "재즈", "클래식", "전자음악", "기타"];
+
+    const Mood = ["happy", "sad", "angry", "boring", "nomal"];
 
 
     const [newSong, setNewSong] = useState({
         title: "",
-        genre: GENRES[0],
+        genre: Genrs[0],
+        mood: Mood[0],
         lyrics: "",
         bucketPath: "",
     });
@@ -67,9 +70,16 @@ const AddMusicModal = ({ onClose, onAddMusic, albumId, artistId }) => {
                 <form onSubmit={onSubmit}>
                 <input type="text" name="title" value={newSong.title} onChange={onChange} placeholder="곡 제목" required />
                     <select name="genre" value={newSong.genre} onChange={onChange} required>
-                        {GENRES.map((genre) => (
+                        {Genrs.map((genre) => (
                             <option key={genre} value={genre}>
                                 {genre}
+                            </option>
+                        ))}
+                    </select>
+                    <select name="mood" value={newSong.mood} onChange={onChange} required>
+                        {Mood.map((mood) => (
+                            <option key={mood} value={mood}>
+                                {mood}
                             </option>
                         ))}
                     </select>

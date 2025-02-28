@@ -1,0 +1,73 @@
+@use "sass:color";
+
+$primary-color: #1976d2;
+$danger-color: #d9534f;
+$success-color: #5cb85c;
+$border-color: #ddd;
+
+.membershipPage {
+    text-align: center;
+    padding: 20px;
+
+    h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .membershipTable {
+        width: 100%;
+        border-collapse: collapse;
+        margin: auto;
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid $border-color;
+            text-align: center;
+        }
+
+        th {
+            background: $primary-color;
+            color: white;
+        }
+
+        .active {
+            color: $success-color;
+            font-weight: bold;
+        }
+
+        .inactive {
+            color: $danger-color;
+            font-weight: bold;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 24px;
+            background: #ccc;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .toggle-switch.active {
+            background: #4CAF50; /* 활성화 시 초록색 */
+        }
+        
+        .toggle-thumb {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: left 0.3s;
+        }
+        
+        .toggle-switch.active .toggle-thumb {
+            left: 28px; /* 활성화 시 오른쪽으로 이동 */
+        }
+        
+    }
+}

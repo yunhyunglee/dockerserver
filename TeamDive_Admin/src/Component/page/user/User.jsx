@@ -70,7 +70,7 @@ const User = () => {
                             <th>이름</th>
                             <th>나이</th>
                             <th>닉네임</th>
-                            <th>전화번호</th>
+                            <th>연락처</th>
                         </tr>
                     </thead>
                     <tbody>

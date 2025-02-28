@@ -12,7 +12,7 @@ const AddArtistModal = ({ onClose, addArtistToList }) => {
         artistContent:""
     });
 
- 
+
 
 
 
