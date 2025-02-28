@@ -24,7 +24,7 @@ const Membership = () => {
     /* 멤버십 정보 불러오기 */
     useEffect(
         () => {
-            axios.get('/api/membership/getMembership', {params: {category}})
+            axios.get('/api/membership/getMembershipByCategory', {params: {category}})
             .then((result) => {
                 setMembershipList([...result.data.membershipList]);
             }).catch((err) => { console.error('멤버십 불러오기 실패', err); })
