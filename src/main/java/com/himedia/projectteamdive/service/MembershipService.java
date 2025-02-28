@@ -32,11 +32,6 @@ public class MembershipService {
     @Autowired
     GiftRepository gr;
 
-    /* 멤버십 정보 전부 가져오기 */
-    public List<Membership> getMembership() {
-        return msr.findAll();
-    }
-
     /* 카테고리에 해당하는 멤버십 정보 가져오기 */
     public List<Membership> getMembershipByCategory(String category) {
         if(category.equals("all"))
@@ -115,33 +110,51 @@ public class MembershipService {
         }
     }
 
+    /* 멤버십 정보 전부 가져오기 */
+    public List<Membership> getMembership() {
+        return msr.findAll();
+    }
+
+    /* 멤버십 세부 정보 가져오기 */
+    public Membership getMembershipById(int membershipId) {
+        return msr.findByMembershipId(membershipId);
+    }
+
+    /* 멤버십 추가 */
+    public void insertMembership(Membership membership) {
+        msr.save(membership);
+    }
+
     /* 멤버십 정보 수정 */
     public Membership updateMembership(Membership membership) {
         Membership updatemembership = msr.findById(membership.getMembershipId()).orElse(null);
-
-        updatemembership.setName(membership.getName());
-        updatemembership.setContent(membership.getContent());
-        updatemembership.setPrice(membership.getPrice());
-        updatemembership.setDiscount(membership.getDiscount());
-        updatemembership.setPeriod(membership.getPeriod());
-        updatemembership.setCategory(membership.getCategory());
-        updatemembership.setDownloadCount(membership.getDownloadCount());
-
+        if(updatemembership != null) {
+            updatemembership.setName(membership.getName());
+            updatemembership.setContent(membership.getContent());
+            updatemembership.setPrice(membership.getPrice());
+            updatemembership.setDiscount(membership.getDiscount());
+            updatemembership.setPeriod(membership.getPeriod());
+            updatemembership.setCategory(membership.getCategory());
+            updatemembership.setDownloadCount(membership.getDownloadCount());
+        }
         return updatemembership;
-
     }
 
     /* 멤버십 활성화 / 비활성화 설정 */
     public boolean toggleMembershipActive(int membershipId) {
         Optional<Membership> membershipOpt = msr.findById(membershipId);
-
         if (membershipOpt.isPresent()) {
             Membership membership = membershipOpt.get();
             membership.setActive(!membership.isActive()); // 🔥 현재 상태 반전
-
             return true;
         }
         return false;
+    }
+
+    /* 멤버십 삭제 */
+    public void deleteMembership(int membershipId) {
+        Optional<Membership> membershipOpt = msr.findById(membershipId);
+        membershipOpt.ifPresent(membership -> msr.delete(membership));
     }
 
 }
