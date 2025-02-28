@@ -13,7 +13,7 @@ const KakaoLogin = () => {
     const dispatch = useDispatch();
     
     useEffect(()=>{
-        axios.post('/api/member/login', null, {params:{username:memberId, password:'kakao'}})
+        axios.post('/api/member/login', null, {params:{username:memberId, password:'kakao1234'}})
         .then((result)=>{
             if(result.data.error==='ERROR_LOGIN'){
                 return alert('이메일 또는 패스워드 오류입니다.');

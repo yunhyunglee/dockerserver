@@ -187,7 +187,7 @@ const MusicDetail = () => {
                     <p className={styles.artist} 
                         onClick={
                             ()=>{ navigate(`/artist/${musicDetail.artistId}`) }
-                        }>By
+                        }>By&nbsp; 
                         <span style={{cursor: "pointer"}}>
                             {musicDetail.artistName}
                         </span>

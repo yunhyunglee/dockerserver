@@ -139,12 +139,12 @@ const PlaylistDetail = () => {
     if (!file) return;
 
     try {
-      if(image){
+      if(playlist.coverImage){
         const response=await jaxios.delete('/api/music/deleteFile',{params:{file:playlist.coverImage}});
       }
       const localUrl = URL.createObjectURL(file);
       setPreview(localUrl);
-      setCoverFile(file);
+      // setCoverFile(file);
      
       const formData = new FormData();
       formData.append("image", file);
@@ -321,14 +321,14 @@ const PlaylistDetail = () => {
       <div className={styles.header}>
           {isEditing ? (
          
-            <div className={styles.editCoverContainer}>
+            <div className={styles.editCoverContainer} onClick={()=>document.getElementById("imageUpload").click()}>
       
 
               {preview ? (
                 <img
                   src={preview}
                   className={styles.coverImage}
-                  onClick={()=>document.getElementById("imageUpload").click()}
+                  
                 />
               ) : (
                 <div className={styles.previewPlaceholder}></div>
@@ -442,7 +442,9 @@ const PlaylistDetail = () => {
               <div className={styles.selectedActions}>
                 <button onClick={handleSelectedPlay}>선택곡 재생</button>
                 <button onClick={handleSelectedBuy}>선택곡 구매</button>
+                {(loginUser.memberId == playlist.memberId)?
                 <button onClick={handleDeleteMusic} style={{  background: '#e74c3c'}}>선택곡 삭제</button>
+                : null}
               </div>
             )}
           </div>

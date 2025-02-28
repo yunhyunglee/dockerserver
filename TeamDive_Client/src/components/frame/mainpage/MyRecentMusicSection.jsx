@@ -1,9 +1,10 @@
 // src/components/MyPlaylistSection.jsx
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styles from '../../../css/mainPage/mainPage.module.css';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import jaxios from '../../../util/JwtUtil';
+import { PlayerContext } from '../../../context/PlayerContext';
 
 const MyRecentMusicSection = () => {
 
@@ -29,6 +30,22 @@ const MyRecentMusicSection = () => {
 
     const displayItems = music.slice(0,visibleCount);
 
+  const {setAddPlaylist,setAddAndPlay}=useContext(PlayerContext);
+    //재생목록에 추가후 즉시재생 
+    //musicId 또는 musicId 배열
+  const handlePlay = (musicId) => {
+    const musicArray = Array.isArray(musicId) 
+  ? musicId.map(num => ({ musicId: num })) 
+  : [{ musicId: musicId }];
+    setAddAndPlay(musicArray);
+  };
+  //재생목록에 추가만
+  const handlePlay2 = (musicId) => {
+    const musicArray = Array.isArray(musicId) 
+  ? musicId.map(num => ({ musicId: num })) 
+  : [{ musicId: musicId }];
+    setAddPlaylist(musicArray);
+  };
 
 
 
@@ -41,9 +58,9 @@ const MyRecentMusicSection = () => {
             onClick={()=>{navigate(`/music/${item.musicId}`)}}
             >
 
-              <div className={styles.recentMusicInfo}>
+              <div className={styles.recentMusicInfo} onClick={()=>handlePlay2(item.musicId)}>
                   <img src={item.image} className={styles.image}/>
-                  <div className={styles.playIcon}>▶</div>
+                  <div className={styles.playIcon} >▶</div>
               </div>
               <div className={styles.musicInfo}>
                   <p className={styles.recentMusictitle}>{item.title}</p>
