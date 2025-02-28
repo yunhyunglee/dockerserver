@@ -19,12 +19,14 @@ public class AIService {
     @Autowired
     MemberRecentMusicsRepository mrmr;
 
-    public List<MusicDto> getRecommend(String mood, String memberId) {
+    public List<MusicDto> getRecommend(String mood, String memberId, Boolean signal) {
         System.out.println("추천 시스템 실행: mood=" + mood + ", memberId=" + memberId);
+
+        int totalLimit = signal ? 200 : 20;  // isExtended가 true면 200, false면 20
 
         List<String> genre = getRecommendedGenres(mood);
         List<String> similarMoods = getSimilarMoods(mood);
-        RecommendationScore score = getRecommendationScore(mood);
+        RecommendationScore score = getRecommendationScore(mood, signal);
 
         List<MusicDto> musicList = new ArrayList<>();
 
@@ -80,7 +82,7 @@ public class AIService {
         }
 
         System.out.println("최종 추천 음악 개수: " + musicSet.size());
-        return new ArrayList<>(musicSet).subList(0, Math.min(20, musicSet.size()));
+        return new ArrayList<>(musicSet).subList(0, Math.min(totalLimit, musicSet.size()));
 
     }
 
@@ -108,8 +110,8 @@ public class AIService {
     }
 
 
-    private RecommendationScore getRecommendationScore(String mood) {
-        int totalLimit = 20;
+    private RecommendationScore getRecommendationScore(String mood, Boolean signal) {
+        int totalLimit = signal ? 200 : 20;
 
         switch (mood.toLowerCase()) {
             case "happy":
@@ -136,4 +138,5 @@ public class AIService {
 
         return new RecommendationScore(emotionScore, similarScore, recentScore, randomScore);
     }
+
 }
