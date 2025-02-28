@@ -118,7 +118,7 @@ public class MembershipService {
     /* 멤버십 정보 수정 */
     public Membership updateMembership(Membership membership) {
         Membership updatemembership = msr.findById(membership.getMembershipId()).orElse(null);
-        updatemembership.setActive(!membership.isActive());
+
         updatemembership.setName(membership.getName());
         updatemembership.setContent(membership.getContent());
         updatemembership.setPrice(membership.getPrice());
@@ -128,6 +128,7 @@ public class MembershipService {
         updatemembership.setDownloadCount(membership.getDownloadCount());
 
         return updatemembership;
+
     }
 
     /* 멤버십 활성화 / 비활성화 설정 */
@@ -137,6 +138,7 @@ public class MembershipService {
         if (membershipOpt.isPresent()) {
             Membership membership = membershipOpt.get();
             membership.setActive(!membership.isActive()); // 🔥 현재 상태 반전
+
             return true;
         }
         return false;
