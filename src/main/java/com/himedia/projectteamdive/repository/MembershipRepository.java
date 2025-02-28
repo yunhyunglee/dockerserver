@@ -8,8 +8,8 @@ import java.util.List;
 
 public interface MembershipRepository extends JpaRepository<Membership, Integer> {
 
-    List<Membership> findByCategory(String category); // 카테고리에 해당하는 멤버십 불러오기
-    List<Membership> findByCategoryNot(String category); // gift 카테고리를 제외한 멤버십 불러오기
+    List<Membership> findByCategoryAndActiveTrue(String category); // 카테고리에 해당하는 멤버십 불러오기
+    List<Membership> findByCategoryNotAndActiveTrue(String category); // gift 카테고리를 제외한 멤버십 불러오기
 
     Membership findByMembershipId(int membershipId);
 }

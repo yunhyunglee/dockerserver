@@ -90,6 +90,7 @@ public class MembershipController {
         return result;
     }
 
+    /* 멤버십 수정 */
     @PostMapping("/updateMembership")
     public HashMap<String, Object> updateMembership(@RequestBody Membership membership) {
         HashMap<String, Object> result = new HashMap<>();
@@ -99,12 +100,11 @@ public class MembershipController {
         return result;
     }
 
+    /* 멤버십 활성화 / 비활성화 설정 */
     @PutMapping("/toggleMembershipActive")
     public HashMap<String, Object> toggleMembershipActive(@RequestBody Membership membership) {
         HashMap<String, Object> result = new HashMap<>();
-
-        boolean success = mss.toggleMembershipActive(membership.getMembershipId()); // 🔥 isActive 대신 toggle 기능 수행
-
+        boolean success = mss.toggleMembershipActive(membership.getMembershipId());
         result.put("msg", success ? "yes" : "no");
         return result;
     }
