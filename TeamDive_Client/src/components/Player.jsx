@@ -89,7 +89,7 @@ export default function Player() {
 
   // 페이지네이션 관련 상태
   const [currentPage, setCurrentPage] = useState(1);
-  const songsPerPage = 7; // 한 페이지에 7곡씩 표시
+  const songsPerPage = 100; // 한 페이지에 7곡씩 표시
 
   // 검색 기능 제거 → 전체 playlist 사용
   const filteredPlaylist = playlist;
@@ -164,24 +164,52 @@ export default function Player() {
   const {addAndPlay,setAddAndPlay} = useContext(PlayerContext);
   useEffect(() => {
     if (addPlaylist) {
-      setPlaylist(prevPlaylist => [...prevPlaylist, ...addPlaylist]);
+      setPlaylist(prev => {
+        const newPlaylist = [...prev];  // 배열 복사
+        newPlaylist.splice(index+1, 0, ...addPlaylist);  // 복사한 배열에 splice 적용
+        return newPlaylist;  // 새로운 배열 반환
+      });
       setAddPlaylist(null);
     }
     if(addAndPlay){
-      setPlaylist(prevPlaylist => [...prevPlaylist, ...addAndPlay]);
+      setPlaylist(prev => {
+        const newPlaylist = [...prev];  // 배열 복사
+        newPlaylist.splice(index+1, 0, ...addAndPlay);  // 복사한 배열에 splice 적용
+        return newPlaylist;  // 새로운 배열 반환
+      });
     }
   }, [addPlaylist,addAndPlay]);
 
   useEffect(
     ()=>{
-
-      if(playlist.length> 0 && playlist[playlist.length-1].src && addAndPlay){
-        setIndex(playlist.length-1);
-        handleAudioChange(playlist.length-1,true);
+      if(playlist.length> 0 && playlist.every(song=>song.src) && addAndPlay){
+        setIndex(prevIndex => {
+          let newIndex = prevIndex + 1;
+          if(playlist.length==1) newIndex =0;
+          handleAudioChange(newIndex, true);
+          return newIndex;
+        });
         setAddAndPlay(null);
+      }
+
+      if(index==playlist.length-1){
+        jaxios.get('/api/AI/addRecommendList',{params:{mood:'normal',memberId: loginUser.memberId ,signal: true}})
+        .then((result)=>{
+          localStorage.setItem("recommendList",JSON.stringify(result.data.addRecommendList))
+        }).catch((err)=>{console.error(err);})
       }
     },[playlist]
   );
+
+  const lastSong= ()=>{
+    try {
+      const storedPlaylist = JSON.parse(localStorage.getItem("recommendList"));
+      setPlaylist(prev => [...prev,...storedPlaylist]); // storedPlaylist가 null일 경우 빈 배열로 설정
+    } catch (error) {
+      console.log('불러오기 실패');
+    }
+  }
+
   const [membership,setMembership]=useState(false);
   //멤버십 조회, 처음 렌더링시 플레이리스트 스토리지에서 가져옴
   useEffect(
@@ -192,7 +220,6 @@ export default function Player() {
       } catch (error) {
         setPlaylist([]); // 파싱 오류가 날 경우 빈 배열 설정
       }
-      
       axios.get('/api/membership/checkActiveMembership',{params:{memberId:loginUser.memberId, category: 'streaming'}})
       .then((result)=>{
         if(result.data.message=='yes'){
@@ -201,19 +228,19 @@ export default function Player() {
       }).catch((err)=>{console.error(err);})
     },[]
   );
+  const hasTriggered = useRef(false);
   //멤버십없으면 60초 제한
-  useEffect(
-    ()=>{
-      if(!membership && elapsed>=60){
-        toggleSkipForward('auto');
-      }
-    },[elapsed]
-  );
+    useEffect(
+      ()=>{
+        if(!membership && elapsed>=60 && !hasTriggered.current){
+          toggleSkipForward('auto');
+          hasTriggered.current=true;
+        }
+      },[elapsed,membership]
+    );
   const removePlaylist=(i)=>{
     setPlaylist(prev => prev.filter((_,index)=> index!==i) )
   }
-
-
 
 
 
@@ -233,6 +260,7 @@ export default function Player() {
   }, [volume, mute, isPlaying]);
 
   useEffect(() => {
+    hasTriggered.current=false;
     const audioEl = audioRef.current;
     if (!audioEl) return;
     const handleEnded = () => {
@@ -401,7 +429,7 @@ export default function Player() {
 
     return (
       <footer className="footer">
-        <audio ref={audioRef} muted={mute} src={currentSong.src} onPlay={play30second} />
+        <audio ref={audioRef} muted={mute} src={currentSong.src} onPlay={play30second} onEnded={()=>lastSong()}/>
         <CustomPaper>
           <Box
             sx={{
@@ -589,7 +617,7 @@ export default function Player() {
               <Typography variant="h6" sx={{ color: 'silver' }}>
                 Playlist
               </Typography>
-              <DeleteIcon sx={{ position: 'relative', marginLeft: '-110px', cursor: 'pointer'}} onClick={()=>setPlaylist([])}/>
+              <DeleteIcon sx={{ position: 'relative', marginLeft: '-110px', cursor: 'pointer'}} onClick={()=>{setPlaylist([]); setIndex(0);}}/>
               <IconButton size="small" onClick={() => setShowPlaylist(false)} sx={{ color: 'silver' }}>
                 <CloseIcon />
               </IconButton>
@@ -611,9 +639,10 @@ export default function Player() {
                   backgroundColor: 'rgba(255,255,255,0.1)',
                   transform: 'scale(1.02)',
                 },
-              }}
+              }} 
+              style={{border:(i==index)?'1px solid white':null}}
             >
-              <Box onClick={() => handleSelectSong(playlist.indexOf(song))}>
+              <Box onClick={() => handleSelectSong(playlist.indexOf(song))} >
                 <Typography variant="subtitle1" sx={{ color: 'silver' }}>
                   {song.title}
                 </Typography>
