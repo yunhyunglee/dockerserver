@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.himedia.projectteamdive.dto.KakaoProfile;
 import com.himedia.projectteamdive.dto.OAuthToken;
 import com.himedia.projectteamdive.entity.Member;
+import com.himedia.projectteamdive.entity.RoleName;
 import com.himedia.projectteamdive.security.util.CustomJWTException;
 import com.himedia.projectteamdive.security.util.JWTUtil;
 import com.himedia.projectteamdive.service.MemberService;
@@ -15,6 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -263,6 +265,16 @@ public class MemberController {
         result.put("updateMember", updateMember);
         result.put("msg", "yes");
         return result;
+    }
+
+    @PostMapping("/updateRole")
+    public ResponseEntity<?> updateRole(
+            @RequestParam("memberId") String memberId,
+            @RequestParam("role") RoleName role){
+        boolean member = ms.updateMemberRole(memberId, role);
+        return member ? ResponseEntity.ok("권한 변경 완료") : ResponseEntity.badRequest().body("권한 변경 실패");
+
+
     }
 
 
