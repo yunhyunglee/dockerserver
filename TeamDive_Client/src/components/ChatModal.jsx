@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styles from "../css/chatModal.module.css";
 import { askChatbot } from "./ChatService";
 
-// import botAvatar from "../assets/artist2.jpg"; 
+import botAvatar from "../assets/artist2.jpg"; 
 import { useSelector } from "react-redux";
 
 import PersonIcon from '@mui/icons-material/Person';
@@ -101,7 +101,7 @@ const ChatModal = ({ onClose }) => {
               {msg.sender === "user" && (
                 loginUser?.image  && loginUser.image !== "" ? (
                   <img
-                    src={`http://localhost:8070/profileImage/${loginUser.image}`}
+                    src={`${loginUser.image}`}
                     alt="사용자"
                     className={styles.avatar}
                   />

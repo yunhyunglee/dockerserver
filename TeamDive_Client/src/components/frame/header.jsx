@@ -72,12 +72,7 @@ function MainHeader({ toggleMenu,onMoodSelect  }) {
         </form>
       </div>
       
-      <div className={styles.moodContainer}>
-        {
-           (loginUser)?((loginUser.memberId)?(<MoodDropdown onMoodSelect={onMoodSelect} />):(null)):(null) 
-        }
-      </div>
-
+     
       <div className={styles.rightSection}>
           <Notice/>
       </div>
