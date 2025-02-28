@@ -15,14 +15,14 @@ const Login = () => {
     const navigate = useNavigate();
     const cookies = new Cookies();
     const dispatch = useDispatch();
-    const loginUser = useSelector(state => state.user); // ✅ 로그인된 사용자 정보
+    const loginUser = useSelector(state => state.user);
 
     async function loginLocal() {
         if (!memberId) {return alert("아이디를 입력하세요."); }
         if (!password) { return alert("비밀번호를 입력하세요.");}
 
         try {
-            const result = await axios.post("api/member/login", null, {
+            const result = await axios.post("/api/member/login", null, {
                 params: { username: memberId, password: password }
             });
 

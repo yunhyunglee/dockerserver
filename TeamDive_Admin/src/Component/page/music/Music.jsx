@@ -2,13 +2,12 @@ import React, { useEffect, useState, useMemo, useCallback  } from 'react'
 import axios from 'axios';
 import jaxios from "../../../util/JwtUtil";
 import { useNavigate } from "react-router-dom";
-import UpdateMusicModal from './UpdateMusicModal';
 import "../../../style/music.scss";
 
 const Music = () => {
     const [musicList, setMusicList] = useState([]);
     const [search, setSearch] = useState("");  
-    const [updateModal, setUpdateModal] = useState(false);
+
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
@@ -126,9 +125,7 @@ const Music = () => {
 
                         </tbody>
                     </table>                 
-                    {updateModal && (
-                    <UpdateMusicModal onClose={() => setUpdateModal(false)} music={selectedMusic} updateMusicList={updateMusicList} />
-                )}        
+
             </div>  
         </div>
     );

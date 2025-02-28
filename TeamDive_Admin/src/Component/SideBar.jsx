@@ -13,6 +13,7 @@ const SideBar = () => {
         { path: "/dashboard", openText: "대시보드",icon: <FaTachometerAlt /> },
         { path: "/user", openText: "사용자 관리", icon: <FaUsers /> },
         { path: "/musicController", openText: "음원 관리", icon: <FaMusic /> },
+        { path: "/memberShip", openText: "맴버쉽 관리" },
 
     ];
 

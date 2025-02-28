@@ -7,11 +7,14 @@ $font-color: #333;
 $border-radius: 10px;
 
 .mainContainer {
+
     width: 70vw;
     max-width: 600px;
-    height: 70vh;
-    max-height: 800px;
-    margin: 20px auto;
+    margin-top: 100px;
+    max-height: 870px;
+    overflow: scroll;
+    scrollbar-width:thin;
+
     background: white;
     padding: 20px;
     border-radius: $border-radius;

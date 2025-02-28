@@ -5,11 +5,16 @@ import jaxios from '../../../util/JwtUtil';
 
 const UpdateMusicModal = ({ onClose, music, updateMusicList }) => {
     const GENRES = ["록", "팝", "힙합&랩", "재즈", "클래식", "전자음악", "기타"];
+    const Mood = ["happy", "sad", "angry", "boring", "nomal"];
+
+    const artistId = music.artist ? music.artist.artistId : null;
+    const albumId = music.album ? music.album.albumId : null;
 
     // 기존 데이터를 사용하여 초기 상태 설정
     const [updatedSong, setUpdatedSong] = useState({
         title: "",
         genre: GENRES[0],
+        mood: Mood[0],
         lyrics: "",
         bucketPath: "",
     });
@@ -20,6 +25,7 @@ const UpdateMusicModal = ({ onClose, music, updateMusicList }) => {
             setUpdatedSong({
                 title: music.title || "",
                 genre: music.genre || GENRES[0],
+                mood: music.mood || Mood[0],
                 lyrics: music.lyrics || "",
                 bucketPath: music.bucketPath || "",
             });
@@ -56,9 +62,12 @@ const UpdateMusicModal = ({ onClose, music, updateMusicList }) => {
         try {
             const response = await jaxios.post("/api/music/updateMusic", {
                 musicId: music.musicId,
-                title: updatedSong.title,
-                genre: updatedSong.genre,
+                title:  updatedSong.title,
+                genre:  updatedSong.genre,
+                mood:   updatedSong.mood,
                 lyrics: updatedSong.lyrics,
+                artist: { artistId },
+                album: { albumId },
                 bucketPath: updatedSong.bucketPath,
             });
 
@@ -86,6 +95,13 @@ const UpdateMusicModal = ({ onClose, music, updateMusicList }) => {
                         {GENRES.map((genre) => (
                             <option key={genre} value={genre}>
                                 {genre}
+                            </option>
+                        ))}
+                    </select>
+                    <select name="mood" value={updatedSong.mood} onChange={onChange} required>
+                        {Mood.map((mood) => (
+                            <option key={mood} value={mood}>
+                                {mood}
                             </option>
                         ))}
                     </select>

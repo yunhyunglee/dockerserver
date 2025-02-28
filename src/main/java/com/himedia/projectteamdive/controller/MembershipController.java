@@ -1,6 +1,7 @@
 package com.himedia.projectteamdive.controller;
 
 import com.himedia.projectteamdive.entity.Member;
+import com.himedia.projectteamdive.entity.Membership;
 import com.himedia.projectteamdive.entity.Membership_user;
 import com.himedia.projectteamdive.service.MembershipService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,6 +81,7 @@ public class MembershipController {
             @RequestParam("membershipCategory") String membershipCategory) {
         HashMap<String, Object> result = new HashMap<>();
         Boolean isActive = mss.membershipActive(giftId, membershipCategory);
+
         if(isActive) {
             result.put("message", "yes");
         }else{
@@ -87,5 +89,31 @@ public class MembershipController {
         }
         return result;
     }
+
+    @PostMapping("/updateMembership")
+    public HashMap<String, Object> updateMembership(@RequestBody Membership membership) {
+        HashMap<String, Object> result = new HashMap<>();
+        Membership updatedMembership = mss.updateMembership(membership);
+        result.put("updatedMembership", updatedMembership);
+        result.put("msg", "yes");
+        return result;
+    }
+
+    @PutMapping("/toggleMembershipActive")
+    public HashMap<String, Object> toggleMembershipActive(@RequestBody Membership membership) {
+        HashMap<String, Object> result = new HashMap<>();
+
+        boolean success = mss.toggleMembershipActive(membership.getMembershipId()); // 🔥 isActive 대신 toggle 기능 수행
+
+        result.put("msg", success ? "yes" : "no");
+        return result;
+    }
+
+
+
+
+
+
+
 
 }
