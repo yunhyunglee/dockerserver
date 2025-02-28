@@ -1,13 +1,11 @@
-import React,{ useState, useEffect} from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import React, {useState} from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import jaxios from '../../../util/JwtUtil';
 
-
-const UpdateMemberShip = () => {
+const AddMemberShip = () => {
 
     const navigate = useNavigate();
-
-    const [membership, setMembership] = useState({});
 
     const [category, setCategory] = useState('');
     const [name, setName] = useState('');
@@ -19,8 +17,6 @@ const UpdateMemberShip = () => {
     const [downloadCount, setDownloadCount] = useState('');
     const [period, setPeriod] = useState('');
     
-    const {membershipId} = useParams();
-    
     const [active, setActive] = useState('');
 
     // 숫자로 변환하여 NaN 방지
@@ -31,41 +27,36 @@ const UpdateMemberShip = () => {
     const discountPrice = (numericPrice * (numericDiscount / 100)).toFixed(0);
     const discountedPrice = numericPrice - discountPrice;
 
-    useEffect(()=>{
-        jaxios.get('/api/membership/getMembershipById', {params:{membershipId:membershipId}})
-        .then((result)=>{
-            console.log(result);
-            setMembership(result.data.membership);
-            setCategory(result.data.membership.category);
-            setName(result.data.membership.name);
-            setContent(result.data.membership.content);
-            setPrice(result.data.membership.price);
-            setDiscount(result.data.membership.discount);
-            setDownloadCount(result.data.membership.downloadCount);
-            setPeriod(result.data.membership.period);
+    function insertMembership(){
 
-        })
-        .catch((err)=>{
-            console.error(err);
-        })
-    },[membershipId]);
-
-    function updateMembership(){
-        jaxios.post('/api/membership/updateMembership', {category, name, content, price, discount, downloadCount, period})
+        if(!category){alert('카테고리를 선택하세요');};
+        if(!name){alert('멤법십 이름을 입력해주세요');};
+        if(!content){alert('멤법십 설명을 입력해주세요');};
+        if(!price){alert('멤법십 가격을 입력해주세요');};
+        if(!discount){alert('멤법십 할인율을 입력해주세요');};
+        if(category === 'download' || category === 'gift'){
+            if(!downloadCount){alert('멤법십의 다운로드 횟수를 입력해주세요');};
+        }
+        if(category === 'streaming'){
+            if(!period){alert('멤버십의 사용기간(개월)을 입력해주세요');};
+        }
+        
+        jaxios.post('/api/membership/insertMembership', {category, name, content, price, discount, downloadCount, period})
         .then((result)=>{
             if(result.data.message === 'yes'){
-                alert('멤버십이 수정되엇습니다.');
-                navigate('/membership');
+                alert('멤버십이 추가되었습니다.');
+                navigate('/memberShip');
             }
         })
         .catch((err)=>{
             console.error(err);
         })
+
     };
 
     return (
         <div className='AddMembershipPage'>
-            <h1>멤버십 수정</h1>
+            <h1>멤버십 생성</h1>
             <div className='memberShipField'>
                 <label>카테고리</label>
                 {/* 카테고리는 옵셔널 이용해서 선택하는방식 */}
@@ -133,8 +124,8 @@ const UpdateMemberShip = () => {
             </div>
             <div className='btns'>
                 <button onClick={()=>{
-                    updateMembership();
-                }}>수정</button>
+                    insertMembership();
+                }}>추가</button>
                 <button onClick={()=>{
                     navigate(-1);
                 }}>취소</button>
@@ -145,4 +136,4 @@ const UpdateMemberShip = () => {
     )
 }
 
-export default UpdateMemberShip
+export default AddMemberShip

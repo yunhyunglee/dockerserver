@@ -113,9 +113,10 @@ public class MembershipController {
     }
 
     /* 멤버십 삭제 */
-    @DeleteMapping("/deleteMembership")
-    public HashMap<String, Object> deleteMembership(@RequestParam("membershipId") int membershipId){
+    @DeleteMapping("/deleteMembership/{membershipId}")
+    public HashMap<String, Object> deleteMembership(@PathVariable("membershipId") int membershipId){
         HashMap<String, Object> result = new HashMap<>();
+        System.out.println("membershipId"+membershipId);
         mss.deleteMembership(membershipId);
         result.put("message", "yes");
         return result;

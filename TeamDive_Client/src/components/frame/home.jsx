@@ -50,7 +50,7 @@ function Home({ menubar, mood, setMood}) {
                                     &nbsp;&nbsp;
                                     <span className={styles.memberId}>({loginUser.memberId})</span>
                                 </div>
-                                <button onClick={onLogout} className={styles.logoutButton}>로그아웃</button>
+                                    <button onClick={onLogout} className={styles.logoutButton}>로그아웃</button>
                                 </div>
                         ) : (
                             <>
@@ -59,6 +59,15 @@ function Home({ menubar, mood, setMood}) {
                             </>
                         )
                     }
+                    
+
+                    {
+                        loginUser?.memberRoleList?.includes("ADMIN") && (
+                        <Link to="http://localhost:5174">
+                            Admin
+                        </Link>
+                    )}
+
 
                 </div>
             </div>
