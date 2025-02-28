@@ -144,6 +144,35 @@ public class JWTCheckFilter extends OncePerRequestFilter {
 //        if(path.startsWith("/api/membership/getMembershipByCategory")){
 //            return true;
 //        }
+        // 추가된 부분
+//        if(path.startsWith("/api/member/refresh")){
+//            return true;
+//        }
+//        if(path.startsWith("/api/AI/recommendList")){
+//            return true;
+//        }
+//        if(path.startsWith("/api/AI/addRecommendList")){
+//            return true;
+//        }
+//        if(path.startsWith("/api/music/latestPlayList")){
+//            return true;
+//        }
+//        if(path.startsWith("/api/music/latestAlbumList")){
+//            return true;
+//        }
+//        if(path.startsWith("/api/music/latestMusicList")){
+//            return true;
+//        }
+//        if(path.startsWith("/api/community/getNoticeList")){
+//            return true;
+//        }
+//        if(path.startsWith("/api/membership/checkActiveMembership")){
+//            return true;
+//        }
+
+
+
+
         if(path.startsWith("/member/login")){
             return true;
         }
@@ -210,6 +239,32 @@ public class JWTCheckFilter extends OncePerRequestFilter {
         if(path.startsWith("/membership/getMembershipByCategory")){
             return true;
         }
+        //======추가된것
+        if(path.startsWith("/member/refresh")){
+            return true;
+        }
+        if(path.startsWith("/AI/recommendList")){
+            return true;
+        }
+        if(path.startsWith("/AI/addRecommendList")){
+            return true;
+        }
+        if(path.startsWith("/music/latestPlayList")){
+            return true;
+        }
+        if(path.startsWith("/music/latestAlbumList")){
+            return true;
+        }
+        if(path.startsWith("/music/latestMusicList")){
+            return true;
+        }
+        if(path.startsWith("/community/getNoticeList")){
+            return true;
+        }
+        if(path.startsWith("/membership/checkActiveMembership")){
+            return true;
+        }
+
 
         return false;
     }
