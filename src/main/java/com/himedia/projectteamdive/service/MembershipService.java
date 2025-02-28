@@ -35,9 +35,9 @@ public class MembershipService {
     /* 카테고리에 해당하는 멤버십 정보 가져오기 */
     public List<Membership> getMembership(String category) {
         if(category.equals("all"))
-            return msr.findByCategoryNot("gift");
+            return msr.findByCategoryNotAndActiveTrue("gift");
         else
-            return msr.findByCategory(category);
+            return msr.findByCategoryAndActiveTrue(category);
     }
 
     /* 카테고리를 기준으로 활성화된 멤버십이 있는지 확인 */
@@ -110,10 +110,9 @@ public class MembershipService {
         }
     }
 
+    /* 멤버십 정보 수정 */
     public Membership updateMembership(Membership membership) {
         Membership updatemembership = msr.findById(membership.getMembershipId()).orElse(null);
-
-
         updatemembership.setActive(!membership.isActive());
         updatemembership.setName(membership.getName());
         updatemembership.setContent(membership.getContent());
@@ -122,20 +121,17 @@ public class MembershipService {
         updatemembership.setPeriod(membership.getPeriod());
         updatemembership.setCategory(membership.getCategory());
         updatemembership.setDownloadCount(membership.getDownloadCount());
-        // updatemembership.setActive(membership.isActive()); // 🔥 active 상태 업데이트
 
         return updatemembership;
-
     }
 
-
+    /* 멤버십 활성화 / 비활성화 설정 */
     public boolean toggleMembershipActive(int membershipId) {
         Optional<Membership> membershipOpt = msr.findById(membershipId);
 
         if (membershipOpt.isPresent()) {
             Membership membership = membershipOpt.get();
             membership.setActive(!membership.isActive()); // 🔥 현재 상태 반전
-
             return true;
         }
         return false;
