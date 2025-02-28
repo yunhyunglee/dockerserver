@@ -8,13 +8,10 @@ const MembershipAdmin = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-
     const getMemberships = async () => {
         setLoading(true);
         try {
-            const response = await jaxios.get("/api/membership/getMembership", {
-                params: { category: "all" }
-            });
+            const response = await jaxios.get("/api/membership/getMembership");
             setMembershipList(response.data.membershipList || []);
         } catch (error) {
             console.error("멤버십 목록 불러오기 실패:", error);
@@ -24,15 +21,11 @@ const MembershipAdmin = () => {
         }
     };
 
-
     const toggleMembershipActive = async (membershipId) => {
         try {
-            const response = await jaxios.put("/api/membership/toggleMembershipActive", {
-                membershipId: membershipId  
-            });
-    
-            if (response.data?.msg === "yes") {
-                getMemberships(); // 상태 변경 후 UI 업데이트
+            const response = await jaxios.put(`/api/membership/toggleMembershipActive/${membershipId}`);
+            if (response.data?.message === "yes") {
+                await getMemberships(); // 상태 변경 후 UI 업데이트
             } else {
                 alert("변경 실패!");
             }
@@ -42,14 +35,9 @@ const MembershipAdmin = () => {
         }
     };
 
-
-
-
     useEffect(() => {
         getMemberships();
     }, []);
-
-
 
     return (
         <div className="membershipPage">
@@ -59,15 +47,12 @@ const MembershipAdmin = () => {
             <table className="membershipTable">
                 <thead>
                     <tr>
-
                         <th>이름</th>
                         <th>분류</th>
                         <th>가격</th>
                         <th>할인가격</th>
                         <th>기간</th>
                         <th>상태</th>
-
-
                     </tr>
                 </thead>
                 <tbody>
@@ -94,7 +79,6 @@ const MembershipAdmin = () => {
                                     </div>
                                 </td>
 
-                                
                             </tr>
                         ))
                     )}

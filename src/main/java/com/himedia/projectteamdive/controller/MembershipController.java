@@ -18,14 +18,6 @@ public class MembershipController {
     @Autowired
     MembershipService mss;
 
-    /* 멤버십 정보 전부 가져오기 */
-    @GetMapping("/getMembership")
-    public HashMap<String, Object> getMembership() {
-        HashMap<String, Object> result = new HashMap<>();
-        result.put("membershipList", mss.getMembership());
-        return result;
-    }
-
     /* 카테고리에 해당하는 멤버십 정보 가져오기 */
     @GetMapping("/getMembershipByCategory")
     public HashMap<String, Object> getMembershipByCategory(
@@ -85,30 +77,57 @@ public class MembershipController {
         return result;
     }
 
+    /* 멤버십 정보 전부 가져오기 */
+    @GetMapping("/getMembership")
+    public HashMap<String, Object> getMembership() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("membershipList", mss.getMembership());
+        return result;
+    }
+
+    /* 멤버십 세부 정보 불러오기 */
+    @GetMapping("/getMembershipById")
+    public HashMap<String, Object> getMembershipById(@RequestParam("membershipId") int membershipId) {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("membership", mss.getMembershipById(membershipId));
+        return result;
+    }
+
+    /* 멤버십 추가 */
+    @PostMapping("/insertMembership")
+    public HashMap<String, Object> insertMembership(@RequestBody Membership membership) {
+        HashMap<String, Object> result = new HashMap<>();
+        mss.insertMembership(membership);
+        result.put("message", "yes");
+        return result;
+    }
+
     /* 멤버십 수정 */
     @PostMapping("/updateMembership")
     public HashMap<String, Object> updateMembership(@RequestBody Membership membership) {
         HashMap<String, Object> result = new HashMap<>();
         Membership updatedMembership = mss.updateMembership(membership);
         result.put("updatedMembership", updatedMembership);
-        result.put("msg", "yes");
+        result.put("message", "yes");
+        return result;
+    }
+
+    /* 멤버십 삭제 */
+    @DeleteMapping("/deleteMembership")
+    public HashMap<String, Object> deleteMembership(@RequestParam("membershipId") int membershipId){
+        HashMap<String, Object> result = new HashMap<>();
+        mss.deleteMembership(membershipId);
+        result.put("message", "yes");
         return result;
     }
 
     /* 멤버십 활성화 / 비활성화 설정 */
-    @PutMapping("/toggleMembershipActive")
-    public HashMap<String, Object> toggleMembershipActive(@RequestBody Membership membership) {
+    @PutMapping("/toggleMembershipActive/{membershipId}")
+    public HashMap<String, Object> toggleMembershipActive(@PathVariable("membershipId") int membershipId) {
         HashMap<String, Object> result = new HashMap<>();
-        boolean success = mss.toggleMembershipActive(membership.getMembershipId());
-        result.put("msg", success ? "yes" : "no");
+        boolean success = mss.toggleMembershipActive(membershipId);
+        result.put("message", success ? "yes" : "no");
         return result;
     }
-
-
-
-
-
-
-
 
 }
