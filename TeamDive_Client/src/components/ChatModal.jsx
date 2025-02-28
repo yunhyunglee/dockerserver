@@ -90,7 +90,7 @@ const ChatModal = ({ onClose }) => {
           {messages.map((msg, index) => (
             <div key={index} className={msg.sender === "user" ? styles.userMessageWrapper : styles.botMessageWrapper}>
               {/* AI */}
-              {msg.sender === "bot" && <img src={botAvatar}  className={styles.avatar} />}
+              {msg.sender === "bot" && <img src={""}  className={styles.avatar} />}
               
               {/* 말풍선 */}
               <div className={msg.sender === "user" ? styles.userMessage : styles.botMessage}>
@@ -98,7 +98,7 @@ const ChatModal = ({ onClose }) => {
               </div>
               
              {/* 사용자 */}
-             {msg.sender === "user" && (
+              {msg.sender === "user" && (
                 loginUser?.image  && loginUser.image !== "" ? (
                   <img
                     src={`http://localhost:8070/profileImage/${loginUser.image}`}

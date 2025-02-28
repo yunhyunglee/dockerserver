@@ -87,4 +87,22 @@ public class MemberService {
     }
 
 
+    public boolean updateMemberRole(String memberId, RoleName targetRole) {
+        Member member = mr.findByMemberId(memberId);
+        if (member == null) {
+            return false;
+        }
+
+        List<RoleName> roles = member.getMemberRoleList();
+
+        // ✅ 이미 권한이 있으면 제거, 없으면 추가
+        if (roles.contains(targetRole)) {
+            roles.remove(targetRole);
+        } else {
+            roles.add(targetRole);
+        }
+
+        member.setMemberRoleList(roles);
+        return true;
+    }
 }

@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,  } from "react";
 import "../../../style/userDetail.scss";
 import jaxios from '../../../util/JwtUtil';
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { ShieldCheck, ShieldOff } from "lucide-react";
 
 
 const UserDetail = () => {
@@ -100,6 +101,46 @@ const UserDetail = () => {
     //     `);
 
     // };
+
+
+    const updateUserRole = async () => {
+        if (!window.confirm(user.memberRoleList.includes("ADMIN") ? 
+        "이 사용자의 관리자 권한을 해제하시겠습니까?" : 
+        "이 사용자에게 관리자 권한을 부여하시겠습니까?")) return;
+
+        try{
+            const response = await jaxios.post("/api/member/updateRole", null, {
+                params: {memberId: user.memberId, role: "ADMIN"}
+            });
+
+            if(response.data ==="권한 변경 완료") {
+                alert(user.memberRoleList?.includes("ADMIN") ? "관리자 권한이 해제되었습니다." : "관리자 권한이 부여되었습니다.");
+                setUser(prev => ({
+                    ...prev,
+                    memberRoleList: prev.memberRoleList.includes("ADMIN") ? 
+                        prev.memberRoleList.filter(r => r !== "ADMIN") : 
+                        [...(prev.memberRoleList || []), "ADMIN"]
+                }));
+            } else {
+                alert("권한 변경 실패");
+
+            }
+
+
+        }catch(error){
+            console.error("관리자 권한 변경 실패:", error);
+            alert("관리자 권한 변경 중 오류 발생");
+        }
+
+
+
+
+
+    }
+
+
+
+
     const openPaymentDetail = (payment) => {
         setPaymentDetail(payment);
         setShowModal(true);
@@ -118,11 +159,18 @@ const UserDetail = () => {
 
     return (
         <div className="userDetailPage">
+            
                 <div className="userDetailContent">
+                <button 
+                    className={`roleButton ${user.memberRoleList?.includes("ADMIN") ? "adminActive" : "adminInactive"}`} 
+                    onClick={updateUserRole}>
+                    {user.memberRoleList?.includes("ADMIN") ? <ShieldOff size={20} /> : <ShieldCheck size={20} />}
+                </button>
                     <h1>회원 상세 정보</h1>
+                
 
-                    {/* 📌 사용자 정보 */}
                     <div className="content">
+                        
                         <div className="profileContainer">
                             <img src={user.image || "/images/default_image.jpg"} alt="프로필" className="image" />
                         </div>
