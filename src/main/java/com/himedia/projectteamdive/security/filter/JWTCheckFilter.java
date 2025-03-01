@@ -141,38 +141,12 @@ public class JWTCheckFilter extends OncePerRequestFilter {
 //        if(path.startsWith("/api/community/insertReply")){
 //            return true;
 //        }
+//        if(path.startsWith("/community/getReplyList")){
+//            return true;
+//        }
 //        if(path.startsWith("/api/membership/getMembershipByCategory")){
 //            return true;
 //        }
-        // 추가된 부분
-//        if(path.startsWith("/api/member/refresh")){
-//            return true;
-//        }
-//        if(path.startsWith("/api/AI/recommendList")){
-//            return true;
-//        }
-//        if(path.startsWith("/api/AI/addRecommendList")){
-//            return true;
-//        }
-//        if(path.startsWith("/api/music/latestPlayList")){
-//            return true;
-//        }
-//        if(path.startsWith("/api/music/latestAlbumList")){
-//            return true;
-//        }
-//        if(path.startsWith("/api/music/latestMusicList")){
-//            return true;
-//        }
-//        if(path.startsWith("/api/community/getNoticeList")){
-//            return true;
-//        }
-//        if(path.startsWith("/api/membership/checkActiveMembership")){
-//            return true;
-//        }
-
-
-
-
         if(path.startsWith("/member/login")){
             return true;
         }
@@ -236,6 +210,9 @@ public class JWTCheckFilter extends OncePerRequestFilter {
         if(path.startsWith("/community/insertReply")){
             return true;
         }
+        if(path.startsWith("/community/getReplyList")){
+            return true;
+        }
         if(path.startsWith("/membership/getMembershipByCategory")){
             return true;
         }
@@ -262,6 +239,9 @@ public class JWTCheckFilter extends OncePerRequestFilter {
             return true;
         }
         if(path.startsWith("/membership/checkActiveMembership")){
+            return true;
+        }
+        if(path.startsWith("/AI/addRecommendList")){
             return true;
         }
 

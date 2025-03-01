@@ -69,7 +69,7 @@ const MusicDetail = () => {
             jaxios.get('/api/community/getLikes', {
                 params: { pagetype: 'MUSIC', memberId: loginUser.memberId }
             }).then((result)=>{
-                if(result.data.likesList.some(likes => likes.musicId == musicId)){
+                if(result.data.likesList?.some(likes => likes.musicId == musicId)){
                     setLike(true);
                 }
             }).catch((err)=>{ console.error(err); })

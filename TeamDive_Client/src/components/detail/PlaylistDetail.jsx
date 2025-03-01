@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import jaxios from "../../util/JwtUtil";
 import styles from "../../css/detail/playlistDetail.module.css";
 import { PlayerContext } from "../../context/PlayerContext";
+import axios from "axios";
 
 
 import { HiOutlineHeart } from "react-icons/hi";
@@ -28,6 +29,7 @@ const PlaylistDetail = () => {
   const [editedCoverImage, setEditedCoverImage] = useState(""); 
   const [coverFile, setCoverFile] = useState(null);       
   const [preview, setPreview] = useState("");         
+  const [likeCount, setLikeCount] = useState(0);
 
 
   const [isLiked, setIsLiked] = useState(false);
@@ -39,6 +41,17 @@ const PlaylistDetail = () => {
     }).catch((err)=>{console.error(err);})
   }
  
+  // 좋아요 개수 불러오기
+  const fetchLikeCount = async () => {
+    await axios.get('/api/community/getLikeCount', {
+        params: { pageType: 'PlAYLIST', entityId: playlistId }
+    }).then((result) => {
+        setLikeCount(result.data.likeCount);
+    }).catch((error) => {
+        console.error('좋아요 개수 불러오기 실패', error);
+    })
+  }
+
 
   const {setAddPlaylist,setAddAndPlay}=useContext(PlayerContext);
     //재생목록에 추가후 즉시재생 
@@ -61,11 +74,13 @@ const PlaylistDetail = () => {
   useEffect(() => {
     jaxios.get('/api/community/getLikes',{params:{pagetype: 'PLAYLIST',memberId: loginUser.memberId}})
     .then((result)=>{
-        if(result.data.likesList.some(likes => likes.playlistId == playlistId)){
+        if(result.data.likesList?.some(likes => likes.playlistId == playlistId)){
           console.log('result.data.likesList',result.data.likesList)
           setIsLiked(true);
         }
     }).catch((err)=>{console.error(err);})
+
+    fetchLikeCount();
 
 
 
@@ -386,7 +401,7 @@ const PlaylistDetail = () => {
                       className={`${styles.likeButton}`}
                           onClick={handleLike}
                   >
-                      { isLiked ? <HiHeart size={20}/> : <HiOutlineHeart size={20}/> }
+                      { isLiked ? <HiHeart size={20}/> : <HiOutlineHeart size={20}/> }  &nbsp;{likeCount}
                   </button>
                 </h1>
 
