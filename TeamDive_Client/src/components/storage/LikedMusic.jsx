@@ -133,14 +133,14 @@ const LikedMusic = () => {
                 onClick={handlePlayAll}
                 disabled={!isSomeSelected}
               >
-                전체 재생
+                선택재생
               </button>
               <button
                 className={styles.topBtn}
                 onClick={handleBuyAll}
                 disabled={!isSomeSelected}
               >
-                전체 구매
+                선택구매
               </button>
             </div>
 

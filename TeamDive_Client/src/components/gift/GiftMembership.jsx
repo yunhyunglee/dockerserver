@@ -17,7 +17,7 @@ const GiftMembership = ({ membership, giftToId, setGiftToId, onProceedToPayment 
                 let respone = await jaxios.get('/api/member/getMember', { params: {giftToId} })
                 if(respone.data.message === 'yes'){
                     respone = await jaxios.get('/api/membership/checkActiveMembership',
-                        { params: {memberId: giftToId, category: membership.category} })
+                        { params: {memberId: giftToId, category: 'streaming'} })
                     if(respone.data.message === 'no' && !respone.data.activeMembership){
                         setGiftToId(giftToId);
                         onProceedToPayment();
