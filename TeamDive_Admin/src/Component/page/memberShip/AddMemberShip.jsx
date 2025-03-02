@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import jaxios from '../../../util/JwtUtil';
+import "../../../style/addMemberShip.scss"
 
 const AddMemberShip = () => {
 
@@ -29,16 +30,16 @@ const AddMemberShip = () => {
 
     function insertMembership(){
 
-        if(!category){alert('카테고리를 선택하세요');};
-        if(!name){alert('멤법십 이름을 입력해주세요');};
-        if(!content){alert('멤법십 설명을 입력해주세요');};
-        if(!price){alert('멤법십 가격을 입력해주세요');};
-        if(!discount){alert('멤법십 할인율을 입력해주세요');};
+        if(!category){return alert('카테고리를 선택하세요');};
+        if(!name){return alert('멤버십 이름을 입력해주세요');};
+        if(!content){return alert('멤버십 설명을 입력해주세요');};
+        if(!price){return alert('멤버십 가격을 입력해주세요');};
+        if(!discount){return alert('멤버십 할인율을 입력해주세요');};
         if(category === 'download' || category === 'gift'){
-            if(!downloadCount){alert('멤법십의 다운로드 횟수를 입력해주세요');};
+            if(!downloadCount){return alert('멤버십의 다운로드 횟수를 입력해주세요');};
         }
         if(category === 'streaming'){
-            if(!period){alert('멤버십의 사용기간(개월)을 입력해주세요');};
+            if(!period){return alert('멤버십의 사용기간(개월)을 입력해주세요');};
         }
         
         jaxios.post('/api/membership/insertMembership', {category, name, content, price, discount, downloadCount, period})
@@ -84,21 +85,23 @@ const AddMemberShip = () => {
             </div>
 
             <div className='memberShipField'>
-                <div className='memberShipPriceField'>
-                    <label>가격(원)</label>
-                    <input type='text' value={price} onChange={(e)=>{
-                        setPrice(e.currentTarget.value);
-                    }} />
-                </div>
-                <div className='memberShipPriceField'>
-                    <label>할인율(%)</label>
-                    <input type='text' value={discount} onChange={(e)=>{
-                        setDiscount(e.currentTarget.value);
-                    }} />
-                </div>
-                <div className='memberShipPriceField'>
-                    <label>할인 후 금액(원)</label>
-                    <input type='text' value ={discountedPrice} readOnly />
+                <div className='memberShipPriceForm'>
+                    <div className='memberShipPriceField'>
+                        <label>가격(원)</label>
+                        <input type='text' value={price} onChange={(e)=>{
+                            setPrice(e.currentTarget.value);
+                        }} />
+                    </div>
+                    <div className='memberShipPriceField'>
+                        <label>할인율(%)</label>
+                        <input type='text' value={discount} onChange={(e)=>{
+                            setDiscount(e.currentTarget.value);
+                        }} />
+                    </div>
+                    <div className='memberShipPriceField'>
+                        <label>할인 후 금액(원)</label>
+                        <input type='text' value ={discountedPrice} readOnly />
+                    </div>
                 </div>
             </div>
             

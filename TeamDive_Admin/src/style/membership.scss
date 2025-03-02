@@ -4,6 +4,8 @@ $primary-color: #1976d2;
 $danger-color: #d9534f;
 $success-color: #5cb85c;
 $border-color: #ddd;
+$font-color: #4e5968;
+$light-blue: #64b5f6;  
 
 .membershipPage {
     text-align: center;
@@ -14,16 +16,63 @@ $border-color: #ddd;
         margin-bottom: 20px;
     }
 
+    .addButtonContainer {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 10px; // 버튼과 테이블 간격 조정
+    }
+
+    .addButton {
+        padding: 10px 15px;
+        font-size: 16px;
+        background-color: white;
+        scale: 65%;
+        color: $font-color;
+        padding: 12px 24px;
+        border: none;
+        font-size: 18px;
+        font-weight:lighter;
+        border-radius: 5px;
+        cursor: pointer;
+        box-shadow: 0 0 5px $light-blue;
+        transition: all 0.3s ease-in-out;
+    }
+
+    button {
+        padding: 10px 15px;
+        font-size: 16px;
+        background-color: white;
+        scale: 65%;
+        color: $font-color;
+        padding: 12px 24px;
+        border: none;
+        font-size: 18px;
+        font-weight:lighter;
+        border-radius: 5px;
+        cursor: pointer;
+        box-shadow: 0 0 5px $light-blue;
+        transition: all 0.3s ease-in-out;
+
+        &:hover {
+            background: color.scale($primary-color, $lightness: -20%);
+        }
+    }
+
+    .table-container {
+        overflow-x: auto;
+    }
+
     .membershipTable {
         width: 100%;
         border-collapse: collapse;
         margin: auto;
-        
+        min-width: 600px; // 테이블 크기 조정
 
         th, td {
             padding: 12px;
             border-bottom: 1px solid $border-color;
             text-align: center;
+            white-space: nowrap;
         }
 
         th {
@@ -45,14 +94,14 @@ $border-color: #ddd;
             position: relative;
             width: 50px;
             height: 24px;
-            background: #ccc;
+            background: $border-color;
             border-radius: 12px;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: background 0.3s, left 0.3s;
         }
         
         .toggle-switch.active {
-            background: #4CAF50; /* 활성화 시 초록색 */
+            background: $success-color; /* 활성화 시 초록색 */
         }
         
         .toggle-thumb {
@@ -69,6 +118,20 @@ $border-color: #ddd;
         .toggle-switch.active .toggle-thumb {
             left: 28px; /* 활성화 시 오른쪽으로 이동 */
         }
-        
+    }
+}
+
+/* 반응형 처리 */
+@media (max-width: 768px) {
+    .membershipPage {
+        padding: 10px;
+    }
+
+    .membershipTable {
+        font-size: 14px;
+
+        th, td {
+            padding: 8px;
+        }
     }
 }
