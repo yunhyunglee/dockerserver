@@ -82,9 +82,9 @@ function Home({ menubar, mood, setMood}) {
 
                     {
                         loginUser?.memberRoleList?.includes("ADMIN") && (
-                        <Link to="http://13.209.123.104:5174">
+                        <a href="http://13.209.123.104/admin/" target="_blank" rel="noopener noreferrer">
                             Admin
-                        </Link>
+                        </a>
                     )}
 
 

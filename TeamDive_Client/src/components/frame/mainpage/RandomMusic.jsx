@@ -9,49 +9,42 @@ const RandomMusic = () => {
       musicId: 1,
       title: "Blueming",
       artist: "아이유 (IU)",
-      image: "/public/image/artist/artist1.jpg",
+      image: "https://d9k8tjx0yo0q5.cloudfront.net/image/iu.jpg",
       artistId: 1
     },
     {
       musicId: 2,
       title: "Dynamite",
       artist: "BTS",
-      image: "/public/image/artist/artist1.jpg",
+      image: "https://d9k8tjx0yo0q5.cloudfront.net/image/bts.jpg",
       artistId: 1
     },
     {
       musicId: 3,
       title: "Hype Boy",
       artist: "NewJeans",
-      image: "/public/image/artist/artist1.jpg",
-      artistId: 1
-    },
-    {
-      musicId: 4,
-      title: "사건의 지평선",
-      artist: "윤하",
-      image: "/public/image/artist/artist1.jpg",
+      image: "https://d9k8tjx0yo0q5.cloudfront.net/image/newjeans.jpg",
       artistId: 1
     },
     {
       musicId: 5,
       title: "Unforgiven",
       artist: "LE SSERAFIM",
-      image: "/public/image/artist/artist1.jpg",
+      image: "https://d9k8tjx0yo0q5.cloudfront.net/image/le_sserafim.jpg",
       artistId: 1
     },
     {
       musicId: 6,
       title: "Whistle",
       artist: "BLACKPINK",
-      image: "/public/image/artist/artist3.jpg",
+      image: "https://d9k8tjx0yo0q5.cloudfront.net/image/blackpink.jpg",
       artistId: 1
     },
     {
       musicId: 7,
       title: "Ditto",
       artist: "NewJeans",
-      image: "/public/image/artist/artist1.jpg",
+      image: "https://d9k8tjx0yo0q5.cloudfront.net/image/newjeans.jpg",
       artistId: 1
     },
   ];

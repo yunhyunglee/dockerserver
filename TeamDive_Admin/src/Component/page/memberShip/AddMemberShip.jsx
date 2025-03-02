@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import jaxios from '../../../util/JwtUtil';
-import "../../../style/addMemberShip.scss"
+import "../../../style/addMembership.scss"
 
 const AddMemberShip = () => {
 
