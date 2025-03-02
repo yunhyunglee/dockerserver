@@ -193,7 +193,6 @@ const MusicDetail = () => {
                         </span>
                     </p>
                     <p className={styles.genre}>장르: {musicDetail.genre}</p>
-                    <p className={styles.like}>Likes: 미구현</p>
 
           
                     <div className={styles.buttonGroup}>
@@ -205,7 +204,7 @@ const MusicDetail = () => {
                         <button
                             className={styles.addButton}
                             onClick={()=>{handlePlay2(musicDetail.musicId)}}>
-                                <MdQueueMusic size={22}/>&nbsp;맨 아래 추가
+                                <MdQueueMusic size={22}/>&nbsp;다음곡 추가
                         </button>
                         <button
                             className={styles.addButton}

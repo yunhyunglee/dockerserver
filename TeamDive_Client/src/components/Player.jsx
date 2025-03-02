@@ -89,7 +89,7 @@ export default function Player() {
 
   // 페이지네이션 관련 상태
   const [currentPage, setCurrentPage] = useState(1);
-  const songsPerPage = 100; // 한 페이지에 7곡씩 표시
+  const songsPerPage = 200; // 한 페이지에 7곡씩 표시
 
   // 검색 기능 제거 → 전체 playlist 사용
   const filteredPlaylist = playlist;
@@ -99,14 +99,17 @@ export default function Player() {
   const currentSongs = filteredPlaylist.slice(indexOfFirstSong, indexOfLastSong);
 
   // 현재 재생할 곡 결정
-  let currentSong;
-  if (playlist.length > 0) {
-    if (isShuffle && shuffleQueue.length > 0) {
-      currentSong=playlist[shuffleQueue[shufflePos]];
-    } else {
-      currentSong=playlist[index];
+  const [currentSong, setCurrentSong] = useState(null);
+
+  useEffect(() => {
+    if (playlist.length > 0) {
+      if (isShuffle && shuffleQueue.length > 0) {
+        setCurrentSong(playlist[shuffleQueue[shufflePos]] || null);
+      } else {
+        setCurrentSong(playlist[index] || null);
+      }
     }
-  }
+  }, [playlist, index, isShuffle, shuffleQueue, shufflePos]); 
 
   const loginUser = useSelector(state => state.user);
   const [playCounts, setPlayCounts] = useState({});
@@ -125,7 +128,7 @@ export default function Player() {
           .then(() => setPlayCounts({}))
           .catch(err => console.error("Error sending play counts:", err));
       }
-    }, 60000);
+    }, 600000);
     return () => clearInterval(interval);
   }, [playCounts]);
 
@@ -178,11 +181,12 @@ export default function Player() {
         return newPlaylist;  // 새로운 배열 반환
       });
     }
-  }, [addPlaylist,addAndPlay]);
+  }, [addPlaylist, addAndPlay]);
 
+  const recommend=useRef(false);
   useEffect(
     ()=>{
-      if(playlist.length> 0 && playlist.every(song=>song.src) && addAndPlay){
+      if(playlist.length> 0 && playlist.every(song=>song.src) && addAndPlay && audioRef.current){
         setIndex(prevIndex => {
           let newIndex = prevIndex + 1;
           if(playlist.length==1) newIndex =0;
@@ -193,22 +197,37 @@ export default function Player() {
       }
 
       if(index==playlist.length-1){
-        jaxios.get('/api/AI/addRecommendList',{params:{mood:'normal',memberId: loginUser.memberId ,signal: true}})
+        jaxios.get('/api/AI/addRecommendList',{params:{mood:'normal',memberId: loginUser.memberId, signal: true}})
         .then((result)=>{
-          localStorage.setItem("recommendList",JSON.stringify(result.data.addRecommendList))
+          localStorage.setItem('addRecommendList',JSON.stringify(result.data.addRecommendList));
+          recommend.current=true;
         }).catch((err)=>{console.error(err);})
+      }
+
+      if(playlist.length> 0 && playlist.every(song=>song?.src) && recommend.current && audioRef.current){
+        setIndex(prevIndex => {
+          let newIndex = prevIndex + 1;
+          if(playlist.length==1) newIndex =0;
+          handleAudioChange(newIndex, true);
+          return newIndex;
+        });
+        recommend.current=false;
       }
     },[playlist]
   );
 
-  const lastSong= ()=>{
-    try {
-      const storedPlaylist = JSON.parse(localStorage.getItem("recommendList"));
-      setPlaylist(prev => [...prev,...storedPlaylist]); // storedPlaylist가 null일 경우 빈 배열로 설정
-    } catch (error) {
-      console.log('불러오기 실패');
+  const lastSong = () => {
+    if(index==playlist.length-1){
+      try {
+        const storedPlaylist = JSON.parse(localStorage.getItem("addRecommendList")) || []; // storedPlaylist가 null이면 빈 배열
+        setPlaylist(prev => [...prev, ...storedPlaylist]); // 배열을 올바르게 병합
+        recommend.current=true;
+      } catch (error) {
+        console.log('불러오기 실패', error);
+      }
     }
-  }
+  };
+
 
   const [membership,setMembership]=useState(false);
   //멤버십 조회, 처음 렌더링시 플레이리스트 스토리지에서 가져옴
@@ -241,6 +260,19 @@ export default function Player() {
   const removePlaylist=(i)=>{
     setPlaylist(prev => prev.filter((_,index)=> index!==i) )
   }
+
+  const playlistRef = useRef(null);  // 전체 플레이리스트를 감싸는 요소의 ref
+  const currentSongRef = useRef(null);  // 현재 재생 중인 곡을 가리킬 ref
+
+  useEffect(() => {
+    if (currentSongRef.current) {
+      // 현재 재생 중인 곡이 화면에 보이도록 스크롤 이동
+      currentSongRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',  // 'nearest'는 가장 가까운 위치로 이동
+      });
+    }
+  }, [index]);  // index가 변경될 때마다 실행되어 현재 곡에 스크롤 이동
 
 
 
@@ -285,24 +317,29 @@ export default function Player() {
 
   // 특정 곡으로 재생
   const handleAudioChange = (songIndex, autoPlay = true) => {
-    const src = playlist[songIndex].src;
-    audioRef.current.src = src;
-    audioRef.current.load();
-    audioRef.current.onloadedmetadata = () => {
-      const _duration = Math.floor(audioRef.current?.duration);
-      const _elapsed = Math.floor(audioRef.current?.currentTime);
-      setDuration(_duration);
-      setElapsed(_elapsed);
-      if (autoPlay) {
-        audioRef.current
-          .play()
-          .then(() => setIsPlaying(true))
-          .catch(err => console.error('Play error:', err));
-      } else {
-        audioRef.current.pause();
-        setIsPlaying(false);
-      }
-    };
+    const src = playlist[songIndex]?.src;
+    if(audioRef.current){
+      audioRef.current.src = src;
+      audioRef.current.load();
+      audioRef.current.onloadedmetadata = () => {
+        const _duration = Math.floor(audioRef.current?.duration);
+        const _elapsed = Math.floor(audioRef.current?.currentTime);
+        setDuration(_duration);
+        setElapsed(_elapsed);
+        if (autoPlay && audioRef.current) {
+          audioRef.current
+            .play()
+            .then(() => setIsPlaying(true))
+            .catch(err => console.error('Play error:', err));
+        } else {
+          if(audioRef.current){
+            audioRef.current.pause();
+            setIsPlaying(false);
+            }
+        }
+      };
+  
+    }
   };
 
   // 이전 곡
@@ -419,7 +456,7 @@ export default function Player() {
     const handleSelectSong = (i) => {
       setIndex(i);
       handleAudioChange(i, true);
-      setShowPlaylist(false);
+      // setShowPlaylist(false);
     };
 
     // 페이지 변경 핸들러
@@ -429,7 +466,7 @@ export default function Player() {
 
     return (
       <footer className="footer">
-        <audio ref={audioRef} muted={mute} src={currentSong.src} onPlay={play30second} onEnded={()=>lastSong()}/>
+        <audio ref={audioRef} muted={mute} src={currentSong?.src || ""} onPlay={play30second} onEnded={()=>lastSong()}/>
         <CustomPaper>
           <Box
             sx={{
@@ -572,10 +609,10 @@ export default function Player() {
             >
               <Box>
                 <Typography variant="h6" sx={{ color: 'silver' }}>
-                  {currentSong.title}
+                  {currentSong?.title||""}
                 </Typography>
                 <Typography variant="body2" sx={{ color: 'silver' }}>
-                  {currentSong.artist}
+                  {currentSong?.artist||""}
                 </Typography>
               </Box>
               <PlaylistPlayIcon
@@ -611,13 +648,16 @@ export default function Player() {
                 borderRadius: '3px',
               },
             }}
+            ref={playlistRef}
           >
             {/* 헤더 영역: 타이틀과 닫기 버튼 */}
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 ,position:'sticky',top:0, background: 'linear-gradient(135deg, #222, #000)',
+      padding: 2,
+      zIndex: 10,}}>
               <Typography variant="h6" sx={{ color: 'silver' }}>
                 Playlist
               </Typography>
-              <DeleteIcon sx={{ position: 'relative', marginLeft: '-110px', cursor: 'pointer'}} onClick={()=>{setPlaylist([]); setIndex(0);}}/>
+              <DeleteIcon sx={{ position: 'relative', marginLeft: '-110px', cursor: 'pointer'}} onClick={()=>{setPlaylist([]); audioRef.current.load()}}/>
               <IconButton size="small" onClick={() => setShowPlaylist(false)} sx={{ color: 'silver' }}>
                 <CloseIcon />
               </IconButton>
@@ -639,10 +679,12 @@ export default function Player() {
                   backgroundColor: 'rgba(255,255,255,0.1)',
                   transform: 'scale(1.02)',
                 },
-              }} 
-              style={{border:(i==index)?'1px solid white':null}}
+              }}
+              style={{border: (i==index)? 'white 1px solid' : null}}
+              onClick={() => handleSelectSong(playlist.indexOf(song))}
+              ref={i === index ? currentSongRef : null} // 현재 재생 중인 곡에 ref 설정
             >
-              <Box onClick={() => handleSelectSong(playlist.indexOf(song))} >
+              <Box>
                 <Typography variant="subtitle1" sx={{ color: 'silver' }}>
                   {song.title}
                 </Typography>
@@ -650,7 +692,7 @@ export default function Player() {
                   {song.artist}
                 </Typography>
               </Box>
-              <IconButton size="small" sx={{ color: 'silver' }} onClick={()=>removePlaylist(i)}>
+              <IconButton size="small" sx={{ color: 'silver' }} onClick={(e)=>{e.stopPropagation(); removePlaylist(i);}}>
                 <CloseIcon />
               </IconButton>
             </Box>

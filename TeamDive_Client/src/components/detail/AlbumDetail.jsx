@@ -260,25 +260,25 @@ const AlbumDetail = () => {
                                 <td className={styles.thActions}>
                                     <button
                                         className={styles.iconButton}
-                                        onClick={()=>{handlePlay(music.musicId)}}
+                                        onClick={()=>{handlePlay(track.musicId)}}
                                     >
                                         <FaPlay size={16}/>
                                     </button>
                                     <button
                                         className={styles.iconButton}
-                                        onClick={()=>{handlePlay2(music.musicId)}}
+                                        onClick={()=>{handlePlay2(track.musicId)}}
                                     >
                                         <MdQueueMusic size={22}/>
                                     </button>
                                     <button
                                         className={styles.iconButton}
-                                        onClick={() => handleAddToPlaylist(music.musicId)}
+                                        onClick={() => handleAddToPlaylist(track.musicId)}
                                     >
                                         <MdLibraryMusic size={20}/>
                                     </button>
                                     <button
                                         className={styles.iconButton}
-                                        onClick={() => insertCart(music.musicId)} 
+                                        onClick={() => insertCart(track.musicId)} 
                 
                                     >
                                         <BsFileEarmarkMusicFill size={18}/>
