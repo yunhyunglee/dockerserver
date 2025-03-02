@@ -37,7 +37,7 @@ public class CustomSecurityConfig {
 
         //로그인기능
         http.formLogin(config ->{
-            config.loginPage("/member/login");  // 추후에 /api추가
+            config.loginPage("/api/member/login");  // 추후에 /api추가
             config.successHandler(new APILoginSuccessHandler());
             config.failureHandler(new APILoginFailHandler());
         });
@@ -58,6 +58,7 @@ public class CustomSecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOriginPatterns( Arrays.asList("*"));
+        configuration.setAllowedOrigins( Arrays.asList("http://localhost:5173","http://localhost:5174"));
         configuration.setAllowedMethods( Arrays.asList("HEAD","GET","POST","PUT","DELETE"));
         configuration.setAllowedHeaders( Arrays.asList("Authorization","Cache-Control","Content-Type"));
         configuration.setAllowCredentials(true);

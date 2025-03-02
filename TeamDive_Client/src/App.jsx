@@ -1,12 +1,12 @@
 
 import { useState } from 'react';
 import './App.css'
-import { MainHeader } from './components/frame/Header';
-import { Home } from './components/frame/Home';
+import { MainHeader } from './components/frame/header';
+import { Home } from './components/frame/home';
 import { FooterPlayer } from './components/frame/FooterPlayer';
 import FloatingButton from './components/FloatingButton';
 import ChatModal from './components/ChatModal';
-import Footer from './components/frame/Footer';
+import Footer from './components/frame/footer';
 import { PlayerContext, PlayerProvider } from './context/PlayerContext';
 
 function App() {

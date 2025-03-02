@@ -43,7 +43,7 @@ const MainPage = () => {
 
     const handleMood = (mood) => {
         setSelectMood(mood);
-        axios.get('/api/music/musicForMood', { params: { mood } })
+        jaxios.get('/api/music/musicForMood', { params: { mood } })
           .then((result) => {
             
             if (result.data ) {
@@ -113,11 +113,11 @@ const MainPage = () => {
             <div className={styles.moodContainer}>
                <span className={styles.moodTitle}>
                     {loginUser.nickname}님 오늘 하루는 어떠셨나요 ?
-                    <span onClick={()=> handleMood('happy')} className={styles.happy}><img className={styles.moodImg} src='public/icon/happy.gif'  /></span>
-                    <span onClick={()=> handleMood('sad')} className={styles.sad}><img className={styles.moodImg} src='public/icon/happy.gif'  /></span>
-                    <span onClick={()=> handleMood('angry')} className={styles.angry}><img className={styles.moodImg} src='public/icon/angry.gif'  /></span>
-                    <span onClick={()=> handleMood('boring')} className={styles.boring}><img className={styles.moodImg} src='public/icon/happy.gif'  /></span>
-                    <span onClick={()=> handleMood('normal')} className={styles.normal}><img className={styles.moodImg} src='public/icon/happy.gif'  /></span>
+                    <span onClick={()=> handleMood('happy')} className={styles.happy}><img className={styles.moodImg} src='https://d9k8tjx0yo0q5.cloudfront.net/icon/happy.gif'  /></span>
+                    <span onClick={()=> handleMood('sad')} className={styles.sad}><img className={styles.moodImg} src='https://d9k8tjx0yo0q5.cloudfront.net/icon/sad.gif'  /></span>
+                    <span onClick={()=> handleMood('angry')} className={styles.angry}><img className={styles.moodImg} src='https://d9k8tjx0yo0q5.cloudfront.net/icon/angry.gif'  /></span>
+                    <span onClick={()=> handleMood('boring')} className={styles.boring}><img className={styles.moodImg} src='https://d9k8tjx0yo0q5.cloudfront.net/icon/boring.gif'  /></span>
+                    <span onClick={()=> handleMood('normal')} className={styles.normal}><img className={styles.moodImg} src='https://d9k8tjx0yo0q5.cloudfront.net/icon/normal.gif'  /></span>
                 </span>
             </div>
             {selectMood && moodMusic.length > 0 && (

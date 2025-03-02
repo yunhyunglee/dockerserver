@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 
 @RestController
-@RequestMapping("/member")
+@RequestMapping("/api/member")
 @RequiredArgsConstructor
 public class MailController {
 

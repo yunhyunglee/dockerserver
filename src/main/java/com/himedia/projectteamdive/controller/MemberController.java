@@ -29,7 +29,7 @@ import java.net.URL;
 import java.util.*;
 
 @RestController
-@RequestMapping("/member")
+@RequestMapping("/api/member")
 public class MemberController {
 
 
@@ -243,7 +243,7 @@ public class MemberController {
             member.setProvider( "kakao" );
             ms.insertMember(member);
         }
-        response.sendRedirect("http://localhost:5173/KakaoLogin/"+member.getMemberId());
+        response.sendRedirect("http://13.209.123.104/KakaoLogin/"+member.getMemberId());
     }
 
     @GetMapping("/getMember")
