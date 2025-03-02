@@ -75,175 +75,199 @@ public class JWTCheckFilter extends OncePerRequestFilter {
             return true;
         }
 
-//        if(path.startsWith("/api/member/login")){
+        if(path.startsWith("/api/member/login")){
+            return true;
+        }
+        if(path.startsWith("/api/membership/getMembership")){
+            return true;
+        }
+        if(path.startsWith("/api/member/checkId")){
+            return true;
+        }
+        if(path.startsWith("/api/member/join")){
+            return true;
+        }
+        if(path.startsWith("/api/member/kakaoStart")){
+            return true;
+        }
+        if(path.startsWith("/api/member/kakaoLogin")){
+            return true;
+        }
+        if(path.startsWith("/api/member/sendMail")){
+            return true;
+        }
+        if(path.startsWith("/api/member/emailCheck")){
+            return true;
+        }
+        if(path.startsWith("/api/chat/ask")){
+            return true;
+        }
+        if(path.startsWith("/api/music/addPlayCount")){
+            return true;
+        }
+        if(path.startsWith("/api/music/getMusicChart")){
+            return true;
+        }
+        if(path.startsWith("/api/music/getAlbumChart")){
+            return true;
+        }
+        if(path.startsWith("/api/music/getArtist")){
+            return true;
+        }
+        if(path.startsWith("/api/music/getAlbum")){
+            return true;
+        }
+        if(path.startsWith("/api/music/getMusic")){
+            return true;
+        }
+        if(path.startsWith("/api/music/getSearch")){
+            return true;
+        }
+        if(path.startsWith("/api/music/getCurrentPlaylist")){
+            return true;
+        }
+        if(path.startsWith("/api/music/getMemberPlaylist")){
+            return true;
+        }
+        if(path.startsWith("/api/music/getMemberRecentMusics")){
+            return true;
+        }
+        if(path.startsWith("/api/community/getLikeCount")){
+            return true;
+        }
+        if(path.startsWith("/api/community/insertReply")){
+            return true;
+        }
+        if(path.startsWith("/api/community/getReplyList")){
+            return true;
+        }
+        if(path.startsWith("/api/membership/getMembershipByCategory")){
+            return true;
+        }
+        //======추가된것
+        if(path.startsWith("/api/member/refresh")){
+            return true;
+        }
+        if(path.startsWith("/api/AI/recommendList")){
+            return true;
+        }
+        if(path.startsWith("/api/music/latestPlayList")){
+            return true;
+        }
+        if(path.startsWith("/api/music/latestAlbumList")){
+            return true;
+        }
+        if(path.startsWith("/api/music/latestMusicList")){
+            return true;
+        }
+        if(path.startsWith("/api/community/getNoticeList")){
+            return true;
+        }
+        if(path.startsWith("/api/membership/checkActiveMembership")){
+            return true;
+        }
+        if(path.startsWith("/api/AI/addRecommendList")){
+            return true;
+        }
+
+
+//        if(path.startsWith("/member/login")){
 //            return true;
 //        }
-//        if(path.startsWith("/api/membership/getMembership")){
+//        if(path.startsWith("/membership/getMembership")){
 //            return true;
 //        }
-//        if(path.startsWith("/api/member/checkId")){
+//        if(path.startsWith("/member/checkId")){
 //            return true;
 //        }
-//        if(path.startsWith("/api/member/join")){
+//        if(path.startsWith("/member/join")){
 //            return true;
 //        }
-//        if(path.startsWith("/api/member/kakaoStart")){
+//        if(path.startsWith("/member/kakaoStart")){
 //            return true;
 //        }
-//        if(path.startsWith("/api/member/kakaoLogin")){
+//        if(path.startsWith("/member/kakaoLogin")){
 //            return true;
 //        }
-//        if(path.startsWith("/api/member/sendMail")){
+//        if(path.startsWith("/member/sendMail")){
 //            return true;
 //        }
-//        if(path.startsWith("/api/member/emailCheck")){
+//        if(path.startsWith("/member/emailCheck")){
 //            return true;
 //        }
-//        if(path.startsWith("/api/chat/ask")){
+//        if(path.startsWith("/chat/ask")){
 //            return true;
 //        }
-//        if(path.startsWith("/api/music/addPlayCount")){
+//        if(path.startsWith("/music/addPlayCount")){
 //            return true;
 //        }
-//        if(path.startsWith("/api/music/getMusicChart")){
+//        if(path.startsWith("/music/getMusicChart")){
 //            return true;
 //        }
-//        if(path.startsWith("/api/music/getAlbumChart")){
+//        if(path.startsWith("/music/getAlbumChart")){
 //            return true;
 //        }
-//        if(path.startsWith("/api/music/getAlbumChart")){
+//        if(path.startsWith("/music/getArtist")){
 //            return true;
 //        }
-//        if(path.startsWith("/api/music/getArtist")){
+//        if(path.startsWith("/music/getAlbum")){
 //            return true;
 //        }
-//        if(path.startsWith("/api/music/getAlbum")){
+//        if(path.startsWith("/music/getMusic")){
 //            return true;
 //        }
-//        if(path.startsWith("/api/music/getMusic")){
+//        if(path.startsWith("/music/getSearch")){
 //            return true;
 //        }
-//        if(path.startsWith("/api/music/getSearch")){
+//        if(path.startsWith("/music/getCurrentPlaylist")){
 //            return true;
 //        }
-//        if(path.startsWith("/api/music/getCurrentPlaylist")){
+//        if(path.startsWith("/music/getMemberPlaylist")){
 //            return true;
 //        }
-//        if(path.startsWith("/api/music/getMemberPlaylist")){
+//        if(path.startsWith("/music/getMemberRecentMusics")){
 //            return true;
 //        }
-//        if(path.startsWith("/api/music/getMemberRecentMusics")){
+//        if(path.startsWith("/community/getLikeCount")){
 //            return true;
 //        }
-//        if(path.startsWith("/api/community/getLikeCount")){
-//            return true;
-//        }
-//        if(path.startsWith("/api/community/insertReply")){
+//        if(path.startsWith("/community/insertReply")){
 //            return true;
 //        }
 //        if(path.startsWith("/community/getReplyList")){
 //            return true;
 //        }
-//        if(path.startsWith("/api/membership/getMembershipByCategory")){
+//        if(path.startsWith("/membership/getMembershipByCategory")){
 //            return true;
 //        }
-        if(path.startsWith("/member/login")){
-            return true;
-        }
-        if(path.startsWith("/membership/getMembership")){
-            return true;
-        }
-        if(path.startsWith("/member/checkId")){
-            return true;
-        }
-        if(path.startsWith("/member/join")){
-            return true;
-        }
-        if(path.startsWith("/member/kakaoStart")){
-            return true;
-        }
-        if(path.startsWith("/member/kakaoLogin")){
-            return true;
-        }
-        if(path.startsWith("/member/sendMail")){
-            return true;
-        }
-        if(path.startsWith("/member/emailCheck")){
-            return true;
-        }
-        if(path.startsWith("/chat/ask")){
-            return true;
-        }
-        if(path.startsWith("/music/addPlayCount")){
-            return true;
-        }
-        if(path.startsWith("/music/getMusicChart")){
-            return true;
-        }
-        if(path.startsWith("/music/getAlbumChart")){
-            return true;
-        }
-        if(path.startsWith("/music/getArtist")){
-            return true;
-        }
-        if(path.startsWith("/music/getAlbum")){
-            return true;
-        }
-        if(path.startsWith("/music/getMusic")){
-            return true;
-        }
-        if(path.startsWith("/music/getSearch")){
-            return true;
-        }
-        if(path.startsWith("/music/getCurrentPlaylist")){
-            return true;
-        }
-        if(path.startsWith("/music/getMemberPlaylist")){
-            return true;
-        }
-        if(path.startsWith("/music/getMemberRecentMusics")){
-            return true;
-        }
-        if(path.startsWith("/community/getLikeCount")){
-            return true;
-        }
-        if(path.startsWith("/community/insertReply")){
-            return true;
-        }
-        if(path.startsWith("/community/getReplyList")){
-            return true;
-        }
-        if(path.startsWith("/membership/getMembershipByCategory")){
-            return true;
-        }
-        //======추가된것
-        if(path.startsWith("/member/refresh")){
-            return true;
-        }
-        if(path.startsWith("/AI/recommendList")){
-            return true;
-        }
-        if(path.startsWith("/AI/addRecommendList")){
-            return true;
-        }
-        if(path.startsWith("/music/latestPlayList")){
-            return true;
-        }
-        if(path.startsWith("/music/latestAlbumList")){
-            return true;
-        }
-        if(path.startsWith("/music/latestMusicList")){
-            return true;
-        }
-        if(path.startsWith("/community/getNoticeList")){
-            return true;
-        }
-        if(path.startsWith("/membership/checkActiveMembership")){
-            return true;
-        }
-        if(path.startsWith("/AI/addRecommendList")){
-            return true;
-        }
+//        //======추가된것
+//        if(path.startsWith("/member/refresh")){
+//            return true;
+//        }
+//        if(path.startsWith("/AI/recommendList")){
+//            return true;
+//        }
+//        if(path.startsWith("/AI/addRecommendList")){
+//            return true;
+//        }
+//        if(path.startsWith("/music/latestPlayList")){
+//            return true;
+//        }
+//        if(path.startsWith("/music/latestAlbumList")){
+//            return true;
+//        }
+//        if(path.startsWith("/music/latestMusicList")){
+//            return true;
+//        }
+//        if(path.startsWith("/community/getNoticeList")){
+//            return true;
+//        }
+//        if(path.startsWith("/membership/checkActiveMembership")){
+//            return true;
+//        }
+//        if(path.startsWith("/AI/addRecommendList")){
+//            return true;
+//        }
 
 
         return false;

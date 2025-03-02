@@ -32,31 +32,31 @@ function Home({ menubar, mood, setMood}) {
 
     return (
         <div className={styles.container}>
-          
+            
           
             <div className={`${styles.sidebar} ${menubar ? styles.open : ''}`}>
                 <Link to='/' className={styles.link}>
-                <img src='public/icon/home1.gif' className={styles.menuImg} alt="메인아이콘"/>
+                <img src='https://d9k8tjx0yo0q5.cloudfront.net/icon/home1.gif' className={styles.menuImg} alt="메인아이콘"/>
                 <span className={styles.linkText}>홈</span>
                 </Link>< br/>
                 <Link to='/charts' className={styles.link}>
-                <img src='public/icon/chart.gif' className={styles.menuImg} alt="인기차트 아이콘"/>
+                <img src='https://d9k8tjx0yo0q5.cloudfront.net/icon/chart.gif' className={styles.menuImg} alt="인기차트 아이콘"/>
                 <span className={styles.linkText}>인기차트</span>
                 </Link>< br/>
                 <Link to='/playList' className={styles.link}>
-                <img src='public/icon/playlist.gif' className={styles.menuImg} alt="플레이리스트 아이콘"/>
+                <img src='https://d9k8tjx0yo0q5.cloudfront.net/icon/playlist.gif' className={styles.menuImg} alt="플레이리스트 아이콘"/>
                 <span className={styles.linkText}>플레이리스트</span>
                 </Link>< br/>
                 <Link to='/storage' className={styles.link}>
-                <img src='public/icon/storage.gif' className={styles.menuImg} alt="보관함 아이콘"/>
+                <img src='https://d9k8tjx0yo0q5.cloudfront.net/icon/storage.gif' className={styles.menuImg} alt="보관함 아이콘"/>
                 <span className={styles.linkText}>보관함</span>
                 </Link>< br/>
                 <Link to='/membership/all' className={styles.link}>
-                <img src='public/icon/membership2.gif' className={styles.menuImg} alt="멤버십 아이콘"/>
+                <img src='https://d9k8tjx0yo0q5.cloudfront.net/icon/membership2.gif' className={styles.menuImg} alt="멤버십 아이콘"/>
                 <span className={styles.linkText}>멤버십</span>
                 </Link>< br/>
                 <Link to='/mypage/myPageMain' className={styles.link}>
-                <img src='public/icon/mypage.gif' className={styles.menuImg} alt="마이페이지 아이콘"/>
+                <img src='https://d9k8tjx0yo0q5.cloudfront.net/icon/mypage.gif' className={styles.menuImg} alt="마이페이지 아이콘"/>
                 <span className={styles.linkText}>마이페이지</span>
                 </Link>
 
@@ -82,7 +82,7 @@ function Home({ menubar, mood, setMood}) {
 
                     {
                         loginUser?.memberRoleList?.includes("ADMIN") && (
-                        <Link to="http://localhost:5174">
+                        <Link to="http://13.209.123.104:5174">
                             Admin
                         </Link>
                     )}

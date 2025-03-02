@@ -47,7 +47,7 @@ const LoginPage =() => {
     }
 
     function handleKakaoLogin() {
-        window.location.href='http://localhost:8070/member/kakaoStart'
+        window.location.href='/api/member/kakaoStart'
       }
 
     return (

@@ -239,7 +239,7 @@ export default function Player() {
       } catch (error) {
         setPlaylist([]); // 파싱 오류가 날 경우 빈 배열 설정
       }
-      axios.get('/api/membership/checkActiveMembership',{params:{memberId:loginUser.memberId, category: 'streaming'}})
+      axios.get('/api/membership/checkActiveMembership',{params:{memberId:loginUser.memberId||"" , category: 'streaming'}})
       .then((result)=>{
         if(result.data.message=='yes'){
           setMembership(true)
@@ -247,16 +247,24 @@ export default function Player() {
       }).catch((err)=>{console.error(err);})
     },[]
   );
-  const hasTriggered = useRef(false);
   //멤버십없으면 60초 제한
-    useEffect(
-      ()=>{
-        if(!membership && elapsed>=60 && !hasTriggered.current){
-          toggleSkipForward('auto');
-          hasTriggered.current=true;
-        }
-      },[elapsed,membership]
-    );
+  const [hasSkipped, setHasSkipped] = useState(false);
+
+  useEffect(() => {
+    if (!membership && elapsed >= 60 && !hasSkipped) {
+      setHasSkipped(true); // 중복 실행 방지
+  
+      const timer = setTimeout(() => {
+        toggleSkipForward();
+      }, 200);
+  
+      return () => {
+        setHasSkipped(false); 
+        clearTimeout(timer);
+      };
+    }
+  }, [elapsed, membership]);
+  
   const removePlaylist=(i)=>{
     setPlaylist(prev => prev.filter((_,index)=> index!==i) )
   }
@@ -269,9 +277,11 @@ export default function Player() {
       // 현재 재생 중인 곡이 화면에 보이도록 스크롤 이동
       currentSongRef.current.scrollIntoView({
         behavior: 'smooth',
-        block: 'nearest',  // 'nearest'는 가장 가까운 위치로 이동
+        block: 'center', 
       });
     }
+    setElapsed(0);
+    setHasSkipped(false);
   }, [index]);  // index가 변경될 때마다 실행되어 현재 곡에 스크롤 이동
 
 
@@ -292,7 +302,6 @@ export default function Player() {
   }, [volume, mute, isPlaying]);
 
   useEffect(() => {
-    hasTriggered.current=false;
     const audioEl = audioRef.current;
     if (!audioEl) return;
     const handleEnded = () => {
@@ -657,7 +666,7 @@ export default function Player() {
               <Typography variant="h6" sx={{ color: 'silver' }}>
                 Playlist
               </Typography>
-              <DeleteIcon sx={{ position: 'relative', marginLeft: '-110px', cursor: 'pointer'}} onClick={()=>{setPlaylist([]); audioRef.current.load()}}/>
+              <DeleteIcon sx={{ position: 'relative', marginLeft: '-110px', cursor: 'pointer'}} onClick={()=>{setPlaylist([]);}}/>
               <IconButton size="small" onClick={() => setShowPlaylist(false)} sx={{ color: 'silver' }}>
                 <CloseIcon />
               </IconButton>
