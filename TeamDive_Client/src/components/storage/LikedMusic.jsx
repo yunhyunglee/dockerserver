@@ -172,7 +172,7 @@ const LikedMusic = () => {
                   </div>
 
                   {/* 가수 */}
-                  <div className={styles.artist}>{likeMusic.artist}</div>
+                  <div className={styles.artist}>{likeMusic.artistName}</div>
 
                   {/* 장르 */}
                   <div className={styles.genre}>{likeMusic.genre}</div>

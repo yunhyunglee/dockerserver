@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface PurchasedMusicRepository extends JpaRepository<PurchasedMusic, Integer> {
 
-    @Query("SELECT new com.himedia.projectteamdive.dto.PurchasedMusicResponseDto(pm.music.musicId, pm.music.title, pm.music.artist.artistName) " +
+    @Query("SELECT new com.himedia.projectteamdive.dto.PurchasedMusicResponseDto(pm.music.musicId, pm.music.title, pm.music.artist.artistName, pm.music.album.image) " +
             "FROM PurchasedMusic pm WHERE pm.member = :member")
     List<PurchasedMusicResponseDto> findByMember(@Param("member") Member member);
 }
