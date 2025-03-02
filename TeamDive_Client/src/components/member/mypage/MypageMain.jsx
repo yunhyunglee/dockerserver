@@ -79,7 +79,7 @@ const MypageMain = () => {
                     <div>-</div>
                   </div>
                 )}
-                <button>멤버십 해지</button>
+                {/* <button>멤버십 해지</button> */}
               </section>
             ))
           ) : (
