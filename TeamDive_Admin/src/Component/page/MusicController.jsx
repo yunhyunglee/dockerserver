@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useLocation, Outlet } from "react-router-dom";
-import "../../style/MusicController.scss";
+import "../../style/musicController.scss";
 
 
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import AddMusicModal from "./AddMusicModal";
+import AddMusicModal from "./addMusicModal";
 import axios from "axios";
 import { format } from "date-fns";
 import "../../../style/addAlbum.scss";

@@ -85,7 +85,7 @@ const PlaylistDetail = () => {
 
 
     if (!playlistId) return;
-    jaxios
+    axios
       .get("/api/music/playlistDetail", { params: { playlistId } })
       .then((res) => {
         setPlaylist(res.data.playlist);

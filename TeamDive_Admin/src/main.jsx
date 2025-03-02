@@ -10,7 +10,7 @@ import { Provider } from "react-redux";
 persistUserState(store);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-    <BrowserRouter>
+    <BrowserRouter basename="/admin">
         <Provider store={store}>
             
                 <App /> 
