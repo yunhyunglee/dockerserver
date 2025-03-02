@@ -43,6 +43,8 @@ const MembershipAdmin = () => {
         jaxios.delete(`/api/membership/deleteMembership/${membershipId}`)
         .then((result)=>{
             if(result.data.message === 'yes'){
+                const confirm = window.confirm('정말로 삭제하시겠습니까?');
+                if(!confirm){return;}
                 alert('삭제되었습니다.');
                 getMemberships();
             }
@@ -56,9 +58,11 @@ const MembershipAdmin = () => {
         <div className="membershipPage">
             <h1>멤버십 관리</h1>
             {loading && <p>로딩 중...</p>}
-            <button onClick={()=>{
-                navigate('/addMemberShip');
-            }}>추가</button>
+            <div className="addButtonContainer">
+                <button className="addButton" onClick={()=>{
+                    navigate('/addMemberShip');
+                }}>추가</button>
+            </div>
             <table className="membershipTable">
                 <thead>
                     <tr>

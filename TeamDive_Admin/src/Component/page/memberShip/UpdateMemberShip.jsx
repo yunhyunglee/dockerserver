@@ -1,6 +1,7 @@
 import React,{ useState, useEffect} from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import jaxios from '../../../util/JwtUtil';
+import '../../../style/addMembership.scss';
 
 
 const UpdateMemberShip = () => {
@@ -93,21 +94,23 @@ const UpdateMemberShip = () => {
             </div>
 
             <div className='memberShipField'>
-                <div className='memberShipPriceField'>
-                    <label>가격(원)</label>
-                    <input type='text' value={price} onChange={(e)=>{
-                        setPrice(e.currentTarget.value);
-                    }} />
-                </div>
-                <div className='memberShipPriceField'>
-                    <label>할인율(%)</label>
-                    <input type='text' value={discount} onChange={(e)=>{
-                        setDiscount(e.currentTarget.value);
-                    }} />
-                </div>
-                <div className='memberShipPriceField'>
-                    <label>할인 후 금액(원)</label>
-                    <input type='text' value ={discountedPrice} readOnly />
+                <div className='memberShipPriceForm'>
+                    <div className='memberShipPriceField'>
+                        <label>가격(원)</label>
+                        <input type='text' value={price} onChange={(e)=>{
+                            setPrice(e.currentTarget.value);
+                        }} />
+                    </div>
+                    <div className='memberShipPriceField'>
+                        <label>할인율(%)</label>
+                        <input type='text' value={discount} onChange={(e)=>{
+                            setDiscount(e.currentTarget.value);
+                        }} />
+                    </div>
+                    <div className='memberShipPriceField'>
+                        <label>할인 후 금액(원)</label>
+                        <input type='text' value ={discountedPrice} readOnly />
+                    </div>
                 </div>
             </div>
             
