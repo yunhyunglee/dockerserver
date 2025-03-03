@@ -21,17 +21,17 @@ const PlaylistPage = () => {
 
   // 임시 데이터
   const playlist = [
-    { title: "여행가고 싶을 때", image: "/public/image/album/album1.jpg" },
-    { title: "플리2", image: "/public/image/album/album2.jpg" },
-    { title: "플리3", image: "/public/image/album/album3.jpg" },
-    { title: "플리4", image: "/public/image/album/album4.jpg" },
-    { title: "플리5", image: "/public/image/album/album5.jpg" },
-    { title: "플리6", image: "/public/image/album/album6.jpg" },
-    { title: "플리7", image: "/public/image/album/album7.jpg" },
-    { title: "플리8", image: "/public/image/album/album8.jpg" },
-    { title: "플리9", image: "/public/image/album/album9.jpg" },
-    { title: "플리10", image: "/public/image/album/album10.jpg" },
-    { title: "플리11", image: "/public/image/album/album11.jpg" },
+    { title: "여행가고 싶을 때", image: "https://d9k8tjx0yo0q5.cloudfront.net/image/pl12.jpg" },
+    { title: "플리2", image: "https://d9k8tjx0yo0q5.cloudfront.net/image/pl2.jpg" },
+    { title: "플리3", image: "https://d9k8tjx0yo0q5.cloudfront.net/image/pl3.jpg" },
+    { title: "플리4", image: "https://d9k8tjx0yo0q5.cloudfront.net/image/pl4.jpg" },
+    { title: "플리5", image: "https://d9k8tjx0yo0q5.cloudfront.net/image/pl5.jpg" },
+    { title: "플리6", image: "https://d9k8tjx0yo0q5.cloudfront.net/image/pl6.jpg" },
+    { title: "플리7", image: "https://d9k8tjx0yo0q5.cloudfront.net/image/pl7.jpg" },
+    { title: "플리8", image: "https://d9k8tjx0yo0q5.cloudfront.net/image/pl8.jpg" },
+    { title: "플리9", image: "https://d9k8tjx0yo0q5.cloudfront.net/image/pl9.jpg" },
+    { title: "플리10", image: "https://d9k8tjx0yo0q5.cloudfront.net/image/pl10.jpg" },
+    { title: "플리11", image: "https://d9k8tjx0yo0q5.cloudfront.net/image/pl11.jpg" },
   ];
 
   // 랜덤 5개 추출

@@ -1,6 +1,8 @@
 import React, {useState, useEffect} from 'react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, LabelList } from "recharts";
 import "../../style/dashboard.scss";
+import axios from 'axios';
+import jaxios from '../../util/JwtUtil'
 
 
 
@@ -26,12 +28,35 @@ const DashBoard = () => {
         { name: "총 재생 수", value: playCount },
     ];
 
-    
+    useEffect(
+        ()=>{
+
+        },[]
+    );
+    const [image,setImage]=useState('https://d9k8tjx0yo0q5.cloudfront.net/image/be8389d8-cd6d-4787-ab0b-3230a5c39a2020241007_231808073.jpg');
+    const onImageUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;      
+        const formData = new FormData();
+        formData.append("image", file);
+        try {
+            let response=await jaxios.delete('/api/music/deleteFile',{params:{file:image}});
+            console.log(response.data.msg);
+            response = await jaxios.post("/api/music/imageUpload", formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+            });
+           setImage(response.data.image);
+        } catch (error) {
+            console.error("이미지 업로드 실패:", error);
+            alert("이미지 업로드 실패");
+        }
+    };
+
 
 
     return (
         <div className="dashBoard">                 
-
+            <input type='file' onChange={(e)=>{onImageUpload(e)}} />
             
             
             <div className='chartContainer'>
