@@ -177,3 +177,7 @@ display: none;
 .sidebar:not(.open) .userInfo {
 display: none;
 }
+
+.sidebar:not(.open) .authLink {
+  display: none;
+}

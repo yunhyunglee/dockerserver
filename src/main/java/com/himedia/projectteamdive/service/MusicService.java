@@ -6,6 +6,7 @@ import com.himedia.projectteamdive.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -500,20 +501,40 @@ public class MusicService {
     }
 
     public HashMap<String, Object> getMusicForMood(String mood) {
+        return null;
+    }
 
-        List<Music> musicList = mr.findByMood(mood);
+    public HashMap<String, Object> getPlaylistPage() {
 
-        // Music 엔티티를 MusicDto로 변환
-        List<MusicDto> dtoList = musicList.stream()
-                .map(MusicDto::new)
+        HashMap<String, Object> result = new HashMap<>();
+
+        // 다이브픽: 일단 인데이트순
+        List<Playlist> divePickPlaylists = pr.findAll(Sort.by(Sort.Direction.DESC, "indate"));
+        List<PlaylistDto> divePick = divePickPlaylists.stream()
+                .map(PlaylistDto::new)
                 .collect(Collectors.toList());
+        result.put("divePick", divePick);
 
-        // 응답 데이터 구성
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("music", dtoList);
-        return map;
+        //  핫 플레이리스트: 좋아요 수
+        List<Playlist> hotPlaylists = pr.findHotPlaylists(Pagetype.PLAYLIST);
+        List<PlaylistDto> hotPlaylist = hotPlaylists.stream()
+                .map(PlaylistDto::new)
+                .collect(Collectors.toList());
+        result.put("hotPlaylist", hotPlaylist);
 
+        //  랜덤 플레이리스트
+        List<Playlist> allPlaylists = pr.findAll();
+        if (allPlaylists != null && !allPlaylists.isEmpty()) {
+            Collections.shuffle(allPlaylists);
+            List<Playlist> randomPlaylists = allPlaylists.stream().limit(5).collect(Collectors.toList());
+            List<PlaylistDto> randomPlaylist = randomPlaylists.stream()
+                    .map(PlaylistDto::new)
+                    .collect(Collectors.toList());
+            result.put("randomPlaylist", randomPlaylist);
+        } else {
+            result.put("randomPlaylist", new ArrayList<>());
+        }
 
-
+        return result;
     }
 }
