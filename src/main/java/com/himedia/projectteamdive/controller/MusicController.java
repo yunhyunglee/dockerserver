@@ -381,4 +381,14 @@ public class MusicController {
 
 
 
+    // 3/4 인형 안되면 걍 주석 ㅜㅜ 연결부분까지 쭈욱
+    @GetMapping("/getPlaylistPage")
+    public HashMap<String, Object> getPlaylistPage() {
+        HashMap<String, Object> map = ms.getPlaylistPage();
+        return map;
+    }
+
+
+
+
 }

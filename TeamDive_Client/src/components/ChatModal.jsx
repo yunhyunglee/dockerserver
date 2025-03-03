@@ -90,7 +90,7 @@ const ChatModal = ({ onClose }) => {
           {messages.map((msg, index) => (
             <div key={index} className={msg.sender === "user" ? styles.userMessageWrapper : styles.botMessageWrapper}>
               {/* AI */}
-              {msg.sender === "bot" && <img src={""}  className={styles.avatar} />}
+              {msg.sender === "bot" && <img src={"public/icon/chatbot.png"}  className={styles.avatar} />}
               
               {/* 말풍선 */}
               <div className={msg.sender === "user" ? styles.userMessage : styles.botMessage}>
