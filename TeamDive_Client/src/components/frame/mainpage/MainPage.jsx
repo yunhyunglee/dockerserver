@@ -109,6 +109,11 @@ const MainPage = () => {
     return (
         <div className={styles.mainPageContainer}>
 
+            {!loginUser.memberId ? 
+            <div className={styles.bannerGif}>
+                <Link to={'/membership/all'}><img src='public/banner/banner.gif' /></Link>
+                </div> : ''}
+
         {loginUser.memberId ? ( <>
             <div className={styles.moodContainer}>
                <span className={styles.moodTitle}>
@@ -189,7 +194,7 @@ const MainPage = () => {
             </div> */}
 
 
-            {!loginUser.memberId ? (showAdModal && (<AdModal/>)) : ''}
+            {/* {!loginUser.memberId ? (showAdModal && (<AdModal/>)) : ''} */}
             
             <div className={styles.topSection}>
 
