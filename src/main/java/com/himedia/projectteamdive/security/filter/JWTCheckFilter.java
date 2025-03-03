@@ -126,6 +126,12 @@ public class JWTCheckFilter extends OncePerRequestFilter {
         if(path.startsWith("/api/music/getSearch")){
             return true;
         }
+        if(path.startsWith("/api/music/deleteFile")){
+            return true;
+        }
+        if(path.startsWith("/api/music/imageUpload")){
+            return true;
+        }
         if(path.startsWith("/api/music/getCurrentPlaylist")){
             return true;
         }

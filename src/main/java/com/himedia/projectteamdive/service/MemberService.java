@@ -37,6 +37,9 @@ public class MemberService {
 
         List<RoleName> roles =  new ArrayList<RoleName>();
         roles.add(RoleName.USER);
+        if(member.getImage() ==null){
+            member.setImage("https://d9k8tjx0yo0q5.cloudfront.net/image/user.png");
+        }
         member.setMemberRoleList(roles);
         member.setPassword(pe.encode(member.getPassword()));
         member.setMemberKey(UUID.randomUUID().toString());

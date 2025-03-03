@@ -149,8 +149,8 @@ const UpdateMemberForm = () => {
       .then((result) => {
         if (result.data.msg === 'yes') {
           alert('회원탈퇴 되었습니다.')
-          cookies.remove('user')
-          dispatch(logoutAction())
+          cookies.remove('user',{path:'/'});
+          dispatch(logoutAction());
           navigate('/')
         }
       })
@@ -303,7 +303,7 @@ const UpdateMemberForm = () => {
           </button>
           <button
             className={updateStyles.deleteButton}
-            onClick={deleteMember}
+            onClick={()=>deleteMember()}
           >
             회원탈퇴
           </button>

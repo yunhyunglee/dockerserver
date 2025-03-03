@@ -4,9 +4,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Modal from "react-modal";
 import DaumPostcode from "react-daum-postcode";
-import Userdefault from '../../../public/image/user.png'
 const SignUpStep2 = ({ setStep, step1Data }) => {
-    const [image, setImage] = useState(Userdefault); // 업로드할 파일 저장
+    const [image, setImage] = useState("https://d9k8tjx0yo0q5.cloudfront.net/image/user.png"); // 업로드할 파일 저장
     const [preview, setPreview] = useState(""); // 이미지 미리보기 URL
     const [profileImage, setProfileImage] = useState(""); // 서버에서 반환된 이미지 URL 저장
     const [address, setAddress] = useState("");

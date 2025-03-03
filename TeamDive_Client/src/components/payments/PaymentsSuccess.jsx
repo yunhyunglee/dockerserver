@@ -34,6 +34,10 @@ const PaymentsSuccess = () => {
                 }, 3000);
             } catch (error) {
                 console.error("결제 승인 실패:", error.response?.data || error.message);
+                setTimeout(() => {
+                    console.log("재시도 중...");
+                    confirmPayment();  // 재시도
+                }, 1000);  // 2초 후 재시도
             }
         };
         confirmPayment();
