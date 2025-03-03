@@ -9,7 +9,7 @@ const ReplyListForm = () => {
   const loginUser = useSelector((state) => state.user)
   const [replyList, setReplyList] = useState([])
   const [category, setCategory] = useState('artist')
-  const { replyId } = useParams
+  // const { replyId } = useParams
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -34,7 +34,7 @@ const ReplyListForm = () => {
       })
   }
 
-  function deleteReply() {
+  function deleteReply(replyId) {
     if (!window.confirm('해당 댓글을 삭제하시겠습니까?')) {
       return
     }
@@ -43,7 +43,9 @@ const ReplyListForm = () => {
       .then((result) => {
         if (result.data.msg === 'yes') {
           alert('댓글이 삭제되었습니다.')
-          navigate('/mypage')
+          // navigate('/mypage/replyListForm')
+          setReplyList((prev) => prev.filter((reply) => reply.replyId !== replyId));
+
         }
       })
       .catch((err) => {
@@ -92,7 +94,7 @@ const ReplyListForm = () => {
               {reply.indate.substring(0, 10)}
             </div>
             <div className={mypageReplyStyle.mypageReplyCell}>
-              <button onClick={deleteReply}>삭제</button>
+              <button onClick={()=>deleteReply(reply.replyId)}>삭제</button>
             </div>
           </div>
         ))
