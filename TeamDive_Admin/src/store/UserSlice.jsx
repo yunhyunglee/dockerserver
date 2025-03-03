@@ -29,7 +29,7 @@ const initialState = {
 
 // 쿠키는 자동으로 디코딩 되어 "decodeURIComponent()" 가 필요없음
 const getLoginUser = () => {
-    const memberInfo = cookies.get("user");
+    const memberInfo = cookies.get("adminuser");
 
     return memberInfo ? { ...initialState, ...memberInfo, isLoggedIn: true } : initialState;
 };

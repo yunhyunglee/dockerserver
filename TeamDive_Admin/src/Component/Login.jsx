@@ -32,7 +32,7 @@ const Login = () => {
                 navigate("/login");
             } else {
                 alert("로그인이 되었습니다!");
-                cookies.set("user", JSON.stringify(result.data), { path: "/", secure: true, sameSite: "Strict" });
+                cookies.set("adminuser", JSON.stringify(result.data), { path: "/", secure: true, sameSite: "Strict" });
                 dispatch(loginAction(result.data));
                 navigate("/dashboard");
             }
