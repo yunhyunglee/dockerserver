@@ -1,94 +1,148 @@
-import React, {useState, useEffect} from 'react'
-import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, LabelList } from "recharts";
+import jaxios from '../../util/JwtUtil';
+import { useState, useEffect } from "react";
+import { Card, CardContent } from "../../ui/card";
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, AreaChart, Area, BarChart, Bar } from "recharts";
 import "../../style/dashboard.scss";
-import axios from 'axios';
-import jaxios from '../../util/JwtUtil'
 
+const Dashboard = () => {
+  const [streamingStats, setStreamingStats] = useState({ daily: [], monthly: [] });
+  const [viewMode, setViewMode] = useState("daily");
+  const [chartType, setChartType] = useState("bar"); 
+  const [scale, setScale] = useState(1); 
+  const [transitioning, setTransitioning] = useState(false); 
 
+  useEffect(() => {
+    fetchStreamingData();
+  }, []);
 
-
-const DashBoard = () => {
-    const [userCount, setUserCount] = useState(1200);
-    const [musicCount, setMusicCount] = useState(5000);
-    const [playCount, setPlayCount] = useState(10000);
+  const handleScroll = (event) => {
+    let newScale = scale - event.deltaY * 0.001;
+    let clampedScale = Math.min(Math.max(newScale, 0.5), 1);
     
-    useEffect(()=>{
+    setScale(clampedScale);
+    setTransitioning(true);
+    setTimeout(() => setTransitioning(false), 500);
 
-        setTimeout(()=>{
-            setUserCount(2000);
-            setMusicCount(7000);
-            setPlayCount(13000);
-        }, 2000);
+    if (clampedScale < 0.7 && viewMode !== "daily") {
+      setViewMode("daily");
+      setTimeout(() => setScale(0.5), 300);
+    } else if (clampedScale >= 0.7 && viewMode !== "monthly") {
+      setViewMode("monthly");
+      setTimeout(() => setScale(1), 300);
+    }
+  };
 
-    }, []);
+  const fetchStreamingData = async () => {
+    try {
+      console.log("📊 Mock 데이터 사용 중");
 
-    const chartData = [
-        { name: "총 사용자", value: userCount },
-        { name: "총 음원", value: musicCount },
-        { name: "총 재생 수", value: playCount },
-    ];
+      const mockDailyData = Array.from({ length: 30 }, (_, i) => ({
+        date: `2025-03-${String(i + 1).padStart(2, "0")}`,
+        totalPlayCount: Math.floor(Math.random() * 1000) + 500,
+      }));
 
-    useEffect(
-        ()=>{
+      const mockMonthlyData = Array.from({ length: 12 }, (_, i) => ({
+        date: `2025-${String(i + 1).padStart(2, "0")}`,
+        totalPlayCount: Math.floor(Math.random() * 30000) + 10000,
+      }));
 
-        },[]
-    );
-    const [image,setImage]=useState('https://d9k8tjx0yo0q5.cloudfront.net/image/be8389d8-cd6d-4787-ab0b-3230a5c39a2020241007_231808073.jpg');
-    const onImageUpload = async (e) => {
-        const file = e.target.files[0];
-        if (!file) return;      
-        const formData = new FormData();
-        formData.append("image", file);
-        try {
-            let response=await jaxios.delete('/api/music/deleteFile',{params:{file:image}});
-            console.log(response.data.msg);
-            response = await jaxios.post("/api/music/imageUpload", formData, {
-                headers: { "Content-Type": "multipart/form-data" },
-            });
-           setImage(response.data.image);
-        } catch (error) {
-            console.error("이미지 업로드 실패:", error);
-            alert("이미지 업로드 실패");
-        }
-    };
+      console.log("✅ Mock Daily Data:", mockDailyData);
+      console.log("✅ Mock Monthly Data:", mockMonthlyData);
 
+      setStreamingStats({ daily: mockDailyData, monthly: mockMonthlyData });
+    } catch (error) {
+      console.error("❌ Error fetching streaming data:", error);
+    }
+  };
 
+  const getChart = () => {
+    const data = viewMode === "daily" ? streamingStats.daily : streamingStats.monthly;
 
-    return (
-        <div className="dashBoard">                 
-            <input type='file' onChange={(e)=>{onImageUpload(e)}} />
-            
-            
-            <div className='chartContainer'>
-                <h2>데이터 분석</h2>
-                    <ResponsiveContainer width="90%" height={400} >
-                        <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                            <defs>
-                                <linearGradient id="barGlow" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="100%" stopColor="#1976d2" stopOpacity={1} /> 
-                                    <stop offset="0%" stopColor="#1976d2" stopOpacity={0.8} /> 
-                                </linearGradient>
-                            </defs>
-                            <CartesianGrid strokeDasharray="3 3" stroke="#0a192f" />
-                            <XAxis dataKey="name" tick={{fill: "#0a192f", fontSize: 16 }} stroke="#0a192f"  /> 
-                            <YAxis tick={{ fill: "#0a192f", fontSize: 16 }} stroke="#0a192f" domain={[0, 15000]} /> 
-                            {/* <Tooltip /> */}
-                            <Bar dataKey="value" fill="url(#barGlow)" barSize={50} style={{ filter: "drop-shadow(0px 0px 5px #1976d2)" }} > 
-                            <LabelList dataKey="value" position="top" fill="#0a192f" fontSize={20} fontWeight="bold" />
-                            </Bar>
-                        </BarChart>
-                    </ResponsiveContainer>
-            </div>
-            {/* <div className="dashBoardCards">                         
-                <div className="card"><h2>총 사용자</h2><p>{userCount.toLocaleString()}명</p></div>
-                <div className="card"><h2>총 음원</h2><p>{musicCount.toLocaleString()}곡</p></div>
-                <div className="card" ><h2>총 재생 수</h2><p>{playCount.toLocaleString()}화</p></div>               
-            </div> */}
+    switch (chartType) {
+      case "line":
+        return (
+          <LineChart data={data}>
+            <XAxis dataKey="date" stroke="#555" tick={{ fontSize: 12 }} />
+            <YAxis stroke="#555" tick={{ fontSize: 12 }} />
+            <Tooltip contentStyle={{ backgroundColor: "#fff", borderRadius: "8px" }} />
+            <Legend wrapperStyle={{ paddingBottom: 10 }} />
+            <Line type="monotone" dataKey="totalPlayCount" stroke="#ff7300" strokeWidth={3} />
+            {/* <Line type="monotone" dataKey="totalPlayCount" stroke="#8884d8" strokeWidth={4} opacity={0.3} /> */}
+          </LineChart>
+        );
 
+      case "bar":
+        return (
+          <BarChart data={data}>
+            <XAxis dataKey="date" stroke="#555" tick={{ fontSize: 12 }} />
+            <YAxis stroke="#555" tick={{ fontSize: 12 }} />
+            <Tooltip contentStyle={{ backgroundColor: "#fff", borderRadius: "8px" }} />
+            <Legend wrapperStyle={{ paddingBottom: 10 }} />
+            <Bar dataKey="totalPlayCount" fill="#ff7300" />
+            {/* <Bar dataKey="totalPlayCount" fill="#8884d8" opacity={0.5} /> */}
+          </BarChart>
+        );
 
+      default:
+        return (
+          <AreaChart data={data}>
+            <XAxis dataKey="date" stroke="#555" tick={{ fontSize: 12 }} />
+            <YAxis stroke="#555" tick={{ fontSize: 12 }} />
+            <Tooltip contentStyle={{ backgroundColor: "#fff", borderRadius: "8px" }} />
+            <Legend wrapperStyle={{ paddingBottom: 10 }} />
+            <Area type="monotone" dataKey="totalPlayCount" stroke="#ff7300" fill="url(#colorDaily)" strokeWidth={3} />
+            {/* <Area type="monotone" dataKey="totalPlayCount" stroke="#8884d8" fill="url(#colorMonthly)" strokeWidth={4} opacity={0.3} /> */}
+            <defs>
+              <linearGradient id="colorDaily" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#ff7300" stopOpacity={0.8} />
+                <stop offset="95%" stopColor="#ff7300" stopOpacity={0} />
+              </linearGradient>
+              <linearGradient id="colorMonthly" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#8884d8" stopOpacity={0.5} />
+                <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
+              </linearGradient>
+            </defs>
+          </AreaChart>
+        );
+    }
+  };
 
+  return (
+    <div className="dashboard-container" onWheel={handleScroll}>
+      <div className="dashboard-content">
+      <h1 className={`dashboard-title`}>📊 관리자 대시보드</h1>
+
+        {/* ✅ 일별/월별 선택 버튼 */}
+        <div className="dashboard-controls">
+        <button className={viewMode === "monthly" ? "active" : ""} onClick={() => setViewMode("monthly")}>월별</button>
+          <button className={viewMode === "daily" ? "active" : ""} onClick={() => setViewMode("daily")}>일별</button>
+          
         </div>
-    );
-}
 
-export default DashBoard
+        {/* ✅ 차트 타입 선택 버튼 */}
+        <div className="chart-controls">
+          <button className={chartType === "area" ? "active" : ""} onClick={() => setChartType("area")}>영역 차트</button>
+          <button className={chartType === "line" ? "active" : ""} onClick={() => setChartType("line")}>선형 차트</button>
+          <button className={chartType === "bar" ? "active" : ""} onClick={() => setChartType("bar")}>막대 차트</button>
+        </div>
+
+        {/* ✅ 차트 렌더링 */}
+        <Card>
+          <CardContent className="chart-card" style={{ transform: `scale(${scale})`, transition: "transform 0.3s ease-in-out" }}>
+            <h2 className="chart-title">📈 스트리밍 통계 ({viewMode === "daily" ? "일별" : "월별"})</h2>
+            <ResponsiveContainer width="100%" height={400}>
+              {getChart()}
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+
+  
+
+
+  
+};
+
+export default Dashboard;

@@ -31,28 +31,27 @@ const Music = () => {
             });
             console.log("백엔드 검색 응답:", response.data.music);
 
-            let filteredMusic = (response.data.music || []).filter((music) => {
-                const artistName = music.artistName?.toLowerCase() || "";
+            let filteredMusic = (response.data.music || []).filter((music) => {      
                 const title = music.title?.toLowerCase() || "";
-                return artistName.includes(value.toLowerCase()) || title.includes(value.toLowerCase());
+                return title.includes(value.toLowerCase());
             });
     
             // ✅ 가수 데이터도 리스트에 포함 (노래 없음 처리)
-            let filteredArtists = (response.data.artist || []).map((artist) => ({
-                artistName: artist.artistName,
-                title: "노래 없음", // 가수만 검색될 경우
-                albumTitle: "-",
-                genre: "-",
-                image: artist.image || "/images/default_artist.jpg",
-                bucketPath: null
-            }));
+            // let filteredArtists = (response.data.artist || []).map((artist) => ({
+            //     artistName: artist.artistName,
+            //     title: "노래 없음", // 가수만 검색될 경우
+            //     albumTitle: "-",
+            //     genre: "-",
+            //     image: artist.image || "/images/default_artist.jpg",
+            //     bucketPath: null
+            // }));
     
             // ✅ 가수와 노래 데이터 합치기
-            let mergedList = [...filteredMusic, ...filteredArtists];
+            // let mergedList = [...filteredMusic, ...filteredArtists];
     
-            console.log("🔍 필터링된 음악 리스트:", mergedList); // 디버깅용 로그
+            console.log("🔍 필터링된 음악 리스트:", filteredMusic); // 디버깅용 로그
     
-            setMusicList(mergedList);
+            setMusicList(filteredMusic);
         } catch (error) {
             console.error('음악 목록을 불러오지 못했습니다:', error);
         }
