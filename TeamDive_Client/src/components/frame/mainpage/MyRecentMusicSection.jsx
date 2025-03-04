@@ -49,25 +49,50 @@ const MyRecentMusicSection = () => {
 
 
 
-    return (
-      <div className={styles.recentMusicSection}>
-        <h2><span style={{fontSize: '30px'}}>{loginUser.nickname}</span> 님의 자주 듣는 노래</h2>
+  return (
+    <div className={styles.recentMusicSection}>
+      <h2>
+        <span style={{ fontSize: '30px' }}>
+          {loginUser.nickname}
+        </span> 님의 자주 듣는 노래
+      </h2>
+  
+    
+      {music.length === 0 ? (
+         <div className={styles.noMusicMessage}> 아직 즐겨듣는 곡이 없어요. 하나씩 채워볼까요❓</div>
+      ) : (
         <div className={styles.recentMusicGrid}>
           {displayItems.map((item, index) => (
             <div key={index} className={styles.recentMusicCard}>
-
-              <div className={styles.recentMusicInfo} onClick={()=>handlePlay2(item.musicId)}>
-                  <img src={item.image} className={styles.image} style={{cursor: 'pointer'}}/>
-                  <div className={styles.playIcon} >▶</div>
+              <div
+                className={styles.recentMusicInfo}
+                onClick={() => handlePlay2(item.musicId)}
+              >
+                <img
+                  src={item.image}
+                  className={styles.image}
+                  style={{ cursor: 'pointer' }}
+                />
+                <div className={styles.playIcon}>▶</div>
               </div>
               <div className={styles.musicInfo}>
-                  <p style={{cursor:'pointer'}} className={styles.recentMusictitle}onClick={()=>{navigate(`/music/${item.musicId}`)}}>{item.title}</p>
+                <p
+                  style={{ cursor: 'pointer' }}
+                  className={styles.recentMusictitle}
+                  onClick={() => {
+                    navigate(`/music/${item.musicId}`);
+                  }}
+                >
+                  {item.title}
+                </p>
               </div>
             </div>
           ))}
         </div>
-      </div>
-    );
+      )}
+    </div>
+  );
+  
 };
 
 export default MyRecentMusicSection;

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import jaxios from '../../util/JwtUtil';
 import styles from '../../css/detail/playlistSectionModal.module.css';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 function PlaylistSelectModal({ musicIdList, onClose }) {
   const loginUser = useSelector((state) => state.user); 
@@ -70,18 +70,32 @@ function PlaylistSelectModal({ musicIdList, onClose }) {
         <button className={styles.closeButton} onClick={onClose}>X</button>
 
         <div className={styles.playlistList}>
-          {playlists.map((pl) => (
-            <div
-              key={pl.playlistId}
-              className={`${styles.playlistItem} ${
-                selectedPlaylistId === pl.playlistId ? styles.selected : ''
-              }`}
-              onClick={() => setSelectedPlaylistId(pl.playlistId)}
-            >
-              {pl.title}
-            </div>
-          ))}
-        </div>
+            {
+              (playlists && playlists.length > 0) ? (
+                playlists.map((pl) => (
+                  <div
+                    key={pl.playlistId}
+                    className={`${styles.playlistItem} ${
+                      selectedPlaylistId === pl.playlistId ? styles.selected : ''
+                    }`}
+                    onClick={() => setSelectedPlaylistId(pl.playlistId)}
+                  >
+                    {pl.title}
+                  </div>
+                ))
+              ) : (
+                <div className={styles.smallContainer}>
+                  <p className={styles.message}>
+                    현재 플레이리스트가 없습니다.
+                  </p>
+                  <Link to="/storage/myPlaylist" className={styles.createLink}>
+                    플레이리스트 만들기
+                  </Link>
+                </div>
+              )
+            }
+          </div>
+
 
         <button className={styles.addButton} onClick={handleAddMusic}>
           선택한 플레이리스트에 추가

@@ -82,14 +82,54 @@ public class ChatController {
 
             if (detectedMood != null && userRequestMusic) {
                 List<MusicDto> recommendedMusic = musicService.getMusicByMood(detectedMood);
-                if(!recommendedMusic.isEmpty()){
-                    StringBuilder musicInfo = new StringBuilder("<br> 그런 기분에 맞는 노래추천해드릴게요! <br>"); // 이건 문자열 추가해주는거
-                    for (MusicDto md : recommendedMusic) {
+                if (!recommendedMusic.isEmpty()) {
+                    List<MusicDto> limitedMusic = recommendedMusic.size() > 10
+                            ? recommendedMusic.subList(0, 10)
+                            : recommendedMusic;
+
+                    // 감정별 랜덤 문구 설정
+                    Map<String, List<String>> responseTemplates = new HashMap<>();
+                    responseTemplates.put("happy", List.of(
+                            "기분이 너무 좋겠어요! 이런 노래들은 어때요? 😊",
+                            "신나는 기분엔 이런 곡들이 잘 어울릴 거예요! 🎶",
+                            "행복할 땐 음악이 더 즐거움을 배가시켜주죠! 추천드릴게요!"
+                    ));
+                    responseTemplates.put("sad", List.of(
+                            "조금이라도 기분이 나아졌으면 좋겠어요. 이런 노래들은 어떨까요? 😢",
+                            "우울할 때 위로가 될 만한 곡들을 찾아봤어요.",
+                            "기분이 가라앉을 때 들으면 좋은 노래들이에요."
+                    ));
+                    responseTemplates.put("angry", List.of(
+                            "화날 땐 음악으로 기분을 풀어보는 것도 방법이에요! 🎵",
+                            "짜증날 땐 리듬감 있는 음악을 듣는 게 도움이 될 수도 있어요.",
+                            "분노를 가라앉히는 데 도움이 될 만한 곡들이에요."
+                    ));
+                    responseTemplates.put("boring", List.of(
+                            "심심할 땐 새로운 음악을 탐험해보는 것도 좋죠! 이런 곡들은 어때요? 🎧",
+                            "지루한 순간을 채워줄 음악을 추천해 드릴게요!",
+                            "일상을 특별하게 만들어줄 곡들을 준비했어요!"
+                    ));
+                    responseTemplates.put("normal", List.of(
+                            "잔잔한 하루에도 음악은 필수죠! 이런 곡들은 어떨까요?",
+                            "평범한 날에도 분위기를 바꿔줄 노래가 필요하죠!",
+                            "오늘 하루를 채워줄 음악을 추천해 드릴게요."
+                    ));
+
+                    // 감정에 맞는 랜덤 문구 선택
+                    String moodResponse = responseTemplates.containsKey(detectedMood)
+                            ? responseTemplates.get(detectedMood).get((int) (Math.random() * responseTemplates.get(detectedMood).size()))
+                            : "기분에 맞는 음악을 찾아봤어요! 🎶";
+
+                    //  노래 리스트 생성
+                    StringBuilder musicInfo = new StringBuilder("<br>" + moodResponse + "<br>");
+                    for (MusicDto md : limitedMusic) {
                         musicInfo.append(md.getTitle()).append(" - ").append(md.getArtistName()).append("<br>");
                     }
                     response = musicInfo.toString();
                 }
             }
+
+
             return ResponseEntity.ok(Map.of("reply", response));
 
         } catch (Exception e) {
