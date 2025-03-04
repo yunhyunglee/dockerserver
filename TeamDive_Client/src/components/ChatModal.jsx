@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import styles from "../css/chatModal.module.css";
 import { askChatbot } from "./ChatService";
 
-import botAvatar from "../assets/artist2.jpg"; 
 import { useSelector } from "react-redux";
 
 import PersonIcon from '@mui/icons-material/Person';
@@ -90,7 +89,7 @@ const ChatModal = ({ onClose }) => {
           {messages.map((msg, index) => (
             <div key={index} className={msg.sender === "user" ? styles.userMessageWrapper : styles.botMessageWrapper}>
               {/* AI */}
-              {msg.sender === "bot" && <img src={"public/icon/chatbot.png"}  className={styles.avatar} />}
+              {msg.sender === "bot" && <img src={"https://d9k8tjx0yo0q5.cloudfront.net/icon/chatbot.png"}  className={styles.avatar} />}
               
               {/* 말풍선 */}
               <div className={msg.sender === "user" ? styles.userMessage : styles.botMessage}>

@@ -111,7 +111,7 @@ const MainPage = () => {
 
             {!loginUser.memberId ? 
             <div className={styles.bannerGif}>
-                <Link to={'/membership/all'}><img src='public/banner/banner.gif' /></Link>
+                <Link to={'/membership/all'}><img src='https://d9k8tjx0yo0q5.cloudfront.net/image/banner.gif' /></Link>
                 </div> : ''}
 
         {loginUser.memberId ? ( <>
