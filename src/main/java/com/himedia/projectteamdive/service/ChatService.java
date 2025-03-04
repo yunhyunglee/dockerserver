@@ -58,13 +58,13 @@ public class ChatService {
                         "누가 너한테 이름을 물어보면 다이버라고 답해." +
                         "누가 너한테 하는일이 뭐냐는 식으로 물어보면 너의 감정에 맞춰 노래를 추천해주는 역할을 하고 있다고 말해." +
                         "내가 위에 '이렇게 답해' 라고 말한거처럼 딱딱하게 대답하지마." +
-                        "현재 년도는 2025년이야" +
+                        "이용자와 일반적인 대화도 가능하게 해. 너무 모든 응답을 노래추천과 연결지으면 안돼" +
                         ""));
         messages.add(Map.of("role", "user", "content", userMessage));
 
         // 요청 본문 설정
         Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("model", "gpt-3.5-turbo");
+        requestBody.put("model", "gpt-4o");
         requestBody.put("messages", messages);
         requestBody.put("temperature", 0.7); // 창의성 설정하는거
         requestBody.put("max_tokens", 200);
