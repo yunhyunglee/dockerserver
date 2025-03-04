@@ -175,106 +175,147 @@ public class JWTCheckFilter extends OncePerRequestFilter {
         if(path.startsWith("/api/music/getPlaylistPage")){
             return true;
         }
+        if(path.startsWith("/api/member/findByMemberId")){
+            return true;
+        }
+        if(path.startsWith("/api/member/resetPassword")){
+            return true;
+        }
+        if(path.startsWith("/api/member/emailCheck")){
+            return true;
+        }
+        if(path.startsWith("/api/member/sendEmailForPassword")){
+            return true;
+        }
+
+//=========================================================================================
+
+        if(path.startsWith("/member/login")){
+            return true;
+        }
+        if(path.startsWith("/membership/getMembership")){
+            return true;
+        }
+        if(path.startsWith("/member/checkId")){
+            return true;
+        }
+        if(path.startsWith("/member/join")){
+            return true;
+        }
+        if(path.startsWith("/member/kakaoStart")){
+            return true;
+        }
+        if(path.startsWith("/member/kakaoLogin")){
+            return true;
+        }
+        if(path.startsWith("/member/sendMail")){
+            return true;
+        }
+        if(path.startsWith("/member/emailCheck")){
+            return true;
+        }
+        if(path.startsWith("/chat/ask")){
+            return true;
+        }
+        if(path.startsWith("/music/addPlayCount")){
+            return true;
+        }
+        if(path.startsWith("/music/getMusicChart")){
+            return true;
+        }
+        if(path.startsWith("/music/getAlbumChart")){
+            return true;
+        }
+        if(path.startsWith("/music/getArtist")){
+            return true;
+        }
+        if(path.startsWith("/music/getAlbum")){
+            return true;
+        }
+        if(path.startsWith("/music/getMusic")){
+            return true;
+        }
+        if(path.startsWith("/music/getSearch")){
+            return true;
+        }
+        if(path.startsWith("/music/getCurrentPlaylist")){
+            return true;
+        }
+        if(path.startsWith("/music/getMemberPlaylist")){
+            return true;
+        }
+        if(path.startsWith("/music/getMemberRecentMusics")){
+            return true;
+        }
+        if(path.startsWith("/community/getLikeCount")){
+            return true;
+        }
+        if(path.startsWith("/community/insertReply")){
+            return true;
+        }
+        if(path.startsWith("/community/getReplyList")){
+            return true;
+        }
+        if(path.startsWith("/membership/getMembershipByCategory")){
+            return true;
+        }
+        //======추가된것
+        if(path.startsWith("/member/refresh")){
+            return true;
+        }
+        if(path.startsWith("/AI/recommendList")){
+            return true;
+        }
+        if(path.startsWith("/AI/addRecommendList")){
+            return true;
+        }
+        if(path.startsWith("/music/latestPlayList")){
+            return true;
+        }
+        if(path.startsWith("/music/latestAlbumList")){
+            return true;
+        }
+        if(path.startsWith("/music/latestMusicList")){
+            return true;
+        }
+        if(path.startsWith("/community/getNoticeList")){
+            return true;
+        }
+        if(path.startsWith("/membership/checkActiveMembership")){
+            return true;
+        }
+        if(path.startsWith("/AI/addRecommendList")){
+            return true;
+        }
+
+        // 비밀번호 변경을위한 추가사항
+        if(path.startsWith("/member/findByMemberId")){
+            return true;
+        }
+        if(path.startsWith("/member/resetPassword")){
+            return true;
+        }
+        if(path.startsWith("/member/emailCheck")){
+            return true;
+        }
+        if(path.startsWith("/member/sendEmailForPassword")){
+            return true;
+        }
 
 
 
-//        if(path.startsWith("/member/login")){
-//            return true;
-//        }
-//        if(path.startsWith("/membership/getMembership")){
-//            return true;
-//        }
-//        if(path.startsWith("/member/checkId")){
-//            return true;
-//        }
-//        if(path.startsWith("/member/join")){
-//            return true;
-//        }
-//        if(path.startsWith("/member/kakaoStart")){
-//            return true;
-//        }
-//        if(path.startsWith("/member/kakaoLogin")){
-//            return true;
-//        }
-//        if(path.startsWith("/member/sendMail")){
-//            return true;
-//        }
-//        if(path.startsWith("/member/emailCheck")){
-//            return true;
-//        }
-//        if(path.startsWith("/chat/ask")){
-//            return true;
-//        }
-//        if(path.startsWith("/music/addPlayCount")){
-//            return true;
-//        }
-//        if(path.startsWith("/music/getMusicChart")){
-//            return true;
-//        }
-//        if(path.startsWith("/music/getAlbumChart")){
-//            return true;
-//        }
-//        if(path.startsWith("/music/getArtist")){
-//            return true;
-//        }
-//        if(path.startsWith("/music/getAlbum")){
-//            return true;
-//        }
-//        if(path.startsWith("/music/getMusic")){
-//            return true;
-//        }
-//        if(path.startsWith("/music/getSearch")){
-//            return true;
-//        }
-//        if(path.startsWith("/music/getCurrentPlaylist")){
-//            return true;
-//        }
-//        if(path.startsWith("/music/getMemberPlaylist")){
-//            return true;
-//        }
-//        if(path.startsWith("/music/getMemberRecentMusics")){
-//            return true;
-//        }
-//        if(path.startsWith("/community/getLikeCount")){
-//            return true;
-//        }
-//        if(path.startsWith("/community/insertReply")){
-//            return true;
-//        }
-//        if(path.startsWith("/community/getReplyList")){
-//            return true;
-//        }
-//        if(path.startsWith("/membership/getMembershipByCategory")){
-//            return true;
-//        }
-//        //======추가된것
-//        if(path.startsWith("/member/refresh")){
-//            return true;
-//        }
-//        if(path.startsWith("/AI/recommendList")){
-//            return true;
-//        }
-//        if(path.startsWith("/AI/addRecommendList")){
-//            return true;
-//        }
-//        if(path.startsWith("/music/latestPlayList")){
-//            return true;
-//        }
-//        if(path.startsWith("/music/latestAlbumList")){
-//            return true;
-//        }
-//        if(path.startsWith("/music/latestMusicList")){
-//            return true;
-//        }
-//        if(path.startsWith("/community/getNoticeList")){
-//            return true;
-//        }
-//        if(path.startsWith("/membership/checkActiveMembership")){
-//            return true;
-//        }
-//        if(path.startsWith("/AI/addRecommendList")){
-//            return true;
-//        }
+
+
+
+
+
+
+
+
+
+
+
+
 //        if(path.startsWith("/music/getPlaylistPage")){
 //            return true;
 //        }
