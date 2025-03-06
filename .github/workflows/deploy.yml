@@ -2,7 +2,7 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - main2
+      - main
 
 jobs:
   deploy:
@@ -19,17 +19,17 @@ jobs:
           envs: APPLICATION_PROPERTIES
           script_stop: true
           script: |
-            cd /home/ubuntu/Project-MusicStreaming-Team-Dive
+            cd /home/ubuntu/Dive_server
             rm -rf src/main/resources/application.yml
             git pull origin main
             echo "$APPLICATION_PROPERTIES" > src/main/resources/application.yml
             sudo ./gradlew clean build
             sudo fuser -k -n tcp 8070 || true
             nohup java -jar build/libs/*SNAPSHOT.jar > ./output.log 2>&1 &
-            cd TeamDive_Client/
-            sudo npm run build
-            cd ../TeamDive_Admin/
-            sudo npm run build
-            sudo systemctl restart nginx
-            
+#            cd TeamDive_Client/
+#            sudo npm run build
+#            cd ../TeamDive_Admin/
+#            sudo npm run build
+#            sudo systemctl restart nginx
+#
             
