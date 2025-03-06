@@ -19,7 +19,7 @@ jobs:
           envs: APPLICATION_PROPERTIES
           script_stop: true
           script: |
-            cd /home/ubuntu/Project-Team-Dive
+            cd /home/ubuntu/Project-MusicStreaming-Team-Dive
             rm -rf src/main/resources/application.yml
             git pull origin YH
             echo "$APPLICATION_PROPERTIES" > src/main/resources/application.yml
