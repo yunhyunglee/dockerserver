@@ -19,7 +19,7 @@ jobs:
           envs: APPLICATION_PROPERTIES
           script_stop: true
           script: |
-            cd /home/ubuntu/Dive_server
+            cd /home/ubuntu/Dive_Server
             rm -rf src/main/resources/application.yml
             git pull origin main
             echo "$APPLICATION_PROPERTIES" > src/main/resources/application.yml
