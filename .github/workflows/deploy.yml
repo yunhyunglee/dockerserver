@@ -2,7 +2,7 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - YH
+      - main2
 
 jobs:
   deploy:
@@ -21,7 +21,7 @@ jobs:
           script: |
             cd /home/ubuntu/Project-MusicStreaming-Team-Dive
             rm -rf src/main/resources/application.yml
-            git pull origin YH
+            git pull origin main
             echo "$APPLICATION_PROPERTIES" > src/main/resources/application.yml
             sudo ./gradlew clean build
             sudo fuser -k -n tcp 8070 || true
