@@ -502,7 +502,17 @@ public class MusicService {
     }
 
     public HashMap<String, Object> getMusicForMood(String mood) {
-        return null;
+        List<Music> musicList = mr.findByMood(mood);
+
+
+        List<MusicDto> dtoList = musicList.stream()
+                .map(MusicDto::new)
+                .collect(Collectors.toList());
+
+
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("music", dtoList);
+        return map;
     }
 
     public HashMap<String, Object> getPlaylistPage() {
