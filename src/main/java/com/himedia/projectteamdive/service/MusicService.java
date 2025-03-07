@@ -266,6 +266,7 @@ public class MusicService {
         p.setContent(playlist.getContent());
         p.setCoverImage(playlist.getCoverImage());
         p.setShayringyn(playlist.isShayringyn());
+        p.setDivePick(playlist.isDivePick());
     }
 
     @Transactional
@@ -535,6 +536,13 @@ public class MusicService {
             result.put("randomPlaylist", new ArrayList<>());
         }
 
+        return result;
+    }
+
+    public HashMap<String, Object> getDivePick() {
+        HashMap<String, Object> result = new HashMap<>();
+        List<PlaylistDto>list=pr.findByDivePick(true);
+        result.put("divePick", list);
         return result;
     }
 }
