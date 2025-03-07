@@ -27,7 +27,7 @@ public class Playlist {
     private String coverImage;
     private String content;
     @Column(name = "dive_pick")
-    private boolean divePick;
+    private boolean divePick = true;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
