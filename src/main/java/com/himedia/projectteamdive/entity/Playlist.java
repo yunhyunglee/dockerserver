@@ -30,6 +30,7 @@ public class Playlist {
     @ColumnDefault("true")
     private boolean divePick;
 
+
     @ManyToOne
     @JoinColumn(name = "member_id")
 
