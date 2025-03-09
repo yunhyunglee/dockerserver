@@ -520,10 +520,7 @@ public class MusicService {
         HashMap<String, Object> result = new HashMap<>();
 
         // 다이브픽: 일단 인데이트순
-        List<Playlist> divePickPlaylists = pr.findAll(Sort.by(Sort.Direction.DESC, "indate"));
-        List<PlaylistDto> divePick = divePickPlaylists.stream()
-                .map(PlaylistDto::new)
-                .collect(Collectors.toList());
+        List<PlaylistDto>divePick=pr.findByDivePick(true);
         result.put("divePick", divePick);
 
         //  핫 플레이리스트: 좋아요 수
