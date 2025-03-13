@@ -181,9 +181,7 @@ public class JWTCheckFilter extends OncePerRequestFilter {
         if(path.startsWith("/api/member/resetPassword")){
             return true;
         }
-        if(path.startsWith("/api/member/emailCheck")){
-            return true;
-        }
+
         if(path.startsWith("/api/member/sendEmailForPassword")){
             return true;
         }
@@ -198,8 +196,26 @@ public class JWTCheckFilter extends OncePerRequestFilter {
             return true;
         }
 
+        if(path.startsWith("/api/stats/daily")){
+            return true;
+        }
+
+        if(path.startsWith("/api/stats/detail")){
+            return true;
+        }
+
+
+
+
 //=========================================================================================
 
+        if(path.startsWith("/music/getPlaylistPage")){
+            return true;
+        }
+
+        if(path.startsWith("/music/playlistDetail")){
+            return true;
+        }
         if(path.startsWith("/member/login")){
             return true;
         }
@@ -295,6 +311,7 @@ public class JWTCheckFilter extends OncePerRequestFilter {
             return true;
         }
 
+
         // 비밀번호 변경을위한 추가사항
         if(path.startsWith("/member/findByMemberId")){
             return true;
@@ -302,9 +319,7 @@ public class JWTCheckFilter extends OncePerRequestFilter {
         if(path.startsWith("/member/resetPassword")){
             return true;
         }
-        if(path.startsWith("/member/emailCheck")){
-            return true;
-        }
+
         if(path.startsWith("/member/sendEmailForPassword")){
             return true;
         }
@@ -319,14 +334,18 @@ public class JWTCheckFilter extends OncePerRequestFilter {
             return true;
         }
 
-        if(path.startsWith("/music/getPlaylistPage")){
-            return true;
-        }
-        if(path.startsWith("/music/playlistDetail")){
+
+        if(path.startsWith("/stats/daily")){
             return true;
         }
 
+        if(path.startsWith("/stats/detail")){
+            return true;
+        }
 
+        if(path.startsWith("/stats/dailyDetail")){
+            return true;
+        }
         return false;
     }
 

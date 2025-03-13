@@ -37,7 +37,7 @@ public class MemberController {
 
     @GetMapping("/test")
     public String index(){
-        return "<h1>Welcom e  to M222usicStreaming World</h1>";
+        return "<h1>Welcome to MusicStreaming World</h1>";
     }
 
     @GetMapping("/refresh")
@@ -243,7 +243,7 @@ public class MemberController {
             member.setImage("https://d9k8tjx0yo0q5.cloudfront.net/image/user.png");
             ms.insertMember(member);
         }
-        response.sendRedirect("http://3.34.52.91:5173/KakaoLogin/"+member.getMemberId());
+        response.sendRedirect("http://13.209.123.104/KakaoLogin/"+member.getMemberId());
     }
 
     @GetMapping("/getMember")
