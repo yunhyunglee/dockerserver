@@ -38,10 +38,10 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: docker 이미지 생성
-        run: docker build -t board-server .
+        run: docker build -t dockerdiveserver .
 
       - name: 생성된 이미지에 태그
-        run: docker tag board-server:latest 842675991282.dkr.ecr.ap-northeast-2.amazonaws.com/dockerdiveserver:latest
+        run: docker tag dockerdiveserver:latest 842675991282.dkr.ecr.ap-northeast-2.amazonaws.com/dockerdiveserver:latest
 
       - name: Ecr에 푸쉬
         run: docker push 842675991282.dkr.ecr.ap-northeast-2.amazonaws.com/dockerdiveserver:latest
