@@ -58,6 +58,3 @@ jobs:
             docker rm my-server||true
             docker pull 842675991282.dkr.ecr.ap-northeast-2.amazonaws.com/dockerdiveserver:latest
             docker run -d --name my-server -p 8070:8070 842675991282.dkr.ecr.ap-northeast-2.amazonaws.com/dockerdiveserver:latest
-
-
-
