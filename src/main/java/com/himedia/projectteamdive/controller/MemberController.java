@@ -29,7 +29,7 @@ import java.net.URL;
 import java.util.*;
 
 @RestController
-@RequestMapping("/api/member")
+@RequestMapping("/member")
 public class MemberController {
 
     @Autowired
@@ -243,7 +243,7 @@ public class MemberController {
             member.setImage("https://d9k8tjx0yo0q5.cloudfront.net/image/user.png");
             ms.insertMember(member);
         }
-        response.sendRedirect("http://13.209.123.104/KakaoLogin/"+member.getMemberId());
+        response.sendRedirect("http://3.34.52.91:5173/KakaoLogin/"+member.getMemberId());
     }
 
     @GetMapping("/getMember")
