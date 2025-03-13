@@ -37,7 +37,7 @@ public class MemberController {
 
     @GetMapping("/test")
     public String index(){
-        return "<h1>Welcom e to M222usicStreaming World</h1>";
+        return "<h1>Welcom e  to M222usicStreaming World</h1>";
     }
 
     @GetMapping("/refresh")
